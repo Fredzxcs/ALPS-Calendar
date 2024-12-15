@@ -16,6 +16,15 @@ Route::get('/layout', function () {
     return view('layout.maincontent'); // Adjust based on your folder structure
 });
 
-Route::get('/access/add-user', function () {
+Route::get('/access/add-user/role', function () {
     return view('access.add_user_role');
 });
+
+Route::get('/access/add-user/information', function () {
+    return view('access.add_user_information');
+});
+
+Route::get('/access/add-user/createacc', function () {
+    return view('access.add_user_createacc');
+});
+

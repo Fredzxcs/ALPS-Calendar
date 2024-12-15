@@ -6,7 +6,7 @@
             <!-- Title -->
             <div class="d-flex justify-content-center align-items-center mb-4 rounded-top"
                 style="background-color: #007bff; height: 80px;">
-                <h2 class="text-white fw-bold m-0">ADD USER</h2>
+                <h2 class="text-white fw-boldest m-0">ADD USER</h2>
             </div>
 
             <div class="d-flex justify-content-around align-items-center mb-5">
@@ -117,8 +117,8 @@
                     </div>
                 </div>
                 <!-- Submit Button -->
-                <div class="d-flex justify-content-end ml-3">
-                    <button type="submit" class="btn btn-primary px-5 me-20 mb-6">Continue</button>
+                <div class="d-flex justify-content-end ml-3 me-20 mb-6">
+                    <button type="submit" class="btn btn-primary px-5 ">Continue</button>
                 </div>
                 {{-- </form> --}}
             </div>
