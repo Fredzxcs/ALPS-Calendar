@@ -74,7 +74,9 @@
             <button class="btn btn-primary">+ Add</button>
         </div>
         <div class="card-body" style="height: 80vh;">
-            <div id="calendar" class="bg-light border" style="height: 100%; border-radius: 5px;">
+            <div id="kt_calendar_app" class="bg-light border" style="height: 100%; border-radius: 5px;">
+                {{-- <div id="kt_modal_add_event" class="bg-light border" style="height: 100%; border-radius: 5px;">
+                    <div id="kt_modal_view_event"></div> --}}
                 <!-- FullCalendar will be rendered here -->
             </div>
         </div>
@@ -83,5 +85,7 @@
 </div>
 @endsection
 @push('scripts')
-<script src="{{ asset('js/calendar.js') }}"></script>
+<script src="{{ asset('js/calendar.js') }}">
+</script>
 @endpush
+
