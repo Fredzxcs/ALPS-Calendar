@@ -1,0 +1,11 @@
+* General Application Run *
+
+create .env file            // setup local env
+copy .env.example to .env   // copy env.example setup 
+composer install            // Install backend PHP dependencies
+npm install                 // Install frontend JavaScript dependencies
+npm run build               // Compile and build frontend assets
+create db 'alpstraining'    // Create the database in MySQL
+php artisan key:generate    // Generate the application encryption key
+php artisan migrate         // Run the database migrations
+php artisan serve           // Serve the application locally
