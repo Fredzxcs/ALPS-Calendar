@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'user'=> \App\Http\Middleware\userType::class,
             'admin'=> \App\Http\Middleware\registeradmin::class,
         ]);
-    }) 
-    ->withExceptions(function (Exceptions $exceptions) {
+    })
+  ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();

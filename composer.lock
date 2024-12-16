@@ -1176,6 +1176,7 @@
                 "orchestra/testbench-core": "^9.6",
                 "pda/pheanstalk": "^5.0.6",
                 "php-http/discovery": "^1.15",
+                "nyholm/psr7": "^1.2",
                 "phpstan/phpstan": "^1.11.5",
                 "phpunit/phpunit": "^10.5.35|^11.3.6",
                 "predis/predis": "^2.3",
@@ -1209,6 +1210,7 @@
                 "mockery/mockery": "Required to use mocking (^1.6).",
                 "pda/pheanstalk": "Required to use the beanstalk queue driver (^5.0).",
                 "php-http/discovery": "Required to use PSR-7 bridging features (^1.15).",
+                "nyholm/psr7": "Required to use PSR-7 bridging features (^1.2).",
                 "phpunit/phpunit": "Required to use assertions and run tests (^10.5|^11.0).",
                 "predis/predis": "Required to use the predis connector (^2.3).",
                 "psr/http-message": "Required to allow Storage::put to accept a StreamInterface (^1.0).",
@@ -6080,6 +6082,9 @@
             },
             "type": "library",
             "extra": {
+                "branch-alias": {
+                    "dev-main": "1.x-dev"
+                },
                 "laravel": {
                     "providers": [
                         "Laravel\\Pail\\PailServiceProvider"
