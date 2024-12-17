@@ -28,3 +28,6 @@ Route::get('/access/add-user/createacc', function () {
     return view('access.add_user_createacc');
 });
 
+Route::get('/access/manage-access', function () {
+    return view('access.manage_access');
+});

@@ -12,7 +12,6 @@
     <!--end::Fonts-->
     <!--begin::Page Vendor Stylesheets(used by this page)-->
     <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css" />
-
     <link href="{{ asset('plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Page Vendor Stylesheets-->
@@ -32,7 +31,6 @@
     <main>
         <div class="container">
             @yield('maincontent')
-
         </div>
     </main>
 
