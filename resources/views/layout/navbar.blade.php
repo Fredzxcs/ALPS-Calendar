@@ -13,12 +13,18 @@
         <div class="collapse navbar-collapse justify-content-end hover-scale fs-3" style="color: #052a43;" id="navbarNav">
             <ul class="navbar-nav ">
                 <!-- ACCESS Button -->
-                <li class="nav-item ">
-                    <a class="nav-link fw-medium text-hover-danger text-primary-hover fw-bolder" href="#" style="color: #052a43;">ACCESS</a>
+                <li class="nav-item">
+                    <a class="nav-link fw-medium text-hover-danger fw-bolder"
+                    href="/access/manage-access"
+                    id="access-link"
+                    style="color: #052a43;">
+                        ACCESS
+                    </a>
                 </li>
+
                 <!-- CALENDAR Button -->
                 <li class="nav-item">
-                    <a class="nav-link fw-medium text-hover-danger text-primary-hover fw-bolder" href="#" style="color: #052a43;">CALENDAR</a>
+                    <a class="nav-link fw-medium text-hover-danger text-primary-hover fw-bolder" href="/layout/" style="color: #052a43;">CALENDAR</a>
                 </li>
                 <!-- CONFIGURATION Button -->
                 <li class="nav-item">
@@ -40,3 +46,7 @@
         </div>
     </div>
 </nav>
+@push('scripts')
+<script src="{{ asset('js/navbar.js') }}">
+</script>
+@endpush

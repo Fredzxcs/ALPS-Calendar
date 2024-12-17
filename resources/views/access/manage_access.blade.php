@@ -12,8 +12,8 @@
             <div class="d-flex justify-content-between align-items-center mb-8">
                 <div class="position-relative" style="max-width: 300px;">
                     <!-- Input Field -->
-                    <input type="text" class="form-control form-control-solid ps-5 fw-boldest rounded-3" placeholder="&#xF52A; Search..."
-                        style="font-family: 'Bootstrap-icons', sans-serif;">
+                    <input type="text" class="form-control form-control-solid ps-5 fw-boldest rounded-3"
+                        placeholder="&#xF52A; Search..." style="font-family: 'Bootstrap-icons', sans-serif;">
 
                 </div>
                 <div>
@@ -28,7 +28,7 @@
 
             <!-- Table -->
             <div class="table-responsive">
-                <table class="table table-bordered align-middle text-center">
+                <table class="table table-striped align-middle text-center">
                     <thead>
                         <tr class="bg-active-lighten  fw-boldest text-gray-800">
                             <th>PROFILE</th>
@@ -40,7 +40,7 @@
                     <tbody>
                         <!-- Row 1 -->
                         <tr>
-                            <td class="d-flex align-items-center">
+                            <td class="d-flex align-items-center justify-content-center text-center">
                                 <div class="symbol symbol-50px me-3">
                                     <img src="{{ asset('img/profile.png') }}" alt="Profile Picture">
                                 </div>
@@ -61,7 +61,7 @@
 
                         <!-- Row 2 -->
                         <tr>
-                            <td class="d-flex align-items-center">
+                            <td class="d-flex align-items-center justify-content-center text-center">
                                 <div class="symbol symbol-50px me-3">
                                     <img src="{{ asset('img/profile.png') }}" alt="Profile Picture">
                                 </div>
@@ -82,7 +82,7 @@
 
                         <!-- Row 3 -->
                         <tr>
-                            <td class="d-flex align-items-center">
+                            <td class="d-flex align-items-center justify-content-center text-center">
                                 <div class="symbol symbol-50px me-3">
                                     <img src="{{ asset('img/profile.png') }}" alt="Profile Picture">
                                 </div>
@@ -103,7 +103,7 @@
 
                         <!-- Row 4 -->
                         <tr>
-                            <td class="d-flex align-items-center">
+                            <td class="d-flex align-items-center justify-content-center text-center">
                                 <div class="symbol symbol-50px me-3">
                                     <img src="{{ asset('img/profile.png') }}" alt="Profile Picture">
                                 </div>
@@ -124,7 +124,7 @@
 
                         <!-- Row 5 -->
                         <tr>
-                            <td class="d-flex align-items-center">
+                            <td class="d-flex align-items-center justify-content-center text-center">
                                 <div class="symbol symbol-50px me-3">
                                     <img src="{{ asset('img/profile.png') }}" alt="Profile Picture">
                                 </div>
