@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ALPs Calendar</title>
+    <!--begin::Fonts-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
+    <!--end::Fonts-->
+    <!--begin::Page Vendor Stylesheets(used by this page)-->
+    <link href="{{ asset('plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <!--end::Page Vendor Stylesheets-->
+    <!--begin::Global Stylesheets Bundle(used by all pages)-->
+    <link href="{{ asset('plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <!--end::Global Stylesheets Bundle-->
+</head>
+<div class="bg-image"
+    style="background-image: url('{{ asset('img/ALPs_LoginBG.png') }}'); background-repeat: no-repeat; background-size: cover; background-position: center; height: 100vh; width: 100vw;">
+    {{-- <div class="text-left">
+        <img src="{{ asset('img/ALPs_LOGO.jpg') }}" alt="ALPs Logo" style="width: 100px; height: auto;">
+    </div> --}}
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="card shadow-sm mx-auto font-Poppins" style="max-width: 400px; background-color: #052a43; color: #ffffff; border-radius: 30px;">
+            <div class="card text-center" style="background: none; border-bottom: none;">
+                <h3 class="fs-1 fw-bold text-white mb-3 mt-6 fw-boldest ">
+                    ALPs Training Hub
+                </h3>
+                <p class="fs-6 fw-normal mb-1 text-white">
+                    It's Good to See You!
+                </p>
+            </div>
+
+            <div class="card-body">
+                <!-- Username -->
+                <div class="mb-3">
+                    <label for="username" class="form-label text-white">Username <span
+                            class="text-danger">*</span></label>
+                    <input type="text" id="username" name="username" class="form-control"
+                        placeholder="Enter your username" required>
+                </div>
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label text-white">Password <span
+                            class="text-danger">*</span></label>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Enter your password" required>
+                    <a href="#" class="d-block mt-1 text-gray-400" style="font-size: 0.9rem;">Forgot Password?</a>
+                </div>
+                <!-- Submit Button -->
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn" style="background-color: #7c0101; color: #ffffff;">Login</button>
+                </div>
+            </div>
+        </div>
+</div>
+
+</html>
