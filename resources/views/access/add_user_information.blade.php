@@ -64,9 +64,7 @@
             <!-- Information -->
 
             <div class="container mt-5">
-                <!-- Form Section -->
-                {{-- <form action="#" method="POST" enctype="multipart/form-data"> --}}
-                {{-- @csrf --}}
+
                 <div class="row g-3">
                     <!-- First Name -->
                     <div class="col-md-6">
@@ -115,13 +113,6 @@
                         <input type="file" class="form-control form-control-solid" id="id_picture" required>
                     </div>
                 </div>
-
-                <!-- Buttons -->
-                <div class="d-flex justify-content-between mt-4 me-0 mb-6">
-                    <button type="button" class="btn btn-light-primary px-5">Back</button>
-                    <button type="submit" class="btn btn-primary px-5">Continue</button>
-                </div>
-                {{-- </form> --}}
             </div>
         </div>
     </div>

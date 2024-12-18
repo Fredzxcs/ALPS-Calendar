@@ -16,9 +16,9 @@
                         placeholder="&#xF52A; Search..." style="font-family: 'Bootstrap-icons', sans-serif;">
                 </div>
                 <div>
-                    <button class="btn btn-primary me-2 rounded-3 fw-boldest  ">
-                        <i class="bi bi-plus-lg "></i> ADD USER
-                    </button>
+                    <a href="{{ url('/add_user') }}" class="btn btn-primary me-2 rounded-3 fw-boldest">
+                        <i class="bi bi-plus-lg"></i> ADD USER
+                    </a>
                     <button class="btn btn-dark rounded-3 fw-boldest">
                         <i class="bi bi-funnel"></i> FILTER
                     </button>
