@@ -34,9 +34,10 @@ Route::get('/access/add-user/createacc', function () {
 });
 
 // Add Training - Virtual
-Route::get('/add_training/add_training_virtual', function () {
+Route::get('/add_training/virtual', function () {
     return view('add_training.add_training_virtual');
-});
+})->name('add_training_virtual');
+
 
 // Add Training - Face to Face
 Route::get('/add_training/add_training_face_to_face', function () {

@@ -1,92 +1,132 @@
 @extends('layout.layout')
 
 @section('maincontent')
-<div class="container-fluid mt-4 d-flex flex-wrap gap-4">
-    <!-- Left Side: Search Course and Search Trainer -->
-    <div class="d-flex flex-column" style="flex: 1; max-width: 30%; gap: 20px;">
-        <!-- Search Course Card -->
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="mb-3">
-                    <input type="text" class="form-control form-control-solid" placeholder="Search course" />
+    <div class="container-fluid mt-4 d-flex flex-wrap gap-4">
+        <!-- Left Side: Search Course and Search Trainer -->
+        <div class="d-flex flex-column" style="flex: 1; max-width: 30%; gap: 20px;">
+            <!-- Search Course Card -->
+            <!-- Search Course Card -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-control-solid" placeholder="Search course" />
+                    </div>
+                    <button class="btn btn-sm mb-3" style="background-color: #7c0101; color: #ffffff;">+ Add Course</button>
+                    <table class="table table-sm table-bordered table-hover align-middle">
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="course1" />
+                                </td>
+                                <td class="py-1"><label for="course1" class="mb-0">Project Management</label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="course2" />
+                                </td>
+                                <td class="py-1"><label for="course2" class="mb-0">Agile Scrum</label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="course3" />
+                                </td>
+                                <td class="py-1"><label for="course3" class="mb-0">Sample if mahabang cour...</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="course4" />
+                                </td>
+                                <td class="py-1"><label for="course4" class="mb-0">Course 1</label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="course5" />
+                                </td>
+                                <td class="py-1"><label for="course5" class="mb-0">Course 2</label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="course6" />
+                                </td>
+                                <td class="py-1"><label for="course6" class="mb-0">Course 3</label></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <button class="btn btn-sm mb-3" style="background-color: #7c0101; color: #ffffff;">+ Add Course</button>
-                <ul class="list-unstyled">
-                    <li>
-                        <input type="checkbox" id="course1" /> <label for="course1">Project Management</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="course2" /> <label for="course2">Agile Scrum</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="course3" /> <label for="course3">Sample if mahabang cour...</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="course3" /> <label for="course3">Course 1</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="course3" /> <label for="course3">Course 2</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="course3" /> <label for="course3">Course 3</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="course3" /> <label for="course3">Course 3</label>
-                    </li>
-                </ul>
             </div>
-        </div>
 
-        <!-- Search Trainer Card -->
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="mb-3">
-                    <input type="text" class="form-control form-control-solid" placeholder="Search facilitator" />
+            <!-- Search Trainer Card -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <input type="text" class="form-control form-control-solid" placeholder="Search facilitator" />
+                    </div>
+                    <button class="btn btn-sm mb-3" style="background-color: #7c0101; color: #ffffff;">+ Add
+                        Facilitator</button>
+                    <table class="table table-sm table-bordered table-hover align-middle">
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="trainer1" />
+                                </td>
+                                <td class="py-1"><label for="trainer1" class="mb-0">Rechelle Salas</label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="trainer2" />
+                                </td>
+                                <td class="py-1"><label for="trainer2" class="mb-0">Kimberly Mae Kho</label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="trainer3" />
+                                </td>
+                                <td class="py-1"><label for="trainer3" class="mb-0">Rafael Joar Parungo</label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="trainer4" />
+                                </td>
+                                <td class="py-1"><label for="trainer4" class="mb-0">John Loyd Cabral</label></td>
+                            </tr>
+                            <tr>
+                                <td class="text-center py-1">
+                                    <input type="checkbox" id="trainer5" />
+                                </td>
+                                <td class="py-1"><label for="trainer5" class="mb-0">Daniel Del Rosario</label></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <button class="btn btn-sm mb-3" style="background-color: #7c0101; color: #ffffff;">+ Add Facilitator</button>
-                <ul class="list-unstyled">
-                    <li>
-                        <input type="checkbox" id="trainer1" /> <label for="trainer1">Rechelle Salas</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="trainer2" /> <label for="trainer2">Kimberly Mae Kho</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="trainer3" /> <label for="trainer3">Rafael Joar Parungo</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="trainer4" /> <label for="trainer3">John Loyd Cabral</label>
-                    </li>
-                    <li>
-                        <input type="checkbox" id="trainer5" /> <label for="trainer3">Daniel Del Rosario</label>
-                    </li>
-                </ul>
             </div>
         </div>
-    </div>
-
-    <!-- Right Side: Calendar -->
-    <div class="card shadow-sm" style="flex: 2;">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <div>
-            <input type="text" class="form-control form-control-solid" placeholder="Search..." />
-            </div>
-            <button class="btn btn-primary">+ Add</button>
-        </div>
-        <div class="card-body" style="height: 80vh;">
+        <!-- Right Side: Calendar -->
+        <div class="card shadow-sm" style="flex: 2;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <input type="text" class="form-control form-control-solid" placeholder="Search..." />
+                </div>
+                <a href="{{ route('add_training_virtual') }}" class="btn btn-primary" style="color: #ffffff; text-decoration: none;">
+                    + Add Course
+                </a>
+                            </div>
             <div class="card-body" style="height: 80vh;">
-                <div id="calendar" class="bg-light border" style="height: 100%; border-radius: 5px;">
-                    <!-- FullCalendar will be rendered here -->
-                </div>
+                <div class="card-body" style="height: 80vh;">
+                    <div id="calendar" class="bg-light border" style="height: 100%; border-radius: 5px;">
+                        <!-- FullCalendar will be rendered here -->
+                    </div>
 
+                </div>
             </div>
         </div>
-    </div>
 
-</div>
+    </div>
 @endsection
 @push('scripts')
-<script src="{{ asset('js/calendar.js') }}">
-</script>
+    <script src="{{ asset('js/calendar.js') }}"></script>
 @endpush
-
