@@ -14,7 +14,6 @@
                     <!-- Input Field -->
                     <input type="text" class="form-control form-control-solid ps-5 fw-boldest rounded-3"
                         placeholder="&#xF52A; Search..." style="font-family: 'Bootstrap-icons', sans-serif;">
-
                 </div>
                 <div>
                     <button class="btn btn-primary me-2 rounded-3 fw-boldest ">

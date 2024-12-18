@@ -8,12 +8,12 @@ Route::get('/', function () {
 });
 
 
-Route::get('/layout', function () {
-    return view('layout.layout'); // Loads Layout
+Route::get('/calendar', function () {
+    return view('home.calendar'); // Loads Layout
 });
 
-Route::get('/layout', function () {
-    return view('layout.maincontent'); // Adjust based on your folder structure
+Route::get('/calendar', function () {
+    return view('home.calendar'); // Adjust based on your folder structure
 });
 
 // Access

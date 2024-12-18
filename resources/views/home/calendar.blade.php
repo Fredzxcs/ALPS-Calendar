@@ -5,12 +5,14 @@
         <!-- Left Side: Search Course and Search Trainer -->
         <div class="d-flex flex-column" style="flex: 1; max-width: 30%; gap: 20px;">
             <!-- Search Course Card -->
-            <!-- Search Course Card -->
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <div class="mb-3">
-                        <input type="text" class="form-control form-control-solid" placeholder="Search course" />
+                    <div class="mb-3 position-relative">
+                        <i class="bi bi-journal-bookmark-fill position-absolute top-50 start-0 me-5 translate-middle-y ms-3"></i>
+                        <input type="text" class="form-control form-control-solid ps-5" placeholder="Search course" />
                     </div>
+
+
                     <button class="btn btn-sm mb-3" style="background-color: #7c0101; color: #ffffff;">+ Add Course</button>
                     <table class="table table-sm table-bordered table-hover align-middle">
                         <thead>

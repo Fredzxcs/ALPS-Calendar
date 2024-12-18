@@ -18,15 +18,15 @@
                         <label class="fw-bold mb-2">Mode of Training <span class="text-danger">*</span></label>
                         <div class="d-flex gap-4">
                             <div>
-                                <input type="radio" id="virtual" name="mode" class="form-check-input">
+                                <input type="radio" id="virtual" name="mode" class="form-check-input" onclick="toggleLocationField()">
                                 <label for="virtual" class="form-check-label">Virtual</label>
                             </div>
                             <div>
-                                <input type="radio" id="face-to-face" name="mode" class="form-check-input">
+                                <input type="radio" id="face-to-face" name="mode" class="form-check-input" onclick="toggleLocationField()">
                                 <label for="face-to-face" class="form-check-label">Face-to-Face</label>
                             </div>
                             <div>
-                                <input type="radio" id="public-course" name="mode" class="form-check-input">
+                                <input type="radio" id="public-course" name="mode" class="form-check-input" onclick="toggleLocationField()">
                                 <label for="public-course" class="form-check-label">Public Course</label>
                             </div>
                         </div>
@@ -38,7 +38,14 @@
                             <label for="email" class="fw-bold mb-2">Email Credentials <span class="text-danger">*</span></label>
                             <input type="email" id="email" class="form-control form-control-solid" placeholder="Enter Email">
                         </div>
+                    </div>
 
+                    <!-- Location -->
+                    <div class="row mb-4 d-none" id="location-field">
+                        <div class="col-md-12">
+                            <label for="location" class="fw-bold mb-2">Location <span class="text-danger">*</span></label>
+                            <input type="text" id="location" class="form-control form-control-solid" placeholder="Enter Location">
+                        </div>
                     </div>
 
                     <!-- Company and Course -->
@@ -111,7 +118,20 @@
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
+
+<script>
+    function toggleLocationField() {
+        const faceToFaceRadio = document.getElementById('face-to-face');
+        const locationField = document.getElementById('location-field');
+        if (faceToFaceRadio.checked) {
+            locationField.classList.remove('d-none');
+        } else {
+            locationField.classList.add('d-none');
+        }
+    }
+</script>
 @endsection
