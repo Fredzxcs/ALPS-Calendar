@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('global.layout')
 
 @section('maincontent')
 <div class="d-flex justify-content-center align-items-center mt-20" >

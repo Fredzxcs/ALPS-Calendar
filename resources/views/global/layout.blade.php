@@ -25,7 +25,7 @@
 <body>
     <!-- Navbar -->
     <header>
-        @include('layout.navbar')
+        @include('global.navbar')
     </header>
     <!-- Main Content -->
     <main>

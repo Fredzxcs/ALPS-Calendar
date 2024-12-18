@@ -24,15 +24,23 @@
 
                 <!-- CALENDAR Button -->
                 <li class="nav-item">
-                    <a class="nav-link fw-medium text-hover-danger text-primary-hover fw-bolder" href="/layout/" style="color: #052a43;">CALENDAR</a>
+                    <a class="nav-link fw-medium text-hover-danger text-primary-hover fw-bolder"
+                    href="/main-content"
+                    style="color: #052a43;">CALENDAR</a>
                 </li>
                 <!-- CONFIGURATION Button -->
                 <li class="nav-item">
-                    <a class="nav-link fw-medium text-hover-danger text-primary-hover fw-bolder dropdown-toggle " href="#" style="color: #052a43;">CONFIGURATION</a>
+                    <a class="nav-link fw-medium text-hover-danger text-primary-hover fw-bolder dropdown-toggle "
+                    href="#"
+                    style="color: #052a43;">CONFIGURATION</a>
                 </li>
                 <!-- Dropdown Menu -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link text-hover-danger text-primary-hover fw-bold text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" style="color: #052a43;">
+                    <a class="nav-link text-hover-danger text-primary-hover fw-bold text-dark"
+                    href="#" id="navbarDropdown"
+                    role="button"
+                    data-bs-toggle="dropdown"
+                    tyle="color: #052a43;">
                         <i class="fas fa-cog fs-1 text-dark"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">

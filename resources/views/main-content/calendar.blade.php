@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('global.layout')
 
 @section('maincontent')
     <div class="container-fluid mt-4 d-flex flex-wrap gap-4">
@@ -113,7 +113,7 @@
                 <div>
                     <input type="text" class="form-control form-control-solid" placeholder="Search..." />
                 </div>
-                <a href="{{ route('add_training_virtual') }}" class="btn btn-primary" style="color: #ffffff; text-decoration: none;">
+                <a href="{{ route('add_training') }}" class="btn btn-primary" style="color: #ffffff; text-decoration: none;">
                     + Add Course
                 </a>
                             </div>

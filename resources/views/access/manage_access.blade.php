@@ -1,4 +1,4 @@
-@extends('layout.layout')
+@extends('global.layout')
 
 @section('maincontent')
     <div class="container mt-20 d-flex justify-content-center align-items-center bg-white shadow-sm rounded-3 p-5">
@@ -16,7 +16,7 @@
                         placeholder="&#xF52A; Search..." style="font-family: 'Bootstrap-icons', sans-serif;">
                 </div>
                 <div>
-                    <button class="btn btn-primary me-2 rounded-3 fw-boldest ">
+                    <button class="btn btn-primary me-2 rounded-3 fw-boldest  ">
                         <i class="bi bi-plus-lg "></i> ADD USER
                     </button>
                     <button class="btn btn-dark rounded-3 fw-boldest">
