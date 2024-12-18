@@ -37,9 +37,11 @@
                                 <!-- In-person Checkbox -->
                                 <div class="form-check me-3">
                                     <input type="checkbox" id="inperson-training" class="form-check-input">
-                                    <label for="inperson-training" class="form-check-label fw-bold">In-person training?</label>
+                                    <label for="inperson-training" class="form-check-label fw-bold">In-person
+                                        training?</label>
                                 </div>
                                 <!-- Course -->
+                                {{-- need form repeater --}}
                                 <div class="d-flex align-items-center" style="width: 49%;">
                                     <div class="flex-grow-1">
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
@@ -47,7 +49,6 @@
                                             <option>Select Course</option>
                                         </select>
                                     </div>
-                                    {{-- form repeater --}}
                                     <button type="button" class="btn btn-primary ms-3 mt-8">
                                         <i class="bi bi-plus-lg"></i>
                                     </button>
@@ -77,6 +78,7 @@
                     </form>
                     <div class="row mb-4" id="company-course-container">
                         <!-- Company -->
+                        {{-- need form repeater --}}
                         <div class="col-md-6 d-flex align-items-center">
                             <div class="flex-grow-1">
                                 <label for="company" class="fw-bold mb-2 required">Company</label>
@@ -84,13 +86,13 @@
                                     <option>Select Company</option>
                                 </select>
                             </div>
-                            {{-- form repeater --}}
                             <button type="button" class="btn btn-primary ms-3 mt-8">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
                         </div>
 
                         <!-- Course -->
+                        {{-- need form repeater --}}
                         <div class="col-md-6 d-flex align-items-center">
                             <div class="flex-grow-1">
                                 <label for="course" class="fw-bold mb-2 required">Course</label>
@@ -98,7 +100,6 @@
                                     <option>Select Course</option>
                                 </select>
                             </div>
-                            {{-- form repeater --}}
                             <button type="button" class="btn btn-primary ms-3 mt-8">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
@@ -127,6 +128,7 @@
 
                     <!-- Facilitator and Assistant -->
                     <div class="row mb-5">
+                        {{-- need form repeater --}}
                         <div class="col-md-6 d-flex align-items-lg-end">
                             <div class="flex-grow-1">
                                 <label for="facilitator" class="fw-bold mb-2 required">Facilitator</label>
@@ -134,13 +136,12 @@
                                     <option>Select Facilitator</option>
                                 </select>
                             </div>
-
-                            {{-- form repeater --}}
                             <button type="button" class="btn btn-primary ms-3 mt-6">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
                         </div>
 
+                        {{-- need form repeater --}}
                         <div class="col-md-6 d-flex align-items-lg-end">
                             <div class="flex-grow-1">
                                 <label for="assistant" class="fw-bold mb-2 required">Assistant </label>
@@ -148,7 +149,6 @@
                                     <option>Select Assistant</option>
                                 </select>
                             </div>
-                            {{-- form repeater --}}
                             <button type="button" class="btn btn-primary ms-3 mt-4">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
