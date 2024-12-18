@@ -74,15 +74,34 @@
                                 placeholder="Enter Location">
                         </div>
                     </form>
-                    <!-- Company: Default Only -->
-                    <div class="row mb-4" id="company-container">
-                        <div class="col-md-12">
-                            <label for="company" class="fw-bold mb-2 required">Company </label>
-                            <select id="company" class="form-select form-select-solid">
-                                <option>Select Company</option>
-                            </select>
+                    <div class="row mb-4" id="company-course-container">
+                        <!-- Company -->
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <label for="company" class="fw-bold mb-2 required">Company</label>
+                                <select id="company" class="form-select form-select-solid">
+                                    <option>Select Company</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-primary ms-3 mt-8">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
+                        </div>
+
+                        <!-- Course -->
+                        <div class="col-md-6 d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <label for="course" class="fw-bold mb-2 required">Course</label>
+                                <select id="course" class="form-select form-select-solid">
+                                    <option>Select Course</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-primary ms-3 mt-8">
+                                <i class="bi bi-plus-lg"></i>
+                            </button>
                         </div>
                     </div>
+
 
 
 
