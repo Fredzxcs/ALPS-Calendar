@@ -47,6 +47,7 @@
                                             <option>Select Course</option>
                                         </select>
                                     </div>
+                                    {{-- form repeater --}}
                                     <button type="button" class="btn btn-primary ms-3 mt-8">
                                         <i class="bi bi-plus-lg"></i>
                                     </button>
@@ -83,6 +84,7 @@
                                     <option>Select Company</option>
                                 </select>
                             </div>
+                            {{-- form repeater --}}
                             <button type="button" class="btn btn-primary ms-3 mt-8">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
@@ -96,6 +98,7 @@
                                     <option>Select Course</option>
                                 </select>
                             </div>
+                            {{-- form repeater --}}
                             <button type="button" class="btn btn-primary ms-3 mt-8">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
@@ -131,6 +134,8 @@
                                     <option>Select Facilitator</option>
                                 </select>
                             </div>
+
+                            {{-- form repeater --}}
                             <button type="button" class="btn btn-primary ms-3 mt-6">
                                 <i class="bi bi-plus-lg"></i>
                             </button>
@@ -143,6 +148,7 @@
                                     <option>Select Assistant</option>
                                 </select>
                             </div>
+                            {{-- form repeater --}}
                             <button type="button" class="btn btn-primary ms-3 mt-4">
                                 <i class="bi bi-plus-lg"></i>
                             </button>

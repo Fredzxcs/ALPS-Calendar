@@ -35,6 +35,8 @@
     </main>
 
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="assets/js/plugins/formrepeater.bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <script src="{{ asset('plugins/global/plugins.bundle.js') }}"></script>
 <script src="{{ asset('js/scripts.bundle.js') }}"></script>
