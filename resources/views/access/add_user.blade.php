@@ -265,7 +265,7 @@
                             <!--end::Input Group Step 3-->
 
                             <!--begin::Actions/Buttons-->
-                            <div class="d-flex flex-stack mt-10">
+                            <div class="d-flex flex-stack mt-5">
                                 <!--begin::Wrapper-->
                                 <div class="me-2">
                                     <button type="button" class="btn btn-light btn-active-light-primary"
