@@ -21,12 +21,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-// Route::controller(LandingpageController::class)->group(function () {
-//     Route::get('admin/landingpage', 'admin');               //  ADMIN LANDINGPAGE ROUTE
-//     Route::get('coordinator/coordinatorLp', 'coordinator'); //  COORDINATOR LANDINGPAGE ROUTE
-//     Route::get('trainer/trainerLp', 'trainer');             //  TRAINER LANDINGPAGE ROUTE
-// });
-
 route::get('admin/landingpage',[LandingpageController::class,'admin'])->middleware(['auth','user:admin']);                   //  ADMIN LANDINGPAGE ROUTE
 route::get('coordinator/coordinatorLp',[LandingpageController::class,'coordinator'])->middleware(['auth','user:coordinator']);     //  COORDINATOR LANDINGPAGE ROUTE
 route::get('trainer/trainerLp',[LandingpageController::class,'trainer'])->middleware(['auth','user:trainer']);                 //  TRAINER LANDINGPAGE ROUTE
+

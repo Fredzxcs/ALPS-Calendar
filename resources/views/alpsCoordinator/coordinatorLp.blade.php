@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <h1>Welcome to the Coordinator Dashboard</h1>
+        <h1>Welcome to the Coordinator Dashboard, {{ $user->name }}!</h1>
     </header>
 
     <nav>

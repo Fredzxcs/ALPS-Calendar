@@ -15,8 +15,18 @@
         <ul>
             <li><a href="/manage-users">Manage Users</a></li>
             <li><a href="/view-reports">View Reports</a></li>
-            <li><a href="/system-settings">System Settings</a></li>
-            <li><a href="/logout">Logout</a></li>
+            <li><a href="{{ route('register') }}">Add User</a></li>
+            <li>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+
+                    <x-responsive-nav-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        {{ __('Log Out') }}
+                    </x-responsive-nav-link>
+                </form>
+            </li>
         </ul>
     </nav>
 
@@ -33,16 +43,6 @@
             <p>No new announcements at this time.</p>
         </section>
     </main>
-
-    <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
 
     <footer>
         <p>&copy; 2024 Admin Dashboard. All rights reserved.</p>

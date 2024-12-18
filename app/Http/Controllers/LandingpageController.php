@@ -12,7 +12,8 @@ class LandingpageController extends Controller
     }
     public function coordinator()
     {
-        return view('alpscoordinator.coordinatorLp');       // VIEW LANDINGPAGE.BLADEFILE
+        $user = auth()->user(); // Fetch the currently authenticated user
+        return view('alpscoordinator.coordinatorLp', ['user' => $user]);       // VIEW LANDINGPAGE.BLADEFILE
     }
     public function trainer()
     {
