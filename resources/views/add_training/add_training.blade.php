@@ -1,4 +1,6 @@
 @extends('global.layout')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
 
 @section('maincontent')
     <div class="d-flex justify-content-center align-items-center mt-20 ">
@@ -41,6 +43,7 @@
                                         training?</label>
                                 </div>
                                 <!-- Course -->
+                                {{-- need form repeater --}}
                                 <div class="d-flex align-items-center" style="width: 49%;">
                                     <div class="flex-grow-1">
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
@@ -48,24 +51,17 @@
                                             <option>Select Course</option>
                                         </select>
                                     </div>
-                                    <button type="button" class="btn btn-primary ms-3 mt-8">
-                                        <i class="bi bi-plus-lg"></i>
-                                    </button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Email and Password -->
                         <div class="row mb-4" id="credentials-container">
-                            <div class="col-md-6">
-                                <label for="email" class="fw-bold mb-2 required">Email Credentials </label>
-                                <input type="email" id="email" class="form-control form-control-solid"
-                                    placeholder="Enter Email">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="password" class="fw-bold mb-2 required">Password Credentials </label>
-                                <input type="password" id="password" class="form-control form-control-solid"
-                                    placeholder="Enter Password">
+                            <div class="flex-grow-1">
+                                <label for="credentials" class="fw-bold mb-2 required">Account</label>
+                                <select id="credentials" class="form-select form-select-solid">
+                                    <option>Select Account to Host Training</option>
+                                </select>
                             </div>
                         </div>
                         <!-- Location: Face-to-Face and In-Person -->
@@ -77,7 +73,8 @@
                     </form>
                     <div class="row mb-4" id="company-course-container">
                         <!-- Company -->
-                        <div class="col-md-6 d-flex align-items-center mb-13">
+                        {{-- need form repeater --}}
+                        <div class="col-md-6 d-flex align-items-center">
                             <div class="flex-grow-1">
                                 <label for="company" class="fw-bold mb-2 required">Company</label>
                                 <select id="company" class="form-select form-select-solid">
@@ -87,57 +84,32 @@
                         </div>
 
                         <!-- Course -->
+                        {{-- need form repeater --}}
                         <div class="col-md-6 d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <!--begin::Repeater-->
-                                <div id="kt_docs_repeater_basic">
-                                    <!--begin::Form group-->
-                                    <div class="form-group">
-                                        <div data-repeater-list="kt_docs_repeater_basic">
-                                            <div data-repeater-item>
-                                                <div class="form-group row">
-                                                    <div class="col-md-8 mt-5">
-                                                        <label class="form-label required">Course</label>
-                                                        <select id="course" class="form-select form-select-solid">
-                                                            <option>Select Course</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-4 mt-7">
-                                                        <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
-                                                            <i class="la la-trash-o"></i>Delete
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!--end::Form group-->
-
-                                    <!--begin::Form group-->
-                                    <div class="form-group mt-5">
-                                        <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
-                                            <i class="la la-plus"></i>Add
-                                        </a>
-                                    </div>
-                                    <!--end::Form group-->
-                                </div>
-                                <!--end::Repeater-->
+                                <label for="course" class="fw-bold mb-2 required">Course</label>
+                                <select id="course" class="form-select form-select-solid">
+                                    <option>Select Course</option>
+                                </select>
                             </div>
                         </div>
                     </div>
 
-
-
-
-
                     <!-- Date and Time -->
                     <div class="row mb-4">
                         <div class="col-md-4">
-                            <label for="date" class="fw-bold mb-2 required">Date</label>
-                            <input type="date" id="date" class="form-control form-control-solid">
+                            <label for="date-range" class="fw-bold mb-2 required">Date Range</label>
+                            <div class="position-relative">
+                                <input type="text" id="date-range" class="form-control form-control-solid pe-5">
+                                <span class="position-absolute top-50 end-0 translate-middle-y me-3 text-muted">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-heart-fill" viewBox="0 0 16 16">
+                                        <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M8 7.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132"/>
+                                    </svg>
+                                </span>
+                            </div>
                         </div>
                         <div class="col-md-4">
-                            <label for="time-start" class="fw-bold mb-2 required">Time Start </label>
+                            <label for="time-start" class="fw-bold mb-2 required">Time Start</label>
                             <input type="time" id="time-start" class="form-control form-control-solid">
                         </div>
                         <div class="col-md-4">
@@ -156,9 +128,6 @@
                                     <option>Select Facilitator</option>
                                 </select>
                             </div>
-                            <button type="button" class="btn btn-primary ms-3 mt-6">
-                                <i class="bi bi-plus-lg"></i>
-                            </button>
                         </div>
 
                         {{-- need form repeater --}}
@@ -169,9 +138,6 @@
                                     <option>Select Assistant</option>
                                 </select>
                             </div>
-                            <button type="button" class="btn btn-primary ms-3 mt-4">
-                                <i class="bi bi-plus-lg"></i>
-                            </button>
                         </div>
                     </div>
 
@@ -188,27 +154,12 @@
 @endsection
 @push('scripts')
     <script src="{{ asset('js/add_training.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script>
-       $(document).ready(function () {
-            $('#kt_docs_repeater_basic').repeater({
-                initEmpty: false,
-
-                defaultValues: {
-                    'text-input': 'foo'
-                },
-
-                show: function () {
-                    $(this).slideDown();
-                },
-
-                hide: function (deleteElement) {
-                    $(this).slideUp(deleteElement);
-                }
-            });
+        flatpickr("#date-range", {
+            mode: "range",
+            dateFormat: "m-d-Y",
         });
-
     </script>
 @endpush
