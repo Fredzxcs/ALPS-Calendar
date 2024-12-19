@@ -41,7 +41,6 @@
                                         training?</label>
                                 </div>
                                 <!-- Course -->
-                                {{-- need form repeater --}}
                                 <div class="d-flex align-items-center" style="width: 49%;">
                                     <div class="flex-grow-1">
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
@@ -78,8 +77,7 @@
                     </form>
                     <div class="row mb-4" id="company-course-container">
                         <!-- Company -->
-                        {{-- need form repeater --}}
-                        <div class="col-md-6 d-flex align-items-center">
+                        <div class="col-md-6 d-flex align-items-center mb-13">
                             <div class="flex-grow-1">
                                 <label for="company" class="fw-bold mb-2 required">Company</label>
                                 <select id="company" class="form-select form-select-solid">
@@ -89,7 +87,6 @@
                         </div>
 
                         <!-- Course -->
-                        {{-- need form repeater --}}
                         <div class="col-md-6 d-flex align-items-center">
                             <div class="flex-grow-1">
                                 <!--begin::Repeater-->
@@ -99,11 +96,13 @@
                                         <div data-repeater-list="kt_docs_repeater_basic">
                                             <div data-repeater-item>
                                                 <div class="form-group row">
-                                                    <div class="col-md-3">
-                                                        <label class="form-label">Select Course</label>
-                                                        <input type="email" class="form-control mb-2 mb-md-0" placeholder="Enter full name" />
+                                                    <div class="col-md-8 mt-5">
+                                                        <label class="form-label required">Course</label>
+                                                        <select id="course" class="form-select form-select-solid">
+                                                            <option>Select Course</option>
+                                                        </select>
                                                     </div>
-                                                    <div class="col-md-4">
+                                                    <div class="col-md-4 mt-7">
                                                         <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
                                                             <i class="la la-trash-o"></i>Delete
                                                         </a>

@@ -1,7 +1,7 @@
 @extends('global.layout')
 
 @section('maincontent')
-    <div class="container-fluid mt-4 d-flex flex-wrap gap-4 mt-20">
+    <div class="mt-4 d-flex flex-wrap gap-4 mt-20">
         <!-- Left Side: Search Course and Search Trainer -->
         <div class="d-flex flex-column" style="flex: 1; max-width: 30%; gap: 20px;">
             <!-- Search Course Card -->
@@ -107,11 +107,7 @@
         </div>
         <!-- Right Side: Calendar -->
         <div class="card shadow-sm" style="flex: 2;">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <div>
-                    <input type="text" class="form-control form-control-solid" placeholder="Search..." />
-                </div>
-
+            <div class="card-header d-flex justify-content-end align-items-center">
                 <!--begin::Add Button-->
                 <button type="button" class="btn btn-primary btn-hover-rise dropdown-toggle"
                     data-kt-menu-trigger="click"
