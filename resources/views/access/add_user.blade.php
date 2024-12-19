@@ -272,10 +272,10 @@
                                     <!-- Assign Color -->
                                     <div class="row mb-4">
                                         <div class="col-md-6">
-                                            <label for="color" class="form-label fw-bold">Assign Color <span
-                                                    class="text-danger">*</span></label>
-                                            <input type="color" id="color" class="form-control form-control-solid"
-                                                value="#F1C40F" style="height: 50px; width: 100px;">
+                                            <div id="assignColorSection" class="mt-5">
+                                                <label for="color" class="form-label fw-bold required">Assign Color</label>
+                                                <input type="color" id="color" class="form-control form-control-solid w-100px h-50px" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -322,4 +322,22 @@
         @endsection
         @push('scripts')
             <script src="{{ asset('js/add_user.js') }}"></script>
+            <script>
+                const roleRadios = document.querySelectorAll('input[name="radio_buttons_2"]');
+                const assignColorSection = document.getElementById('assignColorSection');
+
+                assignColorSection.style.display = 'none';
+
+                roleRadios.forEach(radio => {
+                    radio.addEventListener('change', function() {
+                        if (this.value === 'sms' && this.id === 'kt_radio_buttons_2_option_2') {
+                            // If the role is 'Facilitator' show the 'Assign Color' section
+                            assignColorSection.style.display = 'block';
+                        } else {
+                            // Otherwise hide the 'Assign Color' section
+                            assignColorSection.style.display = 'none';
+                        }
+                    });
+                });
+            </script>
         @endpush
