@@ -127,8 +127,8 @@
                                     <!--end::Svg Icon-->
 
                                     <span class="d-block fw-bold text-start">
-                                        <span class="text-dark fw-bolder d-block fs-3">Event Coordinator</span>
-                                        <span class="text-muted fw-bold fs-6">Description</span>
+                                        <span class="text-dark fw-bolder d-block fs-3">Training Coordinator</span>
+                                        <span class="text-muted fw-bold fs-6">Responsible for planning, organizing, and overseeing all aspects.</span>
                                     </span>
                                 </label>
                                 <!--end::Option-->
@@ -146,7 +146,7 @@
 
                                     <span class="d-block fw-bold text-start">
                                         <span class="text-dark fw-bolder d-block fs-3">Facilitator</span>
-                                        <span class="text-muted fw-bold fs-6">Description</span>
+                                        <span class="text-muted fw-bold fs-6">Leads discussions or training sessions, ensuring participants achieve the desired learning outcomes.</span>
                                     </span>
                                 </label>
                                 <!--end::Option-->
@@ -165,7 +165,7 @@
 
                                         <span class="d-block fw-bold text-start">
                                             <span class="text-dark fw-bolder d-block fs-3">Assistant</span>
-                                            <span class="text-muted fw-bold fs-6">Description</span>
+                                            <span class="text-muted fw-bold fs-6">Supports the team by handling tasks and ensuring that all operations run efficiently.</span>
                                         </span>
                                     </label>
                                     <!--end::Option-->
@@ -217,11 +217,34 @@
                                             placeholder="Enter Contact Number" required>
                                     </div>
                                     <!-- 1x1 ID Picture -->
-                                    <div class="col-md-12">
-                                        <label for="id_picture" class="form-label fw-bold">1x1 ID Picture <span
-                                                class="text-danger">*</span></label>
-                                        <input type="file" class="form-control form-control-solid" id="id_picture"
-                                            required>
+                                    <div class="col-md-12 text-center mt-10">
+                                        <label for="id_picture" class="form-label fw-bold required">1x1 ID Picture</label>
+                                        <div>
+                                            <!--begin::Image input-->
+                                            <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url('assets/media/svg/avatars/blank.svg')">
+                                                <!--begin::Preview existing avatar-->
+                                                <div class="image-input-wrapper w-125px h-125px" style="background-image: url(assets/media/avatars/300-1.jpg)"></div>
+                                                <!--end::Preview existing avatar-->
+                                                <!--begin::Label-->
+                                                <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Select Image">
+                                                    <i class="bi bi-pencil-fill fs-7"></i>
+                                                    <!--begin::Inputs-->
+                                                    <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
+                                                    <input type="hidden" name="avatar_remove" />
+                                                    <!--end::Inputs-->
+                                                </label>
+                                                <!--end::Label-->
+                                                <!--begin::Cancel-->
+                                                <span class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="cancel" data-bs-toggle="tooltip" title="Remove Image">
+                                                    <i class="bi bi-x fs-2"></i>
+                                                </span>
+                                                <!--end::Cancel-->
+                                            </div>
+                                            <!--end::Image input-->
+                                            <!--begin::Hint-->
+                                            <div class="form-text">Allowed file types: png, jpg, jpeg.</div>
+                                            <!--end::Hint-->
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -86,23 +86,44 @@
                                     <option>Select Company</option>
                                 </select>
                             </div>
-                            <button type="button" class="btn btn-primary ms-3 mt-8">
-                                <i class="bi bi-plus-lg"></i>
-                            </button>
                         </div>
 
                         <!-- Course -->
                         {{-- need form repeater --}}
                         <div class="col-md-6 d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <label for="course" class="fw-bold mb-2 required">Course</label>
-                                <select id="course" class="form-select form-select-solid">
-                                    <option>Select Course</option>
-                                </select>
+                                <!--begin::Repeater-->
+                                <div id="kt_docs_repeater_basic">
+                                    <!--begin::Form group-->
+                                    <div class="form-group">
+                                        <div data-repeater-list="kt_docs_repeater_basic">
+                                            <div data-repeater-item>
+                                                <div class="form-group row">
+                                                    <div class="col-md-3">
+                                                        <label class="form-label">Select Course</label>
+                                                        <input type="email" class="form-control mb-2 mb-md-0" placeholder="Enter full name" />
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mt-3 mt-md-8">
+                                                            <i class="la la-trash-o"></i>Delete
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--end::Form group-->
+
+                                    <!--begin::Form group-->
+                                    <div class="form-group mt-5">
+                                        <a href="javascript:;" data-repeater-create class="btn btn-light-primary">
+                                            <i class="la la-plus"></i>Add
+                                        </a>
+                                    </div>
+                                    <!--end::Form group-->
+                                </div>
+                                <!--end::Repeater-->
                             </div>
-                            <button type="button" class="btn btn-primary ms-3 mt-8">
-                                <i class="bi bi-plus-lg"></i>
-                            </button>
                         </div>
                     </div>
 
@@ -168,4 +189,27 @@
 @endsection
 @push('scripts')
     <script src="{{ asset('js/add_training.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
+
+    <script>
+       $(document).ready(function () {
+            $('#kt_docs_repeater_basic').repeater({
+                initEmpty: false,
+
+                defaultValues: {
+                    'text-input': 'foo'
+                },
+
+                show: function () {
+                    $(this).slideDown();
+                },
+
+                hide: function (deleteElement) {
+                    $(this).slideUp(deleteElement);
+                }
+            });
+        });
+
+    </script>
 @endpush
