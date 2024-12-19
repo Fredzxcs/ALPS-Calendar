@@ -12,9 +12,11 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::middleware(['auth', 'registeradmin'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
         ->name('register'); // This route will display the registration form
+
+
     Route::post('register', [RegisteredUserController::class, 'store']);
 });
 

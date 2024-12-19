@@ -2,25 +2,19 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
         <!-- User Type -->
-        <div class="mt-4">
-            <x-input-label for="user_type" :value="__('User Type')" />
+        <div>
+            <input type="radio" id="administrator" name="usertype" value="admin" required>
+            <label for="administrator">Administrator</label>
+        </div>
 
-            <div class="flex items-center">
-                <x-radio-button id="administrator" name="usertype" value="admin" :checked="old('usertype') === 'administrator'" required />
-                <x-label for="administrator" :value="__('Administrator')" class="ml-2" />
-            </div>
+        <div>
+            <input type="radio" id="coordinator" name="usertype" value="coordinator" required>
+            <label for="coordinator">Coordinator</label>
+        </div>
 
-            <div class="flex items-center mt-2">
-                <x-radio-button id="coordinator" name="usertype" value="coordinator" :checked="old('usertype') === 'coordinator'" required />
-                <x-label for="coordinator" :value="__('Coordinator')" class="ml-2" />
-            </div>
-
-            <div class="flex items-center mt-2">
-                <x-radio-button id="facilitator" name="usertype" value="facilitator" :checked="old('usertype') === 'facilitator'" required />
-                <x-label for="facilitator" :value="__('Facilitator')" class="ml-2" />
-            </div>
-
-            <x-input-error :messages="$errors->get('usertype')" class="mt-2" />
+        <div>
+            <input type="radio" id="facilitator" name="usertype" value="facilitator" required>
+            <label for="facilitator">Facilitator</label>
         </div>
 
         <!-- Name -->
@@ -40,24 +34,19 @@
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
+            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Confirm Password -->
         <div class="mt-4">
             <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
+            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
+
+        <x-primary-button class="ms-4">
+            {{ __('Register') }}
+        </x-primary-button>
     </form>
 </x-guest-layout>

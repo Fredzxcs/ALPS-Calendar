@@ -29,24 +29,25 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+
         $request->validate([
-            'usertype' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'usertype' => ['required', 'string'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
-            'usertype' => $request->usertype,
             'name' => $request->name,
             'email' => $request->email,
+            'usertype' => $request->usertype,
             'password' => Hash::make($request->password),
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('alpsadmin.landingpage', absolute: false));
+        return redirect()->route('admin');
     }
 }
+
+        // Auth::login($user);

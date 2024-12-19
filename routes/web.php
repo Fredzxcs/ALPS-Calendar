@@ -5,7 +5,6 @@ use App\Http\Controllers\LandingpageController;     //  LANDING PAGE CONTROLLER
 use Illuminate\Support\Facades\Route;
 
 // INITIAL ROUTE FOR HOMEPAGE
-
 Route::get('/', function () {
     return view('login.login'); // Replace with your actual login view
 });
@@ -52,4 +51,3 @@ Route::get('/access/add-user/information', function () {
 Route::get('/access/add-user/createacc', function () {
     return view('access.add_user_createacc');
 });
-

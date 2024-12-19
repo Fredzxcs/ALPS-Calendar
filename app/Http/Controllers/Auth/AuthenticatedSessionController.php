@@ -41,7 +41,6 @@ class AuthenticatedSessionController extends Controller
         {
             return redirect($redirectRoutes[$usertype]);
         }
-    
     //     if($request->user()->usertype === 'admin')
     //     {
     //         return redirect('admin/landingpage');       //  REDIRECT TO ADMIN LANDING PAGE
