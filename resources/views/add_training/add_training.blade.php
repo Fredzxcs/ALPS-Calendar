@@ -1,16 +1,16 @@
 @extends('global.layout')
 
 @section('maincontent')
-    <div class="d-flex justify-content-center align-items-center mt-20">
-        <div class="container mt-5">
+    <div class="d-flex justify-content-center align-items-center mt-20 ">
+        <div class="container mt-5 ">
             <!-- Card -->
             <div class="card shadow-sm rounded-3">
                 <!-- Title -->
-                <div class="d-flex justify-content-center align-items-center mb-4 bg-primary rounded-top h-80px">
+                <div class="d-flex justify-content-center align-items-center mb-0 bg-primary rounded-top h-80px" >
                     <h2 class="text-white fw-boldest m-0 fs-1">ADD TRAINING</h2>
                 </div>
                 <!-- Form -->
-                <div class="p-5">
+                <div class="p-20 pt-10 pb-6 ">
                     <form>
                         <!-- Mode of Training -->
                         <div class="mb-4">
