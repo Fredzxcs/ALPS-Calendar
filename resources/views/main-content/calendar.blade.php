@@ -32,7 +32,7 @@
                                 <td class="text-center py-1">
                                     <input type="checkbox" id="course3" />
                                 </td>
-                                <td class="py-1"><label for="course3" class="mb-0">Sample if mahabang cour...</label>
+                                <td class="py-1"><label for="course3" class="mb-0">Excel</label>
                                 </td>
                             </tr>
                             <tr>
