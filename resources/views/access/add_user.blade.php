@@ -108,79 +108,74 @@
                     <!--end::Nav-->
 
                     <!--begin::Form-->
-                    <form class="form w-lg-500px mx-auto" novalidate="novalidate" id="kt_stepper_example_basic_form">
+                    <form class="form mx-auto w-75 px-5" novalidate="novalidate" id="kt_stepper_example_basic_form">
+
                         <!--begin::Group-->
                         <div class="mb-5">
                             <!--begin::Step 1-->
                             <div class="flex-column current" data-kt-stepper-element="content">
-                                <!--begin::Input group-->
-                                <div class="fv-row mb-10">
-                                    <!--begin::Label-->
-                                    <div class="row justify-content-center align-center">
-                                        <div class="col-md-10">
-                                            <label for="role" class="fw-bold mb-2">Select Role <span
-                                                    class="text-danger">*</span></label>
-                                            <!-- Training Coordinator -->
-                                            <div class="role-list">
-                                                <div class="card border border-dashed border-primary shadow-sm p-3 mb-3"
-                                                    style="background-color: #f3faff;">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="symbol symbol-50px me-4">
-                                                            <span class="symbol-label bg-light-primary">
-                                                                <i class="bi bi-briefcase-fill fs-2x text-primary"></i>
-                                                            </span>
-                                                        </div>
-                                                        <div>
-                                                            <label for="coordinator" class="fw-bold m-0 text-dark">Training
-                                                                Coordinator</label>
-                                                            <p class="text-gray-500 mb-0">Description</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- Training Facilitator -->
-                                            <div class="role-list">
-                                                <div class="card border border-dashed border-gray-500 shadow-sm p-3 mb-3 bg-light"
-                                                    style="background-color: #f3faff;">
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="symbol symbol-50px me-4">
-                                                            <span class="symbol-label bg-gray-100">
-                                                                <i class="bi bi-person-fill fs-2x text-gray-500"></i>
-                                                            </span>
-                                                        </div>
-                                                        <div>
-                                                            <label for="coordinator" class="fw-bold m-0 text-dark">Training
-                                                                Facilitator</label>
-                                                            <p class="text-gray-500 mb-0">Description</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- Training Assistant -->
-                                            <div class="card border border-dashed border-gray-500 shadow-sm p-3 mb-3 bg-light"
-                                                style="background-color: #f3faff;">
-                                                <div class="d-flex align-items-center">
-                                                    <div class="symbol symbol-50px me-4">
-                                                        <span class="symbol-label bg-gray-100">
-                                                            <i class="bi bi-laptop-fill fs-2x text-gray-500"></i>
-                                                        </span>
-                                                    </div>
-                                                    <div>
-                                                        <label for="facilitator" class="fw-bold m-0 text-dark">Training
-                                                            Assistant</label>
-                                                        <p class="text-gray-500 mb-0">Description</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <!--begin::Option-->
+                                <input type="radio" class="btn-check" name="radio_buttons_2" value="apps" checked="checked"  id="kt_radio_buttons_2_option_1"/>
+                                <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-5" for="kt_radio_buttons_2_option_1">
+                                    <!--begin::Svg Icon | path: icons/duotune/coding/cod001.svg-->
+                                    <span class="svg-icon svg-icon-4x me-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-briefcase-fill" viewBox="0 0 16 16">
+                                            <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5"/>
+                                            <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85z"/>
+                                        </svg>
+                                    </span>
+                                    <!--end::Svg Icon-->
+
+                                    <span class="d-block fw-bold text-start">
+                                        <span class="text-dark fw-bolder d-block fs-3">Event Coordinator</span>
+                                        <span class="text-muted fw-bold fs-6">Description</span>
+                                    </span>
+                                </label>
+                                <!--end::Option-->
+
+                                <!--begin::Option-->
+                                <input type="radio" class="btn-check" name="radio_buttons_2" value="sms" id="kt_radio_buttons_2_option_2"/>
+                                <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center" for="kt_radio_buttons_2_option_2">
+                                    <!--begin::Svg Icon | path: icons/duotune/communication/com003.svg-->
+                                    <span class="svg-icon svg-icon-4x me-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5zm-2 0h1v1A2.5 2.5 0 0 0 6.5 5h3A2.5 2.5 0 0 0 12 2.5v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2"/>
+                                        </svg>
+                                    </span>
+                                    <!--end::Svg Icon-->
+
+                                    <span class="d-block fw-bold text-start">
+                                        <span class="text-dark fw-bolder d-block fs-3">Facilitator</span>
+                                        <span class="text-muted fw-bold fs-6">Description</span>
+                                    </span>
+                                </label>
+                                <!--end::Option-->
+
+                                <div class="mt-5">
+                                    <!--begin::Option-->
+                                    <input type="radio" class="btn-check" name="radio_buttons_2" value="sms" id="kt_radio_buttons_2_option_3"/>
+                                    <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center" for="kt_radio_buttons_2_option_3">
+                                        <!--begin::Svg Icon | path: icons/duotune/communication/com003.svg-->
+                                        <span class="svg-icon svg-icon-4x me-4">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-display" viewBox="0 0 16 16">
+                                                <path d="M0 4s0-2 2-2h12s2 0 2 2v6s0 2-2 2h-4q0 1 .25 1.5H11a.5.5 0 0 1 0 1H5a.5.5 0 0 1 0-1h.75Q6 13 6 12H2s-2 0-2-2zm1.398-.855a.76.76 0 0 0-.254.302A1.5 1.5 0 0 0 1 4.01V10c0 .325.078.502.145.602q.105.156.302.254a1.5 1.5 0 0 0 .538.143L2.01 11H14c.325 0 .502-.078.602-.145a.76.76 0 0 0 .254-.302 1.5 1.5 0 0 0 .143-.538L15 9.99V4c0-.325-.078-.502-.145-.602a.76.76 0 0 0-.302-.254A1.5 1.5 0 0 0 13.99 3H2c-.325 0-.502.078-.602.145"/>
+                                            </svg>
+                                        </span>
+                                        <!--end::Svg Icon-->
+
+                                        <span class="d-block fw-bold text-start">
+                                            <span class="text-dark fw-bolder d-block fs-3">Assistant</span>
+                                            <span class="text-muted fw-bold fs-6">Description</span>
+                                        </span>
+                                    </label>
+                                    <!--end::Option-->
                                 </div>
                             </div>
                             <!--end::Input Group Step 1-->
 
                             <!--begin::Input Group Step 2-->
                             <div class="flex-column" data-kt-stepper-element="content">
-                                <div class="row g-3">
+                                <div class="row g-5">
                                     <!-- First Name -->
                                     <div class="col-md-6">
                                         <label for="first_name" class="form-label fw-bold">First Name <span
