@@ -21,7 +21,7 @@ class registerAdmin
         // Check if the authenticated user is an admin
         if ($request->user() && $request->user()->usertype !== 'admin') {
             // If not admin, redirect to a different page, e.g., home or an error page
-            return redirect('/');
+            return redirect()->route('index');
         }
 
         return $next($request);

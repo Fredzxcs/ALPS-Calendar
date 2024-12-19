@@ -17,7 +17,7 @@
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
                 <!-- ADD USER Button -->
-                <a href="{{ url('/add_user') }}" class="btn btn-primary rounded-3 fw-boldest btn-hover-rise">
+                <a href="{{ route('add_user') }}" class="btn btn-primary rounded-3 fw-boldest btn-hover-rise">
                     <i class="bi bi-plus-lg"></i> ADD USER
                 </a>
 
@@ -94,48 +94,56 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Row 1 -->
-                    <tr>
-                        <td class="d-flex align-items-center text-start">
-                            <div class="symbol symbol-50px me-3">
-                                <img src="{{ asset('img/avatar.jpg') }}" alt="Profile Picture">
-                            </div>
-                            <div class="fs-5">
-                                <span class="fw-bold d-block">Kimberly M. Kho</span>
-                                <small class="text-muted">kimberlykho27</small>
-                            </div>
-                        </td>
-                        <td>kimlykho27@gmail.com</td>
-                        <td><span class="badge badge-light-warning">SYSTEM ADMIN</span></td>
-                        <td><span class="badge badge-success">ACTIVE</span></td>
-                        <td>
-                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                MENU
-                            </button>
-                        </td>
-                    </tr>
-                    <!-- Row 2 -->
-                    <tr>
-                        <td class="d-flex align-items-center text-start">
-                            <div class="symbol symbol-50px me-3">
-                                <img src="{{ asset('img/avatar.jpg') }}" alt="Profile Picture">
-                            </div>
-                            <div class="fs-5">
-                                <span class="fw-bold d-block">Kimberly M. Kho</span>
-                                <small class="text-muted">kimberlykho27</small>
-                            </div>
-                        </td>
-                        <td>kimlykho27@gmail.com</td>
-                        <td><span class="badge badge-light-warning">SYSTEM ADMIN</span></td>
-                        <td><span class="badge badge-danger">INACTIVE</span></td>
-                        <td>
-                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                MENU
-                            </button>
-                        </td>
-                    </tr>
+                    <!-- Row -->
 
-                    <!-- Additional Rows... -->
+                    @foreach ($users as $user)
+
+                        <tr>
+                            <td class="d-flex align-items-center text-start">
+                                <div class="symbol symbol-50px me-3">
+                                    @isset($user->image)
+                                        <img src="{{ asset('storage/' . $user->image) }}" alt="Profile Picture">
+                                    @else
+                                        <img src="{{ asset('img/avatar.jpg') }}" alt="default-image">
+                                    @endisset
+                                </div>
+                                <div class="fs-5">
+                                    <span class="fw-bold d-block">{{ $user->name }}</span>
+                                    <small class="text-muted">{{ $user->username }}</small>
+                                </div>
+                            </td>
+                            <td>{{ $user->email }}</td>
+                            <td>
+
+                                @switch($user->usertype)
+                                    @case("admin")
+                                        <span class="badge badge-light-warning">SYSTEM ADMIN</span>
+                                        @break
+                                    @case("coordinator")
+                                        <span class="badge badge-light-primary">COORDINATOR</span>
+                                        @break
+                                    @case("facilitator")
+                                        <span class="badge badge-light-success">FACILITATOR</span>
+                                        @break
+                                    @case("assistant")
+                                        <span class="badge badge-light-info">ASSISTANT</span>
+                                        @break
+                                    @default
+                                        <span class="badge badge-light-secondary">-</span>
+                                @endswitch
+
+                            </td>
+                            <td><span class="badge badge-success">ACTIVE</span></td>
+                            <td>
+                                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    MENU
+                                </button>
+                            </td>
+                        </tr>
+
+                    @endforeach
+
+                    {{-- End Row --}}
                 </tbody>
             </table>
         </div>

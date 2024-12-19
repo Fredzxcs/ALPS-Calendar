@@ -16,7 +16,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        return view('auth.login');
+        return view('login.login');
     }
 
     /**
@@ -26,12 +26,12 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
         $request->session()->regenerate();
-        
+
         //  REDIRECT ACCORDING TO USERTYPE
         $redirectRoutes = [
-            'admin' =>  'admin/landingpage',                //  REDIRECT TO ADMIN LANDING PAGE
-            'coordinator' => 'coordinator/coordinatorLp',   //  REDIRECT TO COORDINATOR LANDING PAGE
-            'facilitator' => 'trainer/trainerLp',               //  REDIRECT TO TRAINER LANDING PAGE
+            'admin' =>  'calendar',                //  REDIRECT TO ADMIN LANDING PAGE
+            'coordinator' => 'calendar',   //  REDIRECT TO COORDINATOR LANDING PAGE
+            'facilitator' => 'calendar',               //  REDIRECT TO TRAINER LANDING PAGE
         ];
 
         $usertype = $request->user()->usertype;
@@ -39,24 +39,8 @@ class AuthenticatedSessionController extends Controller
         // IDENTIFY USERTYPE
         if (array_key_exists($usertype, $redirectRoutes))
         {
-            return redirect($redirectRoutes[$usertype]);
+            return redirect()->route($redirectRoutes[$usertype]);
         }
-    //     if($request->user()->usertype === 'admin')
-    //     {
-    //         return redirect('admin/landingpage');       //  REDIRECT TO ADMIN LANDING PAGE
-    //     }
-
-    //     elseif($request->user()->usertype === 'coordinator')
-    //     {
-    //         return redirect('admin/coordinatorLp');       //  REDIRECT TO ADMIN LANDING PAGE
-    //     }
-
-    //     elseif($request->user()->usertype === 'trainer')
-    //     {
-    //         return redirect('admin/trainerLp');       //  REDIRECT TO ADMIN LANDING PAGE
-    //     }
-
-    //     return redirect()->intended(route('dashboard'));
     }
 
     /**
@@ -70,6 +54,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('index');
     }
 }
