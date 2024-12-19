@@ -109,13 +109,30 @@
 
                     <!--begin::Form-->
                     <form class="form mx-auto w-75 px-5" novalidate="novalidate" id="kt_stepper_example_basic_form">
-
+                        @csrf
                         <!--begin::Group-->
                         <div class="mb-5">
                             <!--begin::Step 1-->
                             <div class="flex-column current" data-kt-stepper-element="content">
                                 <!--begin::Option-->
-                                <input type="radio" class="btn-check" name="radio_buttons_2" value="apps" checked="checked"  id="kt_radio_buttons_2_option_1"/>
+                                <input type="radio" class="btn-check" name="radio_buttons_2" value="admin" checked="checked"  id="kt_radio_buttons_2_option_0"/>
+                                <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-5" for="kt_radio_buttons_2_option_0">
+                                    <!--begin::Svg Icon | path: icons/duotune/coding/cod001.svg-->
+                                    <span class="svg-icon svg-icon-4x me-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
+                                            <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/>
+                                          </svg>
+                                    </span>
+                                    <!--end::Svg Icon-->
+
+                                    <span class="d-block fw-bold text-start">
+                                        <span class="text-dark fw-bolder d-block fs-3">Admin</span>
+                                        <span class="text-muted fw-bold fs-6">Responsible for overall system access.</span>
+                                    </span>
+                                </label>
+                                <!--end::Option-->
+                                <!--begin::Option-->
+                                <input type="radio" class="btn-check" name="radio_buttons_2" value="coordinator" checked="checked"  id="kt_radio_buttons_2_option_1"/>
                                 <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-5" for="kt_radio_buttons_2_option_1">
                                     <!--begin::Svg Icon | path: icons/duotune/coding/cod001.svg-->
                                     <span class="svg-icon svg-icon-4x me-4">
@@ -134,7 +151,7 @@
                                 <!--end::Option-->
 
                                 <!--begin::Option-->
-                                <input type="radio" class="btn-check" name="radio_buttons_2" value="sms" id="kt_radio_buttons_2_option_2"/>
+                                <input type="radio" class="btn-check" name="radio_buttons_2" value="facilitator" id="kt_radio_buttons_2_option_2"/>
                                 <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center" for="kt_radio_buttons_2_option_2">
                                     <!--begin::Svg Icon | path: icons/duotune/communication/com003.svg-->
                                     <span class="svg-icon svg-icon-4x me-4">
@@ -153,7 +170,7 @@
 
                                 <div class="mt-5">
                                     <!--begin::Option-->
-                                    <input type="radio" class="btn-check" name="radio_buttons_2" value="sms" id="kt_radio_buttons_2_option_3"/>
+                                    <input type="radio" class="btn-check" name="radio_buttons_2" value="assistant" id="kt_radio_buttons_2_option_3"/>
                                     <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center" for="kt_radio_buttons_2_option_3">
                                         <!--begin::Svg Icon | path: icons/duotune/communication/com003.svg-->
                                         <span class="svg-icon svg-icon-4x me-4">
@@ -295,7 +312,7 @@
 
                                 <!--begin::Wrapper-->
                                 <div>
-                                    <button type="button" class="btn btn-success" data-kt-stepper-action="submit">
+                                    <button type="button" class="btn btn-success" id="add_user_submit" data-kt-stepper-action="submit">
                                         <span class="indicator-label">
                                             Save
                                         </span>
@@ -330,7 +347,7 @@
 
                 roleRadios.forEach(radio => {
                     radio.addEventListener('change', function() {
-                        if (this.value === 'sms' && this.id === 'kt_radio_buttons_2_option_2') {
+                        if (this.value === 'facilitator' && this.id === 'kt_radio_buttons_2_option_2') {
                             // If the role is 'Facilitator' show the 'Assign Color' section
                             assignColorSection.style.display = 'block';
                         } else {

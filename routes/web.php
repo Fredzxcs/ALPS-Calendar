@@ -2,17 +2,15 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LandingpageController;     //  LANDING PAGE CONTROLLER
+use App\Http\Controllers\ManageAccessController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
 
 // For login
 Route::get('/', function () {
     return view('login.login'); // Replace with your actual login view
-});
-// INITIAL ROUTE FOR DASHBOARD
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->name('index');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -35,24 +33,23 @@ route::get('trainer/trainerLp',[LandingpageController::class,'trainer'])->middle
 // For the main content
 Route::get('/calendar', function () {
     return view('main-content.calendar');
-});
+})->middleware(['auth', 'user:admin'])->name('calendar');
 
-// Access
-Route::get('/access', function () {
-    return view('access.manage_access');
+
+Route::prefix('access')->group(function (){
+
+    Route::get('/', [ManageAccessController::class, 'index'])->middleware(['auth', 'user:admin'])->name('manage_access');
+    Route::get('/add_user', [ManageAccessController::class, 'create'])->middleware(['auth', 'user:admin'])->name('add_user');
+    Route::post('/add_user', [RegisteredUserController::class, 'admin_store'])->middleware(['auth', 'user:admin'])->name('add_user.store');
+
 });
 
 Route::get('/add_training', function () {
     return view('add_training.add_training');
-})->name('add_training');
+})->middleware(['auth', 'user:admin'])->name('add_training');
 
-
-// Add User
-Route::get('/add_user', function () {
-    return view('access.add_user');
-})->name('add_user');
 
 // Add User
 Route::get('/add_user_createacc', function () {
     return view('access.add_user_createacc');
-})->name('add_user_createacc');
+})->middleware(['auth', 'user:user:admin'])->name('add_user_createacc');

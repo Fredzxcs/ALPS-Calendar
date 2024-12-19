@@ -44,11 +44,11 @@
                 </li>
                 <!-- CONFIGURATION Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle" 
-                       href="/configuration" 
-                       id="configurationDropdown" 
-                       role="button" 
-                       data-bs-toggle="dropdown" 
+                    <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle"
+                       href="/configuration"
+                       id="configurationDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
                        aria-expanded="false">
                         CONFIGURATION
                     </a>
@@ -70,7 +70,16 @@
                         <li><a class="dropdown-item fw-medium" href="#">Settings</a></li>
                         <li><a class="dropdown-item fw-medium" href="#">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger fw-medium" href="/">Logout</a></li>
+                        <li>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <a class="dropdown-item text-danger fw-medium" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                        this.closest('form').submit();">Logout</a>
+
+                            </form>
+
+                        </li>
                     </ul>
                 </li>
             </ul>

@@ -18,15 +18,15 @@ class userType
     {
         // Ensure user is authenticated
         if (!Auth::check()) {
-            return redirect()->route('login');
+            return redirect()->route('index');
         }
 
         // Check if the user's usertype matches the required usertype
         $userType = Auth::user()->usertype;
         if ($userType !== $requiredUserType) {
-            return redirect('/'); // Redirect to a default route if usertype mismatches
+            return redirect()->route('index'); // Redirect to a default route if usertype mismatches
         }
 
         return $next($request);
-    } 
+    }
 }

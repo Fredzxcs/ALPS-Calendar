@@ -32,30 +32,40 @@
                 </p>
             </div>
 
-            <div class="card-body">
-                <!-- Username -->
-                <div class="mb-3">
-                    <label for="username" class="form-label text-white required">Username</label>
-                    <input type="text" id="username" name="username" class="form-control"
-                        placeholder="Enter your username" required>
+            <x-auth-session-status class="mb-4" :status="session('status')" />
+
+            <form method="POST" action="{{ route('loginPOST') }}">
+                @csrf
+                <div class="card-body">
+                    <!-- Username -->
+                    <div class="mb-3">
+                        <label for="username" class="form-label text-white required">Username</label>
+                        <input type="text" id="username" name="username" class="form-control"
+                            placeholder="Enter your username" required>
+                            <x-input-error :messages="$errors->get('username')" class="mt-2" />
+
+                    </div>
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <label for="password" class="form-label text-white required">Password</label>
+                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                        <span class="btn btn-sm btn-icon position-absolute translate-middle-y" id="togglePassword" style="top: 65%; right: 10%; cursor: pointer;">
+                            <i class="fas fa-eye-slash fs-3" id="eyeSlash"></i>
+                            <i class="fas fa-eye d-none fs-3" id="eye"></i>
+                        </span>
+                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                        <a href="#" class="d-block mt-1 text-muted text-hover-primary" style="font-size: 0.9rem;">Forgot Password?</a>
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="d-flex justify-content-center">
+                        <a href="/calendar">
+                          <button type="submit" class="btn btn-lg btn-hover-scale" style="background-color: #7c0101; color: #ffffff;">Login</button>
+                        </a>
+                    </div>
                 </div>
-                <!-- Password -->
-                <div class="mb-3">
-                    <label for="password" class="form-label text-white required">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
-                    <span class="btn btn-sm btn-icon position-absolute translate-middle-y" id="togglePassword" style="top: 65%; right: 10%; cursor: pointer;">
-                        <i class="fas fa-eye-slash fs-3" id="eyeSlash"></i>
-                        <i class="fas fa-eye d-none fs-3" id="eye"></i>
-                    </span>
-                    <a href="#" class="d-block mt-1 text-muted text-hover-primary" style="font-size: 0.9rem;">Forgot Password?</a>
-                </div>
-                <!-- Submit Button -->
-                <div class="d-flex justify-content-center">
-                    <a href="/calendar">
-                      <button type="submit" class="btn btn-lg btn-hover-scale" style="background-color: #7c0101; color: #ffffff;">Login</button>
-                    </a>
-                </div>
-            </div>
+
+            </form>
+
         </div>
     </div>
 </div>
