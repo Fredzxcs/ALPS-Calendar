@@ -70,7 +70,7 @@
                         <li><a class="dropdown-item fw-medium" href="#">Settings</a></li>
                         <li><a class="dropdown-item fw-medium" href="#">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger fw-medium" href="#">Logout</a></li>
+                        <li><a class="dropdown-item text-danger fw-medium" href="/">Logout</a></li>
                     </ul>
                 </li>
             </ul>

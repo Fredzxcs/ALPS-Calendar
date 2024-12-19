@@ -48,7 +48,9 @@
                 </div>
                 <!-- Submit Button -->
                 <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn btn-lg btn-hover-scale" style="background-color: #7c0101; color: #ffffff;">Login</button>
+                    <a href="/calendar">
+                      <button type="submit" class="btn btn-lg btn-hover-scale" style="background-color: #7c0101; color: #ffffff;">Login</button>
+                    </a>
                 </div>
             </div>
         </div>
