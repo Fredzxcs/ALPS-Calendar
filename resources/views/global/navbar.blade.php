@@ -1,3 +1,17 @@
+<style>
+    .nav-link {
+        color: #052a43;
+    }
+    .nav-link:hover {
+        color: #7c0101 !important;
+    }
+
+    .nav-link.active {
+        color: #7c0101 !important;
+    }
+</style>
+
+
 <nav class="navbar navbar-expand-lg bg-gray shadow-sm py-6">
     <div class="container-fluid">
         <!-- Brand Logo and Name -->
@@ -14,38 +28,47 @@
             <ul class="navbar-nav ">
                 <!-- ACCESS Button -->
                 <li class="nav-item">
-                    <a class="nav-link fw-medium text-hover-danger fw-bolder"
+                    <a class="nav-link fw-medium fw-bolder"
                     href="/access/manage-access"
-                    id="access-link"
-                    style="color: #052a43;">
+                    id="access-link">
                         ACCESS
                     </a>
                 </li>
 
                 <!-- CALENDAR Button -->
                 <li class="nav-item">
-                    <a class="nav-link fw-medium text-hover-danger text-primary-hover fw-bolder"
-                    href="/main-content"
-                    style="color: #052a43;">CALENDAR</a>
+                    <a class="nav-link fw-medium text-primary-hover fw-bolder"
+                    href="/main-content">
+                        CALENDAR
+                    </a>
                 </li>
-                <!-- CONFIGURATION Button -->
-                <li class="nav-item">
-                    <a class="nav-link fw-medium text-hover-danger text-primary-hover fw-bolder dropdown-toggle "
-                    href="#"
-                    style="color: #052a43;">CONFIGURATION</a>
+                <!-- CONFIGURATION Dropdown -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle" 
+                       href="/configuration" 
+                       id="configurationDropdown" 
+                       role="button" 
+                       data-bs-toggle="dropdown" 
+                       aria-expanded="false">
+                        CONFIGURATION
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="configurationDropdown">
+                        <li><a class="dropdown-item" href="/configuration/company">Company</a></li>
+                        <li><a class="dropdown-item" href="/configuration/course">Course</a></li>
+                        <li><a class="dropdown-item" href="/configuration/credentials">Credentials</a></li>
+                    </ul>
                 </li>
                 <!-- Dropdown Menu -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link text-hover-danger text-primary-hover fw-bold text-dark"
+                    <a class="nav-link text-primary-hover fw-bold text-dark"
                     href="#" id="navbarDropdown"
                     role="button"
-                    data-bs-toggle="dropdown"
-                    tyle="color: #052a43;">
+                    data-bs-toggle="dropdown">
                         <i class="fas fa-cog fs-1 text-dark"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item fw-medium text-hover-danger" href="#">Settings</a></li>
-                        <li><a class="dropdown-item fw-medium text-hover-danger" href="#">Profile</a></li>
+                        <li><a class="dropdown-item fw-medium" href="#">Settings</a></li>
+                        <li><a class="dropdown-item fw-medium" href="#">Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-danger fw-medium" href="#">Logout</a></li>
                     </ul>

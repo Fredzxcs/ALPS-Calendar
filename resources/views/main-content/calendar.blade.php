@@ -1,19 +1,17 @@
 @extends('global.layout')
 
 @section('maincontent')
-    <div class="container-fluid mt-4 d-flex flex-wrap gap-4">
+    <div class="container-fluid mt-4 d-flex flex-wrap gap-4 mt-20">
         <!-- Left Side: Search Course and Search Trainer -->
         <div class="d-flex flex-column" style="flex: 1; max-width: 30%; gap: 20px;">
             <!-- Search Course Card -->
             <div class="card shadow-sm">
                 <div class="card-body">
                     <div class="mb-3 position-relative">
-                        <i class="bi bi-journal-bookmark-fill position-absolute top-50 start-0 me-5 translate-middle-y ms-3"></i>
                         <input type="text" class="form-control form-control-solid ps-5" placeholder="Search course" />
                     </div>
 
-
-                    <button class="btn btn-sm mb-3" style="background-color: #7c0101; color: #ffffff;">+ Add Course</button>
+                    <button class="btn btn-sm mb-3 btn-hover-rise text-white" style="background-color: #7c0101;">+ Add Course</button>
                     <table class="table table-sm table-bordered table-hover align-middle">
                         <thead>
                         </thead>
@@ -66,7 +64,7 @@
                     <div class="mb-3">
                         <input type="text" class="form-control form-control-solid" placeholder="Search facilitator" />
                     </div>
-                    <button class="btn btn-sm mb-3" style="background-color: #7c0101; color: #ffffff;">+ Add
+                    <button class="btn btn-sm mb-3 btn-hover-rise text-white" style="background-color: #7c0101;;">+ Add
                         Facilitator</button>
                     <table class="table table-sm table-bordered table-hover align-middle">
                         <thead>
@@ -113,16 +111,15 @@
                 <div>
                     <input type="text" class="form-control form-control-solid" placeholder="Search..." />
                 </div>
-                <a href="{{ route('add_training') }}" class="btn btn-primary" style="color: #ffffff; text-decoration: none;">
-                    + Add Course
+                <a href="{{ route('add_training') }}" class="btn btn-primary btn-hover-rise">
+                    + Add Training
                 </a>
-                            </div>
-            <div class="card-body" style="height: 80vh;">
-                <div class="card-body" style="height: 80vh;">
-                    <div id="calendar" class="bg-light border" style="height: 100%; border-radius: 5px;">
+            </div>
+            <div class="card" style="height: auto;">
+                <div class="card-body">
+                    <div id="calendar" class="border border-3 border-gray-200 p-10" style="height: 100%; border-radius: 5px;">
                         <!-- FullCalendar will be rendered here -->
                     </div>
-
                 </div>
             </div>
         </div>
