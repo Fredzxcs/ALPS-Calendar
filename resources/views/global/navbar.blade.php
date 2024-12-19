@@ -29,7 +29,7 @@
                 <!-- ACCESS Button -->
                 <li class="nav-item">
                     <a class="nav-link fw-medium fw-bolder"
-                    href="/access/manage-access"
+                    href="/access"
                     id="access-link">
                         ACCESS
                     </a>
@@ -38,7 +38,7 @@
                 <!-- CALENDAR Button -->
                 <li class="nav-item">
                     <a class="nav-link fw-medium text-primary-hover fw-bolder"
-                    href="/main-content">
+                    href="/calendar">
                         CALENDAR
                     </a>
                 </li>

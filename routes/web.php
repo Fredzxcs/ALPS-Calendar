@@ -8,12 +8,12 @@ Route::get('/', function () {
 });
 
 // For the main content
-Route::get('/main-content', function () {
+Route::get('/calendar', function () {
     return view('main-content.calendar');
 });
 
 // Access
-Route::get('/access/manage-access', function () {
+Route::get('/access', function () {
     return view('access.manage_access');
 });
 

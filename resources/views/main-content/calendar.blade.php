@@ -111,9 +111,36 @@
                 <div>
                     <input type="text" class="form-control form-control-solid" placeholder="Search..." />
                 </div>
-                <a href="{{ route('add_training') }}" class="btn btn-primary btn-hover-rise">
-                    + Add Training
-                </a>
+
+                <!--begin::Add Button-->
+                <button type="button" class="btn btn-primary btn-hover-rise dropdown-toggle"
+                    data-kt-menu-trigger="click"
+                    data-kt-menu-placement="bottom-start">
+                    Add
+                </button>
+                <!--end::Add Button-->
+
+                <!--begin::Links-->
+                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4"
+                    data-kt-menu="true">
+                    
+                    <!--begin::Link item-->
+                    <div class="menu-item px-3">
+                        <a href="/add_training" class="menu-link px-3">
+                            <i class="bi bi-pencil-square text-primary fs-6 me-2"></i>Training
+                        </a>
+                    </div>
+                    <!--end::Link item-->
+
+                    <!--begin::Link item-->
+                    <div class="menu-item px-3">
+                        <a href="#" class="menu-link px-3" id="event_view">
+                            <i class="bi bi-calendar-event text-info fs-6 me-2"></i>Unavailability
+                        </a>
+                    </div>
+                    <!--end::Link item-->
+                </div>
+                <!--end::Links-->
             </div>
             <div class="card" style="height: auto;">
                 <div class="card-body">
