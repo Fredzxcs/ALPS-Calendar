@@ -2,13 +2,19 @@
     .nav-link {
         color: #052a43;
     }
+
     .nav-link:hover {
+        color: #7c0101 !important;
+    }
+
+    .nav-link:hover i {
         color: #7c0101 !important;
     }
 
     .nav-link.active {
         color: #7c0101 !important;
     }
+
 </style>
 
 
@@ -16,7 +22,7 @@
     <div class="container-fluid">
         <!-- Brand Logo and Name -->
         <a class="navbar-brand d-flex align-items-center"  href="#">
-            {{-- <img src="your-logo-path.png" alt="ALPS Logo" class="me-2" style="height: 40px;"> --}}
+            <img src="{{ asset('img/ALPs_Logo.png') }}" alt="ALPS Logo" class="me-2 w-50px">
             <span class="fw-boldest fs-1" style="color: #052a43;">Advanced Learning Programs</span>
         </a>
         <!-- Toggler for Mobile -->
@@ -44,34 +50,83 @@
                 </li>
                 <!-- CONFIGURATION Dropdown -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle" 
-                       href="/configuration" 
-                       id="configurationDropdown" 
-                       role="button" 
-                       data-bs-toggle="dropdown" 
-                       aria-expanded="false">
+                    <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle"
+                        style="cursor:pointer;" 
+                        id="configurationDropdown" 
+                        data-kt-menu-trigger="click"
+                        data-kt-menu-placement="bottom-start">
                         CONFIGURATION
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="configurationDropdown">
-                        <li><a class="dropdown-item" href="/configuration/company">Company</a></li>
-                        <li><a class="dropdown-item" href="/configuration/course">Course</a></li>
-                        <li><a class="dropdown-item" href="/configuration/credentials">Credentials</a></li>
-                    </ul>
+                    
+                    <!--begin::Links-->
+                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-200px py-4"
+                        data-kt-menu="true">
+                        
+                        <!--begin::Link item-->
+                        <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3">
+                                ALPs Courses
+                            </a>
+                        </div>
+                        <!--end::Link item-->
+
+                        <!--begin::Link item-->
+                        <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3" id="event_view">
+                                List of Companies
+                            </a>
+                        </div>
+                        <!--end::Link item-->
+
+                        <!--begin::Link item-->
+                        <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3" id="event_view">
+                                Account Credentials
+                            </a>
+                        </div>
+                        <!--end::Link item-->
+                    </div>
+                    <!--end::Links-->
                 </li>
                 <!-- Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link text-primary-hover fw-bold text-dark"
-                    href="#" id="navbarDropdown"
-                    role="button"
-                    data-bs-toggle="dropdown">
+                        style="cursor: pointer;"
+                        id="navbarDropdown"
+                        data-kt-menu-trigger="click"
+                        data-kt-menu-placement="bottom-start">
                         <i class="fas fa-cog fs-1 text-dark"></i>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item fw-medium" href="#">Settings</a></li>
-                        <li><a class="dropdown-item fw-medium" href="#">Profile</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger fw-medium" href="/">Logout</a></li>
-                    </ul>
+                    <!--begin::Links-->
+                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-200px py-4"
+                        data-kt-menu="true">
+                        
+                        <!--begin::Link item-->
+                        <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3">
+                                Profile
+                            </a>
+                        </div>
+                        <!--end::Link item-->
+
+                        <!--begin::Link item-->
+                        <div class="menu-item px-3">
+                            <a href="#" class="menu-link px-3" id="event_view">
+                                Settings
+                            </a>
+                        </div>
+                        <!--end::Link item-->
+
+                        <!--begin::Link item-->
+                        <div class="separator"></div>
+                        <div class="menu-item px-3">
+                            <a href="/" class="menu-link px-3 text-danger" id="event_view">
+                                Log Out
+                            </a>
+                        </div>
+                        <!--end::Link item-->
+                    </div>
+                    <!--end::Links-->
                 </li>
             </ul>
         </div>
