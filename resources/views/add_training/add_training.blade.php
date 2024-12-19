@@ -19,15 +19,15 @@
                             <label class="fw-bold mb-2 required">Mode of Training</label>
                             <div class="d-flex gap-4">
                                 <div>
-                                    <input type="radio" id="virtual" name="mode" class="form-check-input" checked>
+                                    <input type="radio" id="virtual" value="virtual" name="mode" class="form-check-input" checked="checked">
                                     <label for="virtual" class="form-check-label">Virtual</label>
                                 </div>
                                 <div>
-                                    <input type="radio" id="face-to-face" name="mode" class="form-check-input">
+                                    <input type="radio" id="face-to-face" value="face-to-face" name="mode" class="form-check-input">
                                     <label for="face-to-face" class="form-check-label">Face-to-Face</label>
                                 </div>
                                 <div>
-                                    <input type="radio" id="public-course" name="mode" class="form-check-input">
+                                    <input type="radio" id="public-course" value="public-course" name="mode" class="form-check-input">
                                     <label for="public-course" class="form-check-label">Public Course</label>
                                 </div>
                             </div>
@@ -48,7 +48,10 @@
                                     <div class="flex-grow-1">
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
                                         <select id="public-course-select" class="form-select form-select-solid">
-                                            <option>Select Course</option>
+                                            <option value="" disabled selected>Select Course</option>
+                                            <option value="Advanced Excel Training">Advanced Excel Training</option>
+                                            <option value="Advanced MS Powerpoint Course">Advanced MS Powerpoint Course</option>
+                                            <option value="Advanced Project Management Training Course">Advanced Project Management Training Course</option>
                                         </select>
                                     </div>
                                 </div>
@@ -60,7 +63,8 @@
                             <div class="flex-grow-1">
                                 <label for="credentials" class="fw-bold mb-2 required">Account</label>
                                 <select id="credentials" class="form-select form-select-solid">
-                                    <option>Select Account to Host Training</option>
+                                    <option value="" disabled selected>Select Account to Host Training</option>
+                                    <option value="samplezoomaccountpassword">alpszoomaccount1@gmail.com</option>
                                 </select>
                             </div>
                         </div>
@@ -78,7 +82,10 @@
                             <div class="flex-grow-1">
                                 <label for="company" class="fw-bold mb-2 required">Company</label>
                                 <select id="company" class="form-select form-select-solid">
-                                    <option>Select Company</option>
+                                    <option value="" disabled selected>Select Company</option>
+                                    <option value="PhilHealth">PhilHealth</option>
+                                    <option value="Pag-ibig">Pag-ibig</option>
+                                    <option value="DOST">DOST</option>
                                 </select>
                             </div>
                         </div>
@@ -89,7 +96,10 @@
                             <div class="flex-grow-1">
                                 <label for="course" class="fw-bold mb-2 required">Course</label>
                                 <select id="course" class="form-select form-select-solid">
-                                    <option>Select Course</option>
+                                    <option value="" disabled selected>Select Course</option>
+                                    <option value="Advanced Excel Training">Advanced Excel Training</option>
+                                    <option value="Advanced MS Powerpoint Course">Advanced MS Powerpoint Course</option>
+                                    <option value="Advanced Project Management Training Course">Advanced Project Management Training Course</option>
                                 </select>
                             </div>
                         </div>
@@ -125,7 +135,13 @@
                             <div class="flex-grow-1">
                                 <label for="facilitator" class="fw-bold mb-2 required">Facilitator</label>
                                 <select id="facilitator" class="form-select form-select-solid">
-                                    <option>Select Facilitator</option>
+                                    <option disabled selected>Select Facilitator</option>
+                                    <option value="">No Facilitator Yet</option>
+                                    @foreach ($users as $user)
+
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -135,7 +151,13 @@
                             <div class="flex-grow-1">
                                 <label for="assistant" class="fw-bold mb-2 required">Assistant </label>
                                 <select id="assistant" class="form-select form-select-solid">
-                                    <option>Select Assistant</option>
+                                    <option disabled selected>Select Assistant</option>
+                                    <option value="">No Assistant Yet</option>
+                                    @foreach ($users as $user)
+
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -144,7 +166,7 @@
                     <!-- Buttons -->
                     <div class="d-flex justify-content-center gap-5 ">
                         <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
-                        <button type="submit" class="btn btn-success fw-boldest">SAVE</button>
+                        <button type="button" id="add_training_submit" class="btn btn-success fw-boldest">SAVE</button>
                     </div>
                     </form>
                 </div>
@@ -153,13 +175,6 @@
     </div>
 @endsection
 @push('scripts')
-    <script src="{{ asset('js/add_training.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-    <script>
-        flatpickr("#date-range", {
-            mode: "range",
-            dateFormat: "m-d-Y",
-        });
-    </script>
+    <script src="{{ asset('js/add_training.js') }}"></script>
 @endpush

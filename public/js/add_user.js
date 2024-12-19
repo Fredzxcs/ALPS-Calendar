@@ -57,7 +57,7 @@ $(document).ready(function (e){
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then(() => {
-                        location.href = '/access';
+                        window.location.href = '/access';
                     });
                 } else {
                     Swal.fire({

@@ -2,7 +2,7 @@
 
 @section('maincontent')
     <div class="mt-4 d-flex flex-wrap gap-4 mt-20">
-        <!-- Left Side: Search Course and Search Trainer -->
+        {{-- <!-- Left Side: Search Course and Search Trainer -->
         <div class="d-flex flex-column" style="flex: 1; max-width: 30%; gap: 20px;">
             <!-- Search Course Card -->
             <div class="card shadow-sm">
@@ -104,25 +104,25 @@
                     </table>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <!-- Right Side: Calendar -->
         <div class="card shadow-sm" style="flex: 2;">
             <div class="card-header d-flex justify-content-end align-items-center">
                 <!--begin::Add Button-->
-                <button type="button" class="btn btn-primary btn-hover-rise dropdown-toggle"
+                <button type="button" class="btn btn-primary btn-lg m-3 btn-hover-rise dropdown-toggle"
                     data-kt-menu-trigger="click"
                     data-kt-menu-placement="bottom-start">
-                    Add
+                    <span class="p-5 fs-4">Add</span>
                 </button>
                 <!--end::Add Button-->
 
                 <!--begin::Links-->
                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4"
                     data-kt-menu="true">
-                    
+
                     <!--begin::Link item-->
                     <div class="menu-item px-3">
-                        <a href="/add_training" class="menu-link px-3">
+                        <a href="{{ route('add_training') }}" class="menu-link px-3">
                             <i class="bi bi-pencil-square text-primary fs-6 me-2"></i>Training
                         </a>
                     </div>
@@ -130,7 +130,7 @@
 
                     <!--begin::Link item-->
                     <div class="menu-item px-3">
-                        <a href="#" class="menu-link px-3" id="event_view">
+                        <a href="" class="menu-link px-3" id="event_view">
                             <i class="bi bi-calendar-event text-info fs-6 me-2"></i>Unavailability
                         </a>
                     </div>

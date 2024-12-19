@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LandingpageController;     //  LANDING PAGE CONTROLLER
 use App\Http\Controllers\ManageAccessController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\TrainingController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -30,24 +31,17 @@ route::get('admin/landingpage',[LandingpageController::class,'admin'])->middlewa
 route::get('coordinator/coordinatorLp',[LandingpageController::class,'coordinator'])->middleware(['auth','user:coordinator']);     //  COORDINATOR LANDINGPAGE ROUTE
 route::get('trainer/trainerLp',[LandingpageController::class,'trainer'])->middleware(['auth','user:trainer']);                 //  TRAINER LANDINGPAGE ROUTE
 
-// For the main content
-Route::get('/calendar', function () {
-    return view('main-content.calendar');
-})->middleware(['auth', 'user:admin'])->name('calendar');
-
+Route::prefix('calendar')->group(function (){
+    Route::get('/', [TrainingController::class, 'index'])->middleware(['auth', 'user:admin'])->name('calendar');
+    Route::get('/add_training', [TrainingController::class, 'create'])->middleware(['auth', 'user:admin'])->name('add_training');
+    Route::post('/add_training', [TrainingController::class, 'store'])->middleware(['auth', 'user:admin'])->name('add_training.store');
+});
 
 Route::prefix('access')->group(function (){
-
     Route::get('/', [ManageAccessController::class, 'index'])->middleware(['auth', 'user:admin'])->name('manage_access');
     Route::get('/add_user', [ManageAccessController::class, 'create'])->middleware(['auth', 'user:admin'])->name('add_user');
     Route::post('/add_user', [RegisteredUserController::class, 'admin_store'])->middleware(['auth', 'user:admin'])->name('add_user.store');
-
 });
-
-Route::get('/add_training', function () {
-    return view('add_training.add_training');
-})->middleware(['auth', 'user:admin'])->name('add_training');
-
 
 // Add User
 Route::get('/add_user_createacc', function () {

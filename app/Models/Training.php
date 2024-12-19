@@ -9,9 +9,13 @@ class Training extends Model
     protected $table = 'training';
 
     protected $fillable = [
-        'course_id',
-        'trainor_id',
-        'company_id',
+        'course',
+        'facilitator_id',
+        'company',
         'assistant_id',
+        'credentials_email',
+        'credentials_password',
+        'mode',
+        'location',
     ];
 }
