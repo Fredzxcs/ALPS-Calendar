@@ -42,8 +42,11 @@
                 <!-- Password -->
                 <div class="mb-3">
                     <label for="password" class="form-label text-white required">Password</label>
-                    <input type="password" id="password" name="password" class="form-control"
-                        placeholder="Enter your password" required>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    <span class="btn btn-sm btn-icon position-absolute translate-middle-y" id="togglePassword" style="top: 65%; right: 10%; cursor: pointer;">
+                        <i class="fas fa-eye-slash fs-3" id="eyeSlash"></i>
+                        <i class="fas fa-eye d-none fs-3" id="eye"></i>
+                    </span>
                     <a href="#" class="d-block mt-1 text-muted text-hover-primary" style="font-size: 0.9rem;">Forgot Password?</a>
                 </div>
                 <!-- Submit Button -->
@@ -58,3 +61,23 @@
 </div>
 
 </html>
+
+<script>
+    // Select elements
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    const eyeSlash = document.getElementById('eyeSlash');
+    const eye = document.getElementById('eye');
+
+    // Toggle password visibility
+    togglePassword.addEventListener('click', () => {
+        const isPasswordVisible = passwordInput.type === 'text';
+
+        // Toggle input type
+        passwordInput.type = isPasswordVisible ? 'password' : 'text';
+
+        // Toggle icon visibility
+        eyeSlash.classList.toggle('d-none', !isPasswordVisible);
+        eye.classList.toggle('d-none', isPasswordVisible);
+    });
+</script>
