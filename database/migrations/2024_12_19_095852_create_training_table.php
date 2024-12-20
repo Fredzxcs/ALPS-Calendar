@@ -13,11 +13,22 @@ return new class extends Migration
     {
         Schema::create('training', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('course_id')->constrained('course')->onDelete('cascade');
-            $table->foreignId('facilitator_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('company_id')->constrained('company')->onDelete('cascade');
+
+            $table->string('course')->nullable();
+            // $table->foreignId('course_id')->constrained('course')->onDelete('cascade');
+
+            $table->foreignId('facilitator_id')->nullable()->constrained('users')->onDelete('cascade');
+
+            $table->string('company')->nullable();
+            // $table->foreignId('company_id')->constrained('company')->onDelete('cascade');
+
             $table->foreignId('assistant_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->foreignId('credentials_id')->constrained('credentials')->onDelete('cascade');
+
+            $table->string('credentials_email')->nullable();
+            $table->string('credentials_password')->nullable();
+            $table->string('mode')->nullable();
+            $table->string('location')->nullable();
+            // $table->foreignId('credentials_id')->constrained('credentials')->onDelete('cascade');
             $table->timestamps();
         });
     }

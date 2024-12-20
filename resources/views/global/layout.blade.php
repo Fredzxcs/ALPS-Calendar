@@ -40,7 +40,7 @@
     </header>
     <!-- Main Content -->
     <main>
-        <div class="container">
+        <div class="container-fluid mb-5">
             @yield('maincontent')
         </div>
     </main>

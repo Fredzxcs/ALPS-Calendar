@@ -51,17 +51,17 @@
                 <!-- CONFIGURATION Dropdown -->
                 <li class="nav-item dropdown">
                     <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle"
-                        style="cursor:pointer;" 
-                        id="configurationDropdown" 
+                        style="cursor:pointer;"
+                        id="configurationDropdown"
                         data-kt-menu-trigger="click"
                         data-kt-menu-placement="bottom-start">
                         CONFIGURATION
                     </a>
-                    
+
                     <!--begin::Links-->
                     <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-200px py-4"
                         data-kt-menu="true">
-                        
+
                         <!--begin::Link item-->
                         <div class="menu-item px-3">
                             <a href="#" class="menu-link px-3">
@@ -100,7 +100,7 @@
                     <!--begin::Links-->
                     <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-200px py-4"
                         data-kt-menu="true">
-                        
+
                         <!--begin::Link item-->
                         <div class="menu-item px-3">
                             <a href="#" class="menu-link px-3">
@@ -120,9 +120,16 @@
                         <!--begin::Link item-->
                         <div class="separator"></div>
                         <div class="menu-item px-3">
-                            <a href="/" class="menu-link px-3 text-danger" id="event_view">
-                                Log Out
-                            </a>
+
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault();
+                                        this.closest('form').submit();" class="menu-link px-3 text-danger" id="event_view">
+                                    Log Out
+                                </a>
+
+                            </form>
+
                         </div>
                         <!--end::Link item-->
                     </div>
