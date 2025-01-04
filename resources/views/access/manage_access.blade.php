@@ -142,7 +142,12 @@
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <div class=" w-80px h-30px border border-2 border-dark" style="background-color: pink;"></div>
+                                    <!--if not facilitator, put N/A (tama ba? -kim)-->
+                                    @if ($user->usertype === 'facilitator')
+                                        <div class=" w-80px h-30px border border-2 border-dark" style="background-color: pink;"></div>
+                                    @else
+                                        N/A
+                                    @endif
                                 </div>
                             </td>
                             <td><span class="badge badge-success">ACTIVE</span></td>
@@ -349,6 +354,23 @@
                             </div>
                         </div>                            
                         <!--end::Password-->
+
+                        <!--begin::Color (IF FACILITATOR)-->
+                        <div class="row mb-5 justify-content-between align-items-center mt-5"> 
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-palette-fill fs-3 me-5" style="color: #7c0101;"></i>Assigned Color
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center"> 
+                                    <div class="w-80px h-30px border border-2 border-dark" style="background-color: pink;"></div>
+                                </div>
+                            </div>
+                        </div>                            
+                        <!--end::Color-->
                     </div>
                     <!--end::Modal body-->
                     <!--begin::Modal footer-->

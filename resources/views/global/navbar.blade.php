@@ -33,7 +33,7 @@
         <div class="collapse navbar-collapse justify-content-end hover-scale fs-3" style="color: #052a43;" id="navbarNav">
             <ul class="navbar-nav ">
                 <!-- ACCESS Dropdown -->
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown me-5">
                     <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle"
                         style="cursor:pointer;"
                         id="accessDropdown"
@@ -66,14 +66,15 @@
                 </li>
 
                 <!-- CALENDAR Button -->
-                <li class="nav-item">
+                <li class="nav-item me-5">
                     <a class="nav-link fw-medium text-primary-hover fw-bolder"
                     href="/calendar">
                         CALENDAR
                     </a>
                 </li>
+                
                 <!-- CONFIGURATION Dropdown -->
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown me-5">
                     <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle"
                         style="cursor:pointer;"
                         id="configurationDropdown"
@@ -112,8 +113,9 @@
                     </div>
                     <!--end::Links-->
                 </li>
-                <!-- Dropdown Menu -->
-                <li class="nav-item dropdown">
+
+                <!-- SETTINGS -->
+                <li class="nav-item dropdown me-5">
                     <a class="nav-link text-primary-hover fw-bold text-dark"
                         style="cursor: pointer;"
                         id="navbarDropdown"
@@ -122,7 +124,7 @@
                         <i class="fas fa-cog fs-1 text-dark"></i>
                     </a>
                     <!--begin::Links-->
-                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-200px py-4"
+                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-150px py-4"
                         data-kt-menu="true">
 
                         <!--begin::Link item-->

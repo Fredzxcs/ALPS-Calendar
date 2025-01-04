@@ -50,17 +50,6 @@
                                 </select>
                             </div>
 
-                            <!-- Status Dropdown -->
-                            <div class="mb-10">
-                                <label class="form-label fw-bold">Status:</label>
-                                <select class="form-select form-select-solid" data-placeholder="Select option"
-                                    data-allow-clear="true">
-                                    <option>Show All</option>
-                                    <option value="1">Active</option>
-                                    <option value="2">Inactive</option>
-                                </select>
-                            </div>
-
                             <!-- Actions -->
                             <div class="d-flex justify-content-end">
                                 <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2"
@@ -146,7 +135,7 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-center">
-                                <div class=" w-80px h-30px border border-2 border-dark" style="background-color: yellow";></div>
+                                <div class=" w-80px h-30px border border-2 border-dark" style="background-color: yellow;";></div>
                             </div>
                         </td>
                         <td>
