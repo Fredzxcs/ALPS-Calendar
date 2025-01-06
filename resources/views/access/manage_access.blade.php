@@ -96,7 +96,6 @@
                         <th class="w-100px">EMAIL</th>
                         <th class="w-100px">ROLE</th>
                         <th class="w-100px">COLOR</th>
-                        <th class="w-100px">STATUS</th>
                         <th class="w-100px">ACTIONS</th>
                     </tr>
                 </thead>
@@ -142,15 +141,9 @@
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <!--if not facilitator, put N/A (tama ba? -kim)-->
-                                    @if ($user->usertype === 'facilitator')
-                                        <div class=" w-80px h-30px border border-2 border-dark" style="background-color: pink;"></div>
-                                    @else
-                                        N/A
-                                    @endif
+                                    <div class=" w-80px h-30px border border-2 border-dark" style="background-color: pink;"></div>
                                 </div>
                             </td>
-                            <td><span class="badge badge-success">ACTIVE</span></td>
                             <td>
                                 <!--begin::Menu-->
                                 <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
@@ -167,23 +160,9 @@
                                         </a>
                                     </div>
 
-                                    @if ($user->status === 'active')
-                                        <div class="menu-item px-3">
-                                            <a class="menu-link px-3 deactBtn">
-                                                <i class="bi bi-x-circle text-danger me-2"></i> Deactivate
-                                            </a>
-                                        </div>
-                                    @else
-                                        <div class="menu-item px-3">
-                                            <a class="menu-link px-3 reactBtn">
-                                                <i class="bi bi-check-circle text-success me-2"></i> Reactivate
-                                            </a>
-                                        </div>
-                                    @endif
-
                                     <div class="menu-item px-3">
-                                        <a class="menu-link px-3 archiveBtn">
-                                            <i class="bi bi-archive text-warning me-2"></i> Archive
+                                        <a class="menu-link px-3 deleteBtn">
+                                            <i class="bi bi-trash text-danger me-2"></i> Delete
                                         </a>
                                     </div>
                                 </div>
@@ -459,18 +438,18 @@
         });
     });
 
-    //Archive button
-    document.querySelectorAll('.archiveBtn').forEach(button => {
+    //Delete button
+    document.querySelectorAll('.deleteBtn').forEach(button => {
         button.addEventListener('click', (event) => {
             event.preventDefault(); // Prevent default action (e.g., form submission)
 
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You are about to archive this user.",
+                text: "You are about to delete this user.",
                 icon: 'warning',
                 buttonsStyling: false,
                 showCancelButton: true,
-                confirmButtonText: 'Yes, Archive',
+                confirmButtonText: 'Yes, Delete',
                 cancelButtonText: 'Cancel',
                 customClass: {
                 confirmButton: "btn btn-danger",
@@ -478,14 +457,14 @@
             }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Proceed with the archive
+                    // Proceed with the delete
                     Swal.fire(
-                        'Archived!',
-                        'The user has been archived.',
+                        'Deleted!',
+                        'The user has been deleted.',
                         'success'
                     );
 
-                    // TODO: Add logic to perform archive
+                    // TODO: Add logic to perform delete
                 }
             });
         });
