@@ -126,7 +126,7 @@
                                     <!--end::Svg Icon-->
 
                                     <span class="d-block fw-bold text-start">
-                                        <span class="text-dark fw-bolder d-block fs-3">Admin</span>
+                                        <span class="text-dark fw-bolder d-block fs-3">System Admin</span>
                                         <span class="text-muted fw-bold fs-6">Responsible for overall system access.</span>
                                     </span>
                                 </label>

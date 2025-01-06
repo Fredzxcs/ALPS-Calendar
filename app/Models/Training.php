@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Schedule;
 
 class Training extends Model
 {
@@ -18,4 +19,9 @@ class Training extends Model
         'mode',
         'location',
     ];
+
+    public function schedule()
+    {
+        return $this->hasOne(Schedule::class, 'training_id');
+    }
 }

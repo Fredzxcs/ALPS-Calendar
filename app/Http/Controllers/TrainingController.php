@@ -100,6 +100,24 @@ class TrainingController extends Controller
         }
     }
 
+    public function gettraining(Request $request)
+    {
+
+        $trainings = Training::with('schedule')->get();
+
+        if ($trainings->isNotEmpty()) {
+            return response()->json([
+                'success' => true,
+                'data' => $trainings
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No trainings found'
+            ], 404);
+        }
+    }
+
     /**
      * Display the specified resource.
      */
