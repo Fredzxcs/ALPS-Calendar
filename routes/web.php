@@ -35,6 +35,9 @@ Route::prefix('calendar')->group(function (){
     Route::get('/', [TrainingController::class, 'index'])->middleware(['auth', 'user:admin'])->name('calendar');
     Route::get('/add_training', [TrainingController::class, 'create'])->middleware(['auth', 'user:admin'])->name('add_training');
     Route::post('/add_training', [TrainingController::class, 'store'])->middleware(['auth', 'user:admin'])->name('add_training.store');
+    Route::get('/api/get/training', [TrainingController::class, 'gettraining'])->name('get_training');
+
+    //->middleware(['auth', 'user:admin'])
 });
 
 Route::prefix('access')->group(function (){
@@ -47,3 +50,11 @@ Route::prefix('access')->group(function (){
 Route::get('/add_user_createacc', function () {
     return view('access.add_user_createacc');
 })->middleware(['auth', 'user:user:admin'])->name('add_user_createacc');
+
+// Edit User - kim (paayos nalang po)
+Route::get('/access/edit_user', function () {
+    return view('access.edit_user');})->name('edit_user');
+
+// Archived Accounts
+Route::get('/access/archive', function () {
+    return view('access.archived_accounts');})->name('archived_accounts');
