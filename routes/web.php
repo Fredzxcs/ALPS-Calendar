@@ -50,3 +50,11 @@ Route::prefix('access')->group(function (){
 Route::get('/add_user_createacc', function () {
     return view('access.add_user_createacc');
 })->middleware(['auth', 'user:user:admin'])->name('add_user_createacc');
+
+// Edit User - kim (paayos nalang po)
+Route::get('/access/edit_user', function () {
+    return view('access.edit_user');})->name('edit_user');
+
+// Archived Accounts
+Route::get('/access/archive', function () {
+    return view('access.archived_accounts');})->name('archived_accounts');

@@ -1,12 +1,13 @@
 @extends('global.layout')
 @section('maincontent')
+<!--FOR EDIT USER, SAME LANG SA ADD BUT YUNG CURRENT VALUES NAKALAGAY SA FIELDS-->
 <div class="d-flex justify-content-center align-items-center">
     <div class="container mt-5">
         <div class="card shadow-sm  pt-0 pb-1 mt-20">
             <!-- Title -->
             <div class="d-flex justify-content-center align-items-center mb-4 rounded-top bg-primary"
                 style="height: 80px;">
-                <h2 class="text-white fw-boldest m-0 fs-1">ADD USER</h2>
+                <h2 class="text-white fw-boldest m-0 fs-1">EDIT USER</h2>
             </div>
             <!--begin::Stepper-->
             <div class="stepper stepper-pills" id="kt_stepper_example_basic">
@@ -335,23 +336,23 @@
 </div>
 @endsection
 @push('scripts')
-    <script src="{{ asset('js/add_user.js') }}"></script>
-    <script>
-        const roleRadios = document.querySelectorAll('input[name="radio_buttons_2"]');
-        const assignColorSection = document.getElementById('assignColorSection');
+<script src="{{ asset('js/add_user.js') }}"></script>
+<script>
+    const roleRadios = document.querySelectorAll('input[name="radio_buttons_2"]');
+    const assignColorSection = document.getElementById('assignColorSection');
 
-        assignColorSection.style.display = 'none';
+    assignColorSection.style.display = 'none';
 
-        roleRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === 'facilitator' && this.id === 'kt_radio_buttons_2_option_2') {
-                    // If the role is 'Facilitator' show the 'Assign Color' section
-                    assignColorSection.style.display = 'block';
-                } else {
-                    // Otherwise hide the 'Assign Color' section
-                    assignColorSection.style.display = 'none';
-                }
-            });
+    roleRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (this.value === 'facilitator' && this.id === 'kt_radio_buttons_2_option_2') {
+                // If the role is 'Facilitator' show the 'Assign Color' section
+                assignColorSection.style.display = 'block';
+            } else {
+                // Otherwise hide the 'Assign Color' section
+                assignColorSection.style.display = 'none';
+            }
         });
-    </script>
+    });
+</script>
 @endpush
