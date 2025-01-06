@@ -32,37 +32,12 @@
         <!-- Navigation Buttons -->
         <div class="collapse navbar-collapse justify-content-end hover-scale fs-3" style="color: #052a43;" id="navbarNav">
             <ul class="navbar-nav ">
-                <!-- ACCESS Dropdown -->
-                <li class="nav-item dropdown me-5">
-                    <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle"
-                        style="cursor:pointer;"
-                        id="accessDropdown"
-                        data-kt-menu-trigger="click"
-                        data-kt-menu-placement="bottom-start">
+                <!-- ACCESS Button -->
+                <li class="nav-item me-5">
+                    <a class="nav-link fw-medium text-primary-hover fw-bolder"
+                    href="{{ route('manage_access') }}">
                         ACCESS
                     </a>
-
-                    <!--begin::Links-->
-                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-200px py-4"
-                        data-kt-menu="true">
-
-                        <!--begin::Link item-->
-                        <div class="menu-item px-3">
-                            <a href="{{route ('manage_access')}}" class="menu-link px-3">
-                                Manage Access
-                            </a>
-                        </div>
-                        <!--end::Link item-->
-
-                        <!--begin::Link item-->
-                        <div class="menu-item px-3">
-                            <a href="{{route ('archived_accounts')}}" class="menu-link px-3" id="event_view">
-                                Archived Accounts
-                            </a>
-                        </div>
-                        <!--end::Link item-->
-                    </div>
-                    <!--end::Links-->
                 </li>
 
                 <!-- CALENDAR Button -->
