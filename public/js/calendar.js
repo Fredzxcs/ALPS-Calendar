@@ -18,13 +18,13 @@ document.addEventListener('DOMContentLoaded', function () {
             : moment(data.endDate).format('Do MMM, YYYY - h:mm a');
             const popoverHtml =
             '<div class="fw-bolder mb-2">' + data.eventName + '</div>' +
-            '<div class="fs-7 mb-2"><span class="fw-bold"></span> ' + data.modeType + '</div>' +
-            '<div class="fs-7 mb-2"><span class="fw-bold">Company:</span> ' + data.company + '</div>' +
+            '<div class="fs-7 mb-2"><span class="fw-bold"></span> V - Course </div>' +
+            '<div class="fs-7 mb-2"><span class="fw-bold">Company:</span> DOST </div>' +
             '<div class="fs-7"><span class="fw-bold">Start:</span> ' + startDate + '</div>' +
-            '<div class="fs-7 mb-4"><span class="fw-bold">End:</span> ' + endDate + '</div>' +
-            '<div class="fs-7 mb-2"><span class="fw-bold">Facilitator:</span> ' + data.facilitator + '</div>' +
-            '<div class="fs-7"><span class="fw-bold">Assistant:</span> ' + data.assistant + '</div>' +
-            '<div id="kt_calendar_event_view" type="button" class="btn btn-sm btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_view_event" data-dismiss="modal" >VIEW MORE</div>';
+            '<div class="fs-7 mb-2"><span class="fw-bold">End:</span> ' + endDate + '</div>' +
+            '<div class="fs-7"><span class="fw-bold">Facilitator:</span> John Loyd </div>' +
+            '<div class="fs-7 mb-4"><span class="fw-bold">Assistant:</span> Not Yet Assigned </div>' +
+            '<div id="kt_calendar_event_view" type="button" class="btn btn-sm btn-light-primary mt-2" data-bs-toggle="modal" data-bs-target="#kt_modal_view_event" data-dismiss="modal" >VIEW MORE</div>';
         // Popover options
         var options = {
             container: 'body',
