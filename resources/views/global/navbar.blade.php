@@ -64,7 +64,7 @@
 
                         <!--begin::Link item-->
                         <div class="menu-item px-3">
-                            <a href="#" class="menu-link px-3">
+                            <a href="{{ route('config_courses') }}" class="menu-link px-3">
                                 ALPs Courses
                             </a>
                         </div>
@@ -141,6 +141,5 @@
     </div>
 </nav>
 @push('scripts')
-<script src="{{ asset('js/navbar.js') }}">
-</script>
+<script src="{{ asset('js/navbar.js') }}"></script>
 @endpush

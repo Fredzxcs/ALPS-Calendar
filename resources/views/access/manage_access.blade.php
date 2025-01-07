@@ -61,23 +61,12 @@
                                 </select>
                             </div>
 
-                            <!-- Status Dropdown -->
-                            <div class="mb-10">
-                                <label class="form-label fw-bold">Status:</label>
-                                <select class="form-select form-select-solid" data-placeholder="Select option"
-                                    data-allow-clear="true">
-                                    <option>Show All</option>
-                                    <option value="1">Active</option>
-                                    <option value="2">Inactive</option>
-                                </select>
-                            </div>
-
                             <!-- Actions -->
                             <div class="d-flex justify-content-end">
                                 <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2"
-                                    data-kt-menu-dismiss="true">Reset</button>
+                                    data-kt-menu-dismiss="true">RESET</button>
                                 <button type="submit" class="btn btn-sm btn-primary"
-                                    data-kt-menu-dismiss="true">Apply</button>
+                                    data-kt-menu-dismiss="true">APPLY</button>
                             </div>
                         </div>
                     </div>

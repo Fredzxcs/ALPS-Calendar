@@ -182,7 +182,9 @@
 
                     <!-- Buttons -->
                     <div class="d-flex justify-content-center gap-5 ">
-                        <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
+                        <a href="{{ route('calendar') }}">
+                            <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
+                        </a>
                         <button type="button" id="add_training_submit" class="btn btn-success fw-boldest">SAVE</button>
                     </div>
                     </form>
