@@ -173,117 +173,195 @@
                 <hr class="my-2 opacity-10 mb-3 mt-1">
                 <!--end::Modal header-->
                 <!--begin::Modal body-->
-                <div class="modal-body pt-0 pb-0 px-lg-17">
+                <!--begin::Modal body-->
+                <di class="modal-body py-10 px-lg-17">
                     <!-- Data Rows -->
                     <div class="container text-black d-flex flex-column justify-content-center">
-                        <!-- Row: Mode of Training -->
-                        <div class="row mb-3 text-start align-items-center justify-content-end">
-                            <div class="col-4 d-flex align-items-center">
-                                <i class="bi bi-chat-left-text-fill me-2" style="color: #7c0101"></i>
-                                <span class="fw-bold ">Mode of Training</span>
+                        <!--begin::Mode of Training-->
+                        <div class="row mb-5 justify-content-between align-items-center">
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-chat-left-text-fill fs-3 me-5" style="color: #7c0101;"></i>Mode of Training
+                                    </label>
+                                </div>
                             </div>
-                            <div class="col-8 text-end ps-4">Public Course</div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0">Public Course</p>
+                                </div>
+                            </div>
                         </div>
+                        <!--end::Mode of Training-->
 
-                        <!-- Row: If Virtual -->
-                        <div class="row mb-3 text-start align-items-center justify-content-end">
-                            <div class="col-4 d-flex align-items-center">
-                                <i class="bi bi-lock-fill  me-2" style="color: #7c0101"></i>
-                                <span class="fw-bold ">Credentials</span>
+                        <!--begin::Credentials-->
+                        <div class="row mb-5 justify-content-between align-items-center">
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-lock-fill fs-3 me-5" style="color: #7c0101;"></i>Credentials
+                                    </label>
+                                </div>
                             </div>
-                            <div class="col-8 text-end ps-4">sample@gmail.com</div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0">sample@gmail.com</p>
+                                </div>
+                            </div>
                         </div>
+                        <!--end::Credentials-->
 
-                        <!-- Row: If In-person -->
-                        <div class="row mb-3 text-start align-items-center justify-content-end">
-                            <div class="col-4 d-flex align-items-center">
-                                <i class="bi bi-person-fill  me-2" style="color: #7c0101"></i>
-                                <span class="fw-bold ">In-person?</span>
+                        <!--begin::In-person-->
+                        <div class="row mb-5 justify-content-between align-items-center">
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-person-fill fs-3 me-5" style="color: #7c0101;"></i>In-person?
+                                    </label>
+                                </div>
                             </div>
-                            <div class="col-8 text-end ps-4">Yes</div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0">Yes</p>
+                                </div>
+                            </div>
                         </div>
+                        <!--end::In-person-->
 
-                        <!-- Row: Location -->
-                        <div class="row mb-3 text-start align-items-center justify-content-end">
-                            <div class="col-4 d-flex align-items-center">
-                                <i class="bi bi-geo-alt-fill  me-2" style="color: #7c0101"></i>
-                                <span class="fw-bold ">Location</span>
+                        <!--begin::Location-->
+                        <div class="row mb-5 justify-content-between align-items-center">
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-geo-alt-fill fs-3 me-5" style="color: #7c0101;"></i>Location
+                                    </label>
+                                </div>
                             </div>
-                            <div class="col-8 text-end ps-4">PUP - Quezon City Campus</div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0">PUP - Quezon City Campus</p>
+                                </div>
+                            </div>
                         </div>
+                        <!--end::Location-->
 
-                        <!-- Row: Company -->
-                        <div class="row mb-3 text-start align-items-center justify-content-end">
-                            <div class="col-4 d-flex align-items-center">
-                                <i class="bi bi-building  me-2" style="color: #7c0101"></i>
-                                <span class="fw-bold ">Company</span>
+                        <!--begin::Company-->
+                        <div class="row mb-5 justify-content-between align-items-center">
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-building fs-3 me-5" style="color: #7c0101;"></i>Company
+                                    </label>
+                                </div>
                             </div>
-                            <div class="col-8 text-end ps-4">PUPQC</div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0">PUPQC</p>
+                                </div>
+                            </div>
                         </div>
+                        <!--end::Company-->
 
-                        <!-- Row: Course -->
-                        <div class="row mb-3 text-start align-items-center justify-content-end">
-                            <div class="col-4 d-flex align-items-center">
-                                <i class="bi bi-book  me-2" style="color: #7c0101"></i>
-                                <span class="fw-bold ">Course</span>
+                        <!--begin::Course-->
+                        <div class="row mb-5 justify-content-between align-items-center">
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-book fs-3 me-5" style="color: #7c0101;"></i>Course
+                                    </label>
+                                </div>
                             </div>
-                            <div class="col-8 text-end ps-4">Project Management</div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0">Project Management</p>
+                                </div>
+                            </div>
                         </div>
+                        <!--end::Course-->
 
-                        <!-- Row: Date -->
-                        <div class="row mb-3 text-start align-items-center justify-content-end">
-                            <div class="col-4 d-flex align-items-center">
-                                <i class="bi bi-calendar3  me-2" style="color: #7c0101"></i>
-                                <span class="fw-bold ">Date</span>
+                        <!--begin::Date-->
+                        <div class="row mb-5 justify-content-between align-items-center">
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-calendar3 fs-3 me-5" style="color: #7c0101;"></i>Date
+                                    </label>
+                                </div>
                             </div>
-                            <div class="col-8 text-end ps-4">Dec 09, 2024 to Dec 12, 2024</div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0">Dec 9, 2024 to Dec 12, 2024</p>
+                                </div>
+                            </div>
                         </div>
+                        <!--end::Date-->
 
-                        <!-- Row: Time -->
-                        <div class="row mb-3 text-start align-items-center justify-content-end">
-                            <div class="col-4 d-flex align-items-center">
-                                <i class="bi bi-clock-fill  me-2" style="color: #7c0101"></i>
-                                <span class="fw-bold ">Time</span>
+                        <!--begin::Time-->
+                        <div class="row mb-5 justify-content-between align-items-center">
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-clock-fill fs-3 me-5" style="color: #7c0101;"></i>Time
+                                    </label>
+                                </div>
                             </div>
-                            <div class="col-8 text-end ps-4">9:00 AM to 10:00 PM</div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0">9:00 AM to 10:00 PM</p>
+                                </div>
+                            </div>
                         </div>
+                        <!--end::Time-->
 
-                        <!-- Row: Facilitator -->
-                        <div class="row mb-3 text-start align-items-center justify-content-end">
-                            <div class="col-4 d-flex align-items-center">
-                                <i class="bi bi-person-square  me-2" style="color: #7c0101"></i>
-                                <span class="fw-bold ">Facilitator</span>
+                        <!--begin::Facilitator-->
+                        <div class="row mb-5 justify-content-between align-items-center">
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-person-square fs-3 me-5" style="color: #7c0101;"></i>Facilitator
+                                    </label>
+                                </div>
                             </div>
-                            <div class="col-8 text-end ps-4">Kimberly Mae M. Kho</div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0">Kimberly Mae M. Kho</p>
+                                </div>
+                            </div>
                         </div>
+                        <!--end::Facilitator-->
+                        <!--begin::Assistant-->
+                        <div class="row mb-5 justify-content-between align-items-center">
+                            <div class="col-5">
+                                <div class="fv-row">
+                                    <label class="fs-6 fw-bold mb-2">
+                                        <i class="bi bi-person-plus fs-3 me-5" style="color: #7c0101;"></i>Assistant
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-7">
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0">Daniel A. Del Rosario</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end::Assistant-->
+                        <!--end::Modal body-->
 
-                        <!-- Row: Assistant -->
-                        <div class="row mb-3 text-start align-items-center justify-content-end">
-                            <div class="col-4 d-flex align-items-center">
-                                <i class="bi bi-person-dash-fill  me-2" style="color: #7c0101"></i>
-                                <span class="fw-bold ">Assistant</span>
-                            </div>
-                            <div class="col-8 text-end  ps-4">No Assistant Yet</div>
+                        <!-- Begin: Modal buttons -->
+                        <div class="d-flex justify-content-end align-items-end gap-3 ">
+                            <button type="button" class="btn btn-primary">
+                                <i class="bi bi-pencil"></i> EDIT
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                CANCEL
+                            </button>
                         </div>
+                        <!-- end: Modal buttons -->
                     </div>
-                </div>
-                <!--end::Modal body-->
-
-                <!-- Begin: Modal buttons -->
-                <div class="modal-footer justify-content-end py-2 mb-2">
-                    <button type="button" class="btn btn-primary">
-                        <i class="bi bi-pencil"></i> EDIT
-                    </button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        CANCEL
-                    </button>
-                </div>
-                <!-- end: Modal buttons -->
             </div>
         </div>
-    </div>
-    <!--end::Modal - New Product-->
-@endsection
-@push('scripts')
-    <script src="{{ asset('js/calendar.js') }}"></script>
-@endpush
+        <!--end::Modal - New Product-->
+    @endsection
+    @push('scripts')
+        <script src="{{ asset('js/calendar.js') }}"></script>
+    @endpush
