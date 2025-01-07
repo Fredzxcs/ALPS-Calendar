@@ -182,16 +182,25 @@
                                 <i class="bi bi-chat-left-text-fill me-2" style="color: #7c0101"></i>
                                 <span class="fw-bold ">Mode of Training</span>
                             </div>
-                            <div class="col-8 text-end ps-4">Public Course</div> <!-- Added ps-4 for left padding -->
+                            <div class="col-8 text-end ps-4">Public Course</div>
                         </div>
 
-                        <!-- Row: In-person -->
+                        <!-- Row: If Virtual -->
+                        <div class="row mb-3 text-start align-items-center justify-content-end">
+                            <div class="col-4 d-flex align-items-center">
+                                <i class="bi bi-lock-fill  me-2" style="color: #7c0101"></i>
+                                <span class="fw-bold ">Credentials</span>
+                            </div>
+                            <div class="col-8 text-end ps-4">sample@gmail.com</div>
+                        </div>
+
+                        <!-- Row: If In-person -->
                         <div class="row mb-3 text-start align-items-center justify-content-end">
                             <div class="col-4 d-flex align-items-center">
                                 <i class="bi bi-person-fill  me-2" style="color: #7c0101"></i>
                                 <span class="fw-bold ">In-person?</span>
                             </div>
-                            <div class="col-8 text-end ps-4">Yes</div> <!-- Added ps-4 for left padding -->
+                            <div class="col-8 text-end ps-4">Yes</div>
                         </div>
 
                         <!-- Row: Location -->
@@ -200,7 +209,7 @@
                                 <i class="bi bi-geo-alt-fill  me-2" style="color: #7c0101"></i>
                                 <span class="fw-bold ">Location</span>
                             </div>
-                            <div class="col-8 text-end ps-4">PUP - Quezon City Campus</div> <!-- Added ps-4 for left padding -->
+                            <div class="col-8 text-end ps-4">PUP - Quezon City Campus</div>
                         </div>
 
                         <!-- Row: Company -->
@@ -209,7 +218,7 @@
                                 <i class="bi bi-building  me-2" style="color: #7c0101"></i>
                                 <span class="fw-bold ">Company</span>
                             </div>
-                            <div class="col-8 text-end ps-4">PUPQC</div> <!-- Added ps-4 for left padding -->
+                            <div class="col-8 text-end ps-4">PUPQC</div>
                         </div>
 
                         <!-- Row: Course -->
@@ -218,7 +227,7 @@
                                 <i class="bi bi-book  me-2" style="color: #7c0101"></i>
                                 <span class="fw-bold ">Course</span>
                             </div>
-                            <div class="col-8 text-end ps-4">Project Management</div> <!-- Added ps-4 for left padding -->
+                            <div class="col-8 text-end ps-4">Project Management</div>
                         </div>
 
                         <!-- Row: Date -->
@@ -227,7 +236,7 @@
                                 <i class="bi bi-calendar3  me-2" style="color: #7c0101"></i>
                                 <span class="fw-bold ">Date</span>
                             </div>
-                            <div class="col-8 text-end ps-4">Dec 09, 2024 to Dec 12, 2024</div> <!-- Added ps-4 for left padding -->
+                            <div class="col-8 text-end ps-4">Dec 09, 2024 to Dec 12, 2024</div>
                         </div>
 
                         <!-- Row: Time -->
@@ -236,7 +245,7 @@
                                 <i class="bi bi-clock-fill  me-2" style="color: #7c0101"></i>
                                 <span class="fw-bold ">Time</span>
                             </div>
-                            <div class="col-8 text-end ps-4">9:00 AM to 10:00 PM</div> <!-- Added ps-4 for left padding -->
+                            <div class="col-8 text-end ps-4">9:00 AM to 10:00 PM</div>
                         </div>
 
                         <!-- Row: Facilitator -->
@@ -245,7 +254,7 @@
                                 <i class="bi bi-person-square  me-2" style="color: #7c0101"></i>
                                 <span class="fw-bold ">Facilitator</span>
                             </div>
-                            <div class="col-8 text-end ps-4">Kimberly Mae M. Kho</div> <!-- Added ps-4 for left padding -->
+                            <div class="col-8 text-end ps-4">Kimberly Mae M. Kho</div>
                         </div>
 
                         <!-- Row: Assistant -->
@@ -254,14 +263,14 @@
                                 <i class="bi bi-person-dash-fill  me-2" style="color: #7c0101"></i>
                                 <span class="fw-bold ">Assistant</span>
                             </div>
-                            <div class="col-8 text-end  ps-4">No Assistant Yet</div> <!-- Added ps-4 for left padding -->
+                            <div class="col-8 text-end  ps-4">No Assistant Yet</div>
                         </div>
                     </div>
                 </div>
                 <!--end::Modal body-->
 
                 <!-- Begin: Modal buttons -->
-                <div class="modal-footer justify-content-end py-2">
+                <div class="modal-footer justify-content-end py-2 mb-2">
                     <button type="button" class="btn btn-primary">
                         <i class="bi bi-pencil"></i> EDIT
                     </button>
