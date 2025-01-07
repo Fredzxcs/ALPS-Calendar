@@ -158,7 +158,7 @@
                 <div class="modal-header border-0 justify-content-between align-items-center">
                     <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="viewTrainingLabel">VIEW TRAINING</h1>
                     <!--begin::Close-->
-                    <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Hide Event" data-bs-dismiss="modal">
+                    <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                         <span class="svg-icon svg-icon-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -348,13 +348,12 @@
                         <!--end::Modal body-->
 
                         <!-- Begin: Modal buttons -->
-                        <div class="d-flex justify-content-end align-items-end gap-3 ">
-                            <button type="button" class="btn btn-primary">
-                                <i class="bi bi-pencil"></i> EDIT
-                            </button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                                CANCEL
-                            </button>
+                        <div class="modal-footer justify-content-end">
+                            <a href="./add_training/edit_training.blade.php" class="btn btn-primary me-2">
+                                <i class="bi bi-pencil-fill me-2"></i>EDIT
+                            </a>
+                            <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+
                         </div>
                         <!-- end: Modal buttons -->
                     </div>
