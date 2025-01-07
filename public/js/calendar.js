@@ -16,11 +16,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const endDate = data.allDay
             ? moment(data.endDate).format('Do MMM, YYYY')
             : moment(data.endDate).format('Do MMM, YYYY - h:mm a');
-        const popoverHtml =
+            const popoverHtml =
             '<div class="fw-bolder mb-2">' + data.eventName + '</div>' +
+            '<div class="fs-7 mb-2"><span class="fw-bold"></span> ' + data.modeType + '</div>' +
+            '<div class="fs-7 mb-2"><span class="fw-bold">Company:</span> ' + data.company + '</div>' +
             '<div class="fs-7"><span class="fw-bold">Start:</span> ' + startDate + '</div>' +
             '<div class="fs-7 mb-4"><span class="fw-bold">End:</span> ' + endDate + '</div>' +
-            '<div id="kt_calendar_event_view_button" type="button" class="btn btn-sm btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_view_event">View More</div>';
+            '<div class="fs-7 mb-2"><span class="fw-bold">Facilitator:</span> ' + data.facilitator + '</div>' +
+            '<div class="fs-7"><span class="fw-bold">Assistant:</span> ' + data.assistant + '</div>' +
+            '<div id="kt_calendar_event_view" type="button" class="btn btn-sm btn-light-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_view_event" data-dismiss="modal" >VIEW MORE</div>';
         // Popover options
         var options = {
             container: 'body',
@@ -29,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
             placement: 'auto',
             dismiss: true, // X button sa event summary
             html: true,
-            title: 'Event Summary',
+            title: 'Training Summary',
             content: popoverHtml,
         };
 
@@ -47,7 +51,38 @@ document.addEventListener('DOMContentLoaded', function () {
             popoverState = false;
             currentHoveredEvent = null; // Reset the currently hovered event
         }
+
+        document.addEventListener('click', function (event) {
+            if (event.target && event.target.id === 'kt_calendar_event_view') {
+                // Clean up any existing backdrops before showing the modal
+                const existingBackdrops = document.querySelectorAll('.modal-backdrop');
+                existingBackdrops.forEach(backdrop => backdrop.remove());
+
+                // Remove the 'modal-open' class from the body to reset
+                document.body.classList.remove('modal-open');
+
+                // Show the modal
+                const modalElement = document.getElementById('kt_modal_view_event');
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+
+                // Add an event listener to clean up backdrops when the modal is hidden
+                modalElement.addEventListener('hidden.bs.modal', function () {
+                    const backdrops = document.querySelectorAll('.modal-backdrop');
+                    backdrops.forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove('modal-open');
+                });
+            }
+
+            // Check if the modal instance is valid
+            if (typeof bootstrapModal !== 'undefined' && bootstrapModal) {
+                bootstrapModal.hide(); // Hide the modal using Bootstrap's built-in method
+            }
+        });
+
+
     };
+
 
     if (calendarEl) {
         // Initialize the calendar
@@ -71,7 +106,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     startDate: info.event.start,
                     endDate: info.event.end || null,
                     allDay: info.event.allDay,
+                    modeType: info.event.extendedProps.modeType,
+                    company: info.event.extendedProps.company,
+                    facilitator: info.event.extendedProps.facilitator,
+                    assistant: info.event.extendedProps.assistant
                 };
+
 
                 // Track the currently hovered event
                 currentHoveredEvent = info.event.id;
