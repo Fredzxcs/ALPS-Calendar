@@ -280,7 +280,7 @@
 
         <!-- Pagination -->
         <nav aria-label="Page navigation" class="mt-3">
-            <ul class="pagination justify-content-center">
+            <ul class="pagination justify-content-center mt-5">
                 <!-- Buttons are dynamically added by JavaScript -->
             </ul>
         </nav>

@@ -62,3 +62,7 @@ Route::get('/access/archive', function () {
 // config - courses
 Route::get('/config/courses', function () {
     return view('configuration.courses');})->name('config_courses');
+
+// config - companies
+Route::get('/config/companies', function () {
+    return view('configuration.companies');})->name('config_companies');
