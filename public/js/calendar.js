@@ -11,15 +11,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Generate popover content
         const startDate = data.allDay
-            ? moment(data.startDate).format('Do MMM, YYYY')
-            : moment(data.startDate).format('Do MMM, YYYY - h:mm a');
+            ? moment(data.startDate).format('MMM DD, YYYY')
+            : moment(data.startDate).format('MMM DD, YYYY - h:mm a');
         const endDate = data.allDay
-            ? moment(data.endDate).format('Do MMM, YYYY')
-            : moment(data.endDate).format('Do MMM, YYYY - h:mm a');
+            ? moment(data.endDate).format('MMM DD, YYYY')
+            : moment(data.endDate).format('MMM DD, YYYY - h:mm a');
             const popoverHtml =
             '<div class="fw-bolder mb-2">' + data.eventName + '</div>' +
-            '<div class="fs-7 mb-2"><span class="fw-bold"></span> V - Course </div>' +
-            '<div class="fs-7 mb-2"><span class="fw-bold">Company:</span> DOST </div>' +
+            '<div class="fs-7 mb-2"><span class="badge badge-primary fw-bold">Virtual</span><span class="badge badge-info fw-bold">Face-to-Face</span><span class="badge badge-danger fw-bold">Public Course</span></div>' +
             '<div class="fs-7"><span class="fw-bold">Start:</span> ' + startDate + '</div>' +
             '<div class="fs-7 mb-2"><span class="fw-bold">End:</span> ' + endDate + '</div>' +
             '<div class="fs-7"><span class="fw-bold">Facilitator:</span> John Loyd </div>' +

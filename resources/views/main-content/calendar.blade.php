@@ -188,7 +188,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0">Public Course</p>
+                                    <p class="lead fs-6">Public Course</p>
                                 </div>
                             </div>
                         </div>
@@ -205,7 +205,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0">sample@gmail.com</p>
+                                    <p class="lead fs-6">sample@gmail.com</p>
                                 </div>
                             </div>
                         </div>
@@ -222,7 +222,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0">Yes</p>
+                                    <p class="lead fs-6">Yes</p>
                                 </div>
                             </div>
                         </div>
@@ -239,7 +239,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0">PUP - Quezon City Campus</p>
+                                    <p class="lead fs-6">PUP - Quezon City Campus</p>
                                 </div>
                             </div>
                         </div>
@@ -256,7 +256,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0">PUPQC</p>
+                                    <p class="lead fs-6">PUPQC</p>
                                 </div>
                             </div>
                         </div>
@@ -273,7 +273,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0">Project Management</p>
+                                    <p class="lead fs-6">Project Management</p>
                                 </div>
                             </div>
                         </div>
@@ -290,7 +290,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0">Dec 9, 2024 to Dec 12, 2024</p>
+                                    <p class="lead fs-6">Dec 9, 2024 to Dec 12, 2024</p>
                                 </div>
                             </div>
                         </div>
@@ -307,7 +307,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0">9:00 AM to 10:00 PM</p>
+                                    <p class="lead fs-6">9:00 AM to 10:00 PM</p>
                                 </div>
                             </div>
                         </div>
@@ -324,7 +324,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0">Kimberly Mae M. Kho</p>
+                                    <p class="lead fs-6">Kimberly Mae M. Kho</p>
                                 </div>
                             </div>
                         </div>
@@ -340,7 +340,7 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0">Daniel A. Del Rosario</p>
+                                    <p class="lead fs-6">Daniel A. Del Rosario</p>
                                 </div>
                             </div>
                         </div>
@@ -357,6 +357,7 @@
                         </div>
                         <!-- end: Modal buttons -->
                     </div>
+                </div>
             </div>
         </div>
         <!--end::Modal - New Product-->
