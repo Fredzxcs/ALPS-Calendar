@@ -32,12 +32,10 @@ route::get('coordinator/coordinatorLp',[LandingpageController::class,'coordinato
 route::get('trainer/trainerLp',[LandingpageController::class,'trainer'])->middleware(['auth','user:trainer']);                 //  TRAINER LANDINGPAGE ROUTE
 
 Route::prefix('calendar')->group(function (){
-    Route::get('/', [TrainingController::class, 'index'])->middleware(['auth', 'user:admin'])->name('calendar');
-    Route::get('/add_training', [TrainingController::class, 'create'])->middleware(['auth', 'user:admin'])->name('add_training');
-    Route::post('/add_training', [TrainingController::class, 'store'])->middleware(['auth', 'user:admin'])->name('add_training.store');
-    Route::get('/api/get/training', [TrainingController::class, 'gettraining'])->name('get_training');
-
-    //->middleware(['auth', 'user:admin'])
+    Route::get('/', [TrainingController::class, 'index'])->middleware(['auth', 'user:admin,coordinator,facilitator'])->name('calendar');
+    Route::get('/add_training', [TrainingController::class, 'create'])->middleware(['auth', 'user:admin,coordinator'])->name('add_training');
+    Route::post('/add_training', [TrainingController::class, 'store'])->middleware(['auth', 'user:admin,coordinator'])->name('add_training.store');
+    Route::get('/api/get/training', [TrainingController::class, 'gettraining'])->middleware(['auth', 'admin,coordinator,facilitator'])->name('get_training');
 });
 
 Route::prefix('access')->group(function (){
