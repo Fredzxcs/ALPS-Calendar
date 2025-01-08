@@ -336,7 +336,7 @@
 @endsection
 @push('scripts')
     <script src="{{ asset('js/add_user.js') }}"></script>
-    <script>
+    <!-- <script>
         const roleRadios = document.querySelectorAll('input[name="radio_buttons_2"]');
         const assignColorSection = document.getElementById('assignColorSection');
 
@@ -353,5 +353,5 @@
                 }
             });
         });
-    </script>
+    </script> -->
 @endpush
