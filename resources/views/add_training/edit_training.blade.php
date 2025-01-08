@@ -9,7 +9,7 @@
             <div class="card shadow-sm rounded-3">
                 <!-- Title -->
                 <div class="d-flex justify-content-center align-items-center mb-0 bg-primary rounded-top h-80px" >
-                    <h2 class="text-white fw-boldest m-0 fs-1">ADD TRAINING</h2>
+                    <h2 class="text-white fw-boldest m-0 fs-1">EDIT TRAINING</h2>
                 </div>
                 <!-- Form -->
                 <div class="p-20 pt-10 pb-6 ">
@@ -129,62 +129,43 @@
                     </div>
 
                     <!-- Facilitator and Assistant -->
-                    <div class="row mb-5 align-items-start">
-                        <!-- Facilitator -->
-                        <div class="col-md-6">
-                            <label for="facilitator" class="fw-bold mb-2 required">Facilitator</label>
-                            <select id="facilitator" class="form-select form-select-solid">
-                                <option disabled selected>Select Facilitator</option>
-                                <option value="">No Facilitator Yet</option>
-                                @foreach ($users as $user)
-                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                @endforeach
-                            </select>
+                    <div class="row mb-5">
+                        {{-- need form repeater --}}
+                        <div class="col-md-6 d-flex align-items-lg-end">
+                            <div class="flex-grow-1">
+                                <label for="facilitator" class="fw-bold mb-2 required">Facilitator</label>
+                                <select id="facilitator" class="form-select form-select-solid">
+                                    <option disabled selected>Select Facilitator</option>
+                                    <option value="">No Facilitator Yet</option>
+                                    @foreach ($users as $user)
+
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
 
-                        <!-- Assistant -->
-                        <div class="col-md-6">
-                            <!-- Repeater -->
-                            <div id="asst_repeat">
-                                <div class="form-group">
-                                    <!-- Label for the Assistant field -->
-                                    <label class="form-label required">Assistant:</label>
+                        {{-- need form repeater --}}
+                        <div class="col-md-6 d-flex align-items-lg-end">
+                            <div class="flex-grow-1">
+                                <label for="assistant" class="fw-bold mb-2 required">Assistant </label>
+                                <select id="assistant" class="form-select form-select-solid">
+                                    <option disabled selected>Select Assistant</option>
+                                    <option value="">No Assistant Yet</option>
+                                    @foreach ($users as $user)
 
-                                    <!-- Repeater List -->
-                                    <div data-repeater-list="asst_repeat">
-                                        <div data-repeater-item>
-                                            <div class="form-group row align-items-center">
-                                                <div class="col-md-9">
-                                                    <input type="text" class="form-control form-control-solid mb-3" id="assistant" placeholder="Enter Assistant's Name" />
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mb-3">
-                                                        <i class="la la-trash-o"></i> DELETE
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
 
-                                <!-- Add Button -->
-                                <div class="form-group mt-3">
-                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary btn-sm">
-                                        <i class="la la-plus"></i> ADD
-                                    </a>
-                                </div>
+                                    @endforeach
+                                </select>
                             </div>
-                            <!-- End Repeater -->
-
                         </div>
                     </div>
 
-
                     <!-- Buttons -->
                     <div class="d-flex justify-content-center gap-5 ">
-                        <a href="{{ route('calendar') }}">
-                            <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
-                        </a>
+                        <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
                         <button type="button" id="add_training_submit" class="btn btn-success fw-boldest">SAVE</button>
                     </div>
                     </form>
@@ -196,25 +177,4 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="{{ asset('js/add_training.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
-
-
-    <script>
-        $('#asst_repeat').repeater({
-            initEmpty: false,
-
-            defaultValues: {
-                'text-input': 'foo'
-            },
-
-            show: function () {
-                $(this).slideDown();
-            },
-
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        });
-    </script>
 @endpush

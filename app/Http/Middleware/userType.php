@@ -14,17 +14,17 @@ class userType
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $requiredUserType)
+    public function handle(Request $request, Closure $next, string ...$allowedUserTypes)
     {
         // Ensure user is authenticated
         if (!Auth::check()) {
             return redirect()->route('index');
         }
 
-        // Check if the user's usertype matches the required usertype
+        // Check if the user's usertype matches any of the allowed usertypes
         $userType = Auth::user()->usertype;
-        if ($userType !== $requiredUserType) {
-            return redirect()->route('index'); // Redirect to a default route if usertype mismatches
+        if (!in_array($userType, $allowedUserTypes)) {
+            return redirect()->route('calendar'); // Redirect to the calendar route
         }
 
         return $next($request);

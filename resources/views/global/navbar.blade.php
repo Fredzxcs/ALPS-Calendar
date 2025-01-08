@@ -32,38 +32,17 @@
         <!-- Navigation Buttons -->
         <div class="collapse navbar-collapse justify-content-end hover-scale fs-3" style="color: #052a43;" id="navbarNav">
             <ul class="navbar-nav ">
-                <!-- ACCESS Dropdown -->
-                <li class="nav-item dropdown me-5">
-                    <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle"
-                        style="cursor:pointer;"
-                        id="accessDropdown"
-                        data-kt-menu-trigger="click"
-                        data-kt-menu-placement="bottom-start">
-                        ACCESS
-                    </a>
+                <!-- ACCESS Button -->
 
-                    <!--begin::Links-->
-                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-200px py-4"
-                        data-kt-menu="true">
-
-                        <!--begin::Link item-->
-                        <div class="menu-item px-3">
-                            <a href="{{route ('manage_access')}}" class="menu-link px-3">
-                                Manage Access
+                @if (Auth::check() && Auth::user()->usertype === "admin")
+                        <li class="nav-item me-5">
+                            <a class="nav-link fw-medium text-primary-hover fw-bolder"
+                            href="{{ route('manage_access') }}">
+                                ACCESS
                             </a>
-                        </div>
-                        <!--end::Link item-->
+                        </li>
+                @endif
 
-                        <!--begin::Link item-->
-                        <div class="menu-item px-3">
-                            <a href="{{route ('archived_accounts')}}" class="menu-link px-3" id="event_view">
-                                Archived Accounts
-                            </a>
-                        </div>
-                        <!--end::Link item-->
-                    </div>
-                    <!--end::Links-->
-                </li>
 
                 <!-- CALENDAR Button -->
                 <li class="nav-item me-5">
@@ -72,7 +51,8 @@
                         CALENDAR
                     </a>
                 </li>
-                
+
+                @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
                 <!-- CONFIGURATION Dropdown -->
                 <li class="nav-item dropdown me-5">
                     <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle"
@@ -89,7 +69,7 @@
 
                         <!--begin::Link item-->
                         <div class="menu-item px-3">
-                            <a href="#" class="menu-link px-3">
+                            <a href="{{ route('config_courses') }}" class="menu-link px-3">
                                 ALPs Courses
                             </a>
                         </div>
@@ -97,7 +77,7 @@
 
                         <!--begin::Link item-->
                         <div class="menu-item px-3">
-                            <a href="#" class="menu-link px-3" id="event_view">
+                            <a href="{{ route('config_companies') }}" class="menu-link px-3" id="event_view">
                                 List of Companies
                             </a>
                         </div>
@@ -113,6 +93,8 @@
                     </div>
                     <!--end::Links-->
                 </li>
+            @endif
+
 
                 <!-- SETTINGS -->
                 <li class="nav-item dropdown me-5">
@@ -166,6 +148,5 @@
     </div>
 </nav>
 @push('scripts')
-<script src="{{ asset('js/navbar.js') }}">
-</script>
+<script src="{{ asset('js/navbar.js') }}"></script>
 @endpush
