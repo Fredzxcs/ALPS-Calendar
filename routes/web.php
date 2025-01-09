@@ -36,23 +36,21 @@ Route::prefix('calendar')->group(function (){
     Route::get('/add_training', [TrainingController::class, 'create'])->middleware(['auth', 'user:admin,coordinator'])->name('add_training');
     Route::post('/add_training', [TrainingController::class, 'store'])->middleware(['auth', 'user:admin,coordinator'])->name('add_training.store');
     Route::get('/api/get/training', [TrainingController::class, 'gettraining'])->name('get_training');
-
 });
 
 Route::prefix('access')->group(function (){
     Route::get('/', [ManageAccessController::class, 'index'])->middleware(['auth', 'user:admin'])->name('manage_access');
     Route::get('/add_user', [ManageAccessController::class, 'create'])->middleware(['auth', 'user:admin'])->name('add_user');
     Route::post('/add_user', [RegisteredUserController::class, 'admin_store'])->middleware(['auth', 'user:admin'])->name('add_user.store');
+    Route::get('/api/get/user/{id}', [ManageAccessController::class, 'get_user'])->name('get_user');
 });
+
+Route::get('/access/edit_user', [ManageAccessController::class, 'update'])->name('edit_user');
 
 // Add User
 Route::get('/add_user_createacc', function () {
     return view('access.add_user_createacc');
 })->middleware(['auth', 'user:user:admin'])->name('add_user_createacc');
-
-// Edit User - kim (paayos nalang po)
-Route::get('/access/edit_user', function () {
-    return view('access.edit_user');})->name('edit_user');
 
 // Archived Accounts
 Route::get('/access/archive', function () {
