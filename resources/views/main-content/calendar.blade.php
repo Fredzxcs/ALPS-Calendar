@@ -149,7 +149,7 @@
         </div>
     </div>
     <!--begin::Modal - View Training-->
-    <div class="modal fade" id="kt_modal_view_event" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="kt_modal_view_training" tabindex="-1" aria-hidden="true">
         <!--begin::Modal dialog-->
         <div class="modal-dialog modal-dialog-centered mw-650px ">
             <!--begin::Modal content-->
@@ -173,8 +173,7 @@
                 <hr class="my-2 opacity-10 mb-3 mt-1">
                 <!--end::Modal header-->
                 <!--begin::Modal body-->
-                <!--begin::Modal body-->
-                <di class="modal-body py-10 px-lg-17">
+                <div class="modal-body py-10 px-lg-17">
                     <!-- Data Rows -->
                     <div class="container text-black d-flex flex-column justify-content-center">
                         <!--begin::Mode of Training-->
@@ -358,9 +357,11 @@
                         <!-- end: Modal buttons -->
                     </div>
                 </div>
+                <!--End:: modal body-->
+
             </div>
         </div>
-        <!--end::Modal - New Product-->
+        <!--end::Modal - View Training-->
     </div>
         @endsection
     @push('scripts')

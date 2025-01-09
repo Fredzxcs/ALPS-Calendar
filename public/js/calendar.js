@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
             '<div class="fs-7 mb-2"><span class="fw-bold">End:</span> ' + endDate + '</div>' +
             '<div class="fs-7"><span class="fw-bold">Facilitator:</span> John Loyd </div>' +
             '<div class="fs-7 mb-4"><span class="fw-bold">Assistant:</span> Not Yet Assigned </div>' +
-            '<div id="kt_calendar_event_view" type="button" class="btn btn-sm btn-light-primary mt-2" data-bs-toggle="modal" data-bs-target="#kt_modal_view_event" data-dismiss="modal" >VIEW MORE</div>';
+            '<div id="kt_calendar_event_view" type="button" class="btn btn-sm btn-light-primary mt-2" data-bs-toggle="modal" data-bs-target="#kt_modal_view_training" data-dismiss="modal" >VIEW MORE</div>';
         // Popover options
         var options = {
             container: 'body',
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.body.classList.remove('modal-open');
 
                 // Show the modal
-                const modalElement = document.getElementById('kt_modal_view_event');
+                const modalElement = document.getElementById('kt_modal_view_training');
                 const modal = new bootstrap.Modal(modalElement);
                 modal.show();
 
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     };
-    document.getElementById('kt_modal_view_event').addEventListener('hidden.bs.modal', function () {
+    document.getElementById('kt_modal_view_training').addEventListener('hidden.bs.modal', function () {
         document.body.style.overflow = 'auto'; // Restore scrolling
     });
 
