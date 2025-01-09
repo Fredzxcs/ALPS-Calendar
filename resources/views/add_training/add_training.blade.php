@@ -159,7 +159,7 @@
                                         <div data-repeater-item>
                                             <div class="form-group row align-items-center">
                                                 <div class="col-md-9">
-                                                    <input type="text" class="form-control form-control-solid mb-3" id="assistant" placeholder="Enter Assistant's Name" />
+                                                    <input type="text" class="form-control form-control-solid mb-3 assistant" id="assistant" placeholder="Enter Assistant's Name" />
                                                 </div>
                                                 <div class="col-md-3">
                                                     <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mb-3">

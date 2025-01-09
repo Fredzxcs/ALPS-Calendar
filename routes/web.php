@@ -35,7 +35,8 @@ Route::prefix('calendar')->group(function (){
     Route::get('/', [TrainingController::class, 'index'])->middleware(['auth', 'user:admin,coordinator,facilitator'])->name('calendar');
     Route::get('/add_training', [TrainingController::class, 'create'])->middleware(['auth', 'user:admin,coordinator'])->name('add_training');
     Route::post('/add_training', [TrainingController::class, 'store'])->middleware(['auth', 'user:admin,coordinator'])->name('add_training.store');
-    Route::get('/api/get/training', [TrainingController::class, 'gettraining'])->middleware(['auth', 'admin,coordinator,facilitator'])->name('get_training');
+    Route::get('/api/get/training', [TrainingController::class, 'gettraining'])->name('get_training');
+
 });
 
 Route::prefix('access')->group(function (){

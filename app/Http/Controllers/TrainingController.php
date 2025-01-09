@@ -39,12 +39,13 @@ class TrainingController extends Controller
             'mode' => ['required', 'string', 'max:255'],
             'facilitator_id' => ['nullable' , 'integer'],
             'company' => ['nullable', 'string', 'max:255'],
-            'assistant_id' => ['nullable', 'integer'],
+            'assistant_id' => ['nullable', 'string'],
             'credentials_email' => ['nullable'],
             'credentials_password' => ['nullable', 'string'],
             'from_date' => ['required', 'date'],
             'to_date' => ['required', 'date'],
             'from_time' => ['required'],
+            'platform' => ['nullable'],
             'to_time' => ['required'],
         ]);
 
@@ -103,7 +104,7 @@ class TrainingController extends Controller
     public function gettraining(Request $request)
     {
 
-        $trainings = Training::with('schedule')->get();
+        $trainings = Training::with(['schedule','facilitator'])->get();
 
         if ($trainings->isNotEmpty()) {
             return response()->json([

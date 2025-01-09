@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Schedule;
+use App\Models\User;
+
 
 class Training extends Model
 {
@@ -23,5 +25,10 @@ class Training extends Model
     public function schedule()
     {
         return $this->hasOne(Schedule::class, 'training_id');
+    }
+
+    public function facilitator()
+    {
+        return $this->hasOne(User::class, 'id');
     }
 }
