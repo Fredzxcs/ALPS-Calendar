@@ -66,3 +66,7 @@ Route::get('/config/courses', function () {
 // config - companies
 Route::get('/config/companies', function () {
     return view('configuration.companies');})->name('config_companies');
+
+// config - accounts
+Route::get('/config/accounts', function () {
+    return view('configuration.accounts');})->name('config_accounts');

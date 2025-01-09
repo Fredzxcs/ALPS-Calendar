@@ -80,7 +80,7 @@
 
                         <!--begin::Link item-->
                         <div class="menu-item px-3">
-                            <a href="#" class="menu-link px-3" id="event_view">
+                            <a href="{{ route('config_accounts') }}" class="menu-link px-3" id="event_view">
                                 Account Credentials
                             </a>
                         </div>
