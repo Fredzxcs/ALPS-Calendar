@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const endDate = data.allDay
             ? moment(data.endDate).format('MMM DD, YYYY')
             : moment(data.endDate).format('MMM DD, YYYY - h:mm a');
-            const popoverHtml =
+        const popoverHtml =
             '<div class="fw-bolder mb-2">' + data.eventName + '</div>' +
             '<div class="fs-7 mb-2"><span class="badge badge-primary fw-bold">Virtual</span><span class="badge badge-info fw-bold">Face-to-Face</span><span class="badge badge-danger fw-bold">Public Course</span></div>' +
             '<div class="fs-7"><span class="fw-bold">Start:</span> ' + startDate + '</div>' +
@@ -77,13 +77,22 @@ document.addEventListener('DOMContentLoaded', function () {
             if (typeof bootstrapModal !== 'undefined' && bootstrapModal) {
                 bootstrapModal.hide(); // Hide the modal using Bootstrap's built-in method
             }
+            document.getElementById('kt_modal_view_training').addEventListener('hidden.bs.modal', function () {
+                document.body.style.overflow = 'auto'; // Restore scrolling
+                document.body.style.paddingRight = ''; // Reset padding added by Bootstrap
+            });
+            const modalElement = document.getElementById('kt_modal_view_training');
+            modalElement.addEventListener('hidden.bs.modal', function () {
+                const backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(backdrop => backdrop.remove());
+
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            });
         });
 
 
     };
-    document.getElementById('kt_modal_view_training').addEventListener('hidden.bs.modal', function () {
-        document.body.style.overflow = 'auto'; // Restore scrolling
-    });
 
     if (calendarEl) {
         // Initialize the calendar
