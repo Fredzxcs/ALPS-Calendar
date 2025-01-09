@@ -81,7 +81,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     };
-
+    document.getElementById('kt_modal_view_event').addEventListener('hidden.bs.modal', function () {
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    });
 
     if (calendarEl) {
         // Initialize the calendar
