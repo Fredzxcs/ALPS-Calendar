@@ -29,7 +29,6 @@
             </div>
         </div>
 
-
         <!-- Table -->
         <div class="table-responsive" style="padding: 0; margin: 0;">
             <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" id="courses_table" style="margin: auto;">
@@ -41,10 +40,16 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if($courses->isEmpty())
+                    <tr>
+                        <td colspan="3">No courses available.</td>
+                    </tr>
+                    @else
                     <!-- Row -->
+                    @foreach($courses as $course)
                     <tr>
-                        <td>Sample Course Name</td>
-                        <td>SCN-01</td>
+                        <td>{{ $course->course_name}}</td>
+                        <td>{{ $course->course_code }}</td>
                         <td>
                             <!--begin::Menu-->
                             <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
@@ -70,210 +75,8 @@
                             <!--end::Menu-->
                         </td>
                     </tr>
-
-                    <tr>
-                        <td>Sample Course Name</td>
-                        <td>SCN-01</td>
-                        <td>
-                            <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
-                                data-kt-menu-trigger="click"
-                                data-kt-menu-placement="bottom-start">
-                                MENU
-                            </button>
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
-                                data-kt-menu="true">
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_course">
-                                        <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
-                                    </a>
-                                </div>
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn">
-                                        <i class="bi bi-trash text-danger me-2"></i> Delete
-                                    </a>
-                                </div>
-                            </div>
-                            <!--end::Menu-->
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Sample Course Name</td>
-                        <td>SCN-01</td>
-                        <td>
-                            <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
-                                data-kt-menu-trigger="click"
-                                data-kt-menu-placement="bottom-start">
-                                MENU
-                            </button>
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
-                                data-kt-menu="true">
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_course">
-                                        <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
-                                    </a>
-                                </div>
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn">
-                                        <i class="bi bi-trash text-danger me-2"></i> Delete
-                                    </a>
-                                </div>
-                            </div>
-                            <!--end::Menu-->
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Sample Course Name</td>
-                        <td>SCN-01</td>
-                        <td>
-                            <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
-                                data-kt-menu-trigger="click"
-                                data-kt-menu-placement="bottom-start">
-                                MENU
-                            </button>
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
-                                data-kt-menu="true">
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_course">
-                                        <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
-                                    </a>
-                                </div>
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn">
-                                        <i class="bi bi-trash text-danger me-2"></i> Delete
-                                    </a>
-                                </div>
-                            </div>
-                            <!--end::Menu-->
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Sample Course Name</td>
-                        <td>SCN-01</td>
-                        <td>
-                            <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
-                                data-kt-menu-trigger="click"
-                                data-kt-menu-placement="bottom-start">
-                                MENU
-                            </button>
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
-                                data-kt-menu="true">
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_course">
-                                        <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
-                                    </a>
-                                </div>
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn">
-                                        <i class="bi bi-trash text-danger me-2"></i> Delete
-                                    </a>
-                                </div>
-                            </div>
-                            <!--end::Menu-->
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Sample Course Name</td>
-                        <td>SCN-01</td>
-                        <td>
-                            <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
-                                data-kt-menu-trigger="click"
-                                data-kt-menu-placement="bottom-start">
-                                MENU
-                            </button>
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
-                                data-kt-menu="true">
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_course">
-                                        <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
-                                    </a>
-                                </div>
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn">
-                                        <i class="bi bi-trash text-danger me-2"></i> Delete
-                                    </a>
-                                </div>
-                            </div>
-                            <!--end::Menu-->
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Sample Course Name</td>
-                        <td>SCN-01</td>
-                        <td>
-                            <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
-                                data-kt-menu-trigger="click"
-                                data-kt-menu-placement="bottom-start">
-                                MENU
-                            </button>
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
-                                data-kt-menu="true">
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_course">
-                                        <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
-                                    </a>
-                                </div>
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn">
-                                        <i class="bi bi-trash text-danger me-2"></i> Delete
-                                    </a>
-                                </div>
-                            </div>
-                            <!--end::Menu-->
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>Sample Course Name</td>
-                        <td>SCN-01</td>
-                        <td>
-                            <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
-                                data-kt-menu-trigger="click"
-                                data-kt-menu-placement="bottom-start">
-                                MENU
-                            </button>
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
-                                data-kt-menu="true">
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_course">
-                                        <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
-                                    </a>
-                                </div>
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn">
-                                        <i class="bi bi-trash text-danger me-2"></i> Delete
-                                    </a>
-                                </div>
-                            </div>
-                            <!--end::Menu-->
-                        </td>
-                    </tr>
-                    
+                    @endforeach
+                @endif
                 </tbody>
             </table>
         </div>
@@ -287,6 +90,7 @@
 
 
     </div>
+
     <!--begin::Modals-->
     <!--begin::Modal - Add Course-->
     <div class="modal fade" id="modal_add_course" tabindex="-1" aria-hidden="true">
@@ -295,8 +99,8 @@
             <!--begin::Modal content-->
             <div class="modal-content">
                 <!--begin::Form-->
-                <form class="form" action="#" id="modal_add_course_form">
-                    <input class="" type="hidden">
+                <form class="form" id="modal_add_course_form">
+                    <input class="" type="hidden" name="_token" value="{{ csrf_token() }}">
                     <!--begin::Modal header-->
                     <div class="modal-header">
                         <h2 class="fw-boldest" data-kt-calendar="title" style="color: #7c0101;">ADD COURSE</h2>
@@ -330,7 +134,9 @@
                         <button type="submit" class="btn btn-success me-2 addBtn" id="add_course_submit">
                             SAVE
                         </button>
-                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CANCEL</button>
+                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">
+                            CANCEL
+                        </button>
                         <!--end::Button-->
                     </div>
                     <!--end::Modal footer-->
@@ -340,6 +146,9 @@
         </div>
     </div>
     <!--end::Modal - Add Course-->
+
+    <!-- DOM element to store the route URL -->
+    <div id="route-config" data-url="{{ route('store_course') }}"></div>
 
     <!--begin::Modal - Edit Course-->
     <div class="modal fade" id="modal_edit_course" tabindex="-1" aria-hidden="true">

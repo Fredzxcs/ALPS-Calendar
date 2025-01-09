@@ -5,6 +5,7 @@ use App\Http\Controllers\LandingpageController;     //  LANDING PAGE CONTROLLER
 use App\Http\Controllers\ManageAccessController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TrainingController;
+use App\Http\Controllers\ConfigureCoursesController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -58,9 +59,16 @@ Route::get('/access/archive', function () {
     return view('access.archived_accounts');})->name('archived_accounts');
 
 // config - courses
-Route::get('/config/courses', function () {
-    return view('configuration.courses');})->name('config_courses');
+Route::prefix('/config/courses')->group(function(){
+    Route::get('/',[ConfigureCoursesController::class, 'showCourses'])->middleware(['auth', 'user:admin, coordinator'])->name('config_courses');
+    Route::post('/store', [ConfigureCoursesController::class, 'storeCourse'])->middleware(['auth', 'user:admin, coordinator'])->name('store_course');
+
+});
+
+
 
 // config - companies
 Route::get('/config/companies', function () {
     return view('configuration.companies');})->name('config_companies');
+
+

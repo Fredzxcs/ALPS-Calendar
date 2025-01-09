@@ -26,12 +26,47 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire(
-                    'Added!',
-                    'The course has been added.',
-                    'success'
-                );
-                // TODO: Add logic to perform add course
+                const courseCode = document.getElementById('add_course_code').value;
+            
+                const formData = new FormData();
+                formData.append('course_name', courseName.value.trim());
+                formData.append('course_code', courseCode.trim());
+
+                // Get URL from blade file
+                const routeUrl = document.getElementById('route-config').getAttribute('data-url');
+                console.log(routeUrl); // Add this line to check the value of routeUrl
+                
+                $.ajax({
+                    url: routeUrl,  // The correct URL for store_course
+                    method: 'POST',
+                    data: formData,
+                    contentType: false,  // Prevent jQuery from setting the content type
+                    processData: false, 
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // Add CSRF token header
+                    },
+                    
+                    success: function(response){
+                        console.log(response)   // debugging
+                        if (response.success){
+                            Swal.fire(
+                                'Added!',
+                                'The course has been added.',
+                                'success'
+                            );
+                            location.reload();  // Reload to show the new course
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                'There was an issue adding the course.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', status, error);  // Add error handler for debugging
+                    }
+                })
             }
         });
     });
@@ -183,6 +218,7 @@ document.addEventListener("DOMContentLoaded", function () {
     createPaginationButtons();
     displayPage(1); // Show the first page initially
 });
+
 
 
 
