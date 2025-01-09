@@ -148,7 +148,7 @@
             </div>
         </div>
     </div>
-    <!--begin::Modal - New Product-->
+    <!--begin::Modal - View Training-->
     <div class="modal fade" id="kt_modal_view_event" tabindex="-1" aria-hidden="true">
         <!--begin::Modal dialog-->
         <div class="modal-dialog modal-dialog-centered mw-650px ">
@@ -361,7 +361,8 @@
             </div>
         </div>
         <!--end::Modal - New Product-->
-    @endsection
+    </div>
+        @endsection
     @push('scripts')
         <script src="{{ asset('js/calendar.js') }}"></script>
     @endpush
