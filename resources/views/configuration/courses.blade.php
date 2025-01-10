@@ -129,6 +129,8 @@
                     </div>
                     <!--end::Modal body-->
                     <!--begin::Modal footer-->
+                        <!-- DOM element to store the route URL -->
+                    <div id="route-config" data-url="{{ route('add_course') }}"></div>
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
                         <button type="submit" class="btn btn-success me-2 addBtn" id="add_course_submit">
@@ -146,9 +148,6 @@
         </div>
     </div>
     <!--end::Modal - Add Course-->
-
-    <!-- DOM element to store the route URL -->
-    <div id="route-config" data-url="{{ route('store_course') }}"></div>
 
     <!--begin::Modal - Edit Course-->
     <div class="modal fade" id="modal_edit_course" tabindex="-1" aria-hidden="true">

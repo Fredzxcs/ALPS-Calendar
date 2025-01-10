@@ -61,7 +61,7 @@ Route::get('/access/archive', function () {
 // config - courses
 Route::prefix('/config/courses')->group(function(){
     Route::get('/',[ConfigureCoursesController::class, 'showCourses'])->middleware(['auth', 'user:admin, coordinator'])->name('config_courses');
-    Route::post('/store', [ConfigureCoursesController::class, 'storeCourse'])->middleware(['auth', 'user:admin, coordinator'])->name('store_course');
+    Route::post('/store', [ConfigureCoursesController::class, 'addCourse'])->middleware(['auth', 'user:admin, coordinator'])->name('add_course');
 
 });
 

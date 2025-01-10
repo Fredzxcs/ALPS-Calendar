@@ -3,15 +3,18 @@ document.addEventListener('DOMContentLoaded', () => {
     //Validation for Add Course form
     document.getElementById('modal_add_course_form').addEventListener('submit', (event) => {
         event.preventDefault();
+    
         const courseName = document.getElementById('add_course_name');
-        
+        const courseCode = document.getElementById('add_course_code');
+        const submitButton = document.getElementById('add_course_submit');
+    
         if (!courseName.value.trim()) {
             courseName.classList.add('is-invalid');
             return;
         } else {
             courseName.classList.remove('is-invalid');
         }
-
+    
         Swal.fire({
             title: 'Are you sure?',
             text: "You are about to add this course.",
@@ -26,50 +29,45 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                const courseCode = document.getElementById('add_course_code').value;
-            
+                submitButton.disabled = true;
+    
                 const formData = new FormData();
                 formData.append('course_name', courseName.value.trim());
-                formData.append('course_code', courseCode.trim());
-
-                // Get URL from blade file
+                formData.append('course_code', courseCode.value.trim() || '');
+    
                 const routeUrl = document.getElementById('route-config').getAttribute('data-url');
-                console.log(routeUrl); // Add this line to check the value of routeUrl
-                
+                console.log('Route URL:', routeUrl);
+    
                 $.ajax({
-                    url: routeUrl,  // The correct URL for store_course
+                    url: routeUrl,
                     method: 'POST',
                     data: formData,
-                    contentType: false,  // Prevent jQuery from setting the content type
-                    processData: false, 
+                    contentType: false,
+                    processData: false,
                     headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')  // Add CSRF token header
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    
-                    success: function(response){
-                        console.log(response)   // debugging
-                        if (response.success){
-                            Swal.fire(
-                                'Added!',
-                                'The course has been added.',
-                                'success'
-                            );
-                            location.reload();  // Reload to show the new course
+                    success: function (response) {
+                        console.log('Response:', response);
+                        if (response.success) {
+                            Swal.fire('Added!', 'The course has been added.', 'success');
+                            location.reload(); // Or dynamically update the course list
                         } else {
-                            Swal.fire(
-                                'Error!',
-                                'There was an issue adding the course.',
-                                'error'
-                            );
+                            Swal.fire('Error!', 'There was an issue adding the course.', 'error');
                         }
                     },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX Error:', status, error);  // Add error handler for debugging
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', status, error, xhr.responseText);
+                        Swal.fire('Error!', 'An unexpected error occurred.', 'error');
+                    },
+                    complete: function () {
+                        submitButton.disabled = false;
                     }
-                })
+                });
             }
         });
     });
+    
 
     //Validation for Edit Course form
     document.getElementById('modal_edit_course_form').addEventListener('submit', (event) => {

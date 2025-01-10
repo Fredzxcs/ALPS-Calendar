@@ -16,7 +16,7 @@ class ConfigureCoursesController extends Controller
         return view('configuration.courses', compact('courses'));
     }
 
-    public function storeCourse(Request $request)
+    public function addCourse(Request $request)
     {
         dd($request->all());
         // Validate the incoming data
