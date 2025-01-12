@@ -17,7 +17,7 @@
     <!--end::Global Stylesheets Bundle-->
 </head>
 <div class="bg-image"
-    style="background-image: url('{{ asset('img/ALPs_LoginBG.png') }}'); background-repeat: no-repeat; background-size: cover; background-position: center; height: 100vh; width: 100vw;">
+    style="background-image: url('{{ asset('img/ALPsBG.png') }}'); background-repeat: no-repeat; background-size: cover; background-position: center; height: 100vh; width: 100vw;">
     {{-- <div class="text-left">
         <img src="{{ asset('img/ALPs_LOGO.jpg') }}" alt="ALPs Logo" style="width: 100px; height: auto;">
     </div> --}}
@@ -45,17 +45,31 @@
                             <x-input-error :messages="$errors->get('username')" class="mt-2" />
 
                     </div>
+                    
+
                     <!-- Password -->
                     <div class="mb-3">
                         <label for="password" class="form-label text-white required">Password</label>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
-                        <span class="btn btn-sm btn-icon position-absolute translate-middle-y" id="togglePassword" style="top: 65%; right: 10%; cursor: pointer;">
-                            <i class="fas fa-eye-slash fs-3" id="eyeSlash"></i>
-                            <i class="fas fa-eye d-none fs-3" id="eye"></i>
-                        </span>
-                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                        <a href="#" class="d-block mt-1 text-muted text-hover-primary" style="font-size: 0.9rem;">Forgot Password?</a>
+                        <div class="position-relative">
+                            <input type="password" class="form-control" 
+                                placeholder="Enter your password" 
+                                id="password"
+                                name="password"
+                            />
+                            <!-- Visibility toggle -->
+                            <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2 togglePassword"
+                                data-kt-password-meter-control="visibility" 
+                                data-target="#password" 
+                                aria-label="Toggle Password Visibility">
+                                <i class="bi bi-eye-slash fs-2"></i>
+                                <i class="bi bi-eye fs-2 d-none"></i>
+                            </span>
+                            <!-- <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                            <a href="#" class="d-block mt-1 text-muted text-hover-primary" style="font-size: 0.9rem;">Forgot Password?</a> -->
+                        </div>
                     </div>
+
+
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-center">
                         <a href="/calendar">
@@ -72,22 +86,21 @@
 
 </html>
 
-<script>
-    // Select elements
-    const passwordInput = document.getElementById('password');
-    const togglePassword = document.getElementById('togglePassword');
-    const eyeSlash = document.getElementById('eyeSlash');
-    const eye = document.getElementById('eye');
-
-    // Toggle password visibility
-    togglePassword.addEventListener('click', () => {
-        const isPasswordVisible = passwordInput.type === 'text';
-
-        // Toggle input type
-        passwordInput.type = isPasswordVisible ? 'password' : 'text';
-
-        // Toggle icon visibility
-        eyeSlash.classList.toggle('d-none', !isPasswordVisible);
-        eye.classList.toggle('d-none', isPasswordVisible);
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>    
+    //Toggle password visibility
+    $('.togglePassword').on('click', function () {
+        const input = $($(this).data('target'));
+        const icons = $(this).find('i');
+        
+        if (input.attr('type') === 'password') {
+            input.attr('type', 'text');
+            icons.first().addClass('d-none');
+            icons.last().removeClass('d-none');
+        } else {
+            input.attr('type', 'password');
+            icons.first().removeClass('d-none');
+            icons.last().addClass('d-none');
+        }
     });
 </script>
