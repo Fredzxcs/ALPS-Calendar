@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.body.classList.remove('modal-open');
 
                 // Show the modal
-                const modalElement = document.getElementById('kt_modal_view_event');
+                const modalElement = document.getElementById('kt_modal_view_training');
                 const modal = new bootstrap.Modal(modalElement);
                 modal.show();
 
@@ -86,6 +86,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (typeof bootstrapModal !== 'undefined' && bootstrapModal) {
                 bootstrapModal.hide(); // Hide the modal using Bootstrap's built-in method
             }
+            document.getElementById('kt_modal_view_training').addEventListener('hidden.bs.modal', function () {
+                document.body.style.overflow = 'auto'; // Restore scrolling
+                document.body.style.paddingRight = ''; // Reset padding added by Bootstrap
+            });
+            const modalElement = document.getElementById('kt_modal_view_training');
+            modalElement.addEventListener('hidden.bs.modal', function () {
+                const backdrops = document.querySelectorAll('.modal-backdrop');
+                backdrops.forEach(backdrop => backdrop.remove());
+
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+            });
         });
 
 
@@ -100,7 +112,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay',
             },
-            events: [], // Initially empty
+            dayMaxEvents: 2,
+            events: [],
+            moreLinkClick: function (info) {
+                // Slice the excess events, excluding the first 3 visible ones
+                const excessEvents = info.allSegs.slice(3);
+
+                // Generate content for the modal
+                let modalContent = `<h5>Excess Events on ${info.date.toLocaleDateString()}</h5><ul>`;
+                excessEvents.forEach((seg) => {
+                    modalContent += `<li>${seg.event.title}</li>`;
+                });
+                modalContent += '</ul>';
+            },
             eventMouseEnter: function (info) {
                 if (currentHoveredEvent === info.event.id) {
                     // If already hovered, do nothing
@@ -126,11 +150,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Initialize popover
                 initPopovers(info.el, eventData);
             },
+
             eventMouseLeave: function (info) {
                 // Do nothing on mouse leave for the current event
                 // Popover will only close when another event is hovered
             },
         });
+
         calendar.render();
 
         // Fetch events dynamically using jQuery AJAX

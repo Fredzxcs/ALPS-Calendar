@@ -1,6 +1,8 @@
 @extends('global.layout')
 
 @section('maincontent')
+
+
     <div class="mt-4 d-flex flex-wrap gap-4 mt-20">
         {{-- <!-- Left Side: Search Course and Search Trainer -->
     <div class="d-flex flex-column" style="flex: 1; max-width: 30%; gap: 20px;">
@@ -148,8 +150,27 @@
             </div>
         </div>
     </div>
-    <!--begin::Modal - New Product-->
-    <div class="modal fade" id="kt_modal_view_event" tabindex="-1" aria-hidden="true">
+
+        {{-- <!--begin:: Modal for displaying excess events -->
+        <div class="modal fade" id="kt_modal_view_training" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Event Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="kt_modal_view_training_content">
+                        <!-- Content will be dynamically added here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
+
+    <!--begin::Modal - View Training-->
+    <div class="modal fade" id="kt_modal_view_training" tabindex="-1" aria-hidden="true">
         <!--begin::Modal dialog-->
         <div class="modal-dialog modal-dialog-centered mw-650px ">
             <!--begin::Modal content-->
@@ -173,8 +194,7 @@
                 <hr class="my-2 opacity-10 mb-3 mt-1">
                 <!--end::Modal header-->
                 <!--begin::Modal body-->
-                <!--begin::Modal body-->
-                <di class="modal-body py-10 px-lg-17">
+                <div class="modal-body py-10 px-lg-17">
                     <!-- Data Rows -->
                     <div class="container text-black d-flex flex-column justify-content-center">
                         <!--begin::Mode of Training-->
@@ -349,7 +369,7 @@
 
                         <!-- Begin: Modal buttons -->
                         <div class="modal-footer justify-content-end">
-                            <a href="./add_training/edit_training.blade.php" class="btn btn-primary me-2">
+                            <a href="{{route ('edit_training')}}" class="btn btn-primary me-2">
                                 <i class="bi bi-pencil-fill me-2"></i>EDIT
                             </a>
                             <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
@@ -358,10 +378,13 @@
                         <!-- end: Modal buttons -->
                     </div>
                 </div>
+                <!--End:: modal body-->
+
             </div>
         </div>
-        <!--end::Modal - New Product-->
-    @endsection
+        <!--end::Modal - View Training-->
+    </div>
+        @endsection
     @push('scripts')
         <script src="{{ asset('js/calendar.js') }}"></script>
     @endpush

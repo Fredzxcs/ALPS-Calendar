@@ -56,6 +56,9 @@ Route::get('/add_user_createacc', function () {
 Route::get('/access/archive', function () {
     return view('access.archived_accounts');})->name('archived_accounts');
 
+// Edit Training
+Route::get('/calendar/edit_training', function () {
+    return view('add_training.edit_training');})->name('edit_training');
 // config - courses
 Route::get('/config/courses', function () {
     return view('configuration.courses');})->name('config_courses');
@@ -67,3 +70,4 @@ Route::get('/config/companies', function () {
 // config - accounts
 Route::get('/config/accounts', function () {
     return view('configuration.accounts');})->name('config_accounts');
+
