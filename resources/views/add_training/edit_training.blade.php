@@ -137,7 +137,7 @@
                                 <select id="facilitator" class="form-select form-select-solid">
                                     <option disabled selected>Select Facilitator</option>
                                     <option value="">No Facilitator Yet</option>
-                                    
+
                                 </select>
                             </div>
                         </div>
@@ -149,7 +149,7 @@
                                 <select id="assistant" class="form-select form-select-solid">
                                     <option disabled selected>Select Assistant</option>
                                     <option value="">No Assistant Yet</option>
-                                    
+
                                 </select>
                             </div>
                         </div>
@@ -159,7 +159,7 @@
                     <div class="d-flex justify-content-center gap-5 ">
                         <a href="{{route ('calendar')}}">
                             <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
-                        </a>    
+                        </a>
                         <button type="button" id="edit_training_submit" class="btn btn-success fw-boldest">SAVE</button>
                     </div>
                     </form>
@@ -170,5 +170,5 @@
 @endsection
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="{{ asset('js/add_training.js') }}"></script>
+    {{-- <script src="{{ asset('js/edit_training.js') }}"></script> --}}
 @endpush
