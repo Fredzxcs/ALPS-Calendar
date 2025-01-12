@@ -198,5 +198,22 @@
     <script src="{{ asset('js/edit_training.js') }}"></script>
     <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
 
+    <script>
+        $('#asst_repeat').repeater({
+            initEmpty: false,
 
+            defaultValues: {
+                'text-input': 'foo'
+            },
+
+            show: function () {
+                $(this).slideDown();
+            },
+
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+    </script>
 @endpush
