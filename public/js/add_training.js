@@ -83,8 +83,22 @@ $(document).ready(function (e){
 
         //faci
         let facilitator_id = $('#facilitator').find('option:selected').val();
+
         //asst
-        let assistant_id = $('#assistant').find('option:selected').val();
+        let assistant_id = '';
+
+        $('div[data-repeater-list="asst_repeat"] .assistant').each(function() {
+            const value = $(this).val().trim();
+
+            if (value) {
+                if (assistant_id.length > 0) {
+                    assistant_id += ', ';
+                }
+                assistant_id += value;
+            }
+        });
+
+        console.log(assistant_id);
 
         //dates
         let from_date = startDateFormatted;
@@ -96,6 +110,8 @@ $(document).ready(function (e){
 
         //course
         let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
+
+        let platform = $('#platform').val();
 
         //account
         let credentials_email = $('#credentials').find('option:selected').text();
@@ -110,6 +126,7 @@ $(document).ready(function (e){
         let formData = new FormData();
 
         formData.append('course', course);
+        formData.append('platform', platform);
         formData.append('facilitator_id', facilitator_id);
         formData.append('company', company);
         formData.append('assistant_id', assistant_id);
@@ -121,6 +138,10 @@ $(document).ready(function (e){
         formData.append('to_date', to_date);
         formData.append('from_time', from_time);
         formData.append('to_time', to_time);
+
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
 
         //ajax
         $.ajax({
@@ -157,7 +178,7 @@ $(document).ready(function (e){
                     });
                 }
             },
-            error: function(xhr, status, error) {
+            error: function(xhr, status, error, response) {
                 console.log('AJAX Error Details:');
                 console.log('Status:', status);
                 console.log('Error:', error);
@@ -166,13 +187,11 @@ $(document).ready(function (e){
                 console.log('Response Status:', xhr.status);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'There was an error adding the user.',
+                    text: response.message || 'There was an error adding the user.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             }
         });
-
     });
-
 });

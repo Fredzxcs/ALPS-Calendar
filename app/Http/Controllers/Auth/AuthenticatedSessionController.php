@@ -36,7 +36,6 @@ class AuthenticatedSessionController extends Controller
 
         $usertype = $request->user()->usertype;
 
-        // IDENTIFY USERTYPE
         if (array_key_exists($usertype, $redirectRoutes))
         {
             return redirect()->route($redirectRoutes[$usertype]);

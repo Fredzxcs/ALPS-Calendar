@@ -29,10 +29,12 @@ $(document).ready(function (e){
         let image = $('input[name="avatar"]')[0].files[0];
         let username = $('#username').val();
         let password = $('#password').val();
+        let color = $('#color').val();
 
         let formData = new FormData();
         formData.append('usertype', usertype);
         formData.append('name', name);
+        formData.append('color', color);
         formData.append('email', email);
         formData.append('contact_number', contact_number);
         formData.append('image', image);
