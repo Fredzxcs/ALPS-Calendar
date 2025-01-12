@@ -6,6 +6,7 @@ use App\Http\Controllers\ManageAccessController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ConfigureCoursesController;
+use App\Http\Controllers\ConfigureCompanyController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -65,10 +66,8 @@ Route::prefix('/config/courses')->group(function(){
 
 });
 
-
-
 // config - companies
-Route::get('/config/companies', function () {
-    return view('configuration.companies');})->name('config_companies');
-
+Route::prefix('/config/companies')->group(function () {
+    Route::get('/',[ConfigureCompanyController::Class, 'showCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('config_companies');
+});
 

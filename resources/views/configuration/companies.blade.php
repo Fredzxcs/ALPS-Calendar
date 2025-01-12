@@ -43,12 +43,19 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if($company->isEmpty())
+                    <tr>
+                        <td colspan="3">No companies available.</td>
+                    </tr>
+                    @else
+
+                    @foreach($company as $company)
                     <!-- Row -->
                     <tr>
-                        <td>Sample Company Name</td>
-                        <td>Kimberly Kho</td>
-                        <td>09-----</td>
-                        <td>sample@email.com</td>
+                        <td>{{ $company->company_name }}</td>
+                        <td>{{ $company->contact_person }}</td>
+                        <td>{{ $company->contact_number }}</td>
+                        <td>{{ $company->email}}</td>
                         <td>
                             <!--begin::Menu-->
                             <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
@@ -74,7 +81,8 @@
                             <!--end::Menu-->
                         </td>
                     </tr>
-                    
+                    @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>

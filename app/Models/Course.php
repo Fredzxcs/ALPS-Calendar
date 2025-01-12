@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Courses extends Model
+class Course extends Model
 {
+    /** @use HasFactory<\Database\Factories\CoursesFactory> */
     use HasFactory;
 
-    // Define the table name
     protected $table = 'course';
 
     // Define the columns that are mass assignable

@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Courses; // Ensure the model name matches
+use App\Models\Course; // Ensure the model name matches
 
 class ConfigureCoursesController extends Controller
 {
     public function showCourses()
     {
         // Retrieve all courses from the database
-        $courses = Courses::all();
+        $courses = Course::all();
 
         // Pass courses to the view
         return view('configuration.courses', compact('courses'));

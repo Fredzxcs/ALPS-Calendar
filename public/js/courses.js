@@ -1,6 +1,27 @@
 //Validation
 document.addEventListener('DOMContentLoaded', () => {
     //Validation for Add Course form
+    // document.getElementById('modal_add_course_form').addEventListener('submit', (event) => {
+    //     // Prevent form submission if validation fails
+    //     const courseName = document.getElementById('add_course_name');
+    //     const courseCode = document.getElementById('add_course_code');
+    
+    //     // Basic Validation
+    //     if (!courseName.value.trim()) {
+    //         event.preventDefault(); // Stop the form from submitting
+    //         courseName.classList.add('is-invalid'); // Add invalid style
+    //         return; // Stop further execution
+    //     } else {
+    //         courseName.classList.remove('is-invalid'); // Remove invalid style
+    //     }
+    
+    //     // Optional Confirmation Before Submission
+    //     const confirmation = confirm('Are you sure you want to add this course?');
+    //     if (!confirmation) {
+    //         event.preventDefault(); // Stop the form from submitting if the user cancels
+    //     }
+    // });
+
     document.getElementById('modal_add_course_form').addEventListener('submit', (event) => {
         event.preventDefault();
     
@@ -8,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const courseCode = document.getElementById('add_course_code');
         const submitButton = document.getElementById('add_course_submit');
     
+        // Basic Validation for Course Name
         if (!courseName.value.trim()) {
             courseName.classList.add('is-invalid');
             return;
@@ -15,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             courseName.classList.remove('is-invalid');
         }
     
+        // Display Confirmation Dialog
         Swal.fire({
             title: 'Are you sure?',
             text: "You are about to add this course.",
@@ -31,33 +54,32 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result.isConfirmed) {
                 submitButton.disabled = true;
     
-                const formData = new FormData();
-                formData.append('course_name', courseName.value.trim());
-                formData.append('course_code', courseCode.value.trim() || '');
+                const formData = {
+                    course_name: courseName.value.trim(),
+                    course_code: courseCode.value.trim() || ''
+                };
     
-                const routeUrl = document.getElementById('route-config').getAttribute('data-url');
-                console.log('Route URL:', routeUrl);
-    
+                // FETCH ROUTE URL FROM BLADE DATA ATTRIBUTE
+                const routeUrl = document.getElementById('route-config').dataset.url;
+                console.log("Route URL:", routeUrl);
+                
                 $.ajax({
                     url: routeUrl,
                     method: 'POST',
                     data: formData,
-                    contentType: false,
-                    processData: false,
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     success: function (response) {
-                        console.log('Response:', response);
                         if (response.success) {
-                            Swal.fire('Added!', 'The course has been added.', 'success');
-                            location.reload(); // Or dynamically update the course list
+                            Swal.fire('Added!', 'The course has been added successfully.', 'success')
+                                .then(() => location.reload());
                         } else {
                             Swal.fire('Error!', 'There was an issue adding the course.', 'error');
                         }
                     },
                     error: function (xhr, status, error) {
-                        console.error('AJAX Error:', status, error, xhr.responseText);
+                        console.error('AJAX Error:', xhr.responseText);
                         Swal.fire('Error!', 'An unexpected error occurred.', 'error');
                     },
                     complete: function () {
@@ -68,8 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-
     //Validation for Edit Course form
+    
     document.getElementById('modal_edit_course_form').addEventListener('submit', (event) => {
         event.preventDefault();
         const courseName = document.getElementById('edit_course_name');

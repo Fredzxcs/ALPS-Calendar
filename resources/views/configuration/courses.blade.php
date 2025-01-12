@@ -76,7 +76,7 @@
                         </td>
                     </tr>
                     @endforeach
-                @endif
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -100,7 +100,9 @@
             <div class="modal-content">
                 <!--begin::Form-->
                 <form class="form" id="modal_add_course_form">
+
                     <input class="" type="hidden" name="_token" value="{{ csrf_token() }}">
+
                     <!--begin::Modal header-->
                     <div class="modal-header">
                         <h2 class="fw-boldest" data-kt-calendar="title" style="color: #7c0101;">ADD COURSE</h2>
@@ -114,29 +116,44 @@
                         </div>
                     </div>
                     <!--end::Modal header-->
+                    
                     <!--begin::Modal body-->
                     <div class="modal-body py-10 px-lg-17">
                         <div class="row mb-5">
+
                             <label for="course_name" class="form-label fw-bold required">Course Name</label>
-                            <input type="text" class="form-control form-control-solid" id="add_course_name" placeholder="Enter Course Name">
+                            <input type="text" 
+                                class="form-control form-control-solid" 
+                                id="add_course_name" 
+                                placeholder="Enter Course Name">
+
                             <div class="invalid-feedback">Required field</div>
                         </div>
 
                         <div class="row mb-5">
                             <label for="course_code" class="form-label fw-bold">Course Code</label>
-                            <input type="text" class="form-control form-control-solid" id="add_course_code" placeholder="Enter Course Code (Optional)">
+                            <input type="text" 
+                                class="form-control form-control-solid" 
+                                id="add_course_code" 
+                                placeholder="Enter Course Code (Optional)">
                         </div>
                     </div>
                     <!--end::Modal body-->
                     <!--begin::Modal footer-->
-                        <!-- DOM element to store the route URL -->
+                    
+                    <!-- DOM element to store the route URL -->
                     <div id="route-config" data-url="{{ route('add_course') }}"></div>
+     
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" class="btn btn-success me-2 addBtn" id="add_course_submit">
+                        <button type="submit" 
+                            class="btn btn-success me-2 addBtn" 
+                            id="add_course_submit">
                             SAVE
                         </button>
-                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">
+                        <button type="reset" 
+                            class="btn btn-light" 
+                            data-bs-dismiss="modal">
                             CANCEL
                         </button>
                         <!--end::Button-->
