@@ -127,6 +127,7 @@ $(document).ready(function (e){
 
         formData.append('course', course);
         formData.append('platform', platform);
+        formData.append('location', location);
         formData.append('facilitator_id', facilitator_id);
         formData.append('company', company);
         formData.append('assistant_id', assistant_id);

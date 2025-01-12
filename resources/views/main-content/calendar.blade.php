@@ -172,12 +172,12 @@
     <!--begin::Modal - View Training-->
     <div class="modal fade" id="kt_modal_view_training" tabindex="-1" aria-hidden="true">
         <!--begin::Modal dialog-->
-        <div class="modal-dialog modal-dialog-centered mw-650px ">
+        <div class="modal-dialog modal-dialog-centered mw-650px">
             <!--begin::Modal content-->
             <div class="modal-content">
                 <!--begin::Modal header-->
                 <div class="modal-header border-0 justify-content-between align-items-center">
-                    <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="viewTrainingLabel">VIEW TRAINING</h1>
+                    <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="modal-title">VIEW TRAINING</h1>
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -197,7 +197,7 @@
                 <div class="modal-body py-10 px-lg-17">
                     <!-- Data Rows -->
                     <div class="container text-black d-flex flex-column justify-content-center">
-                        <!--begin::Mode of Training-->
+                        <!-- Mode of Training -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -208,13 +208,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Public Course</p>
+                                    <p class="lead fs-6" id="modal-mode-of-training">Public Course</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Mode of Training-->
-
-                        <!--begin::Credentials-->
+                        <!-- Credentials -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -225,13 +223,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">sample@gmail.com</p>
+                                    <p class="lead fs-6" id="modal-credentials">sample@gmail.com</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Credentials-->
-
-                        <!--begin::In-person-->
+                        <!-- In-person -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -242,13 +238,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Yes</p>
+                                    <p class="lead fs-6" id="modal-in-person">Yes</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::In-person-->
-
-                        <!--begin::Location-->
+                        <!-- Location -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -259,13 +253,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">PUP - Quezon City Campus</p>
+                                    <p class="lead fs-6" id="modal-location"></p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Location-->
-
-                        <!--begin::Company-->
+                        <!-- Company -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -276,13 +268,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">PUPQC</p>
+                                    <p class="lead fs-6" id="modal-company">PUPQC</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Company-->
-
-                        <!--begin::Course-->
+                        <!-- Course -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -293,13 +283,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Project Management</p>
+                                    <p class="lead fs-6" id="modal-course">Project Management</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Course-->
-
-                        <!--begin::Date-->
+                        <!-- Date -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -310,13 +298,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Dec 9, 2024 to Dec 12, 2024</p>
+                                    <p class="lead fs-6" id="modal-date">Dec 9, 2024 to Dec 12, 2024</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Date-->
-
-                        <!--begin::Time-->
+                        <!-- Time -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -327,13 +313,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">9:00 AM to 10:00 PM</p>
+                                    <p class="lead fs-6" id="modal-time">9:00 AM to 10:00 PM</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Time-->
-
-                        <!--begin::Facilitator-->
+                        <!-- Facilitator -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -344,12 +328,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Kimberly Mae M. Kho</p>
+                                    <p class="lead fs-6" id="modal-facilitator">Kimberly Mae M. Kho</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Facilitator-->
-                        <!--begin::Assistant-->
+                        <!-- Assistant -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -360,30 +343,24 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Daniel A. Del Rosario</p>
+                                    <p class="lead fs-6" id="modal-assistant">Daniel A. Del Rosario</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Assistant-->
-                        <!--end::Modal body-->
-
-                        <!-- Begin: Modal buttons -->
-                        <div class="modal-footer justify-content-end">
-                            <a href="{{route ('edit_training')}}" class="btn btn-primary me-2">
-                                <i class="bi bi-pencil-fill me-2"></i>EDIT
-                            </a>
-                            <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
-
-                        </div>
-                        <!-- end: Modal buttons -->
                     </div>
                 </div>
-                <!--End:: modal body-->
-
+                <!-- Modal Footer -->
+                <div class="modal-footer justify-content-end">
+                    <a href="{{route ('edit_training')}}" class="btn btn-primary me-2">
+                        <i class="bi bi-pencil-fill me-2"></i>EDIT
+                    </a>
+                    <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+                </div>
             </div>
         </div>
-        <!--end::Modal - View Training-->
     </div>
+
+
         @endsection
     @push('scripts')
         <script src="{{ asset('js/calendar.js') }}"></script>

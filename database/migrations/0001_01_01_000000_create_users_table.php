@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('username')->nullable(false);
             $table->string('email')->unique();
-            $table->string('color')->nullable();
             $table->string('usertype')->nullable(false);
+            $table->string('color')->default("#000000")->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('contact_number')->nullable();
