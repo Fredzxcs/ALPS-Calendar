@@ -137,11 +137,7 @@
                                 <select id="facilitator" class="form-select form-select-solid">
                                     <option disabled selected>Select Facilitator</option>
                                     <option value="">No Facilitator Yet</option>
-                                    @foreach ($users as $user)
-
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-
-                                    @endforeach
+                                    
                                 </select>
                             </div>
                         </div>
@@ -153,11 +149,7 @@
                                 <select id="assistant" class="form-select form-select-solid">
                                     <option disabled selected>Select Assistant</option>
                                     <option value="">No Assistant Yet</option>
-                                    @foreach ($users as $user)
-
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-
-                                    @endforeach
+                                    
                                 </select>
                             </div>
                         </div>
@@ -165,8 +157,10 @@
 
                     <!-- Buttons -->
                     <div class="d-flex justify-content-center gap-5 ">
-                        <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
-                        <button type="button" id="add_training_submit" class="btn btn-success fw-boldest">SAVE</button>
+                        <a href="{{route ('calendar')}}">
+                            <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
+                        </a>    
+                        <button type="button" id="edit_training_submit" class="btn btn-success fw-boldest">SAVE</button>
                     </div>
                     </form>
                 </div>

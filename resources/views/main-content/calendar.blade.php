@@ -369,7 +369,7 @@
 
                         <!-- Begin: Modal buttons -->
                         <div class="modal-footer justify-content-end">
-                            <a href="./add_training/edit_training.blade.php" class="btn btn-primary me-2">
+                            <a href="{{route ('edit_training')}}" class="btn btn-primary me-2">
                                 <i class="bi bi-pencil-fill me-2"></i>EDIT
                             </a>
                             <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>

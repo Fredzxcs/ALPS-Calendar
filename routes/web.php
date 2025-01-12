@@ -58,3 +58,7 @@ Route::get('/access/edit_user', function () {
 // Archived Accounts
 Route::get('/access/archive', function () {
     return view('access.archived_accounts');})->name('archived_accounts');
+
+// Edit Training
+Route::get('/calendar/edit_training', function () {
+    return view('add_training.edit_training');})->name('edit_training');
