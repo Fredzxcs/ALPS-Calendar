@@ -1,118 +1,118 @@
 //Validation
-// document.addEventListener('DOMContentLoaded', () => {
-//     //Validation for Add Account form
-//     document.getElementById('modal_add_account_form').addEventListener('submit', (event) => {
-//         event.preventDefault();
-//         const companyName = document.getElementById('add_company_name');
+document.addEventListener('DOMContentLoaded', () => {
+    //Validation for Add Account form
+    document.getElementById('modal_add_account_form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const accountEmail = document.getElementById('add_account_email');
         
-//         if (!companyName.value.trim()) {
-//             companyName.classList.add('is-invalid');
-//             return;
-//         } else {
-//             companyName.classList.remove('is-invalid');
-//         }
+        if (!accountEmail.value.trim()) {
+            accountEmail.classList.add('is-invalid');
+            return;
+        } else {
+            accountEmail.classList.remove('is-invalid');
+        }
 
-//         Swal.fire({
-//             title: 'Are you sure?',
-//             text: "You are about to add this company.",
-//             icon: 'warning',
-//             buttonsStyling: false,
-//             showCancelButton: true,
-//             confirmButtonText: 'Yes, Add Company',
-//             cancelButtonText: 'Cancel',
-//             customClass: {
-//                 confirmButton: "btn btn-success",
-//                 cancelButton: 'btn btn-secondary'
-//             }
-//         }).then((result) => {
-//             if (result.isConfirmed) {
-//                 Swal.fire(
-//                     'Added!',
-//                     'The company has been added.',
-//                     'success'
-//                 );
-//                 // TODO: Add logic to perform add company
-//             }
-//         });
-//     });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to add this account.",
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Add Account',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Added!',
+                    'The account has been added.',
+                    'success'
+                );
+                // TODO: Add logic to perform add account
+            }
+        });
+    });
 
-//     //Validation for Edit Company form
-//     document.getElementById('modal_edit_company_form').addEventListener('submit', (event) => {
-//         event.preventDefault();
-//         const companyName = document.getElementById('edit_company_name');
+    //Validation for Edit Account form
+    document.getElementById('modal_edit_account_form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const accountEmail = document.getElementById('edit_account_email');
         
-//         if (!companyName.value.trim()) {
-//             companyName.classList.add('is-invalid');
-//             return;
-//         } else {
-//             companyName.classList.remove('is-invalid');
-//         }
+        if (!accountEmail.value.trim()) {
+            accountEmail.classList.add('is-invalid');
+            return;
+        } else {
+            accountEmail.classList.remove('is-invalid');
+        }
 
-//         Swal.fire({
-//             title: 'Are you sure?',
-//             text: "You are about to edit this company.",
-//             icon: 'warning',
-//             buttonsStyling: false,
-//             showCancelButton: true,
-//             confirmButtonText: 'Yes, Edit Company',
-//             cancelButtonText: 'Cancel',
-//             customClass: {
-//                 confirmButton: "btn btn-success",
-//                 cancelButton: 'btn btn-secondary'
-//             }
-//         }).then((result) => {
-//             if (result.isConfirmed) {
-//                 Swal.fire(
-//                     'Edited!',
-//                     'The company has been edited.',
-//                     'success'
-//                 );
-//                 // TODO: Add logic to perform edit company
-//             }
-//         });
-//     });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to edit this account.",
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Edit Account',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Edited!',
+                    'The account has been edited.',
+                    'success'
+                );
+                // TODO: Add logic to perform edit account
+            }
+        });
+    });
 
-//     //Remove invalid class on input change
-//     document.querySelectorAll('#add_company_name, #edit_company_name').forEach(input => {
-//         input.addEventListener('input', () => {
-//             if (input.value.trim()) {
-//                 input.classList.remove('is-invalid');
-//             }
-//         });
-//     });
-// });
+    //Remove invalid class on input change
+    document.querySelectorAll('#add_account_email, #edit_account_email').forEach(input => {
+        input.addEventListener('input', () => {
+            if (input.value.trim()) {
+                input.classList.remove('is-invalid');
+            }
+        });
+    });
+});
 
-//Delete company button
-// document.querySelectorAll('.deleteBtn').forEach(button => {
-//     button.addEventListener('click', (event) => {
-//         event.preventDefault(); // Prevent default action (e.g., form submission)
+//Delete account button
+document.querySelectorAll('.deleteBtn').forEach(button => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default action (e.g., form submission)
 
-//         Swal.fire({
-//             title: 'Are you sure?',
-//             text: "You are about to delete this company.",
-//             icon: 'warning',
-//             buttonsStyling: false,
-//             showCancelButton: true,
-//             confirmButtonText: 'Yes, Delete',
-//             cancelButtonText: 'Cancel',
-//             customClass: {
-//             confirmButton: "btn btn-danger",
-//             cancelButton: 'btn btn-secondary'
-//         }
-//         }).then((result) => {
-//             if (result.isConfirmed) {
-//                 // Proceed with the delete
-//                 Swal.fire(
-//                     'Deleted!',
-//                     'The company has been deleted.',
-//                     'success'
-//                 );
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to delete this account.",
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete',
+            cancelButtonText: 'Cancel',
+            customClass: {
+            confirmButton: "btn btn-danger",
+            cancelButton: 'btn btn-secondary'
+        }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with the delete
+                Swal.fire(
+                    'Deleted!',
+                    'The account has been deleted.',
+                    'success'
+                );
 
-//                 // TODO: Add logic to perform delete
-//             }
-//         });
-//     });
-// });
+                // TODO: Add logic to perform delete
+            }
+        });
+    });
+});
 
 //Pagination
 document.addEventListener("DOMContentLoaded", function () {
@@ -185,22 +185,28 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 //Eye Password
-const passwordInput = document.getElementById('add_account_password');
-const togglePassword = document.getElementById('togglePassword');
-const eyeSlash = document.getElementById('eyeSlash');
-const eye = document.getElementById('eye');
+// Select all password toggle elements
+const togglePasswordButtons = document.querySelectorAll('.togglePassword');
 
-// Toggle password visibility
-togglePassword.addEventListener('click', () => {
-    const isPasswordVisible = passwordInput.type === 'text';
+// Add event listener to each toggle button
+togglePasswordButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const passwordInput = button.previousElementSibling; // Target the password input field
+        const eyeSlash = button.querySelector('.fa-eye-slash');
+        const eye = button.querySelector('.fa-eye');
 
-    // Toggle input type
-    passwordInput.type = isPasswordVisible ? 'password' : 'text';
+        const isPasswordVisible = passwordInput.type === 'text';
 
-    // Toggle icon visibility
-    eyeSlash.classList.toggle('d-none', !isPasswordVisible);
-    eye.classList.toggle('d-none', isPasswordVisible);
+        // Toggle input type
+        passwordInput.type = isPasswordVisible ? 'password' : 'text';
+
+        // Toggle icon visibility
+        eyeSlash.classList.toggle('d-none', !isPasswordVisible);
+        eye.classList.toggle('d-none', isPasswordVisible);
+    });
 });
+
+
 
 
 

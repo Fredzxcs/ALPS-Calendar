@@ -56,7 +56,7 @@
                                 data-kt-menu="true">
 
                                 <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_company">
+                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_account">
                                         <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
                                     </a>
                                 </div>
@@ -115,14 +115,16 @@
                             <div class="invalid-feedback">Required field</div>
                         </div>
 
-                        <div class="row mb-5">
-                            <label for="account_password" class="form-label fw-bold required">Account Password</label>
-                            <input type="password" class="form-control form-control-solid" id="add_account_password" placeholder="Enter Account Password">
-                            <span class="btn btn-sm btn-icon position-absolute translate-middle-y" id="togglePassword" style="top: 70%; right: 10%; cursor: pointer;">
-                            <i class="fas fa-eye-slash fs-3" id="eyeSlash"></i>
-                            <i class="fas fa-eye d-none fs-3" id="eye"></i>
-                        </span>
-                        </div>
+<div class="row mb-5">
+    <label for="add_account_password" class="form-label fw-bold required">Account Password</label>
+    <div class="position-relative">
+        <input type="password" class="form-control form-control-solid passwordInput" id="add_account_password" placeholder="Enter Account Password">
+        <span class="position-absolute top-50 end-0 translate-middle-y togglePassword" style="cursor: pointer;">
+            <i class="fas fa-eye-slash fs-3"></i>
+            <i class="fas fa-eye d-none fs-3"></i>
+        </span>
+    </div>
+</div>
                     </div>
                     <!--end::Modal body-->
                     <!--begin::Modal footer-->
@@ -142,18 +144,18 @@
     </div>
     <!--end::Modal - Add Account-->
 
-    <!--begin::Modal - Edit Company-->
-    <div class="modal fade" id="modal_edit_company" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal - Edit Account-->
+    <div class="modal fade" id="modal_edit_account" tabindex="-1" aria-hidden="true">
         <!--begin::Modal dialog-->
         <div class="modal-dialog modal-dialog-centered mw-650px">
             <!--begin::Modal content-->
             <div class="modal-content">
                 <!--begin::Form-->
-                <form class="form" action="#" id="modal_edit_company_form" novalidate>
+                <form class="form" action="#" id="modal_edit_account_form" novalidate>
                     <input class="" type="hidden">
                     <!--begin::Modal header-->
                     <div class="modal-header">
-                        <h2 class="fw-boldest" data-kt-calendar="title" style="color: #7c0101;">EDIT COMPANY</h2>
+                        <h2 class="fw-boldest" data-kt-calendar="title" style="color: #7c0101;">EDIT ACCOUNT</h2>
                         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                             <span class="svg-icon svg-icon-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -167,35 +169,25 @@
                     <!--begin::Modal body-->
                     <div class="modal-body py-10 px-lg-17">
                         <div class="row mb-5">
-                            <label for="company_name" class="form-label fw-bold required">Company Name</label>
-                            <input type="text" class="form-control form-control-solid" id="edit_company_name" placeholder="Enter Company Name"
-                                value="sample">
+                            <label for="account_email" class="form-label fw-bold required">Account Email</label>
+                            <input type="email" class="form-control form-control-solid" id="edit_account_email" placeholder="Enter Account Email">
                             <div class="invalid-feedback">Required field</div>
                         </div>
 
                         <div class="row mb-5">
-                            <label for="company_contact_person" class="form-label fw-bold">Contact Person</label>
-                            <input type="text" class="form-control form-control-solid" id="edit_company_contact_person" placeholder="Enter Contact Person (Optional)"
-                                value="sample">
-                        </div>
-
-                        <div class="row mb-5">
-                            <label for="company_contact_number" class="form-label fw-bold">Contact Number</label>
-                            <input type="number" class="form-control form-control-solid" id="edit_company_contact_number" placeholder="Enter Contact Number (Optional)"
-                                value="09009090">
-                        </div>
-
-                        <div class="row mb-5">
-                            <label for="company_email" class="form-label fw-bold">Email</label>
-                            <input type="email" class="form-control form-control-solid" id="edit_company_email" placeholder="Enter Email (Optional)"
-                                value="sample">
-                        </div>
+    <label for="edit_account_password" class="form-label fw-bold required">Account Password</label>
+    <input type="password" class="form-control form-control-solid" id="edit_account_password" placeholder="Enter Account Password">
+    <span class="btn btn-sm btn-icon position-absolute translate-middle-y togglePassword" style="top: 70%; right: 10%; cursor: pointer;">
+        <i class="fas fa-eye-slash fs-3"></i>
+        <i class="fas fa-eye d-none fs-3"></i>
+    </span>
+</div>
                     </div>
                     <!--end::Modal body-->
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" class="btn btn-success me-2 addBtn" id="edit_company_submit">
+                        <button type="submit" class="btn btn-success me-2 editBtn" id="edit_account_submit">
                             SAVE
                         </button>
                         <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CANCEL</button>
@@ -207,7 +199,7 @@
             </div>
         </div>
     </div>
-    <!--end::Modal - Edit Company-->
+    <!--end::Modal - Edit Account-->
     <!--end::Modals-->
 </div>
 @endsection
