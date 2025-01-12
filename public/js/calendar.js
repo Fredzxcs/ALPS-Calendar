@@ -103,7 +103,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay',
             },
-            events: [], // Initially empty
+            dayMaxEvents: 3,
+            events: [],
+            moreLinkClick: function (info) {
+                // Slice the excess events, excluding the first 3 visible ones
+                const excessEvents = info.allSegs.slice(3);
+
+                // Generate content for the modal
+                let modalContent = `<h5>Excess Events on ${info.date.toLocaleDateString()}</h5><ul>`;
+                excessEvents.forEach((seg) => {
+                    modalContent += `<li>${seg.event.title}</li>`;
+                });
+                modalContent += '</ul>';
+            },
             eventMouseEnter: function (info) {
                 if (currentHoveredEvent === info.event.id) {
                     // If already hovered, do nothing
@@ -129,11 +141,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Initialize popover
                 initPopovers(info.el, eventData);
             },
+
             eventMouseLeave: function (info) {
                 // Do nothing on mouse leave for the current event
                 // Popover will only close when another event is hovered
             },
         });
+
         calendar.render();
 
         // Fetch events dynamically using jQuery AJAX

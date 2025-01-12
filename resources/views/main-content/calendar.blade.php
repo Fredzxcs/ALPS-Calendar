@@ -1,6 +1,8 @@
 @extends('global.layout')
 
 @section('maincontent')
+
+
     <div class="mt-4 d-flex flex-wrap gap-4 mt-20">
         {{-- <!-- Left Side: Search Course and Search Trainer -->
     <div class="d-flex flex-column" style="flex: 1; max-width: 30%; gap: 20px;">
@@ -148,6 +150,25 @@
             </div>
         </div>
     </div>
+
+        {{-- <!--begin:: Modal for displaying excess events -->
+        <div class="modal fade" id="kt_modal_view_training" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Event Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="kt_modal_view_training_content">
+                        <!-- Content will be dynamically added here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
+
     <!--begin::Modal - View Training-->
     <div class="modal fade" id="kt_modal_view_training" tabindex="-1" aria-hidden="true">
         <!--begin::Modal dialog-->
