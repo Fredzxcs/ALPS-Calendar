@@ -1,4 +1,4 @@
-//Validation
+//Validation (in progress)
 document.addEventListener('DOMContentLoaded', () => {
     //Validation for Add Account form
     document.getElementById('modal_add_account_form').addEventListener('submit', (event) => {
@@ -184,27 +184,37 @@ document.addEventListener("DOMContentLoaded", function () {
     displayPage(1); // Show the first page initially
 });
 
-//Eye Password
-// Select all password toggle elements
-const togglePasswordButtons = document.querySelectorAll('.togglePassword');
+//Toggle password visibility
+$('.togglePassword').on('click', function () {
+    const input = $($(this).data('target'));
+    const icons = $(this).find('i');
+    
+    if (input.attr('type') === 'password') {
+        input.attr('type', 'text');
+        icons.first().addClass('d-none');
+        icons.last().removeClass('d-none');
+    } else {
+        input.attr('type', 'password');
+        icons.first().removeClass('d-none');
+        icons.last().addClass('d-none');
+    }
+});
 
-// Add event listener to each toggle button
-togglePasswordButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        const passwordInput = button.previousElementSibling; // Target the password input field
-        const eyeSlash = button.querySelector('.fa-eye-slash');
-        const eye = button.querySelector('.fa-eye');
+//Password reveal in table
+$(document).ready(function() {
+    $(".password-display").click(function() {
+        var actualPassword = $(this).next(".password-actual");
+        $(this).addClass("d-none");
+        actualPassword.removeClass("d-none");
+    });
 
-        const isPasswordVisible = passwordInput.type === 'text';
-
-        // Toggle input type
-        passwordInput.type = isPasswordVisible ? 'password' : 'text';
-
-        // Toggle icon visibility
-        eyeSlash.classList.toggle('d-none', !isPasswordVisible);
-        eye.classList.toggle('d-none', isPasswordVisible);
+    $(".password-actual").click(function() {
+        var passwordDisplay = $(this).prev(".password-display");
+        $(this).addClass("d-none");
+        passwordDisplay.removeClass("d-none");
     });
 });
+
 
 
 

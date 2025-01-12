@@ -44,7 +44,10 @@
                     <!-- Row -->
                     <tr>
                         <td>Sample Company Name</td>
-                        <td>Kimberly Kho</td>
+                        <td>
+                            <span class="password-display" style="cursor: pointer;">*****</span>
+                            <span class="password-actual d-none" style="cursor: pointer;">Kimberly Kho</span>
+                        </td>
                         <td>
                             <!--begin::Menu-->
                             <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
@@ -109,22 +112,45 @@
                     <!--end::Modal header-->
                     <!--begin::Modal body-->
                     <div class="modal-body py-10 px-lg-17">
-                        <div class="row mb-5">
-                            <label for="account_email" class="form-label fw-bold required">Account Email</label>
-                            <input type="email" class="form-control form-control-solid" id="add_account_email" placeholder="Enter Account Email">
+                        
+                    <div class="row mb-5">
+                        <!-- Account Email -->
+                        <div class="col-12">
+                            <label for="add_account_email" class="form-label fw-bold required">Account Email</label>
+                            <input type="email" class="form-control form-control-solid" 
+                                id="add_account_email" 
+                                placeholder="Enter Account Email"
+                            />
                             <div class="invalid-feedback">Required field</div>
                         </div>
+                    </div>
 
-<div class="row mb-5">
-    <label for="add_account_password" class="form-label fw-bold required">Account Password</label>
-    <div class="position-relative">
-        <input type="password" class="form-control form-control-solid passwordInput" id="add_account_password" placeholder="Enter Account Password">
-        <span class="position-absolute top-50 end-0 translate-middle-y togglePassword" style="cursor: pointer;">
-            <i class="fas fa-eye-slash fs-3"></i>
-            <i class="fas fa-eye d-none fs-3"></i>
-        </span>
-    </div>
-</div>
+                    <!-- Account Password -->
+                    <div class="row mb-5">
+                        <div class="col-12">
+                            <label for="add_account_password" class="form-label fw-bold required">Account Password</label>
+                            <div class="position-relative">
+                                <input type="password" class="form-control form-control-solid" 
+                                    placeholder="Enter Account Password" 
+                                    id="add_account_password"
+                                    name="add_account_password"
+                                />
+                                <div class="invalid-feedback">Required field</div>
+                                <!-- Visibility toggle -->
+                                <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2 togglePassword"
+                                    data-kt-password-meter-control="visibility" 
+                                    data-target="#add_account_password" 
+                                    aria-label="Toggle Password Visibility">
+                                    <i class="bi bi-eye-slash fs-2"></i>
+                                    <i class="bi bi-eye fs-2 d-none"></i>
+                                </span>
+                            </div>
+                            <div id="ReqConfirmPassTxt" class="text-danger mt-2"></div>
+                        </div>
+                    </div>
+
+
+
                     </div>
                     <!--end::Modal body-->
                     <!--begin::Modal footer-->
@@ -168,20 +194,44 @@
                     <!--end::Modal header-->
                     <!--begin::Modal body-->
                     <div class="modal-body py-10 px-lg-17">
+                        
                         <div class="row mb-5">
-                            <label for="account_email" class="form-label fw-bold required">Account Email</label>
-                            <input type="email" class="form-control form-control-solid" id="edit_account_email" placeholder="Enter Account Email">
-                            <div class="invalid-feedback">Required field</div>
+                            <!-- Account Email -->
+                            <div class="col-12">
+                                <label for="edit_account_email" class="form-label fw-bold required">Account Email</label>
+                                <input type="email" class="form-control form-control-solid"
+                                    id="edit_account_email"
+                                    placeholder="Enter Account Email"
+                                    value="sample@email.com"
+                                />
+                                <div class="invalid-feedback">Required field</div>
+                            </div>
                         </div>
 
+                        <!-- Account Password -->
                         <div class="row mb-5">
-    <label for="edit_account_password" class="form-label fw-bold required">Account Password</label>
-    <input type="password" class="form-control form-control-solid" id="edit_account_password" placeholder="Enter Account Password">
-    <span class="btn btn-sm btn-icon position-absolute translate-middle-y togglePassword" style="top: 70%; right: 10%; cursor: pointer;">
-        <i class="fas fa-eye-slash fs-3"></i>
-        <i class="fas fa-eye d-none fs-3"></i>
-    </span>
-</div>
+                            <div class="col-12">
+                                <label for="edit_account_password" class="form-label fw-bold required">Account Password</label>
+                                <div class="position-relative">
+                                    <input type="password" class="form-control form-control-solid" 
+                                        placeholder="Enter Account Password" 
+                                        id="edit_account_password"
+                                        name="edit_account_password"
+                                        value="pass123"
+                                    />
+                                    <div class="invalid-feedback">Required field</div>
+                                    <!-- Visibility toggle -->
+                                    <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2 togglePassword"
+                                        data-kt-password-meter-control="visibility" 
+                                        data-target="#edit_account_password" aria-label="Toggle Password Visibility">
+                                        <i class="bi bi-eye-slash fs-2"></i>
+                                        <i class="bi bi-eye fs-2 d-none"></i>
+                                    </span>
+                                </div>
+                                <div id="ReqConfirmPassTxt" class="text-danger mt-2"></div>
+                            </div>
+                        </div>
+
                     </div>
                     <!--end::Modal body-->
                     <!--begin::Modal footer-->
