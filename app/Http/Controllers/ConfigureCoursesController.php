@@ -18,23 +18,23 @@ class ConfigureCoursesController extends Controller
 
     public function addCourse(Request $request)
     {
-        dd($request->all());
         // Validate the incoming data
         $validated = $request->validate([
             'course_name' => 'required|max:255',
-            'course_code' => 'nullable|unique:courses|max:255',
+            'course_code' => 'nullable|unique:course|max:255', // Use correct table name
         ]);
-
+    
         // Create and store the new course
-        $course = new Courses(); // Use the correct model name (Courses)
+        $course = new Course();
         $course->course_name = $validated['course_name'];
-        $course->course_code = $validated['course_code'] ?? null; // Handle optional course_code
+        $course->course_code = $validated['course_code'] ?? null;
         $course->save();
-
+    
         // Respond with a success message
         return response()->json([
             'success' => true,
             'message' => 'Course added successfully!',
         ]);
     }
+    
 }
