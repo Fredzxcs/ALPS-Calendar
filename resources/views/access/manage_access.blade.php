@@ -95,7 +95,7 @@
 
                         <tr row-id="{{ $user->id }}">
                             <td class="d-flex align-items-center text-start">
-                                <div class="symbol symbol-50px me-3">
+                                <div class="symbol symbol-50px me-3 border border-2 border-dark">
                                     @isset($user->image)
                                         <img src="{{ asset('storage/' . $user->image) }}" alt="Profile Picture">
                                     @else
