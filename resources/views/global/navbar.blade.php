@@ -33,12 +33,16 @@
         <div class="collapse navbar-collapse justify-content-end hover-scale fs-3" style="color: #052a43;" id="navbarNav">
             <ul class="navbar-nav ">
                 <!-- ACCESS Button -->
-                <li class="nav-item me-5">
-                    <a class="nav-link fw-medium text-primary-hover fw-bolder"
-                    href="{{ route('manage_access') }}">
-                        ACCESS
-                    </a>
-                </li>
+
+                @if (Auth::check() && Auth::user()->usertype === "admin")
+                        <li class="nav-item me-5">
+                            <a class="nav-link fw-medium text-primary-hover fw-bolder"
+                            href="{{ route('manage_access') }}">
+                                ACCESS
+                            </a>
+                        </li>
+                @endif
+
 
                 <!-- CALENDAR Button -->
                 <li class="nav-item me-5">
@@ -47,7 +51,8 @@
                         CALENDAR
                     </a>
                 </li>
-                
+
+                @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
                 <!-- CONFIGURATION Dropdown -->
                 <li class="nav-item dropdown me-5">
                     <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle"
@@ -88,6 +93,8 @@
                     </div>
                     <!--end::Links-->
                 </li>
+            @endif
+
 
                 <!-- SETTINGS -->
                 <li class="nav-item dropdown me-5">
