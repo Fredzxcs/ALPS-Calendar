@@ -134,7 +134,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-center">
                         <!-- Loader wrapper positioned above the calendar -->
-                        <div id="loader-wrapper" class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center mb-10" style="z-index: 1050;  display: none;">
+                        <div id="loader-wrapper" class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center mb-10" style="  display: none;">
                             <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
