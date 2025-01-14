@@ -62,12 +62,13 @@ Route::get('/access/archive', function () {
 // config - courses
 Route::prefix('/config/courses')->group(function(){
     Route::get('/',[ConfigureCoursesController::class, 'showCourses'])->middleware(['auth', 'user:admin, coordinator'])->name('config_courses');
-    Route::post('/store', [ConfigureCoursesController::class, 'addCourse'])->middleware(['auth', 'user:admin, coordinator'])->name('add_course');
+    Route::post('/add', [ConfigureCoursesController::class, 'addCourse'])->middleware(['auth', 'user:admin, coordinator'])->name('add_course');
 
 });
 
 // config - companies
 Route::prefix('/config/companies')->group(function () {
     Route::get('/',[ConfigureCompanyController::Class, 'showCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('config_companies');
+    Route::post('/add',[ConfigureCompanyController::Class, 'addCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('add_company');
 });
 

@@ -72,15 +72,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     success: function (response) {
                         if (response.success) {
-                            Swal.fire('Added!', 'The course has been added successfully.', 'success')
+                            Swal.fire('Added!', 
+                                'The course has been added successfully.', 
+                                'success')
                                 .then(() => location.reload());
                         } else {
-                            Swal.fire('Error!', 'There was an issue adding the course.', 'error');
+                            Swal.fire('Error!', 
+                                'There was an issue adding the course.', 
+                                'error');
                         }
                     },
                     error: function (xhr, status, error) {
                         console.error('AJAX Error:', xhr.responseText);
-                        Swal.fire('Error!', 'An unexpected error occurred.', 'error');
+                        Swal.fire('Error!', 
+                            'An unexpected error occurred.', 
+                            'error');
                     },
                     complete: function () {
                         submitButton.disabled = false;

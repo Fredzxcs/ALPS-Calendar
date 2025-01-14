@@ -139,11 +139,11 @@
                         </div>
                     </div>
                     <!--end::Modal body-->
-                    <!--begin::Modal footer-->
                     
                     <!-- DOM element to store the route URL -->
                     <div id="route-config" data-url="{{ route('add_course') }}"></div>
      
+                    <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
                         <button type="submit" 

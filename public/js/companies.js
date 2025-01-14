@@ -3,8 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
     //Validation for Add Company form
     document.getElementById('modal_add_company_form').addEventListener('submit', (event) => {
         event.preventDefault();
-        const companyName = document.getElementById('add_company_name');
         
+        const companyName = document.getElementById('add_company_name');
+        const contactPerson = document.getElementById('add_company_contact_person');
+        const contactNumber = document.getElementById('add_company_contact_number');
+        const email = document.getElementById('add_company_email');
+        const submitButton = document.getElementById('add_company_submit');
+
         if (!companyName.value.trim()) {
             companyName.classList.add('is-invalid');
             return;
@@ -26,12 +31,47 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire(
-                    'Added!',
-                    'The company has been added.',
-                    'success'
-                );
-                // TODO: Add logic to perform add company
+                submitButton.disabled = true;
+
+                const formData = {
+                    company_name: companyName.value.trim(),
+                    contact_person: contactPerson.value.trim(),
+                    contact_number: contactNumber.value.trim(),
+                    email: email.value.trim() || ''
+                };
+
+                const routeUrl = document.getElementById('route-config-com').dataset.url;
+                console.log("Route URL:", routeUrl);
+
+                $.ajax({
+                    url: routeUrl,
+                    method: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response){
+                        if (response.success) {
+                            Swal.fire('Added!', 
+                                'The course has been added successfully.', 
+                                'success')
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire('Error!', 
+                                'There was an issue adding the course.', 
+                                'error');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', xhr.responseText);
+                        Swal.fire('Error!', 
+                            'An unexpected error occurred.', 
+                            'error');
+                    },
+                    complete: function () {
+                        submitButton.disabled = false;
+                    }
+                });
             }
         });
     });

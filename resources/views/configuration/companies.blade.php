@@ -134,7 +134,11 @@
 
                         <div class="row mb-5">
                             <label for="company_contact_number" class="form-label fw-bold">Contact Number</label>
-                            <input type="number" class="form-control form-control-solid" id="add_company_contact_number" placeholder="Enter Contact Number (Optional)">
+                            <input type="number" 
+                            class="form-control form-control-solid" 
+                            id="add_company_contact_number" 
+                            placeholder="Enter Contact Number (Optional)"
+                            name="contact_number">
                         </div>
 
                         <div class="row mb-5">
@@ -143,13 +147,23 @@
                         </div>
                     </div>
                     <!--end::Modal body-->
+
+                    <!-- DOM element to store the route URL -->
+                    <div id="route-config-com" data-url="{{ route('add_company') }}"></div>
+                    
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" class="btn btn-success me-2 addBtn" id="add_company_submit">
+                        <button type="submit" 
+                            class="btn btn-success me-2 addBtn" 
+                            id="add_company_submit">
                             SAVE
                         </button>
-                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CANCEL</button>
+                        <button type="reset" 
+                            class="btn btn-light" 
+                            data-bs-dismiss="modal">
+                            CANCEL
+                        </button>
                         <!--end::Button-->
                     </div>
                     <!--end::Modal footer-->
