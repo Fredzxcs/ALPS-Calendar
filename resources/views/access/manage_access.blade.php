@@ -78,7 +78,7 @@
 
         <!-- Table -->
         <div class="table-responsive" style="padding: 0; margin: 0;">
-            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" style="margin: auto;">
+            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" id="access_table" style="margin: auto;">
                 <thead>
                     <tr class="fw-boldest text-gray-800 fs-5">
                         <th class="w-150px">PROFILE</th>
@@ -175,6 +175,14 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="mt-3">
+            <ul class="pagination justify-content-center mt-5">
+                <!-- Buttons are dynamically added by JavaScript -->
+            </ul>
+        </nav>
+
     </div>
     <!--begin::Modals-->
     <!--begin::Modal - View User-->
@@ -375,103 +383,7 @@
 @endsection
 
 @push('scripts')
-<script>
-    //Reactivate button
-    document.querySelectorAll('.reactBtn').forEach(button => {
-        button.addEventListener('click', (event) => {
-            event.preventDefault(); // Prevent default action (e.g., form submission)
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to reactivate this user.",
-                icon: 'warning',
-                buttonsStyling: false,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Reactivate',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: 'btn btn-secondary'
-            }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Proceed with the reactivation
-                    Swal.fire(
-                        'Reactivated!',
-                        'The user has been reactivated.',
-                        'success'
-                    );
-
-                    // TODO: Add logic to perform reactivation
-                }
-            });
-        });
-    });
-
-    //Deactivate button
-    document.querySelectorAll('.deactBtn').forEach(button => {
-        button.addEventListener('click', (event) => {
-            event.preventDefault(); // Prevent default action (e.g., form submission)
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to deactivate this user.",
-                icon: 'warning',
-                buttonsStyling: false,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Deactivate',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                confirmButton: "btn btn-danger",
-                cancelButton: 'btn btn-secondary'
-            }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Proceed with the deactivation
-                    Swal.fire(
-                        'Deactivated!',
-                        'The user has been deactivated.',
-                        'success'
-                    );
-
-                    // TODO: Add logic to perform deactivation
-                }
-            });
-        });
-    });
-
-    //Delete button
-    document.querySelectorAll('.deleteBtn').forEach(button => {
-        button.addEventListener('click', (event) => {
-            event.preventDefault(); // Prevent default action (e.g., form submission)
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to delete this user.",
-                icon: 'warning',
-                buttonsStyling: false,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Delete',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                confirmButton: "btn btn-danger",
-                cancelButton: 'btn btn-secondary'
-            }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Proceed with the delete
-                    Swal.fire(
-                        'Deleted!',
-                        'The user has been deleted.',
-                        'success'
-                    );
-
-                    // TODO: Add logic to perform delete
-                }
-            });
-        });
-    });
-</script>
+<script src="{{ asset('js/manage_access.js') }}"></script>
 <script>
     $(document).ready(function (){
 
@@ -543,5 +455,6 @@
         });
 
     });
+
 </script>
 @endpush
