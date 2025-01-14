@@ -29,14 +29,31 @@ Route::controller(LandingpageController::class)->group(function () {
 
 route::get('admin/landingpage',[LandingpageController::class,'admin'])->middleware(['auth','user:admin']);                   //  ADMIN LANDINGPAGE ROUTE
 route::get('coordinator/coordinatorLp',[LandingpageController::class,'coordinator'])->middleware(['auth','user:coordinator']);     //  COORDINATOR LANDINGPAGE ROUTE
-route::get('trainer/trainerLp',[LandingpageController::class,'trainer'])->middleware(['auth','user:trainer']);                 //  TRAINER LANDINGPAGE ROUTE
+route::get('trainer/trainerLp',[LandingpageController::class,'trainer'])->middleware(['auth','user:trainer']);
 
-Route::prefix('calendar')->group(function (){
-    Route::get('/', [TrainingController::class, 'index'])->middleware(['auth', 'user:admin,coordinator,facilitator'])->name('calendar');
-    Route::get('/add_training', [TrainingController::class, 'create'])->middleware(['auth', 'user:admin,coordinator'])->name('add_training');
-    Route::post('/add_training', [TrainingController::class, 'store'])->middleware(['auth', 'user:admin,coordinator'])->name('add_training.store');
-    Route::get('/api/get/training', [TrainingController::class, 'gettraining'])->name('get_training');
+//  TRAINER LANDINGPAGE ROUTE
+Route::prefix('calendar')->group(function () {
+    Route::get('/', [TrainingController::class, 'index'])
+        ->middleware(['auth', 'user:admin,coordinator,facilitator'])
+        ->name('calendar');
+
+    Route::get('/add_training', [TrainingController::class, 'create'])
+        ->middleware(['auth', 'user:admin,coordinator'])
+        ->name('add_training');
+
+    Route::post('/add_training', [TrainingController::class, 'store'])
+        ->middleware(['auth', 'user:admin,coordinator'])
+        ->name('add_training.store');
+
+    Route::get('/api/get/training', [TrainingController::class, 'gettraining'])
+        ->name('get_training');
+
+    Route::get('/edit_training/{id}', [TrainingController::class, 'edit'])
+        ->middleware(['auth', 'user:admin,coordinator'])
+        ->name('edit_training');
+
 });
+
 
 Route::prefix('access')->group(function (){
     Route::get('/', [ManageAccessController::class, 'index'])->middleware(['auth', 'user:admin'])->name('manage_access');
@@ -45,7 +62,7 @@ Route::prefix('access')->group(function (){
     Route::get('/api/get/user/{id}', [ManageAccessController::class, 'get_user'])->name('get_user');
 });
 
-Route::get('/access/edit_user', [ManageAccessController::class, 'update'])->name('edit_user');
+Route::get('/access/edit_user', [ManageAccessController::class, 'update'])->middleware(['auth', 'user:admin'])->name('edit_user');
 
 // Add User
 Route::get('/add_user_createacc', function () {
@@ -56,9 +73,6 @@ Route::get('/add_user_createacc', function () {
 Route::get('/access/archive', function () {
     return view('access.archived_accounts');})->name('archived_accounts');
 
-// Edit Training
-Route::get('/calendar/edit_training', function () {
-    return view('add_training.edit_training');})->name('edit_training');
 // config - courses
 Route::get('/config/courses', function () {
     return view('configuration.courses');})->name('config_courses');

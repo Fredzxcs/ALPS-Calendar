@@ -29,6 +29,7 @@ class Training extends Model
 
     public function facilitator()
     {
-        return $this->hasOne(User::class, 'id');
+        return $this->belongsTo(User::class, 'facilitator_id');
     }
+
 }

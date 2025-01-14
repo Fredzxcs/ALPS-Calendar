@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to initialize popovers
     const initPopovers = (element, data) => {
         hidePopovers(); // Hide any active popovers
+
         // Generate popover content
         const startDate = data.allDay
             ? moment(data.startDate).format('MMM DD, YYYY')
@@ -16,30 +17,35 @@ document.addEventListener('DOMContentLoaded', function () {
             ? moment(data.endDate).format('MMM DD, YYYY')
             : moment(data.endDate).format('MMM DD, YYYY - h:mm a');
 
-            const modeBadges = [];
-            if (data.modeType === 'virtual') {
-                modeBadges.push('<span class="badge badge-primary fw-bold">Virtual</span>');
-            }
-            if (data.modeType === 'face-to-face') {
-                modeBadges.push('<span class="badge badge-info fw-bold">Face-to-Face</span>');
-            }
-            if (data.modeType === 'public course') {
-                modeBadges.push('<span class="badge badge-danger fw-bold">Public Course</span>');
-            }
-            const popoverHtml =
-                '<div class="fw-bolder mb-2">' + data.eventName + '</div>' +
-                '<div class="fs-7 mb-2">' + modeBadges.join(' ') + '</div>' +
-                '<div class="fs-7"><span class="fw-bold">Start:</span> ' + startDate + '</div>' +
-                '<div class="fs-7 mb-2"><span class="fw-bold">End:</span> ' + endDate + '</div>' +
-                '<div class="fs-7"><span class="fw-bold">Facilitator:</span> ' + (data.facilitator && data.facilitator.name ? data.facilitator.name : 'No Facilitator Yet') + '</div>' +
-                '<div class="fs-7 mb-4"><span class="fw-bold">Assistant:</span>' + data.assistant + '</div>' +
-                '<a id="kt_calendar_event_view" type="button" class="btn btn-sm btn-light-primary mt-2" data-bs-toggle="modal" data-bs-target="#kt_modal_view_event" data-dismiss="modal" >VIEW MORE</a>';
+        const modeBadges = [];
+        if (data.modeType === 'virtual') {
+            modeBadges.push('<span class="badge badge-primary fw-bold">Virtual</span>');
+        }
+        if (data.modeType === 'face-to-face') {
+            modeBadges.push('<span class="badge badge-info fw-bold">Face-to-Face</span>');
+        }
+        if (data.modeType === 'public-course') {
+            modeBadges.push('<span class="badge badge-danger fw-bold">Public Course</span>');
+        }
+
+        const popoverHtml = `
+            <div class="fw-bolder mb-2">${data.eventName} - ${data.company || "Public Course"}</div>
+            <div class="fs-7 mb-2">${modeBadges.join(' ')}</div>
+            <div class="fs-7"><span class="fw-bold">Start:</span> ${startDate}</div>
+            <div class="fs-7 mb-2"><span class="fw-bold">End:</span> ${endDate}</div>
+            <div class="fs-7"><span class="fw-bold">Facilitator:</span> ${(data.facilitator && data.facilitator.name) || 'No Facilitator Yet'}</div>
+            <div class="fs-7 mb-4"><span class="fw-bold">Assistant:</span> ${data.assistant}</div>
+            <a id="kt_calendar_event_view" type="button" class="btn btn-sm btn-light-primary mt-2" data-event-id="${data.id}" data-bs-dismiss="modal">
+                VIEW MORE
+            </a>
+        `;
+
         var options = {
             container: 'body',
             trigger: 'manual',
             boundary: 'window',
             placement: 'auto',
-            dismiss: true, // X button sa event summary
+            dismiss: true, // X button in event summary
             html: true,
             title: 'Training Summary',
             content: popoverHtml,
@@ -49,8 +55,16 @@ document.addEventListener('DOMContentLoaded', function () {
         popover = KTApp.initBootstrapPopover(element, options);
         popover.show();
         popoverState = true;
-    };
 
+        // Attach the modal event listener after popover HTML is inserted
+        document.getElementById('kt_calendar_event_view').addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent default link action
+
+            const modalElement = document.getElementById('kt_modal_view_training');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        });
+    };
 
     // Function to hide active popovers
     const hidePopovers = () => {
@@ -59,48 +73,6 @@ document.addEventListener('DOMContentLoaded', function () {
             popoverState = false;
             currentHoveredEvent = null; // Reset the currently hovered event
         }
-
-        document.addEventListener('click', function (event) {
-            if (event.target && event.target.id === 'kt_calendar_event_view') {
-                // Clean up any existing backdrops before showing the modal
-                const existingBackdrops = document.querySelectorAll('.modal-backdrop');
-                existingBackdrops.forEach(backdrop => backdrop.remove());
-
-                // Remove the 'modal-open' class from the body to reset
-                document.body.classList.remove('modal-open');
-
-                // Show the modal
-                const modalElement = document.getElementById('kt_modal_view_training');
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-
-                // Add an event listener to clean up backdrops when the modal is hidden
-                modalElement.addEventListener('hidden.bs.modal', function () {
-                    const backdrops = document.querySelectorAll('.modal-backdrop');
-                    backdrops.forEach(backdrop => backdrop.remove());
-                    document.body.classList.remove('modal-open');
-                });
-            }
-
-            // Check if the modal instance is valid
-            if (typeof bootstrapModal !== 'undefined' && bootstrapModal) {
-                bootstrapModal.hide(); // Hide the modal using Bootstrap's built-in method
-            }
-            document.getElementById('kt_modal_view_training').addEventListener('hidden.bs.modal', function () {
-                document.body.style.overflow = 'auto'; // Restore scrolling
-                document.body.style.paddingRight = ''; // Reset padding added by Bootstrap
-            });
-            const modalElement = document.getElementById('kt_modal_view_training');
-            modalElement.addEventListener('hidden.bs.modal', function () {
-                const backdrops = document.querySelectorAll('.modal-backdrop');
-                backdrops.forEach(backdrop => backdrop.remove());
-
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-            });
-        });
-
-
     };
 
     if (calendarEl) {
@@ -124,11 +96,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     modalContent += `<li>${seg.event.title}</li>`;
                 });
                 modalContent += '</ul>';
+                // Update modal content dynamically here
             },
             eventMouseEnter: function (info) {
-                if (currentHoveredEvent === info.event.id) {
-                    // If already hovered, do nothing
-                    return;
+                // Dispose of the current popover if it exists
+                if (popover) {
+                    popover.dispose();
+                    popoverState = false;
                 }
 
                 // Data for popover
@@ -140,19 +114,64 @@ document.addEventListener('DOMContentLoaded', function () {
                     modeType: info.event.extendedProps.modeType,
                     company: info.event.extendedProps.company,
                     facilitator: info.event.extendedProps.facilitator,
-                    assistant: info.event.extendedProps.assistant
+                    assistant: info.event.extendedProps.assistant,
+                    email: info.event.extendedProps.credentials_email,
+                    password: info.event.extendedProps.credentials_password,
+                    location: info.event.extendedProps.location,
+                    id: info.event.id
                 };
 
+                const $modalElement = $('#kt_modal_view_training');
+                $modalElement.find('#modal-title').text('VIEW TRAINING');
 
-                // Track the currently hovered event
-                currentHoveredEvent = info.event.id;
+                let mode = eventData.modeType;
 
+                $modalElement.find('#modal-mode-of-training').text(`${mode.toUpperCase() || 'N/A'}`);
+                $modalElement.find('#modal-location').text(`${eventData.location || 'N/A'}`);
+
+                if(eventData.email === "Select Account to Host Training")
+                {
+                    $modalElement.find('#modal-credentials').text('N/A');
+                }
+                else{
+                    $modalElement.find('#modal-credentials').text(`${eventData.email || 'N/A'}`);
+                }
+
+                let inpersontext = 'Yes';
+
+                //if public course and credentials == No
+
+                if(eventData.modeType === "virtual")
+                {
+                    inpersontext = 'No';
+                }
+                else if (eventData.modeType === "public-course")
+                {
+                    if(eventData.email !== "Select Account to Host Training")
+                    {
+                        inpersontext = 'No';
+                    }
+                }
+
+                $modalElement.find('#modal-in-person').text(inpersontext);
+
+                $modalElement.find('#modal-company').text(`${eventData.company || 'N/A'}`);
+
+                $modalElement.find('#modal-course').text(`${eventData.eventName || ''}`);
+
+                $modalElement.find('#modal-facilitator').text(`${eventData.facilitator?.name || 'No Facilitator Yet'}`);
+                $modalElement.find('#modal-assistant').text(`${eventData.assistant || 'No Assistant Yet'}`);
+
+                $modalElement.find('#modal-date').text(
+                    `${moment(eventData.startDate).format('MMM DD, YYYY')} to ${moment(eventData.endDate).format('MMM DD, YYYY')}`
+                );
+                $modalElement.find('#modal-time').text(
+                    `${moment(eventData.startDate).format('h:mm A')} to ${moment(eventData.endDate).format('h:mm A')}`
+                );
                 // Initialize popover
                 initPopovers(info.el, eventData);
             },
-
             eventMouseLeave: function (info) {
-                // Do nothing on mouse leave for the current event
                 // Popover will only close when another event is hovered
             },
         });
@@ -173,6 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             success: function (response) {
                 if (response.success) {
+
                     // Add events to the calendar
                     response.data.forEach(function (training) {
                         if (training.schedule) {
@@ -185,10 +205,16 @@ document.addEventListener('DOMContentLoaded', function () {
                                 facilitator: training.facilitator,
                                 assistant: training.assistant_id,
                                 modeType: training.mode,
-                                title: training.course + ' (' + training.company + ')',
+                                credentials_email: training.credentials_email,
+                                credentials_password: training.credentials_password,
+                                title: training.course,
+                                company: training.company,
                                 start: fromDateTime,
                                 end: toDateTime,
-                                backgroundColor: training.mode === 'virtual' ? '#3788d8' : '#34c38f',
+                                location: training.location,
+                                allDay: false,
+                                backgroundColor: training.facilitator.color ? training.facilitator.color : '#808080',
+
                             });
                         }
                     });
@@ -209,10 +235,4 @@ document.addEventListener('DOMContentLoaded', function () {
             },
         });
     }
-
-    $('#kt_calendar_event_view').click(function (e){
-
-        console.log('1');
-
-    })
 });
