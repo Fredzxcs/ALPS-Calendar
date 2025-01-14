@@ -39,12 +39,14 @@ class TrainingController extends Controller
             'mode' => ['required', 'string', 'max:255'],
             'facilitator_id' => ['nullable' , 'integer'],
             'company' => ['nullable', 'string', 'max:255'],
-            'assistant_id' => ['nullable', 'integer'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'assistant_id' => ['nullable', 'string'],
             'credentials_email' => ['nullable'],
             'credentials_password' => ['nullable', 'string'],
             'from_date' => ['required', 'date'],
             'to_date' => ['required', 'date'],
             'from_time' => ['required'],
+            'platform' => ['nullable'],
             'to_time' => ['required'],
         ]);
 
@@ -64,6 +66,7 @@ class TrainingController extends Controller
                 'course' => $request->course,
                 'mode' => $request->mode,
                 'facilitator_id' => $request->facilitator_id,
+                'location' => $request->location,
                 'company' => $request->company,
                 'assistant_id' => $request->assistant_id,
                 'credentials_email' => $request->credentials_email,
@@ -103,7 +106,7 @@ class TrainingController extends Controller
     public function gettraining(Request $request)
     {
 
-        $trainings = Training::with('schedule')->get();
+        $trainings = Training::with(['schedule','facilitator'])->get();
 
         if ($trainings->isNotEmpty()) {
             return response()->json([
@@ -129,17 +132,29 @@ class TrainingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, int $id)
     {
-        //
+        // Fetch the training with the related schedule and facilitator
+        $training = Training::with(['schedule', 'facilitator'])->find($id);
+
+        // Check if the training exists
+        if (!$training) {
+            \Log::error('Training not found for ID: ' . $id);
+            return redirect()->route('calendar')->with('error', 'Training not found.');
+        }
+
+        // Pass the training object to the view
+        return view('add_training.edit_training', compact('training'));
     }
+
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+
     }
 
     /**

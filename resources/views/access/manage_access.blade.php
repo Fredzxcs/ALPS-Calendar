@@ -23,10 +23,10 @@
                             <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
                             <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="black" />
                         </svg>
-                    </span> 
+                    </span>
                     ADD USER
                 </a>
-                
+
                 <!-- FILTER Button with Menu -->
                 <div>
                     <!-- Filter Button -->
@@ -61,23 +61,12 @@
                                 </select>
                             </div>
 
-                            <!-- Status Dropdown -->
-                            <div class="mb-10">
-                                <label class="form-label fw-bold">Status:</label>
-                                <select class="form-select form-select-solid" data-placeholder="Select option"
-                                    data-allow-clear="true">
-                                    <option>Show All</option>
-                                    <option value="1">Active</option>
-                                    <option value="2">Inactive</option>
-                                </select>
-                            </div>
-
                             <!-- Actions -->
                             <div class="d-flex justify-content-end">
                                 <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2"
-                                    data-kt-menu-dismiss="true">Reset</button>
+                                    data-kt-menu-dismiss="true">RESET</button>
                                 <button type="submit" class="btn btn-sm btn-primary"
-                                    data-kt-menu-dismiss="true">Apply</button>
+                                    data-kt-menu-dismiss="true">APPLY</button>
                             </div>
                         </div>
                     </div>
@@ -96,7 +85,6 @@
                         <th class="w-100px">EMAIL</th>
                         <th class="w-100px">ROLE</th>
                         <th class="w-100px">COLOR</th>
-                        <th class="w-100px">STATUS</th>
                         <th class="w-100px">ACTIONS</th>
                     </tr>
                 </thead>
@@ -105,7 +93,7 @@
 
                     @foreach ($users as $user)
 
-                        <tr>
+                        <tr row-id="{{ $user->id }}">
                             <td class="d-flex align-items-center text-start">
                                 <div class="symbol symbol-50px me-3">
                                     @isset($user->image)
@@ -142,23 +130,27 @@
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <!--if not facilitator, put N/A (tama ba? -kim)-->
-                                    @if ($user->usertype === 'facilitator')
-                                        <div class=" w-80px h-30px border border-2 border-dark" style="background-color: pink;"></div>
+
+                                    @if ($user->color)
+
+                                    <div class=" w-80px h-30px border border-2 border-dark" style="background-color: {{ $user->color }};"></div>
+
                                     @else
-                                        N/A
+
+                                    <p class="mb-0">No Color Assigned</p>
+
                                     @endif
+
                                 </div>
                             </td>
-                            <td><span class="badge badge-success">ACTIVE</span></td>
                             <td>
                                 <!--begin::Menu-->
-                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
+                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
                                     data-kt-menu-trigger="click"
                                     data-kt-menu-placement="bottom-start">
                                     MENU
                                 </button>
-                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
+                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4"
                                     data-kt-menu="true">
 
                                     <div class="menu-item px-3">
@@ -167,23 +159,9 @@
                                         </a>
                                     </div>
 
-                                    @if ($user->status === 'active')
-                                        <div class="menu-item px-3">
-                                            <a class="menu-link px-3 deactBtn">
-                                                <i class="bi bi-x-circle text-danger me-2"></i> Deactivate
-                                            </a>
-                                        </div>
-                                    @else
-                                        <div class="menu-item px-3">
-                                            <a class="menu-link px-3 reactBtn">
-                                                <i class="bi bi-check-circle text-success me-2"></i> Reactivate
-                                            </a>
-                                        </div>
-                                    @endif
-
                                     <div class="menu-item px-3">
-                                        <a class="menu-link px-3 archiveBtn">
-                                            <i class="bi bi-archive text-warning me-2"></i> Archive
+                                        <a class="menu-link px-3 deleteBtn">
+                                            <i class="bi bi-trash text-danger me-2"></i> Delete
                                         </a>
                                     </div>
                                 </div>
@@ -240,7 +218,7 @@
                                     </p>
                                 </div>
                             </div>
-                        </div>                            
+                        </div>
                         <!--end::Role-->
 
                         <!--begin::Full Name-->
@@ -254,14 +232,14 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6 mb-0" id="fullname"> 
+                                    <p class="lead fs-6 mb-0" id="fullname">
                                         Kimberly Mae Maglaque Kho II
                                     </p>
                                 </div>
                             </div>
-                        </div>                            
+                        </div>
                         <!--end::Full Name-->
-                        
+
                         <!--begin::Email Address-->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
@@ -272,13 +250,13 @@
                                 </div>
                             </div>
                             <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center"> 
-                                    <p class="lead fs-6 mb-0" id="email"> 
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0" id="email">
                                         kimlykho27@gmail.com
                                     </p>
                                 </div>
                             </div>
-                        </div>                            
+                        </div>
                         <!--end::Email Address-->
 
                         <!--begin::Contact Number-->
@@ -291,13 +269,13 @@
                                 </div>
                             </div>
                             <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center"> 
-                                    <p class="lead fs-6 mb-0" id="num"> 
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0" id="num">
                                         09205119555
                                     </p>
                                 </div>
                             </div>
-                        </div>                            
+                        </div>
                         <!--end::Contact Number-->
 
                         <!--begin::1x1 ID-->
@@ -309,7 +287,9 @@
                                 <!--begin::Image input-->
                                 <div class="image-input image-input-outline border border-2" data-kt-image-input="true" style="">
                                     <!--begin::Preview existing avatar-->
-                                    <div class="image-input-wrapper w-125px h-125px" id="idpic" style=""></div>
+                                    <div class="image-input-wrapper w-125px h-125px" id="idpic" style="">
+
+                                    </div>
                                     <!--end::Preview existing avatar-->
                                 </div>
                                 <!--end::Image input-->
@@ -318,7 +298,7 @@
                         <!--end::1x1 ID-->
 
                         <!--begin::Username-->
-                        <div class="row mb-5 justify-content-between align-items-center mt-5"> 
+                        <div class="row mb-5 justify-content-between align-items-center mt-5">
                             <div class="col-5">
                                 <div class="fv-row">
                                     <label class="fs-6 fw-bold mb-2">
@@ -327,17 +307,17 @@
                                 </div>
                             </div>
                             <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center"> 
-                                    <p class="lead fs-6 mb-0" id="username"> 
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0" id="username">
                                         kim.admin
                                     </p>
                                 </div>
                             </div>
-                        </div>                            
+                        </div>
                         <!--end::Username-->
 
                         <!--begin::Password-->
-                        <div class="row mb-5 justify-content-between align-items-center"> 
+                        <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
                                     <label class="fs-6 fw-bold mb-2">
@@ -346,17 +326,17 @@
                                 </div>
                             </div>
                             <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center"> 
-                                    <p class="lead fs-6 mb-0" id="pass"> 
-                                        *******
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <p class="lead fs-6 mb-0" id="pass">
+                                        ********
                                     </p>
                                 </div>
                             </div>
-                        </div>                            
+                        </div>
                         <!--end::Password-->
 
                         <!--begin::Color (IF FACILITATOR)-->
-                        <div class="row mb-5 justify-content-between align-items-center mt-5"> 
+                        <div class="row mb-5 justify-content-between align-items-center mt-5">
                             <div class="col-5">
                                 <div class="fv-row">
                                     <label class="fs-6 fw-bold mb-2">
@@ -365,18 +345,18 @@
                                 </div>
                             </div>
                             <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center"> 
-                                    <div class="w-80px h-30px border border-2 border-dark" style="background-color: pink;"></div>
+                                <div class="fv-row d-flex justify-content-end align-items-center">
+                                    <div id="color" class="w-80px h-30px border border-2 border-dark" style=""></div>
                                 </div>
                             </div>
-                        </div>                            
+                        </div>
                         <!--end::Color-->
                     </div>
                     <!--end::Modal body-->
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <a href="{{ route('edit_user') }}" class="btn btn-primary me-2">
+                        <a id="edit-user-btn" class="btn btn-primary me-2">
                             <i class="bi bi-pencil-fill me-2"></i>EDIT
                         </a>
                         <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
@@ -390,6 +370,7 @@
     </div>
     <!--end::Modal - View User-->
     <!--end::Modals-->
+
 </div>
 @endsection
 
@@ -459,18 +440,18 @@
         });
     });
 
-    //Archive button
-    document.querySelectorAll('.archiveBtn').forEach(button => {
+    //Delete button
+    document.querySelectorAll('.deleteBtn').forEach(button => {
         button.addEventListener('click', (event) => {
             event.preventDefault(); // Prevent default action (e.g., form submission)
 
             Swal.fire({
                 title: 'Are you sure?',
-                text: "You are about to archive this user.",
+                text: "You are about to delete this user.",
                 icon: 'warning',
                 buttonsStyling: false,
                 showCancelButton: true,
-                confirmButtonText: 'Yes, Archive',
+                confirmButtonText: 'Yes, Delete',
                 cancelButtonText: 'Cancel',
                 customClass: {
                 confirmButton: "btn btn-danger",
@@ -478,17 +459,89 @@
             }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Proceed with the archive
+                    // Proceed with the delete
                     Swal.fire(
-                        'Archived!',
-                        'The user has been archived.',
+                        'Deleted!',
+                        'The user has been deleted.',
                         'success'
                     );
 
-                    // TODO: Add logic to perform archive
+                    // TODO: Add logic to perform delete
                 }
             });
         });
+    });
+</script>
+<script>
+    $(document).ready(function (){
+
+        $('#edit-user-btn').click(function (e){
+
+            console.log('1');
+
+        });
+
+        $('a[data-bs-target="#modal_view_user"]').click(function (e){
+
+            let user = $(this).closest('tr').attr('row-id');
+
+            $.ajax({
+                url: `/access/api/get/user/${user}`,
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    console.log('User Data:', response);
+
+                    //role
+                    let role = '-';
+
+                    if(response.user.usertype === "admin")
+                    {
+                        role = 'System Admin'
+                    }
+                    else if(response.user.usertype === "coordinator")
+                    {
+                        role = 'Training Coordinator';
+                    }
+                    else if(response.user.usertype === "facilitator")
+                    {
+                        role = 'Facilitator';
+                    }
+
+                    $('#role').text(role);
+                    //fullname
+                    $('#fullname').text(response.user.name);
+                    //email
+                    $('#email').text(response.user.email);
+                    //num
+                    $('#num').text(response.user.contact_number);
+                    //idpic
+
+                    if (response.user.image)
+                    {
+                        let picture = `<img class="w-125px h-125px" src="{{ asset('storage') }}/${response.user.image}" alt="default-image">`;
+                        $('#idpic').html(picture);
+                    }
+                    else
+                    {
+                        $('#idpic').html('<p>No Image</p>');
+                    }
+                    //username
+                    $('#username').text(response.user.username);
+                    //pass
+                    $('#pass').text(response.user.password);
+                    //color
+                    $('#color').css('background-color', response.user.color);
+                },
+                error: function(xhr) {
+                    console.error('Error:', xhr.responseJSON?.error || 'An error occurred');
+                }
+            });
+
+        });
+
     });
 </script>
 @endpush

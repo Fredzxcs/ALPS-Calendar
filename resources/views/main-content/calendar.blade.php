@@ -1,6 +1,8 @@
 @extends('global.layout')
 
 @section('maincontent')
+
+
     <div class="mt-4 d-flex flex-wrap gap-4 mt-20">
         {{-- <!-- Left Side: Search Course and Search Trainer -->
     <div class="d-flex flex-column" style="flex: 1; max-width: 30%; gap: 20px;">
@@ -106,11 +108,17 @@
         <!-- Right Side: Calendar -->
         <div class="card shadow-sm" style="flex: 2;">
             <div class="card-header d-flex justify-content-end align-items-center">
-                <!--begin::Add Button-->
-                <button type="button" class="btn btn-primary btn-lg m-3 btn-hover-rise dropdown-toggle" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
-                    <span class="p-5 fs-4">Add</span>
-                </button>
-                <!--end::Add Button-->
+
+
+                @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+
+                    <!--begin::Add Button-->
+                    <button type="button" class="btn btn-primary btn-lg m-3 btn-hover-rise dropdown-toggle" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
+                        <span class="p-5 fs-4">Add</span>
+                    </button>
+                    <!--end::Add Button-->
+
+                @endif
                 <!--begin::Links-->
                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" data-kt-menu="true">
                     <!--begin::Link item-->
@@ -148,15 +156,34 @@
             </div>
         </div>
     </div>
-    <!--begin::Modal - New Product-->
-    <div class="modal fade" id="kt_modal_view_event" tabindex="-1" aria-hidden="true">
+
+        {{-- <!--begin:: Modal for displaying excess events -->
+        <div class="modal fade" id="kt_modal_view_training" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Event Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="kt_modal_view_training_content">
+                        <!-- Content will be dynamically added here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
+
+    <!--begin::Modal - View Training-->
+    <div class="modal fade" id="kt_modal_view_training" tabindex="-1" aria-hidden="true">
         <!--begin::Modal dialog-->
-        <div class="modal-dialog modal-dialog-centered mw-650px ">
+        <div class="modal-dialog modal-dialog-centered mw-650px">
             <!--begin::Modal content-->
             <div class="modal-content">
                 <!--begin::Modal header-->
                 <div class="modal-header border-0 justify-content-between align-items-center">
-                    <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="viewTrainingLabel">VIEW TRAINING</h1>
+                    <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="modal-title">VIEW TRAINING</h1>
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -173,11 +200,10 @@
                 <hr class="my-2 opacity-10 mb-3 mt-1">
                 <!--end::Modal header-->
                 <!--begin::Modal body-->
-                <!--begin::Modal body-->
-                <di class="modal-body py-10 px-lg-17">
+                <div class="modal-body py-10 px-lg-17">
                     <!-- Data Rows -->
                     <div class="container text-black d-flex flex-column justify-content-center">
-                        <!--begin::Mode of Training-->
+                        <!-- Mode of Training -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -188,13 +214,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Public Course</p>
+                                    <p class="lead fs-6" id="modal-mode-of-training">Public Course</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Mode of Training-->
-
-                        <!--begin::Credentials-->
+                        <!-- Credentials -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -205,13 +229,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">sample@gmail.com</p>
+                                    <p class="lead fs-6" id="modal-credentials">sample@gmail.com</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Credentials-->
-
-                        <!--begin::In-person-->
+                        <!-- In-person -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -222,13 +244,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Yes</p>
+                                    <p class="lead fs-6" id="modal-in-person">Yes</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::In-person-->
-
-                        <!--begin::Location-->
+                        <!-- Location -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -239,13 +259,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">PUP - Quezon City Campus</p>
+                                    <p class="lead fs-6" id="modal-location"></p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Location-->
-
-                        <!--begin::Company-->
+                        <!-- Company -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -256,13 +274,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">PUPQC</p>
+                                    <p class="lead fs-6" id="modal-company">PUPQC</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Company-->
-
-                        <!--begin::Course-->
+                        <!-- Course -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -273,13 +289,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Project Management</p>
+                                    <p class="lead fs-6" id="modal-course">Project Management</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Course-->
-
-                        <!--begin::Date-->
+                        <!-- Date -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -290,13 +304,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Dec 9, 2024 to Dec 12, 2024</p>
+                                    <p class="lead fs-6" id="modal-date">Dec 9, 2024 to Dec 12, 2024</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Date-->
-
-                        <!--begin::Time-->
+                        <!-- Time -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -307,13 +319,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">9:00 AM to 10:00 PM</p>
+                                    <p class="lead fs-6" id="modal-time">9:00 AM to 10:00 PM</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Time-->
-
-                        <!--begin::Facilitator-->
+                        <!-- Facilitator -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -324,12 +334,11 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Kimberly Mae M. Kho</p>
+                                    <p class="lead fs-6" id="modal-facilitator">Kimberly Mae M. Kho</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Facilitator-->
-                        <!--begin::Assistant-->
+                        <!-- Assistant -->
                         <div class="row mb-5 justify-content-between align-items-center">
                             <div class="col-5">
                                 <div class="fv-row">
@@ -340,28 +349,28 @@
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6">Daniel A. Del Rosario</p>
+                                    <p class="lead fs-6" id="modal-assistant">Daniel A. Del Rosario</p>
                                 </div>
                             </div>
                         </div>
-                        <!--end::Assistant-->
-                        <!--end::Modal body-->
-
-                        <!-- Begin: Modal buttons -->
-                        <div class="modal-footer justify-content-end">
-                            <a href="./add_training/edit_training.blade.php" class="btn btn-primary me-2">
-                                <i class="bi bi-pencil-fill me-2"></i>EDIT
-                            </a>
-                            <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
-
-                        </div>
-                        <!-- end: Modal buttons -->
                     </div>
+                </div>
+                <!-- Modal Footer -->
+                <div class="modal-footer justify-content-end">
+
+                    @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+                        <a href="{{route ('edit_training', ['id' => '1'])}}" class="btn btn-primary me-2">
+                            <i class="bi bi-pencil-fill me-2"></i>EDIT
+                        </a>
+                    @endif
+                    <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
                 </div>
             </div>
         </div>
-        <!--end::Modal - New Product-->
-    @endsection
+    </div>
+
+
+        @endsection
     @push('scripts')
         <script src="{{ asset('js/calendar.js') }}"></script>
     @endpush
