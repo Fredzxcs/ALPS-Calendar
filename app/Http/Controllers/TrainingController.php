@@ -132,17 +132,29 @@ class TrainingController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, int $id)
     {
-        //
+        // Fetch the training with the related schedule and facilitator
+        $training = Training::with(['schedule', 'facilitator'])->find($id);
+
+        // Check if the training exists
+        if (!$training) {
+            \Log::error('Training not found for ID: ' . $id);
+            return redirect()->route('calendar')->with('error', 'Training not found.');
+        }
+
+        // Pass the training object to the view
+        return view('add_training.edit_training', compact('training'));
     }
+
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+
     }
 
     /**

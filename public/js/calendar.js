@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to initialize popovers
     const initPopovers = (element, data) => {
         hidePopovers(); // Hide any active popovers
+
         // Generate popover content
         const startDate = data.allDay
             ? moment(data.startDate).format('MMM DD, YYYY')
@@ -192,7 +193,6 @@ document.addEventListener('DOMContentLoaded', function () {
             success: function (response) {
                 if (response.success) {
 
-                    console.log(response);
                     // Add events to the calendar
                     response.data.forEach(function (training) {
                         if (training.schedule) {
@@ -212,6 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 start: fromDateTime,
                                 end: toDateTime,
                                 location: training.location,
+                                allDay: false,
                                 backgroundColor: training.facilitator.color ? training.facilitator.color : '#808080',
 
                             });

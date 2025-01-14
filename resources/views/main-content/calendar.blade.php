@@ -108,11 +108,17 @@
         <!-- Right Side: Calendar -->
         <div class="card shadow-sm" style="flex: 2;">
             <div class="card-header d-flex justify-content-end align-items-center">
-                <!--begin::Add Button-->
-                <button type="button" class="btn btn-primary btn-lg m-3 btn-hover-rise dropdown-toggle" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
-                    <span class="p-5 fs-4">Add</span>
-                </button>
-                <!--end::Add Button-->
+
+
+                @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+
+                    <!--begin::Add Button-->
+                    <button type="button" class="btn btn-primary btn-lg m-3 btn-hover-rise dropdown-toggle" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
+                        <span class="p-5 fs-4">Add</span>
+                    </button>
+                    <!--end::Add Button-->
+
+                @endif
                 <!--begin::Links-->
                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" data-kt-menu="true">
                     <!--begin::Link item-->
@@ -351,9 +357,12 @@
                 </div>
                 <!-- Modal Footer -->
                 <div class="modal-footer justify-content-end">
-                    <a href="{{route ('edit_training')}}" class="btn btn-primary me-2">
-                        <i class="bi bi-pencil-fill me-2"></i>EDIT
-                    </a>
+
+                    @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+                        <a href="{{route ('edit_training', ['id' => '1'])}}" class="btn btn-primary me-2">
+                            <i class="bi bi-pencil-fill me-2"></i>EDIT
+                        </a>
+                    @endif
                     <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
                 </div>
             </div>

@@ -1,6 +1,4 @@
 @extends('global.layout')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
 
 @section('maincontent')
     <div class="d-flex justify-content-center align-items-center mt-20 ">
@@ -168,7 +166,8 @@
         </div>
     </div>
 @endsection
+
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    {{-- <script src="{{ asset('js/edit_training.js') }}"></script> --}}
+    <script src="{{ asset('js/edit_training.js') }}"></script>
 @endpush
