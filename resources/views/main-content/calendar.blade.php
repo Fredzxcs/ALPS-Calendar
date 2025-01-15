@@ -349,12 +349,23 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Modal Footer -->
-                <div class="modal-footer justify-content-end">
-                    <a href="{{route ('edit_training')}}" class="btn btn-primary me-2">
-                        <i class="bi bi-pencil-fill me-2"></i>EDIT
-                    </a>
-                    <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+                <div class="modal-footer d-flex justify-content-between">
+                    <!-- Delete -->
+                    <div>
+                        <button type="button" class="btn btn-danger deleteBtn">
+                            <i class="bi bi-trash me-2"></i>DELETE
+                        </button>
+                    </div>
+
+                    <!-- Edit and Close -->
+                    <div>
+                        <a href="{{route ('edit_training')}}" class="btn btn-primary me-2">
+                            <i class="bi bi-pencil-fill me-2"></i>EDIT
+                        </a>
+                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+                    </div>
                 </div>
             </div>
         </div>

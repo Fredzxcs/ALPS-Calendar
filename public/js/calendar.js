@@ -235,3 +235,35 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+//Delete training button
+document.querySelectorAll('.deleteBtn').forEach(button => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default action (e.g., form submission)
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to delete this training.",
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete',
+            cancelButtonText: 'Cancel',
+            customClass: {
+            confirmButton: "btn btn-danger",
+            cancelButton: 'btn btn-secondary'
+        }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with the delete
+                Swal.fire(
+                    'Deleted!',
+                    'The training has been deleted.',
+                    'success'
+                );
+
+                // TODO: Add logic to perform delete
+            }
+        });
+    });
+});
