@@ -71,3 +71,7 @@ Route::get('/config/companies', function () {
 Route::get('/config/accounts', function () {
     return view('configuration.accounts');})->name('config_accounts');
 
+// manage access - change credentials
+Route::get('/access/change_credentials', function () {
+    return view('access.change_credentials');})->name('change_credentials');
+

@@ -1,6 +1,6 @@
 @extends('global.layout')
 @section('maincontent')
-<!--FOR EDIT USER, SAME LANG SA ADD BUT YUNG CURRENT VALUES NAKALAGAY SA FIELDS-->
+<!--FOR EDIT USER, SAME LANG SA ADD BUT WALA YUNG STEP 3 AND YUNG CURRENT VALUES NAKALAGAY SA FIELDS-->
 <div class="d-flex justify-content-center align-items-center">
     <div class="container mt-5">
         <div class="card shadow-sm  pt-0 pb-1 mt-20">

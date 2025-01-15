@@ -160,6 +160,12 @@
                                     </div>
 
                                     <div class="menu-item px-3">
+                                        <a href="{{route ('change_credentials')}}" class="menu-link px-3">
+                                            <i class="bi bi-unlock-fill text-info me-2"></i> Change Credentials
+                                        </a>
+                                    </div>
+
+                                    <div class="menu-item px-3">
                                         <a class="menu-link px-3 deleteBtn">
                                             <i class="bi bi-trash text-danger me-2"></i> Delete
                                         </a>
