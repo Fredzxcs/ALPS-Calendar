@@ -76,11 +76,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    //Validation for Edit Company form
+    //Populate Existing Entry by id
+    // Event listener to open the modal and populate it with data
+    $(document).on('click', '.editCompanyBtn', function () {
+        // Get the company ID from the button's data-id attribute
+        const companyId = $(this).data('id');
+    
+        // Fetch company details using AJAX
+        $.ajax({
+            url: `/config/companies/${companyId}`, // Make sure this is the correct endpoint
+            method: 'GET',
+            success: function (response) {
+                // Populate the modal with company data
+                $('#edit_company_name').val(response.company_name);
+                $('#edit_company_contact_person').val(response.contact_person);
+                $('#edit_company_contact_number').val(response.contact_number);
+                $('#edit_company_email').val(response.email);
+    
+                // Optionally, store the company ID in the modal form for later use (for saving)
+                $('#modal_edit_company_form').data('id', companyId);
+    
+                // Open the modal
+                $('#modal_edit_company').modal('show');
+            },
+            error: function (error) {
+                console.error('Failed to fetch company details:', error);
+                alert('An error occurred while fetching the company details.');
+            }
+        });
+    });
+    
+
+
+    // Validation for Edit Company form
     document.getElementById('modal_edit_company_form').addEventListener('submit', (event) => {
         event.preventDefault();
+
+        const companyId = $('#modal_edit_company_form').data('id');
         const companyName = document.getElementById('edit_company_name');
-        
+        const contactPerson = document.getElementById('edit_company_contact_person');
+        const contactNumber = document.getElementById('edit_company_contact_number');
+        const email = document.getElementById('edit_company_email');
+        const submitButton = document.getElementById('edit_company_submit');
+
+        // Validate input
         if (!companyName.value.trim()) {
             companyName.classList.add('is-invalid');
             return;
@@ -88,13 +127,21 @@ document.addEventListener('DOMContentLoaded', () => {
             companyName.classList.remove('is-invalid');
         }
 
+        if (!contactNumber.value.trim()) {
+            contactNumber.classList.add('is-invalid');
+            return;
+        } else {
+            contactNumber.classList.remove('is-invalid');
+        }
+
+        // Confirmation dialog
         Swal.fire({
             title: 'Are you sure?',
-            text: "You are about to edit this company.",
+            text: "You are about to update this company.",
             icon: 'warning',
             buttonsStyling: false,
             showCancelButton: true,
-            confirmButtonText: 'Yes, Edit Company',
+            confirmButtonText: 'Yes, Update Company',
             cancelButtonText: 'Cancel',
             customClass: {
                 confirmButton: "btn btn-success",
@@ -102,15 +149,55 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire(
-                    'Edited!',
-                    'The company has been edited.',
-                    'success'
-                );
-                // TODO: Add logic to perform edit company
+                submitButton.disabled = true;
+
+                // Prepare the data to send
+                const formData = {
+                    company_name: companyName.value.trim(),
+                    contact_person: contactPerson.value.trim(),
+                    contact_number: contactNumber.value.trim(),
+                    email: email.value.trim() || null // Send null if email is empty
+                };
+
+                // Use the proper URL for the update action
+                const routeUrl = `/config/companies/update/${companyId}`; // Ensure this is the correct endpoint
+
+                console.log("Route URL:", routeUrl);
+
+                $.ajax({
+                    url: routeUrl,
+                    method: 'PATCH', // Using PATCH to update the company
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('Updated!', 
+                                'The company has been updated successfully.', 
+                                'success')
+                                .then(() => location.reload()); // Reload the page or update UI accordingly
+                        } else {
+                            Swal.fire('Error!', 
+                                'There was an issue updating the company.', 
+                                'error');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', xhr.responseText);
+                        Swal.fire('Error!', 
+                            'An unexpected error occurred.', 
+                            'error');
+                    },
+                    complete: function () {
+                        submitButton.disabled = false;
+                    }
+                });
             }
         });
     });
+
+    
 
     //Remove invalid class on input change
     document.querySelectorAll('#add_company_name, #edit_company_name').forEach(input => {

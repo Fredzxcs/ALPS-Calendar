@@ -16,6 +16,19 @@ class ConfigureCoursesController extends Controller
         return view('configuration.courses', compact('courses'));
     }
 
+    public function showCourseDetails($id)
+    {
+        $course = Course::find($id);
+
+        if (!$course) {
+            return response()->json(['error' => 'Course not found'], 404);
+        }
+
+        return response()->json([
+            'course_name' => $course->course_name,
+            'course_code' => $course->course_code
+        ]);
+    }
     public function addCourse(Request $request)
     {
         // Validate the incoming data
@@ -36,5 +49,42 @@ class ConfigureCoursesController extends Controller
             'message' => 'Course added successfully!',
         ]);
     }
+
+    public function editCourse(Request $request, $id)
+    {
+        // Validate the incoming data
+        $rules = [
+            'course_name' => 'required|max:255',
+            'course_code' => "nullable|unique:course,course_code,{$id}|max:255", 
+        ];
+
+
+        $validated = $request->validate($rules);
+
+        // Find the company by ID
+        $course = Course::findOrFail($id);
+
+        // Update the company's details
+        $course->fill($validated);
+
+        $course->save();
+
+        // Return a success response
+        return response()->json([
+            'success' => true,
+            'message' => 'Course updated successfully!',
+        ]);
+    }
     
+    public function deleteCourse($id){
+        
+        $course = Course::findOrFail($id);
+
+        $course->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Course deleted successfully!',
+        ]);
+    }
 }

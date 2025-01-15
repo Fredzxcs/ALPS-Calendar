@@ -63,6 +63,9 @@ Route::get('/access/archive', function () {
 Route::prefix('/config/courses')->group(function(){
     Route::get('/',[ConfigureCoursesController::class, 'showCourses'])->middleware(['auth', 'user:admin, coordinator'])->name('config_courses');
     Route::post('/add', [ConfigureCoursesController::class, 'addCourse'])->middleware(['auth', 'user:admin, coordinator'])->name('add_course');
+    Route::get('/{id}', [ConfigureCoursesController::class, 'showCourseDetails'])->middleware(['auth', 'user:admin, coordinator']);
+    Route::patch('/update/{id}',[ConfigureCoursesController::Class, 'editCourse'])->middleware(['auth', 'user:admin, coordinator'])->name('edit_course');
+    Route::delete('/delete/{id}',[ConfigureCoursesController::Class, 'deleteCourse'])->middleware(['auth', 'user:admin, coordinator'])->name('delete_course');
 
 });
 
@@ -70,5 +73,8 @@ Route::prefix('/config/courses')->group(function(){
 Route::prefix('/config/companies')->group(function () {
     Route::get('/',[ConfigureCompanyController::Class, 'showCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('config_companies');
     Route::post('/add',[ConfigureCompanyController::Class, 'addCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('add_company');
+    Route::get('/{id}', [ConfigureCompanyController::class, 'showCompanyDetails'])->middleware(['auth', 'user:admin, coordinator']);
+    Route::patch('/update/{id}',[ConfigureCompanyController::Class, 'editCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('edit_company');
+    Route::delete('/delete/{id}',[ConfigureCompanyController::Class, 'deleteCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('delete_company');
 });
 

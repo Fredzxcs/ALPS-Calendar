@@ -1,26 +1,5 @@
 //Validation
 document.addEventListener('DOMContentLoaded', () => {
-    //Validation for Add Course form
-    // document.getElementById('modal_add_course_form').addEventListener('submit', (event) => {
-    //     // Prevent form submission if validation fails
-    //     const courseName = document.getElementById('add_course_name');
-    //     const courseCode = document.getElementById('add_course_code');
-    
-    //     // Basic Validation
-    //     if (!courseName.value.trim()) {
-    //         event.preventDefault(); // Stop the form from submitting
-    //         courseName.classList.add('is-invalid'); // Add invalid style
-    //         return; // Stop further execution
-    //     } else {
-    //         courseName.classList.remove('is-invalid'); // Remove invalid style
-    //     }
-    
-    //     // Optional Confirmation Before Submission
-    //     const confirmation = confirm('Are you sure you want to add this course?');
-    //     if (!confirmation) {
-    //         event.preventDefault(); // Stop the form from submitting if the user cancels
-    //     }
-    // });
 
     document.getElementById('modal_add_course_form').addEventListener('submit', (event) => {
         event.preventDefault();
@@ -96,12 +75,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
+    //Populate Existing Entry by id
+    // Event listener to open the modal and populate it with data
+    $(document).on('click', '.editCourseBtn', function () {
+        // Get the course ID from the button's data-id attribute
+        const courseId = $(this).data('id');
+    
+        // Fetch course details using AJAX
+        $.ajax({
+            url: `/config/courses/${courseId}`, // Make sure this is the correct endpoint
+            method: 'GET',
+            success: function (response) {
+                // Populate the modal with course data
+                $('#edit_course_name').val(response.course_name);
+                $('#edit_course_code').val(response.course_code);
+    
+                // Optionally, store the course ID in the modal form for later use (for saving)
+                $('#modal_edit_course_form').data('id', courseId);
+    
+                // Open the modal
+                $('#modal_edit_course').modal('show');
+            },
+            error: function (error) {
+                console.error('Failed to fetch course details:', error);
+                alert('An error occurred while fetching the course details.');
+            }
+        });
+    });
+
     //Validation for Edit Course form
     
     document.getElementById('modal_edit_course_form').addEventListener('submit', (event) => {
         event.preventDefault();
+
+        const courseId = $('#modal_edit_course_form').data('id');
         const courseName = document.getElementById('edit_course_name');
-        
+        const courseCode = document.getElementById('edit_course_code');
+        const submitButton = document.getElementById('edit_course_submit');
+
         if (!courseName.value.trim()) {
             courseName.classList.add('is-invalid');
             return;
@@ -123,12 +134,47 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                Swal.fire(
-                    'Edited!',
-                    'The course has been edited.',
-                    'success'
-                );
-                // TODO: Add logic to perform edit course
+                submitButton.disabled = true;
+
+                const formData = {
+                    course_name: courseName.value.trim(),
+                    course_code: courseCode.value.trim() || null  
+                };
+
+                const routeUrl = `/config/courses/update/${courseId}`;
+                
+                console.log("Route URL:", routeUrl);
+
+                $.ajax({
+                    url: routeUrl,
+                    method: 'PATCH',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response){
+                        if (response.success) {
+                            Swal.fire('Updated!',
+                                'The course has been updated successfully.',
+                                'success')
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire('Error!',
+                                'There was an issue updating the course.',
+                                'error');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', xhr.responseText);
+                        Swal.fire('Error!', 
+                            'An unexpected error occurred.', 
+                            'error');
+                    },
+                    complete: function () {
+                        submitButton.disabled = false;
+                    }
+                });
+
             }
         });
     });

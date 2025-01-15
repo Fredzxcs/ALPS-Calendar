@@ -63,11 +63,15 @@
                                 data-kt-menu-placement="bottom-start">
                                 MENU
                             </button>
+
                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
                                 data-kt-menu="true">
 
                                 <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_company">
+                                    <a class="menu-link px-3 editCompanyBtn" 
+                                        data-id="{{ $company->id }}"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modal_edit_company">
                                         <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
                                     </a>
                                 </div>
@@ -93,8 +97,6 @@
                 <!-- Buttons are dynamically added by JavaScript -->
             </ul>
         </nav>
-
-
     </div>
     <!--begin::Modals-->
     <!--begin::Modal - Add Company-->
@@ -196,6 +198,7 @@
                         </div>
                     </div>
                     <!--end::Modal header-->
+
                     <!--begin::Modal body-->
                     <div class="modal-body py-10 px-lg-17">
                         <div class="row mb-5">
@@ -213,7 +216,7 @@
 
                         <div class="row mb-5">
                             <label for="company_contact_number" class="form-label fw-bold">Contact Number</label>
-                            <input type="number" class="form-control form-control-solid" id="edit_company_contact_number" placeholder="Enter Contact Number (Optional)"
+                            <input type="tel" class="form-control form-control-solid" id="edit_company_contact_number" placeholder="Enter Contact Number (Optional)"
                                 value="09009090">
                         </div>
 
@@ -224,6 +227,7 @@
                         </div>
                     </div>
                     <!--end::Modal body-->
+
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->

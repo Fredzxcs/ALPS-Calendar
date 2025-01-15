@@ -61,7 +61,10 @@
                                 data-kt-menu="true">
 
                                 <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_course">
+                                    <a class="menu-link px-3 editCourseBtn" 
+                                        data-id="{{ $course->id }}"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modal_edit_course">
                                         <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
                                     </a>
                                 </div>
@@ -207,7 +210,7 @@
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" class="btn btn-success me-2 editBtn" id="add_course_submit">
+                        <button type="submit" class="btn btn-success me-2 editBtn" id="edit_course_submit">
                             SAVE
                         </button>
                         <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CANCEL</button>
