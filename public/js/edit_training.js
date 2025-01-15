@@ -9,15 +9,30 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('edit_training_submit').addEventListener('click', function (e) {
         e.preventDefault(); // Prevent default submission
 
-        // Show SweetAlert for successful training edit
         Swal.fire({
-            title: 'Success!',
-            text: 'Training has been successfully edited.',
-            icon: 'success',
-            confirmButtonText: 'OK'
+            title: 'Are you sure?',
+            text: "You are about to edit this training.",
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Edit Training',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-secondary'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = '/calendar'; // Redirect to calendar
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Edited!',
+                    text: 'The training has been edited.',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    // TODO: Add logic to perform edit course
+                    console.log('Perform the edit course logic here.');
+                });
             }
         });
     });
