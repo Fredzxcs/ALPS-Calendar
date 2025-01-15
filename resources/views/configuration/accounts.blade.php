@@ -145,7 +145,6 @@
                                     <i class="bi bi-eye fs-2 d-none"></i>
                                 </span>
                             </div>
-                            <div id="ReqConfirmPassTxt" class="text-danger mt-2"></div>
                         </div>
                     </div>
 
@@ -156,9 +155,7 @@
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" class="btn btn-success me-2 addBtn" id="add_account_submit">
-                            SAVE
-                        </button>
+                        <button type="submit" id="add_account_submit" class="btn btn-success fw-boldest">SAVE</button>
                         <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CANCEL</button>
                         <!--end::Button-->
                     </div>

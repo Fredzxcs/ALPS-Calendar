@@ -1,82 +1,135 @@
-//Validation (in progress)
+//Validation
 document.addEventListener('DOMContentLoaded', () => {
-    //Validation for Add Account form
-    document.getElementById('modal_add_account_form').addEventListener('submit', (event) => {
+    const form = document.getElementById('modal_add_account_form');
+    const emailInput = document.getElementById('add_account_email');
+    const passwordInput = document.getElementById('add_account_password');
+    const passwordFeedback = passwordInput.nextElementSibling; // Locate the "Required field" div
+
+    // Form submission event
+    form.addEventListener('submit', (event) => {
         event.preventDefault();
-        const accountEmail = document.getElementById('add_account_email');
-        
-        if (!accountEmail.value.trim()) {
-            accountEmail.classList.add('is-invalid');
-            return;
+
+        let isValid = true;
+
+        // Validate email
+        if (!emailInput.value.trim()) {
+            emailInput.classList.add('is-invalid');
+            isValid = false;
         } else {
-            accountEmail.classList.remove('is-invalid');
+            emailInput.classList.remove('is-invalid');
         }
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to add this account.",
-            icon: 'warning',
-            buttonsStyling: false,
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Add Account',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: 'btn btn-secondary'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire(
-                    'Added!',
-                    'The account has been added.',
-                    'success'
-                );
-                // TODO: Add logic to perform add account
-            }
-        });
-    });
-
-    //Validation for Edit Account form
-    document.getElementById('modal_edit_account_form').addEventListener('submit', (event) => {
-        event.preventDefault();
-        const accountEmail = document.getElementById('edit_account_email');
-        
-        if (!accountEmail.value.trim()) {
-            accountEmail.classList.add('is-invalid');
-            return;
+        // Validate password (do not add is-invalid class)
+        if (!passwordInput.value.trim()) {
+            passwordFeedback.style.display = 'block'; // Show the "Required field" message
+            isValid = false;
         } else {
-            accountEmail.classList.remove('is-invalid');
+            passwordFeedback.style.display = 'none'; // Hide the message if valid
         }
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to edit this account.",
-            icon: 'warning',
-            buttonsStyling: false,
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Edit Account',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: 'btn btn-secondary'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire(
-                    'Edited!',
-                    'The account has been edited.',
-                    'success'
-                );
-                // TODO: Add logic to perform edit account
-            }
-        });
+        // If all fields are valid
+        if (isValid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to add this account.",
+                icon: 'warning',
+                buttonsStyling: false,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Add Account',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Added!',
+                        'The account has been added.',
+                        'success'
+                    );
+                    // TODO: Add logic to perform add acc here
+                }
+            });
+        }
     });
 
-    //Remove invalid class on input change
-    document.querySelectorAll('#add_account_email, #edit_account_email').forEach(input => {
+    // Remove invalid class on input change and manage password message visibility
+    [emailInput, passwordInput].forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
                 input.classList.remove('is-invalid');
+                if (input === passwordInput) {
+                    passwordFeedback.style.display = 'none';
+                }
+            }
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('modal_edit_account_form');
+    const emailInput = document.getElementById('edit_account_email');
+    const passwordInput = document.getElementById('edit_account_password');
+    const passwordFeedback = passwordInput.nextElementSibling; // Locate the "Required field" div
+
+    // Form submission event
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        let isValid = true;
+
+        // Validate email
+        if (!emailInput.value.trim()) {
+            emailInput.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            emailInput.classList.remove('is-invalid');
+        }
+
+        // Validate password (do not add is-invalid class)
+        if (!passwordInput.value.trim()) {
+            passwordFeedback.style.display = 'block'; // Show the "Required field" message
+            isValid = false;
+        } else {
+            passwordFeedback.style.display = 'none'; // Hide the message if valid
+        }
+
+        // If all fields are valid
+        if (isValid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to edit this account.",
+                icon: 'warning',
+                buttonsStyling: false,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Edit Account',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Edited!',
+                        'The account has been edited.',
+                        'success'
+                    );
+                    // TODO: Add logic to perform edit acc here
+                }
+            });
+        }
+    });
+
+    // Remove invalid class on input change and manage password message visibility
+    [emailInput, passwordInput].forEach(input => {
+        input.addEventListener('input', () => {
+            if (input.value.trim()) {
+                input.classList.remove('is-invalid');
+                if (input === passwordInput) {
+                    passwordFeedback.style.display = 'none';
+                }
             }
         });
     });
