@@ -1,7 +1,13 @@
 @extends('global.layout')
 
 @section('maincontent')
-
+<style>
+    /* Set fixed width and height for each day cell */
+    .fc-daygrid-day {
+    height: 12rem;
+    max-height: 16rem;
+}
+</style>
 
     <div class="mt-4 d-flex flex-wrap gap-4 mt-20">
         {{-- <!-- Left Side: Search Course and Search Trainer -->

@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay',
             },
-            dayMaxEvents: 2,
+            dayMaxEvents: 4,
             events: [],
             moreLinkClick: function (info) {
                 // Slice the excess events, excluding the first 3 visible ones
