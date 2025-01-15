@@ -35,7 +35,7 @@ class ManageAccessController extends Controller
         ], 200);
     }
 
-    public function update(Request $request, $id)
+    public function edit(Request $request,int $id)
     {
         return view('access.edit_user');
     }

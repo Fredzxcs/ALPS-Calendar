@@ -359,7 +359,7 @@
                 <div class="modal-footer justify-content-end">
 
                     @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
-                        <a href="{{route ('edit_training', ['id' => '1'])}}" class="btn btn-primary me-2">
+                        <a href="#" id="edit-training-link" data-base-url="{{ url('calendar/edit_training') }}/"  class="btn btn-primary me-2">
                             <i class="bi bi-pencil-fill me-2"></i>EDIT
                         </a>
                     @endif

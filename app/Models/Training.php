@@ -19,6 +19,7 @@ class Training extends Model
         'credentials_email',
         'credentials_password',
         'mode',
+        'platform',
         'location',
     ];
 
