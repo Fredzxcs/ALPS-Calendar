@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay',
             },
+            height: 1500,
             dayMaxEvents: 4,
             events: [],
             moreLinkClick: function (info) {

@@ -4,7 +4,7 @@
 <style>
     /* Set fixed width and height for each day cell */
     .fc-daygrid-day {
-    height: 12rem;
+    height: 13rem;
     max-height: 16rem;
 }
 </style>
