@@ -84,8 +84,6 @@ class ConfigureCompanyController extends Controller
             'message' => 'Company updated successfully!',
         ]);
     }
-
-
     
     public function deleteCompany($id)
     {

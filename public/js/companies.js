@@ -1,3 +1,62 @@
+// Search Filter
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('#company_table tbody tr');
+
+    searchInput.addEventListener('keyup', () => {
+        const searchValue = searchInput.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+
+            if (rowText.includes(searchValue)) {
+                row.style.display = ''; // Show row if it matches search
+            } else {
+                row.style.display = 'none'; // Hide row if it doesn't match search
+            }
+        });
+    });
+});
+
+// No matching Searches
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.querySelector('#companies_table tbody');
+    const tableRows = tableBody.querySelectorAll('tr');
+    const noResultsRow = document.createElement('tr');
+    
+
+    noResultsRow.id = 'noResultsRow';
+    noResultsRow.innerHTML = `
+        <td colspan="5" class="text-center">No matching courses found.</td>
+    `;
+    noResultsRow.style.display = 'none';
+    tableBody.appendChild(noResultsRow);
+
+    searchInput.addEventListener('keyup', () => {
+        const searchValue = searchInput.value.toLowerCase();
+        let visibleRowCount = 0;
+
+        tableRows.forEach(row => {
+            if (row.id !== 'noResultsRow') {
+                const cells = row.querySelectorAll('td');
+                const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+
+                if (rowText.includes(searchValue)) {
+                    row.style.display = ''; // Show row if it matches search
+                    visibleRowCount++;
+                } else {
+                    row.style.display = 'none'; // Hide row if it doesn't match search
+                }
+            }
+        });
+
+        // Show or hide the "No Results" row
+        noResultsRow.style.display = visibleRowCount === 0 ? '' : 'none';
+    });
+});
+
 //Validation
 document.addEventListener('DOMContentLoaded', () => {
     //Validation for Add Company form
@@ -210,9 +269,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 //Delete company button
+// Delete company button
 document.querySelectorAll('.deleteBtn').forEach(button => {
     button.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default action (e.g., form submission)
+
+        // Get the company ID from a data attribute (e.g., data-id)
+        const companyId = button.getAttribute('data-id');
+
+        if (!companyId) {
+            console.error("Company ID not provided.");
+            return;
+        }
 
         Swal.fire({
             title: 'Are you sure?',
@@ -223,23 +291,50 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
             confirmButtonText: 'Yes, Delete',
             cancelButtonText: 'Cancel',
             customClass: {
-            confirmButton: "btn btn-danger",
-            cancelButton: 'btn btn-secondary'
-        }
+                confirmButton: "btn btn-danger",
+                cancelButton: 'btn btn-secondary'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
-                // Proceed with the delete
-                Swal.fire(
-                    'Deleted!',
-                    'The company has been deleted.',
-                    'success'
-                );
+                // Perform the delete action
+                fetch(`/config/companies/delete/${companyId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire(
+                            'Deleted!',
+                            data.message || 'The company has been deleted.',
+                            'success'
+                        );
 
-                // TODO: Add logic to perform delete
+                        // Optionally remove the company row from the table or reload the page
+                        document.querySelector(`#company-row-${companyId}`).remove();
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            data.message || 'There was an error deleting the company.',
+                            'error'
+                        );
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire(
+                        'Error!',
+                        'There was an error deleting the company.',
+                        'error'
+                    );
+                });
             }
         });
     });
 });
+
 
 //Pagination
 document.addEventListener("DOMContentLoaded", function () {

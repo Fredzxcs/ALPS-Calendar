@@ -12,8 +12,10 @@
         <div class="d-flex justify-content-between align-items-center mb-8">
             <div class="position-relative" style="max-width: 300px;">
                 <!-- Input Field -->
-                <input type="text" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
-                    placeholder="&#xF52A; Search..." style="font-family: 'Bootstrap-icons', sans-serif;">
+                <input type="text" id="searchInput"
+                    class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
+                    placeholder="&#xF52A; Search..." 
+                    style="font-family: 'Bootstrap-icons', sans-serif;">
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
                 <!-- ADD USER Button -->
@@ -31,7 +33,9 @@
 
         <!-- Table -->
         <div class="table-responsive" style="padding: 0; margin: 0;">
-            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" id="courses_table" style="margin: auto;">
+            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" 
+                id="courses_table" 
+                style="margin: auto;">
                 <thead>
                     <tr class="fw-boldest text-gray-800 fs-5">
                         <th class="w-250px">COURSE NAME</th>
@@ -47,7 +51,7 @@
                     @else
                     <!-- Row -->
                     @foreach($courses as $course)
-                    <tr>
+                    <tr id ="course-row-{{ $course->id }}">
                         <td>{{ $course->course_name}}</td>
                         <td>{{ $course->course_code }}</td>
                         <td>
@@ -70,7 +74,8 @@
                                 </div>
 
                                 <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn">
+                                    <a class="menu-link px-3 deleteBtn"
+                                        data-id="{{ $course->id }}">
                                         <i class="bi bi-trash text-danger me-2"></i> Delete
                                     </a>
                                 </div>
