@@ -5,7 +5,7 @@
     <div class="container mt-5">
         <!-- Title -->
         <div class="mb-4">
-            <h3 class="card-header fw-boldest fs-1 " style="color: #7c0101; ">LIST OF ACCOUNTS</h3>
+            <h3 class="card-header fw-boldest fs-1 " style="color: #7c0101; ">LIST OF HOSTING ACCOUNTS</h3>
         </div>
 
         <!-- Top Actions -->
