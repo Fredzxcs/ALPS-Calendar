@@ -267,3 +267,18 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
         });
     });
 });
+
+//Password reveal in view modal
+$(document).ready(function() {
+    $(".password-display").click(function() {
+        var actualPassword = $(this).next(".password-actual");
+        $(this).addClass("d-none");
+        actualPassword.removeClass("d-none");
+    });
+
+    $(".password-actual").click(function() {
+        var passwordDisplay = $(this).prev(".password-display");
+        $(this).addClass("d-none");
+        passwordDisplay.removeClass("d-none");
+    });
+});

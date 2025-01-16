@@ -306,6 +306,10 @@
                             <div class="fv-row d-flex justify-content-end align-items-center">
                                 <p class="lead fs-6" id="modal-credentials">sample@gmail.com</p>
                             </div>
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
+                                <span class="password-actual d-none" id="modal-password" style="cursor: pointer;">password</span>
+                            </div>
                         </div>
                     </div>
                     <!-- In-person -->
