@@ -84,8 +84,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay',
             },
+            dayMaxEvents: 5,
+            dayMaxEvents: true,
+            dayMaxEventRows: true,
             height: 1500,
-            dayMaxEvents: 4,
             events: [],
             moreLinkClick: function (info) {
                 // Slice the excess events, excluding the first 3 visible ones
@@ -124,6 +126,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const $modalElement = $('#kt_modal_view_training');
                 $modalElement.find('#modal-title').text('VIEW TRAINING');
+
+                const baseUrl = $('#edit-training-link').data('base-url');
+                const editUrl = `${baseUrl}${eventData.id}`;
+                $('#edit-training-link').attr('href', editUrl);
 
                 let mode = eventData.modeType;
 
@@ -236,4 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
         });
     }
+
+
+
 });

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Schedule;
 use App\Models\Training;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class TrainingController extends Controller
 {
@@ -67,6 +68,7 @@ class TrainingController extends Controller
                 'mode' => $request->mode,
                 'facilitator_id' => $request->facilitator_id,
                 'location' => $request->location,
+                'platform' => $request->platform,
                 'company' => $request->company,
                 'assistant_id' => $request->assistant_id,
                 'credentials_email' => $request->credentials_email,
@@ -143,8 +145,11 @@ class TrainingController extends Controller
             return redirect()->route('calendar')->with('error', 'Training not found.');
         }
 
-        // Pass the training object to the view
-        return view('add_training.edit_training', compact('training'));
+        // Fetch all users to populate the facilitator dropdown
+        $facilitators = User::all();
+
+        // Pass the training object and facilitators to the view
+        return view('add_training.edit_training', compact('training', 'facilitators'));
     }
 
 
@@ -152,10 +157,85 @@ class TrainingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
+        Log::debug('Course: ' . $request->course);
+        // Validate the incoming request data
+        $validator = Validator::make($request->all(), [
+            'course' => ['required', 'string', 'max:255'],
+            'mode' => ['required', 'string', 'max:255'],
+            'facilitator_id' => ['nullable', 'integer'],
+            'company' => ['nullable', 'string', 'max:255'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'assistant_id' => ['nullable', 'string'],
+            'credentials_email' => ['nullable'],
+            'credentials_password' => ['nullable', 'string'],
+            'from_date' => ['required', 'date'],
+            'to_date' => ['required', 'date'],
+            'from_time' => ['required'],
+            'platform' => ['nullable'],
+            'to_time' => ['required'],
+        ]);
 
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        \DB::beginTransaction();
+
+        try {
+            // Find the existing Training session record
+            $trainingSession = Training::findOrFail($id);
+
+            // Update the Training session record
+            $trainingSession->update([
+                'course' => $request->course,
+                'mode' => $request->mode,
+                'facilitator_id' => $request->facilitator_id,
+                'location' => $request->location,
+                'platform' => $request->platform,
+                'company' => $request->company,
+                'assistant_id' => $request->assistant_id,
+                'credentials_email' => $request->credentials_email,
+                'credentials_password' => $request->credentials_password, // Encrypt the password
+            ]);
+
+            // Find the existing Schedule record associated with the training session
+            $schedule = Schedule::where('training_id', $trainingSession->id)->first();
+
+            // Update the Schedule record
+            $schedule->update([
+                'from_date' => $request->from_date,
+                'to_date' => $request->to_date,
+                'from_time' => $request->from_time,
+                'to_time' => $request->to_time,
+            ]);
+
+            // Commit the transaction
+            \DB::commit();
+
+            // Return success response
+            return response()->json([
+                'message' => 'Training session and schedule updated successfully',
+                'trainingSession' => $trainingSession,
+                'schedule' => $schedule,
+            ], 200);
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+
+            // Return error response
+            return response()->json([
+                'message' => 'Error occurred during updating the session and schedule.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
