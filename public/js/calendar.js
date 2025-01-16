@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dayMaxEvents: 5,
             dayMaxEvents: true,
             dayMaxEventRows: true,
+            height: 1500,
             events: [],
             moreLinkClick: function (info) {
                 // Slice the excess events, excluding the first 3 visible ones

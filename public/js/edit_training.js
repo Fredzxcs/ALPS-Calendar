@@ -58,7 +58,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle Cancel Button
     document.getElementById('cancel_training_button').addEventListener('click', function (e) {
         e.preventDefault(); // Prevent navigation
-
+        window.location.href = '/calendar'; // Redirect to the calendar
+    });
         // Show SweetAlert confirmation for cancel
         Swal.fire({
             title: 'Are you sure?',
@@ -73,24 +74,27 @@ document.addEventListener('DOMContentLoaded', function () {
             if (result.isConfirmed) {
                 // Redirect back to the calendar page
                 window.location.href = "/calendar"; //Note: can't access blade functions in javascript file. Type out the whole route
-
             }
-        });
+        }
     });
-    // Handle Save Button
+
+    // Handle Save/Edit Training Button
     document.getElementById('edit_training_submit').addEventListener('click', function (e) {
         e.preventDefault(); // Prevent default submission
 
-        // Show confirmation if changes were made
+        // Show confirmation SweetAlert
         Swal.fire({
             title: 'Are you sure?',
-            text: "Do you want to save the changes?",
+            text: "You are about to edit this training.",
             icon: 'warning',
+            buttonsStyling: false,
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!',
-            cancelButtonText: 'Cancel'
+            confirmButtonText: 'Yes, Edit Training',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: 'btn btn-secondary'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 //faci
