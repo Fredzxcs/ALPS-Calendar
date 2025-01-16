@@ -141,6 +141,8 @@
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach --}}
                             </select>
+                            <div class="invalid-feedback">Required field</div>
+
                         </div>
                         <!-- Assistant -->
                         <div class="col-md-6">
