@@ -12,8 +12,11 @@
         <div class="d-flex justify-content-between align-items-center mb-8">
             <div class="position-relative" style="max-width: 300px;">
                 <!-- Input Field -->
-                <input type="text" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
-                    placeholder="&#xF52A; Search..." style="font-family: 'Bootstrap-icons', sans-serif;">
+                <input type="text" 
+                    id="searchInput"
+                    class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
+                    placeholder="&#xF52A; Search..." 
+                    style="font-family: 'Bootstrap-icons', sans-serif;">
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
                 <!-- ADD USER Button -->
@@ -32,7 +35,9 @@
 
         <!-- Table -->
         <div class="table-responsive" style="padding: 0; margin: 0;">
-            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" id="companies_table" style="margin: auto;">
+            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" 
+                id="companies_table" 
+                style="margin: auto;">
                 <thead>
                     <tr class="fw-boldest text-gray-800 fs-5">
                         <th class="w-250px">COMPANY NAME</th>
@@ -43,12 +48,19 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Row -->
+                    @if($company->isEmpty())
                     <tr>
-                        <td>Sample Company Name</td>
-                        <td>Kimberly Kho</td>
-                        <td>09-----</td>
-                        <td>sample@email.com</td>
+                        <td colspan="3">No companies available.</td>
+                    </tr>
+                    @else
+
+                    @foreach($company as $company)
+                    <!-- Row -->
+                    <tr id="company-row-{{ $company->id }}">
+                        <td>{{ $company->company_name }}</td>
+                        <td>{{ $company->contact_person }}</td>
+                        <td>{{ $company->contact_number }}</td>
+                        <td>{{ $company->email}}</td>
                         <td>
                             <!--begin::Menu-->
                             <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
@@ -56,17 +68,22 @@
                                 data-kt-menu-placement="bottom-start">
                                 MENU
                             </button>
+
                             <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
                                 data-kt-menu="true">
 
                                 <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_company">
+                                    <a class="menu-link px-3 editCompanyBtn" 
+                                        data-id="{{ $company->id }}"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modal_edit_company">
                                         <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
                                     </a>
                                 </div>
 
                                 <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn">
+                                    <a class="menu-link px-3 deleteBtn"
+                                        data-id="{{ $company->id }}">
                                         <i class="bi bi-trash text-danger me-2"></i> Delete
                                     </a>
                                 </div>
@@ -74,7 +91,8 @@
                             <!--end::Menu-->
                         </td>
                     </tr>
-                    
+                    @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -85,8 +103,6 @@
                 <!-- Buttons are dynamically added by JavaScript -->
             </ul>
         </nav>
-
-
     </div>
     <!--begin::Modals-->
     <!--begin::Modal - Add Company-->
@@ -126,7 +142,11 @@
 
                         <div class="row mb-5">
                             <label for="company_contact_number" class="form-label fw-bold">Contact Number</label>
-                            <input type="number" class="form-control form-control-solid" id="add_company_contact_number" placeholder="Enter Contact Number (Optional)">
+                            <input type="number" 
+                            class="form-control form-control-solid" 
+                            id="add_company_contact_number" 
+                            placeholder="Enter Contact Number (Optional)"
+                            name="contact_number">
                         </div>
 
                         <div class="row mb-5">
@@ -135,13 +155,23 @@
                         </div>
                     </div>
                     <!--end::Modal body-->
+
+                    <!-- DOM element to store the route URL -->
+                    <div id="route-config-com" data-url="{{ route('add_company') }}"></div>
+                    
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" class="btn btn-success me-2 addBtn" id="add_company_submit">
+                        <button type="submit" 
+                            class="btn btn-success me-2 addBtn" 
+                            id="add_company_submit">
                             SAVE
                         </button>
-                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CANCEL</button>
+                        <button type="reset" 
+                            class="btn btn-light" 
+                            data-bs-dismiss="modal">
+                            CANCEL
+                        </button>
                         <!--end::Button-->
                     </div>
                     <!--end::Modal footer-->
@@ -174,6 +204,7 @@
                         </div>
                     </div>
                     <!--end::Modal header-->
+
                     <!--begin::Modal body-->
                     <div class="modal-body py-10 px-lg-17">
                         <div class="row mb-5">
@@ -191,7 +222,7 @@
 
                         <div class="row mb-5">
                             <label for="company_contact_number" class="form-label fw-bold">Contact Number</label>
-                            <input type="number" class="form-control form-control-solid" id="edit_company_contact_number" placeholder="Enter Contact Number (Optional)"
+                            <input type="tel" class="form-control form-control-solid" id="edit_company_contact_number" placeholder="Enter Contact Number (Optional)"
                                 value="09009090">
                         </div>
 
@@ -202,6 +233,7 @@
                         </div>
                     </div>
                     <!--end::Modal body-->
+
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
