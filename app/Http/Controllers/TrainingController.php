@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Schedule;
 use App\Models\Training;
+use App\Models\Course;
+use App\Models\Company;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -26,7 +28,11 @@ class TrainingController extends Controller
     {
         $users = User::all();
 
-        return view('add_training.add_training', compact('users'));
+        $courses = Course::all();
+
+        $companies = Company::all();
+
+        return view('add_training.add_training', compact('users', 'courses', 'companies'));
     }
 
     /**
@@ -36,12 +42,12 @@ class TrainingController extends Controller
     {
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
-            'course' => ['required', 'string', 'max:255'],
+            'course_id' => ['required', 'integer'],
             'mode' => ['required', 'string', 'max:255'],
             'facilitator_id' => ['nullable' , 'integer'],
-            'company' => ['nullable', 'string', 'max:255'],
+            'company_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:255'],
-            'assistant_id' => ['nullable', 'string'],
+            'assistant' => ['nullable', 'string'],
             'credentials_email' => ['nullable'],
             'credentials_password' => ['nullable', 'string'],
             'from_date' => ['required', 'date'],
@@ -64,13 +70,13 @@ class TrainingController extends Controller
         try {
             // Create the Training session record
             $trainingSession = Training::create([
-                'course' => $request->course,
+                'course_id' => $request->course_id,
                 'mode' => $request->mode,
                 'facilitator_id' => $request->facilitator_id,
                 'location' => $request->location,
                 'platform' => $request->platform,
-                'company' => $request->company,
-                'assistant_id' => $request->assistant_id,
+                'company_id' => $request->company_id,
+                'assistant' => $request->assistant,
                 'credentials_email' => $request->credentials_email,
                 'credentials_password' => $request->credentials_password, // Encrypt the password
             ]);
@@ -105,10 +111,10 @@ class TrainingController extends Controller
         }
     }
 
-    public function gettraining(Request $request)
+    public function getTraining(Request $request)
     {
-
-        $trainings = Training::with(['schedule','facilitator'])->get();
+        // Include the newly added relationships: course and company
+        $trainings = Training::with(['schedule', 'facilitator', 'course', 'company'])->get();
 
         if ($trainings->isNotEmpty()) {
             return response()->json([
@@ -122,6 +128,7 @@ class TrainingController extends Controller
             ], 404);
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -137,7 +144,7 @@ class TrainingController extends Controller
     public function edit(Request $request, int $id)
     {
         // Fetch the training with the related schedule and facilitator
-        $training = Training::with(['schedule', 'facilitator'])->find($id);
+        $training = Training::with(['schedule', 'facilitator', 'course', 'company'])->find($id);
 
         // Check if the training exists
         if (!$training) {
@@ -148,8 +155,12 @@ class TrainingController extends Controller
         // Fetch all users to populate the facilitator dropdown
         $facilitators = User::all();
 
+        $courses = Course::all();
+
+        $companies = Company::all();
+
         // Pass the training object and facilitators to the view
-        return view('add_training.edit_training', compact('training', 'facilitators'));
+        return view('add_training.edit_training', compact('training', 'facilitators', 'courses', 'companies'));
     }
 
 
@@ -159,15 +170,14 @@ class TrainingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Log::debug('Course: ' . $request->course);
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
-            'course' => ['required', 'string', 'max:255'],
+            'course_id' => ['required', 'integer'],
             'mode' => ['required', 'string', 'max:255'],
-            'facilitator_id' => ['nullable', 'integer'],
-            'company' => ['nullable', 'string', 'max:255'],
+            'facilitator' => ['nullable' , 'integer'],
+            'company_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:255'],
-            'assistant_id' => ['nullable', 'string'],
+            'assistant' => ['nullable', 'string'],
             'credentials_email' => ['nullable'],
             'credentials_password' => ['nullable', 'string'],
             'from_date' => ['required', 'date'],
@@ -193,15 +203,15 @@ class TrainingController extends Controller
 
             // Update the Training session record
             $trainingSession->update([
-                'course' => $request->course,
+                'course_id' => $request->course_id,
                 'mode' => $request->mode,
                 'facilitator_id' => $request->facilitator_id,
                 'location' => $request->location,
                 'platform' => $request->platform,
-                'company' => $request->company,
-                'assistant_id' => $request->assistant_id,
+                'company_id' => $request->company_id,
+                'assistant' => $request->assistant,
                 'credentials_email' => $request->credentials_email,
-                'credentials_password' => $request->credentials_password, // Encrypt the password
+                'credentials_password' => $request->credentials_password, // Encrypt the password // Encrypt the password
             ]);
 
             // Find the existing Schedule record associated with the training session

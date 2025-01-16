@@ -1,12 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const modeRadios = document.querySelectorAll('input[name="mode"]');
-    const companyContainer = document.getElementById("company-container");
-    const credentialsContainer = document.getElementById("credentials-container");
-    const locationContainer = document.getElementById("location-container");
-    const inpersonCheckbox = document.getElementById("inperson-training");
-    const companyCourseContainer = document.getElementById("company-course-container");
-    const publicCourseContainer = document.getElementById("public-course-container");
-
     // Mode of Training Logic
     modeRadios.forEach(radio => {
         radio.addEventListener("change", function () {
@@ -58,8 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle Cancel Button
     document.getElementById('cancel_training_button').addEventListener('click', function (e) {
         e.preventDefault(); // Prevent navigation
-        window.location.href = '/calendar'; // Redirect to the calendar
-    });
         // Show SweetAlert confirmation for cancel
         Swal.fire({
             title: 'Are you sure?',
@@ -76,6 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.location.href = "/calendar"; //Note: can't access blade functions in javascript file. Type out the whole route
             }
     });
+});
+
 
     // Handle Save/Edit Training Button
     document.getElementById('edit_training_submit').addEventListener('click', function (e) {
@@ -168,12 +160,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 var data = {
-                    course: course,
+                    course_id: course,
                     platform: platform,
                     location: location,
                     facilitator_id: facilitator_id,
-                    company: company,
-                    assistant_id: assistant_id,
+                    company_id: company,
+                    assistant: assistant_id,
                     credentials_email: credentials_email,
                     credentials_password: credentials_password,
                     mode: mode,

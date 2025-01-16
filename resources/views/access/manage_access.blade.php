@@ -116,7 +116,7 @@
                                         @break
                                     @case("coordinator")
                                         <span class="badge badge-light-primary">COORDINATOR</span>
-                                        @brceak
+                                        @break
                                     @case("facilitator")
                                         <span class="badge badge-light-info">FACILITATOR</span>
                                         @break

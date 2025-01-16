@@ -13,16 +13,10 @@ return new class extends Migration
     {
         Schema::create('training', function (Blueprint $table) {
             $table->id();
-
-            $table->string('course')->nullable();
-            // $table->foreignId('course_id')->constrained('course')->onDelete('cascade');
-
+            $table->foreignId('course_id')->constrained('course')->onDelete('cascade');
             $table->foreignId('facilitator_id')->nullable()->constrained('users')->onDelete('cascade');
-
-            $table->string('company')->nullable();
-            // $table->foreignId('company_id')->constrained('company')->onDelete('cascade');
-
-            $table->string('assistant_id')->nullable();
+            $table->foreignId('company_id')->nullable()->constrained('company')->onDelete('cascade');
+            $table->string('assistant')->nullable();
             $table->string('platform')->nullable();
             $table->string('credentials_email')->nullable();
             $table->string('credentials_password')->nullable();
