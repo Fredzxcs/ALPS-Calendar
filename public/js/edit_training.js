@@ -75,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Redirect back to the calendar page
                 window.location.href = "/calendar"; //Note: can't access blade functions in javascript file. Type out the whole route
             }
-        }
     });
 
     // Handle Save/Edit Training Button
