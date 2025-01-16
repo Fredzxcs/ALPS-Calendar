@@ -191,7 +191,6 @@
                     <!--end::Modal header-->
                     <!--begin::Modal body-->
                     <div class="modal-body py-10 px-lg-17">
-                        
                         <div class="row mb-5">
                             <!-- Account Email -->
                             <div class="col-12">
@@ -199,37 +198,34 @@
                                 <input type="email" class="form-control form-control-solid"
                                     id="edit_account_email"
                                     placeholder="Enter Account Email"
-                                    value="sample@email.com"
+                                    value="sample"
                                 />
-                                <div class="invalid-feedback">Required field</div>
                             </div>
                         </div>
 
                         <!-- Account Password -->
                         <div class="row mb-5">
                             <div class="col-12">
-                                <label for="edit_account_password" class="form-label fw-bold required">Account Password</label>
+                                <label for="add_account_password" class="form-label fw-bold required">Account Password</label>
                                 <div class="position-relative">
                                     <input type="password" class="form-control form-control-solid" 
                                         placeholder="Enter Account Password" 
                                         id="edit_account_password"
                                         name="edit_account_password"
-                                        value="pass123"
+                                        value="sample"
                                     />
-                                    <div class="invalid-feedback">Required field</div>
                                     <!-- Visibility toggle -->
                                     <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2 togglePassword"
                                         data-kt-password-meter-control="visibility" 
-                                        data-target="#edit_account_password" aria-label="Toggle Password Visibility">
+                                        data-target="#add_account_password" aria-label="Toggle Password Visibility">
                                         <i class="bi bi-eye-slash fs-2"></i>
                                         <i class="bi bi-eye fs-2 d-none"></i>
                                     </span>
                                 </div>
-                                <div id="ReqConfirmPassTxt" class="text-danger mt-2"></div>
                             </div>
                         </div>
-
                     </div>
+
                     <!--end::Modal body-->
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">

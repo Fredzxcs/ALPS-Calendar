@@ -315,7 +315,6 @@
                         <div class="row mb-5">
                             <label for="course_name" class="form-label fw-bold required">Course Name</label>
                             <input type="text" class="form-control form-control-solid" id="add_course_name" placeholder="Enter Course Name">
-                            <div class="invalid-feedback">Required field</div>
                         </div>
 
                         <div class="row mb-5">
@@ -369,7 +368,6 @@
                             <label for="course_name" class="form-label fw-bold required">Course Name</label>
                             <input type="text" class="form-control form-control-solid" id="edit_course_name" placeholder="Enter Course Name"
                                 value="Sample Course Name">
-                            <div class="invalid-feedback">Required Field</div>
                         </div>
 
                         <div class="row mb-5">

@@ -1,86 +1,133 @@
-//Validation
+//Validation for add
 document.addEventListener('DOMContentLoaded', () => {
-    //Validation for Add Company form
-    document.getElementById('modal_add_company_form').addEventListener('submit', (event) => {
+    const form = document.getElementById('modal_add_company_form');
+    const companyNameInput = document.getElementById('add_company_name');
+
+    // Function to add the Bootstrap 'border-danger' class
+    function setInvalid(input) {
+        input.classList.add('border-danger');
+    }
+
+    // Function to remove the Bootstrap 'border-danger' class
+    function setValid(input) {
+        input.classList.remove('border-danger');
+    }
+
+    // Form submission event
+    form.addEventListener('submit', (event) => {
         event.preventDefault();
-        const companyName = document.getElementById('add_company_name');
-        
-        if (!companyName.value.trim()) {
-            companyName.classList.add('is-invalid');
-            return;
+
+        let isValid = true;
+
+        if (!companyNameInput.value.trim()) {
+            setInvalid(companyNameInput);
+            isValid = false;
         } else {
-            companyName.classList.remove('is-invalid');
+            setValid(companyNameInput);
         }
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to add this company.",
-            icon: 'warning',
-            buttonsStyling: false,
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Add Company',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: 'btn btn-secondary'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire(
-                    'Added!',
-                    'The company has been added.',
-                    'success'
-                );
-                // TODO: Add logic to perform add company
-            }
-        });
-    });
-
-    //Validation for Edit Company form
-    document.getElementById('modal_edit_company_form').addEventListener('submit', (event) => {
-        event.preventDefault();
-        const companyName = document.getElementById('edit_company_name');
-        
-        if (!companyName.value.trim()) {
-            companyName.classList.add('is-invalid');
-            return;
-        } else {
-            companyName.classList.remove('is-invalid');
+        // If all fields are valid
+        if (isValid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to add this company.",
+                icon: 'warning',
+                buttonsStyling: false,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Add Company',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Added!',
+                        'The company has been added.',
+                        'success'
+                    );
+                    // TODO: Add logic to perform add company here
+                }
+            });
         }
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to edit this company.",
-            icon: 'warning',
-            buttonsStyling: false,
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Edit Company',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: 'btn btn-secondary'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire(
-                    'Edited!',
-                    'The company has been edited.',
-                    'success'
-                );
-                // TODO: Add logic to perform edit company
-            }
-        });
     });
 
-    //Remove invalid class on input change
-    document.querySelectorAll('#add_company_name, #edit_company_name').forEach(input => {
+    // Remove invalid border on input change
+    [companyNameInput].forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
-                input.classList.remove('is-invalid');
+                setValid(input);
             }
         });
     });
 });
+
+//Validation for edit
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('modal_edit_company_form');
+    const companyNameInput = document.getElementById('edit_company_name');
+
+    // Function to add the Bootstrap 'border-danger' class
+    function setInvalid(input) {
+        input.classList.add('border-danger');
+    }
+
+    // Function to remove the Bootstrap 'border-danger' class
+    function setValid(input) {
+        input.classList.remove('border-danger');
+    }
+
+    // Form submission event
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        let isValid = true;
+
+        if (!companyNameInput.value.trim()) {
+            setInvalid(companyNameInput);
+            isValid = false;
+        } else {
+            setValid(companyNameInput);
+        }
+
+        // If all fields are valid
+        if (isValid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to edit this company.",
+                icon: 'warning',
+                buttonsStyling: false,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Edit Company',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Edited!',
+                        'The company has been edited.',
+                        'success'
+                    );
+                    // TODO: Add logic to perform edit company here
+                }
+            });
+        }
+    });
+
+    // Remove invalid border on input change
+    [companyNameInput].forEach(input => {
+        input.addEventListener('input', () => {
+            if (input.value.trim()) {
+                setValid(input);
+            }
+        });
+    });
+});
+
 
 //Delete company button
 document.querySelectorAll('.deleteBtn').forEach(button => {

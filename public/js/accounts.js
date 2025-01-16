@@ -1,9 +1,18 @@
-//Validation
+//Validation for add
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('modal_add_account_form');
     const emailInput = document.getElementById('add_account_email');
     const passwordInput = document.getElementById('add_account_password');
-    const passwordFeedback = passwordInput.nextElementSibling; // Locate the "Required field" div
+
+    // Function to add the Bootstrap 'border-danger' class
+    function setInvalid(input) {
+        input.classList.add('border-danger');
+    }
+
+    // Function to remove the Bootstrap 'border-danger' class
+    function setValid(input) {
+        input.classList.remove('border-danger');
+    }
 
     // Form submission event
     form.addEventListener('submit', (event) => {
@@ -13,18 +22,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Validate email
         if (!emailInput.value.trim()) {
-            emailInput.classList.add('is-invalid');
+            setInvalid(emailInput);
             isValid = false;
         } else {
-            emailInput.classList.remove('is-invalid');
+            setValid(emailInput);
         }
 
-        // Validate password (do not add is-invalid class)
+        // Validate password
         if (!passwordInput.value.trim()) {
-            passwordFeedback.style.display = 'block'; // Show the "Required field" message
+            setInvalid(passwordInput);
             isValid = false;
         } else {
-            passwordFeedback.style.display = 'none'; // Hide the message if valid
+            setValid(passwordInput);
         }
 
         // If all fields are valid
@@ -54,24 +63,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Remove invalid class on input change and manage password message visibility
+    // Remove invalid border on input change
     [emailInput, passwordInput].forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
-                input.classList.remove('is-invalid');
-                if (input === passwordInput) {
-                    passwordFeedback.style.display = 'none';
-                }
+                setValid(input);
             }
         });
     });
 });
 
+//Validation for edit
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('modal_edit_account_form');
     const emailInput = document.getElementById('edit_account_email');
     const passwordInput = document.getElementById('edit_account_password');
-    const passwordFeedback = passwordInput.nextElementSibling; // Locate the "Required field" div
+
+    // Function to add the Bootstrap 'border-danger' class
+    function setInvalid(input) {
+        input.classList.add('border-danger');
+    }
+
+    // Function to remove the Bootstrap 'border-danger' class
+    function setValid(input) {
+        input.classList.remove('border-danger');
+    }
 
     // Form submission event
     form.addEventListener('submit', (event) => {
@@ -81,18 +97,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Validate email
         if (!emailInput.value.trim()) {
-            emailInput.classList.add('is-invalid');
+            setInvalid(emailInput);
             isValid = false;
         } else {
-            emailInput.classList.remove('is-invalid');
+            setValid(emailInput);
         }
 
-        // Validate password (do not add is-invalid class)
+        // Validate password
         if (!passwordInput.value.trim()) {
-            passwordFeedback.style.display = 'block'; // Show the "Required field" message
+            setInvalid(passwordInput);
             isValid = false;
         } else {
-            passwordFeedback.style.display = 'none'; // Hide the message if valid
+            setValid(passwordInput);
         }
 
         // If all fields are valid
@@ -122,18 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Remove invalid class on input change and manage password message visibility
+    // Remove invalid border on input change
     [emailInput, passwordInput].forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
-                input.classList.remove('is-invalid');
-                if (input === passwordInput) {
-                    passwordFeedback.style.display = 'none';
-                }
+                setValid(input);
             }
         });
     });
 });
+
 
 //Delete account button
 document.querySelectorAll('.deleteBtn').forEach(button => {

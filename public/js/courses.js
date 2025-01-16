@@ -1,82 +1,128 @@
-//Validation
+//Validation for add
 document.addEventListener('DOMContentLoaded', () => {
-    //Validation for Add Course form
-    document.getElementById('modal_add_course_form').addEventListener('submit', (event) => {
+    const form = document.getElementById('modal_add_course_form');
+    const courseNameInput = document.getElementById('add_course_name');
+
+    // Function to add the Bootstrap 'border-danger' class
+    function setInvalid(input) {
+        input.classList.add('border-danger');
+    }
+
+    // Function to remove the Bootstrap 'border-danger' class
+    function setValid(input) {
+        input.classList.remove('border-danger');
+    }
+
+    // Form submission event
+    form.addEventListener('submit', (event) => {
         event.preventDefault();
-        const courseName = document.getElementById('add_course_name');
-        
-        if (!courseName.value.trim()) {
-            courseName.classList.add('is-invalid');
-            return;
+
+        let isValid = true;
+
+        if (!courseNameInput.value.trim()) {
+            setInvalid(courseNameInput);
+            isValid = false;
         } else {
-            courseName.classList.remove('is-invalid');
+            setValid(courseNameInput);
         }
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to add this course.",
-            icon: 'warning',
-            buttonsStyling: false,
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Add Course',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: 'btn btn-secondary'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire(
-                    'Added!',
-                    'The course has been added.',
-                    'success'
-                );
-                // TODO: Add logic to perform add course
-            }
-        });
-    });
-
-    //Validation for Edit Course form
-    document.getElementById('modal_edit_course_form').addEventListener('submit', (event) => {
-        event.preventDefault();
-        const courseName = document.getElementById('edit_course_name');
-        
-        if (!courseName.value.trim()) {
-            courseName.classList.add('is-invalid');
-            return;
-        } else {
-            courseName.classList.remove('is-invalid');
+        // If all fields are valid
+        if (isValid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to add this course.",
+                icon: 'warning',
+                buttonsStyling: false,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Add Course',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Added!',
+                        'The course has been added.',
+                        'success'
+                    );
+                    // TODO: Add logic to perform add course here
+                }
+            });
         }
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to edit this course.",
-            icon: 'warning',
-            buttonsStyling: false,
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Edit Course',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: 'btn btn-secondary'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire(
-                    'Edited!',
-                    'The course has been edited.',
-                    'success'
-                );
-                // TODO: Add logic to perform edit course
-            }
-        });
     });
 
-    //Remove invalid class on input change
-    document.querySelectorAll('#add_course_name, #edit_course_name').forEach(input => {
+    // Remove invalid border on input change
+    [courseNameInput].forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
-                input.classList.remove('is-invalid');
+                setValid(input);
+            }
+        });
+    });
+});
+
+//Validation for edit
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('modal_edit_course_form');
+    const courseNameInput = document.getElementById('edit_course_name');
+
+    // Function to add the Bootstrap 'border-danger' class
+    function setInvalid(input) {
+        input.classList.add('border-danger');
+    }
+
+    // Function to remove the Bootstrap 'border-danger' class
+    function setValid(input) {
+        input.classList.remove('border-danger');
+    }
+
+    // Form submission event
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        let isValid = true;
+
+        if (!courseNameInput.value.trim()) {
+            setInvalid(courseNameInput);
+            isValid = false;
+        } else {
+            setValid(courseNameInput);
+        }
+
+        // If all fields are valid
+        if (isValid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to edit this course.",
+                icon: 'warning',
+                buttonsStyling: false,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Edit Course',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Edited!',
+                        'The course has been edited.',
+                        'success'
+                    );
+                    // TODO: Add logic to perform edit course here
+                }
+            });
+        }
+    });
+
+    // Remove invalid border on input change
+    [courseNameInput].forEach(input => {
+        input.addEventListener('input', () => {
+            if (input.value.trim()) {
+                setValid(input);
             }
         });
     });
