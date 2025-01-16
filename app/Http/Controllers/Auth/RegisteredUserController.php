@@ -61,6 +61,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'username' => ['required', 'string', 'max:255'],
             'usertype' => ['required', 'string'],
+            'color' => ['required', 'string'],
             'contact_number' => ['required', 'string', 'max:15'], // Validation for contact_number
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'], // Validation for image
             'password' => ['required'],
@@ -85,6 +86,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'username' => $request->username,
             'usertype' => $request->usertype,
+            'color' => $request->color,
             'contact_number' => $request->contact_number,
             'image' => $imagePath, // Save image path
             'password' => Hash::make($request->password),

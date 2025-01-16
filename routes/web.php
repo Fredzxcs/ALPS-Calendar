@@ -10,9 +10,9 @@ use App\Http\Controllers\ConfigureCompanyController;
 use Illuminate\Support\Facades\Route;
 
 
-// For login
+
 Route::get('/', function () {
-    return view('login.login'); // Replace with your actual login view
+    return view('login.login');
 })->name('index');
 
 Route::middleware('auth')->group(function () {
@@ -23,37 +23,50 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::controller(LandingpageController::class)->group(function () {
-    Route::get('admin/landingpage', 'admin');               //  ADMIN LANDINGPAGE ROUTE
-    Route::get('coordinator/coordinatorLp', 'coordinator'); //  COORDINATOR LANDINGPAGE ROUTE
-    Route::get('trainer/trainerLp', 'trainer');             //  TRAINER LANDINGPAGE ROUTE
-});
 
-route::get('admin/landingpage',[LandingpageController::class,'admin'])->middleware(['auth','user:admin']);                   //  ADMIN LANDINGPAGE ROUTE
-route::get('coordinator/coordinatorLp',[LandingpageController::class,'coordinator'])->middleware(['auth','user:coordinator']);     //  COORDINATOR LANDINGPAGE ROUTE
-route::get('trainer/trainerLp',[LandingpageController::class,'trainer'])->middleware(['auth','user:trainer']);                 //  TRAINER LANDINGPAGE ROUTE
+Route::prefix('calendar')->group(function () {
+    Route::get('/', [TrainingController::class, 'index'])
+        ->middleware(['auth', 'user:admin,coordinator,facilitator'])
+        ->name('calendar');
 
-Route::prefix('calendar')->group(function (){
-    Route::get('/', [TrainingController::class, 'index'])->middleware(['auth', 'user:admin,coordinator,facilitator'])->name('calendar');
-    Route::get('/add_training', [TrainingController::class, 'create'])->middleware(['auth', 'user:admin,coordinator'])->name('add_training');
-    Route::post('/add_training', [TrainingController::class, 'store'])->middleware(['auth', 'user:admin,coordinator'])->name('add_training.store');
-    Route::get('/api/get/training', [TrainingController::class, 'gettraining'])->middleware(['auth', 'admin,coordinator,facilitator'])->name('get_training');
+    Route::get('/add_training', [TrainingController::class, 'create'])
+        ->middleware(['auth', 'user:admin,coordinator'])
+        ->name('add_training');
+
+    Route::post('/add_training', [TrainingController::class, 'store'])
+        ->middleware(['auth', 'user:admin,coordinator'])
+        ->name('add_training.store');
+
+    Route::get('/api/get/training', [TrainingController::class, 'gettraining'])
+        ->name('get_training');
+
+    Route::get('/edit_training/{id}', [TrainingController::class, 'edit'])
+        ->middleware(['auth', 'user:admin,coordinator'])
+        ->name('edit_training');
+
+    Route::put('/edit_training/{id}', [TrainingController::class, 'update'])
+        ->middleware(['auth', 'user:admin,coordinator'])
+        ->name('add_training.put');
+
+
 });
 
 Route::prefix('access')->group(function (){
-    Route::get('/', [ManageAccessController::class, 'index'])->middleware(['auth', 'user:admin'])->name('manage_access');
-    Route::get('/add_user', [ManageAccessController::class, 'create'])->middleware(['auth', 'user:admin'])->name('add_user');
-    Route::post('/add_user', [RegisteredUserController::class, 'admin_store'])->middleware(['auth', 'user:admin'])->name('add_user.store');
+    Route::get('/', [ManageAccessController::class, 'index'])
+        ->middleware(['auth', 'user:admin'])
+        ->name('manage_access');
+    Route::get('/add_user', [ManageAccessController::class, 'create'])
+        ->middleware(['auth', 'user:admin'])
+        ->name('add_user');
+    Route::post('/add_user', [RegisteredUserController::class, 'admin_store'])
+        ->middleware(['auth', 'user:admin'])
+        ->name('add_user.store');
+    Route::get('/api/get/user/{id}', [ManageAccessController::class, 'get_user'])
+        ->name('get_user');
+    Route::get('/edit_user/{id}', [ManageAccessController::class, 'edit'])
+        ->middleware(['auth', 'user:admin'])
+        ->name('edit_user');
 });
-
-// Add User
-Route::get('/add_user_createacc', function () {
-    return view('access.add_user_createacc');
-})->middleware(['auth', 'user:user:admin'])->name('add_user_createacc');
-
-// Edit User - kim (paayos nalang po)
-Route::get('/access/edit_user', function () {
-    return view('access.edit_user');})->name('edit_user');
 
 // Archived Accounts
 Route::get('/access/archive', function () {
@@ -69,7 +82,11 @@ Route::prefix('/config/courses')->group(function(){
 
 });
 
-// config - companies
+
+// config - accounts
+Route::get('/config/accounts', function () {
+    return view('configuration.accounts');})->name('config_accounts');
+
 Route::prefix('/config/companies')->group(function () {
     Route::get('/',[ConfigureCompanyController::Class, 'showCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('config_companies');
     Route::post('/add',[ConfigureCompanyController::Class, 'addCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('add_company');
