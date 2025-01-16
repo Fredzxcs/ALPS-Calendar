@@ -196,155 +196,145 @@
                 <!--begin::Modal body-->
                 <div class="modal-body py-10 px-lg-17">
                     <!-- Data Rows -->
-                    <div class="container text-black d-flex flex-column justify-content-center">
-                        <!-- Mode of Training -->
-                        <div class="row mb-5 justify-content-between align-items-center">
-                            <div class="col-5">
-                                <div class="fv-row">
-                                    <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-chat-left-text-fill fs-3 me-5" style="color: #7c0101;"></i>Mode of Training
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6" id="modal-mode-of-training">Public Course</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Credentials -->
-                        <div class="row mb-5 justify-content-between align-items-center">
-                            <div class="col-5">
-                                <div class="fv-row">
-                                    <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-lock-fill fs-3 me-5" style="color: #7c0101;"></i>Credentials
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6" id="modal-credentials">sample@gmail.com</p>
-                                </div>
+                    <!-- Course -->
+                    <div class="row mb-5 justify-content-between align-items-center text-center">
+                        <h1 class="fs-1 fw-boldest text-primary" id="modal-course">Course</h1>
+                        <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span> 
+                        <br>
+                        from <span id="modal-time" class="fw-bold"></span></p>
+                    </div>
+                    <!-- Company -->
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-building fs-3 me-5" style="color: #7c0101;"></i>Company
+                                </label>
                             </div>
                         </div>
-                        <!-- In-person -->
-                        <div class="row mb-5 justify-content-between align-items-center">
-                            <div class="col-5">
-                                <div class="fv-row">
-                                    <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-person-fill fs-3 me-5" style="color: #7c0101;"></i>In-person?
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6" id="modal-in-person">Yes</p>
-                                </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-company">PUPQC</p>
                             </div>
                         </div>
-                        <!-- Location -->
-                        <div class="row mb-5 justify-content-between align-items-center">
-                            <div class="col-5">
-                                <div class="fv-row">
-                                    <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-geo-alt-fill fs-3 me-5" style="color: #7c0101;"></i>Location
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6" id="modal-location"></p>
-                                </div>
+                    </div>
+                    <!-- Facilitator -->
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-person-workspace fs-3 me-5" style="color: #7c0101;"></i>Facilitator
+                                </label>
                             </div>
                         </div>
-                        <!-- Company -->
-                        <div class="row mb-5 justify-content-between align-items-center">
-                            <div class="col-5">
-                                <div class="fv-row">
-                                    <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-building fs-3 me-5" style="color: #7c0101;"></i>Company
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6" id="modal-company">PUPQC</p>
-                                </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-facilitator">Kimberly Mae M. Kho</p>
                             </div>
                         </div>
-                        <!-- Course -->
-                        <div class="row mb-5 justify-content-between align-items-center">
-                            <div class="col-5">
-                                <div class="fv-row">
-                                    <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-book fs-3 me-5" style="color: #7c0101;"></i>Course
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6" id="modal-course">Project Management</p>
-                                </div>
+                    </div>
+                    <!-- Assistant -->
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-person-plus fs-3 me-5" style="color: #7c0101;"></i>Assistant
+                                </label>
                             </div>
                         </div>
-                        <!-- Date -->
-                        <div class="row mb-5 justify-content-between align-items-center">
-                            <div class="col-5">
-                                <div class="fv-row">
-                                    <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-calendar3 fs-3 me-5" style="color: #7c0101;"></i>Date
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6" id="modal-date">Dec 9, 2024 to Dec 12, 2024</p>
-                                </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-assistant">Daniel A. Del Rosario</p>
                             </div>
                         </div>
-                        <!-- Time -->
-                        <div class="row mb-5 justify-content-between align-items-center">
-                            <div class="col-5">
-                                <div class="fv-row">
-                                    <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-clock-fill fs-3 me-5" style="color: #7c0101;"></i>Time
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6" id="modal-time">9:00 AM to 10:00 PM</p>
-                                </div>
+                    </div>
+                    <!-- Date -->
+                    <!-- <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-calendar3 fs-3 me-5" style="color: #7c0101;"></i>Date
+                                </label>
                             </div>
                         </div>
-                        <!-- Facilitator -->
-                        <div class="row mb-5 justify-content-between align-items-center">
-                            <div class="col-5">
-                                <div class="fv-row">
-                                    <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-person-square fs-3 me-5" style="color: #7c0101;"></i>Facilitator
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6" id="modal-facilitator">Kimberly Mae M. Kho</p>
-                                </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-date">Dec 9, 2024 to Dec 12, 2024</p>
                             </div>
                         </div>
-                        <!-- Assistant -->
-                        <div class="row mb-5 justify-content-between align-items-center">
-                            <div class="col-5">
-                                <div class="fv-row">
-                                    <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-person-plus fs-3 me-5" style="color: #7c0101;"></i>Assistant
-                                    </label>
-                                </div>
+                    </div> -->
+                    <!-- Time -->
+                    <!-- <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-clock-fill fs-3 me-5" style="color: #7c0101;"></i>Time
+                                </label>
                             </div>
-                            <div class="col-7">
-                                <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <p class="lead fs-6" id="modal-assistant">Daniel A. Del Rosario</p>
-                                </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-time">9:00 AM to 10:00 PM</p>
+                            </div>
+                        </div>
+                    </div> -->
+                    <!-- Mode of Training -->
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-chat-left-text-fill fs-3 me-5" style="color: #7c0101;"></i>Mode of Training
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-mode-of-training">Public Course</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Credentials -->
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-easel-fill fs-3 me-5" style="color: #7c0101;"></i>Hosting Account
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-credentials">sample@gmail.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- In-person -->
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-person-fill fs-3 me-5" style="color: #7c0101;"></i>In-person?
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-in-person">Yes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Location -->
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-geo-alt-fill fs-3 me-5" style="color: #7c0101;"></i>Location
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-location"></p>
                             </div>
                         </div>
                     </div>

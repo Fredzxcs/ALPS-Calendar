@@ -17,11 +17,14 @@
     <!--end::Global Stylesheets Bundle-->
 </head>
 <div class="bg-image"
-    style="background-image: url('{{ asset('img/ALPsBG.png') }}'); background-repeat: no-repeat; background-size: cover; background-position: center; height: 100vh; width: 100vw;">
-    {{-- <div class="text-left">
-        <img src="{{ asset('img/ALPs_LOGO.jpg') }}" alt="ALPs Logo" style="width: 100px; height: auto;">
-    </div> --}}
+    style="background-image: url('{{ asset('img/LoginBG.png') }}'); background-repeat: no-repeat; background-size: cover; background-position: center; height: 100vh; width: 100vw;">
     <div class="d-flex justify-content-center align-items-center vh-100">
+
+        <!-- Logo -->
+        <div class="position-absolute text-center" style="top: 28%; transform: translateY(-50%);">
+            <img src="{{ asset('img/ALPs_LOGO.png') }}" alt="ALPs Logo" style="width: 150px; height: auto;">
+        </div>
+
         <div class="card shadow-sm mx-auto font-Poppins" style="width:35rem; background-color: #052a43; color: #ffffff; border-radius: 30px;">
             <div class="text-center" style="background: none; border-bottom: none;">
                 <h3 class="fs-1 fw-bold text-white mt-6 fw-boldest ">
