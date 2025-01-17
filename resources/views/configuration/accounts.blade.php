@@ -12,8 +12,10 @@
         <div class="d-flex justify-content-between align-items-center mb-8">
             <div class="position-relative" style="max-width: 300px;">
                 <!-- Input Field -->
-                <input type="text" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
-                    placeholder="&#xF52A; Search..." style="font-family: 'Bootstrap-icons', sans-serif;">
+                <input type="text" id="searchInput"
+                    class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
+                    placeholder="&#xF52A; Search..." 
+                    style="font-family: 'Bootstrap-icons', sans-serif;">
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
                 <!-- ADD USER Button -->
@@ -41,13 +43,22 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @if($accounts->isEmpty())
+                    <tr id="noResultsRow">
+                        <td colsplan="3">No credentials found.
+                    </tr>
+                    @else
                     <!-- Row -->
-                    <tr>
-                        <td>Sample Company Name</td>
+                    @foreach($accounts as $account)
+                    <!-- seach entry by id -->
+                    <tr id ="account-row-{{ $account->id }}">
+
+                        <td>{{ $account->account_email }}</td>
                         <td>
                             <span class="password-display" style="cursor: pointer;">*****</span>
-                            <span class="password-actual d-none" style="cursor: pointer;">Kimberly Kho</span>
+                            <span class="password-actual d-none" style="cursor: pointer;">{{ $account->account_password }}</span>
                         </td>
+
                         <td>
                             <!--begin::Menu-->
                             <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
@@ -59,13 +70,18 @@
                                 data-kt-menu="true">
 
                                 <div class="menu-item px-3">
-                                    <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_edit_account">
-                                        <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
-                                    </a>
+                                <a class="menu-link px-3 editAccountBtn" 
+                                    data-id="{{ $account->id }}"  
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#modal_edit_account">
+                                    <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
+                                </a>
+
                                 </div>
 
                                 <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn">
+                                    <a class="menu-link px-3 deleteBtn"
+                                        data-id="{{ $account->id }}">
                                         <i class="bi bi-trash text-danger me-2"></i> Delete
                                     </a>
                                 </div>
@@ -73,7 +89,8 @@
                             <!--end::Menu-->
                         </td>
                     </tr>
-                    
+                    @endforeach
+                    @endif
                 </tbody>
             </table>
         </div>
@@ -96,7 +113,9 @@
             <div class="modal-content">
                 <!--begin::Form-->
                 <form class="form" action="#" id="modal_add_account_form" novalidate>
-                    <input class="" type="hidden">
+
+                    <input class="" type="hidden" name="_token" value="{{ csrf_token() }}">
+
                     <!--begin::Modal header-->
                     <div class="modal-header">
                         <h2 class="fw-boldest" data-kt-calendar="title" style="color: #7c0101;">ADD ACCOUNT</h2>
@@ -117,7 +136,8 @@
                         <!-- Account Email -->
                         <div class="col-12">
                             <label for="add_account_email" class="form-label fw-bold required">Account Email</label>
-                            <input type="email" class="form-control form-control-solid" 
+                            <input type="email" 
+                                class="form-control form-control-solid" 
                                 id="add_account_email" 
                                 placeholder="Enter Account Email"
                             />
@@ -133,9 +153,9 @@
                                 <input type="password" class="form-control form-control-solid" 
                                     placeholder="Enter Account Password" 
                                     id="add_account_password"
-                                    name="add_account_password"
-                                />
+                                    name="add_account_password"/>
                                 <div class="invalid-feedback">Required field</div>
+
                                 <!-- Visibility toggle -->
                                 <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2 togglePassword"
                                     data-kt-password-meter-control="visibility" 
@@ -149,17 +169,23 @@
                         </div>
                     </div>
 
-
+                    <div id="route-config" data-url="{{ route('add_account') }}"></div>
 
                     </div>
                     <!--end::Modal body-->
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" class="btn btn-success me-2 addBtn" id="add_account_submit">
+                        <button type="submit" 
+                            class="btn btn-success me-2 addBtn" 
+                            id="add_account_submit">
                             SAVE
                         </button>
-                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CANCEL</button>
+                        <button type="reset" 
+                            class="btn btn-light" 
+                            data-bs-dismiss="modal">
+                            CANCEL
+                        </button>
                         <!--end::Button-->
                     </div>
                     <!--end::Modal footer-->

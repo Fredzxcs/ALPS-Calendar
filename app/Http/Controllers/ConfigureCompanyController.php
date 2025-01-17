@@ -38,9 +38,9 @@ class ConfigureCompanyController extends Controller
     {
         $validated = $request->validate([
             'company_name' => 'required|max:255', 
-            'contact_person'=> 'required|max:255', 
-            'contact_number'=> 'required|unique:company|max:255',
-            'email' => 'required|unique:company|max:255',
+            'contact_person'=> 'nullable|max:255', 
+            'contact_number'=> 'nullable|unique:company|max:255',
+            'email' => 'nullable|unique:company|max:255',
         ]);
 
         $company = new Company();
@@ -60,10 +60,10 @@ class ConfigureCompanyController extends Controller
     {
         // Define validation rules
         $rules = [
-            'company_name'   => 'sometimes|required|max:255', // Optional, but required if present
-            'contact_person' => 'sometimes|required|max:255', 
-            'contact_number' => "sometimes|required|unique:company,contact_number,{$id}|max:255", 
-            'email'          => "sometimes|required|unique:company,email,{$id}|max:255", 
+            'company_name'   => 'required|max:255', // Optional, but required if present
+            'contact_person' => 'nullable|max:255', 
+            'contact_number' => "nullable|unique:company,contact_number,{$id}|max:255", 
+            'email'          => "nullable|unique:company,email,{$id}|max:255", 
         ];
     
         // Validate incoming data

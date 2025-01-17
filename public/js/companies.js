@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const formData = {
                     company_name: companyName.value.trim(),
-                    contact_person: contactPerson.value.trim(),
-                    contact_number: contactNumber.value.trim(),
+                    contact_person: contactPerson.value.trim() || '',
+                    contact_number: contactNumber.value.trim() || '',
                     email: email.value.trim() || ''
                 };
 
