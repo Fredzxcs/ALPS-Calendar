@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// No matching Searches
+//No matching Searches - in progress
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const tableBody = document.querySelector('#companies_table tbody');
@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     noResultsRow.id = 'noResultsRow';
-    noResultsRow.innerHTML = `
-        <td colspan="5" class="text-center">No matching courses found.</td>
-    `;
+    // noResultsRow.innerHTML = `
+    //     <td colspan="5" class="text-center">No matching courses found.</td>
+    // `;
     noResultsRow.style.display = 'none';
     tableBody.appendChild(noResultsRow);
 
@@ -340,13 +340,61 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
 document.addEventListener("DOMContentLoaded", function () {
     const rowsPerPage = 5; // Number of rows per page
     const table = document.querySelector("#companies_table tbody");
-    const rows = Array.from(table.rows);
     const pagination = document.querySelector(".pagination");
-    const totalPages = Math.ceil(rows.length / rowsPerPage);
 
     let currentPage = 1; // Track the current page
 
+    function updatePagination() {
+        const rows = Array.from(table.rows); // Get the rows dynamically
+        const totalPages = Math.ceil(rows.length / rowsPerPage); // Recalculate total pages
+
+        // Clear existing pagination buttons
+        pagination.innerHTML = "";
+
+        // If there's only one page or no rows, don't display pagination
+        if (totalPages <= 1) {
+            rows.forEach((row) => (row.style.display = "")); // Show all rows
+            return;
+        }
+
+        // Add "Previous" button
+        const prevButton = document.createElement("li");
+        prevButton.className = "page-item prev disabled";
+        prevButton.innerHTML = `<a class="page-link" href="#">Previous</a>`;
+        prevButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (currentPage > 1) displayPage(currentPage - 1);
+        });
+        pagination.appendChild(prevButton);
+
+        // Add page number buttons
+        for (let i = 1; i <= totalPages; i++) {
+            const li = document.createElement("li");
+            li.className = "page-item" + (i === currentPage ? " active" : "");
+            li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+            li.addEventListener("click", (e) => {
+                e.preventDefault();
+                displayPage(i);
+            });
+            pagination.appendChild(li);
+        }
+
+        // Add "Next" button
+        const nextButton = document.createElement("li");
+        nextButton.className = "page-item next" + (currentPage === totalPages ? " disabled" : "");
+        nextButton.innerHTML = `<a class="page-link" href="#">Next</a>`;
+        nextButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (currentPage < totalPages) displayPage(currentPage + 1);
+        });
+        pagination.appendChild(nextButton);
+
+        displayPage(currentPage); // Ensure the current page is displayed
+    }
+
     function displayPage(page) {
+        const rows = Array.from(table.rows); // Get the rows dynamically
+        const totalPages = Math.ceil(rows.length / rowsPerPage); // Recalculate total pages
         const start = (page - 1) * rowsPerPage;
         const end = start + rowsPerPage;
 
@@ -367,44 +415,37 @@ document.addEventListener("DOMContentLoaded", function () {
         currentPage = page; // Update the current page
     }
 
-    // Create pagination buttons
-    function createPaginationButtons() {
-        // Add "Previous" button
-        const prevButton = document.createElement("li");
-        prevButton.className = "page-item prev disabled";
-        prevButton.innerHTML = `<a class="page-link" href="#">Previous</a>`;
-        prevButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (currentPage > 1) displayPage(currentPage - 1);
-        });
-        pagination.appendChild(prevButton);
+    // Update pagination whenever rows change
+    function refreshPagination() {
+        const rows = Array.from(table.rows);
+        const totalPages = Math.ceil(rows.length / rowsPerPage);
 
-        // Add page number buttons
-        for (let i = 1; i <= totalPages; i++) {
-            const li = document.createElement("li");
-            li.className = "page-item" + (i === 1 ? " active" : "");
-            li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-            li.addEventListener("click", (e) => {
-                e.preventDefault();
-                displayPage(i);
-            });
-            pagination.appendChild(li);
+        // Ensure currentPage is valid
+        if (currentPage > totalPages) {
+            currentPage = totalPages;
         }
-
-        // Add "Next" button
-        const nextButton = document.createElement("li");
-        nextButton.className = "page-item next" + (totalPages === 1 ? " disabled" : "");
-        nextButton.innerHTML = `<a class="page-link" href="#">Next</a>`;
-        nextButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (currentPage < totalPages) displayPage(currentPage + 1);
-        });
-        pagination.appendChild(nextButton);
+        updatePagination();
     }
 
-    createPaginationButtons();
-    displayPage(1); // Show the first page initially
+    // Initial pagination setup
+    refreshPagination();
+
+    // Simulating dynamic row updates (e.g., after deleting a row)
+    document.querySelector("#deleteRowButton").addEventListener("click", function () {
+        if (table.rows.length > 0) {
+            table.deleteRow(table.rows.length - 1); // Delete the last row
+            refreshPagination(); // Refresh pagination after deleting a row
+        }
+    });
+
+    document.querySelector("#addRowButton").addEventListener("click", function () {
+        const newRow = table.insertRow();
+        const cell = newRow.insertCell(0);
+        cell.textContent = "New Row";
+        refreshPagination(); // Refresh pagination after adding a row
+    });
 });
+
 
 
 

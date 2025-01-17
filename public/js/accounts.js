@@ -19,54 +19,54 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// No matching Searches
-// document.addEventListener('DOMContentLoaded', () => {
-//     const searchInput = document.getElementById('searchInput');
-//     const tableBody = document.querySelector('#accounts_table tbody');
-//     const tableRows = Array.from(tableBody.querySelectorAll('tr'));
-//     const noResultsRow = document.getElementById('noResultsRow');
+//No matching Searches - in progress
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.querySelector('#accounts_table tbody');
+    const tableRows = Array.from(tableBody.querySelectorAll('tr'));
+    const noResultsRow = document.getElementById('noResultsRow');
 
-//     // Function to check and update visibility of rows
-//     const updateNoResultsRow = () => {
-//         let visibleRowCount = 0;
+    // Function to check and update visibility of rows
+    const updateNoResultsRow = () => {
+        let visibleRowCount = 0;
 
-//         tableRows.forEach(row => {
-//             if (row.id !== 'noResultsRow' && row.style.display !== 'none') {
-//                 visibleRowCount++;
-//             }
-//         });
+        tableRows.forEach(row => {
+            if (row.id !== 'noResultsRow' && row.style.display !== 'none') {
+                visibleRowCount++;
+            }
+        });
 
-//         noResultsRow.style.display = visibleRowCount === 0 ? '' : 'none';
-//     };
+        noResultsRow.style.display = visibleRowCount === 0 ? '' : 'none';
+    };
 
-//     // Initial check: Hide server-rendered "noResultsRow" if accounts exist
-//     if (tableRows.length > 1 || (tableRows.length === 1 && tableRows[0].id !== 'noResultsRow')) {
-//         noResultsRow.style.display = 'none';
-//     }
+    // Initial check: Hide server-rendered "noResultsRow" if accounts exist
+    if (tableRows.length > 1 || (tableRows.length === 1 && tableRows[0].id !== 'noResultsRow')) {
+        noResultsRow.style.display = 'none';
+    }
 
-//     // Add search functionality
-//     searchInput.addEventListener('keyup', () => {
-//         const searchValue = searchInput.value.toLowerCase();
-//         let visibleRowCount = 0;
+    // Add search functionality
+    searchInput.addEventListener('keyup', () => {
+        const searchValue = searchInput.value.toLowerCase();
+        let visibleRowCount = 0;
 
-//         tableRows.forEach(row => {
-//             if (row.id !== 'noResultsRow') {
-//                 const cells = row.querySelectorAll('td');
-//                 const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+        tableRows.forEach(row => {
+            if (row.id !== 'noResultsRow') {
+                const cells = row.querySelectorAll('td');
+                const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
 
-//                 if (rowText.includes(searchValue)) {
-//                     row.style.display = ''; // Show matching rows
-//                     visibleRowCount++;
-//                 } else {
-//                     row.style.display = 'none'; // Hide non-matching rows
-//                 }
-//             }
-//         });
+                if (rowText.includes(searchValue)) {
+                    row.style.display = ''; // Show matching rows
+                    visibleRowCount++;
+                } else {
+                    row.style.display = 'none'; // Hide non-matching rows
+                }
+            }
+        });
 
-//         // Update visibility of the "No Results" row
-//         noResultsRow.style.display = visibleRowCount === 0 ? '' : 'none';
-//     });
-// });
+        // Update visibility of the "No Results" row
+        noResultsRow.style.display = visibleRowCount === 0 ? '' : 'none';
+    });
+});
 
 
 //Validation (in progress)
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 // Handle other validation or general errors
                                 Swal.fire(
                                     'Error!',
-                                    'An unexpected error occurred.',
+                                    'Pleas try again.',
                                     'error'
                                 );
                             }
