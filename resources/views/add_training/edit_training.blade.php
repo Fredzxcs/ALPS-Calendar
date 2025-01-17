@@ -171,7 +171,6 @@
                                     {{ $user->id == $training->facilitator->id ? 'selected' : '' }}>{{ $user->name }}</option>
                                 @endforeach
                             </select>
-                            <div class="invalid-feedback">Required field</div>
 
                         </div>
                         <!-- Assistant -->
