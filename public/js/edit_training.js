@@ -1,4 +1,24 @@
 document.addEventListener("DOMContentLoaded", function () {
+    let startDateFormatted = '';
+    let endDateFormatted = '';
+
+    // Initialize Flatpickr for Date Range
+    const dateRangePicker = flatpickr("#date-range", {
+        mode: "range",
+        dateFormat: "Y-m-d", // Ensure the format matches your backend format
+        onChange: function (selectedDates) {
+            if (selectedDates.length > 0) {
+                startDateFormatted = selectedDates[0].toISOString().split('T')[0]; // Convert to YYYY-MM-DD
+                endDateFormatted = selectedDates[selectedDates.length - 1].toISOString().split('T')[0]; // Handle single-day or multi-day
+                console.log("Start Date:", startDateFormatted);
+                console.log("End Date:", endDateFormatted);
+            } else {
+                startDateFormatted = ''; // Reset if no date selected
+                endDateFormatted = '';
+            }
+        }
+    });
+
     const modeRadios = document.querySelectorAll('input[name="mode"]');
     const companyContainer = document.getElementById("company-container");
     const credentialsContainer = document.getElementById("credentials-container");
@@ -11,19 +31,16 @@ document.addEventListener("DOMContentLoaded", function () {
     modeRadios.forEach(radio => {
         radio.addEventListener("change", function () {
             if (radio.id === "virtual") {
-                // Virtual: Show Email/Password, hide others
                 credentialsContainer.classList.remove("d-none");
                 locationContainer.classList.add("d-none");
                 publicCourseContainer.classList.add("d-none");
                 companyCourseContainer.classList.remove("d-none");
             } else if (radio.id === "face-to-face") {
-                // Face-to-Face: Show Location, hide Email/Password
                 credentialsContainer.classList.add("d-none");
                 locationContainer.classList.remove("d-none");
                 publicCourseContainer.classList.add("d-none");
                 companyCourseContainer.classList.remove("d-none");
             } else if (radio.id === "public-course") {
-                // Public Course: Show Public Course layout, hide Company/Course
                 credentialsContainer.classList.remove("d-none");
                 publicCourseContainer.classList.remove("d-none");
                 companyCourseContainer.classList.add("d-none");
@@ -40,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // In-person Checkbox Logic
     inpersonCheckbox.addEventListener("change", function () {
         if (inpersonCheckbox.checked) {
             credentialsContainer.classList.add("d-none");
@@ -50,35 +66,14 @@ document.addEventListener("DOMContentLoaded", function () {
             locationContainer.classList.add("d-none");
         }
     });
-});
 
-var csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Handle Cancel Button
     document.getElementById('cancel_training_button').addEventListener('click', function (e) {
-        e.preventDefault(); // Prevent navigation
-        window.location.href = '/calendar'; // Redirect to the calendar
+        e.preventDefault();
+        window.location.href = '/calendar';
     });
-    //     // Show SweetAlert confirmation for cancel
-    //     Swal.fire({
-    //         title: 'Are you sure?',
-    //         text: "Any unsaved changes will be lost. Do you want to proceed?",
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#d33',
-    //         cancelButtonColor: '#3085d6',
-    //         confirmButtonText: 'Yes, cancel',
-    //         cancelButtonText: 'Stay on page'
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             // Redirect back to the calendar page
-    //             window.location.href = "/calendar"; //Note: can't access blade functions in javascript file. Type out the whole route
-    //         }
-    //     }
-    // });
+
     document.getElementById('edit_training_submit').addEventListener('click', function (e) {
-        e.preventDefault(); // Prevent default submission
+        e.preventDefault();
 
         function setInvalid(input) {
             input.classList.add('border-danger');
@@ -98,12 +93,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let isValid = true;
 
-        // Get the mode of training
+        // Validate date range
+        if (!startDateFormatted || !endDateFormatted) {
+            setInvalid(document.getElementById('date-range'));
+            Swal.fire({
+                icon: 'error',
+                title: 'Validation Error',
+                text: 'Please select a valid date range.',
+            });
+            isValid = false;
+        } else {
+            setValid(document.getElementById('date-range'));
+        }
+
         const mode = document.querySelector('input[name="mode"]:checked')?.value;
         const location = document.getElementById('location');
         const facilitator = document.getElementById('facilitator');
 
-        // Validate location only for "face-to-face" mode
         if (mode === 'face-to-face') {
             if (!location.value.trim()) {
                 setInvalid(location);
@@ -112,10 +118,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 setValid(location);
             }
         } else {
-            setValid(location); // Reset validation for other modes
+            setValid(location);
         }
 
-        // Validate facilitator
         if (!facilitator.value.trim()) {
             setInvalid(facilitator);
             isValid = false;
@@ -132,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Show confirmation SweetAlert if validation passes
         Swal.fire({
             title: 'Are you sure?',
             text: "You are about to edit this training.",
@@ -147,14 +151,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                // Existing logic for gathering data and making AJAX request
-
                 let facilitator_id = $('#facilitator').find('option:selected').val();
                 let assistant_id = '';
-
                 $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
                     const value = $(this).val().trim();
-
                     if (value) {
                         if (assistant_id.length > 0) {
                             assistant_id += ', ';
@@ -163,8 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-                let from_date = startDateFormatted;
-                let to_date = endDateFormatted;
                 let from_time = $('#time-start').val();
                 let to_time = $('#time-end').val();
                 let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
@@ -190,43 +188,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 var data = {
                     course: course,
                     platform: platform,
-                    location: location,
+                    location: location.value,
                     facilitator_id: facilitator_id,
                     company: company,
                     assistant_id: assistant_id,
                     credentials_email: credentials_email,
                     credentials_password: credentials_password,
                     mode: mode,
-                    from_date: from_date,
-                    to_date: to_date,
+                    from_date: startDateFormatted,
+                    to_date: endDateFormatted,
                     from_time: from_time,
                     to_time: to_time
                 };
 
-                var jsonData = JSON.stringify(data);
+                console.log(data);
 
-                console.log(jsonData);
-
-                //ajax request
-
-                // Get the current URL
                 const url = window.location.href;
-
-                // Use a regular expression to extract the ID (assuming it's the last part of the URL)
                 const match = url.match(/\/edit_training\/(\d+)$/);
-
-                // If a match is found, the ID will be in the first capturing group
-                let trainingId = '';
-
-                if (match) {
-                    trainingId = match[1];
-                    console.log(trainingId);
-                }
+                let trainingId = match ? match[1] : '';
 
                 $.ajax({
                     url: '/calendar/edit_training/' + trainingId,
                     type: 'PUT',
-                    data: jsonData,
+                    data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
@@ -242,13 +226,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         });
                     },
-                    error: function (xhr, status, error, response) {
-                        console.log('AJAX Error Details:');
-                        console.log('Status:', status);
-                        console.log('Error:', error);
-                        console.log('Response Text:', xhr.responseText);
-                        console.log('ReadyState:', xhr.readyState);
-                        console.log('Response Status:', xhr.status);
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', error);
                         Swal.fire({
                             title: 'Error!',
                             text: 'There was an error updating the training.',
