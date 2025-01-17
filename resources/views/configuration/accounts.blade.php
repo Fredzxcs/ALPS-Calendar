@@ -45,7 +45,9 @@
                 <tbody>
                     @if($accounts->isEmpty())
                     <tr id="noResultsRow">
-                        <td colsplan="3">No credentials found.
+                        <td colspan="3" style="text-align: center; vertical-align: middle;">
+                            No credentials found.
+                        </td>
                     </tr>
                     @else
                     <!-- Row -->

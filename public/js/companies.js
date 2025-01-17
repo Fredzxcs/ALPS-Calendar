@@ -112,12 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     success: function(response){
                         if (response.success) {
                             Swal.fire('Added!', 
-                                'The course has been added successfully.', 
+                                'The company has been added successfully.', 
                                 'success')
                                 .then(() => location.reload());
                         } else {
                             Swal.fire('Error!', 
-                                'There was an issue adding the course.', 
+                                'There was an issue adding the company.', 
                                 'error');
                         }
                     },
