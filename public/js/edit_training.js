@@ -31,16 +31,19 @@ document.addEventListener("DOMContentLoaded", function () {
     modeRadios.forEach(radio => {
         radio.addEventListener("change", function () {
             if (radio.id === "virtual") {
+                // Virtual: Show Email/Password, hide others
                 credentialsContainer.classList.remove("d-none");
                 locationContainer.classList.add("d-none");
                 publicCourseContainer.classList.add("d-none");
                 companyCourseContainer.classList.remove("d-none");
             } else if (radio.id === "face-to-face") {
+                // Face-to-Face: Show Location, hide Email/Password
                 credentialsContainer.classList.add("d-none");
                 locationContainer.classList.remove("d-none");
                 publicCourseContainer.classList.add("d-none");
                 companyCourseContainer.classList.remove("d-none");
             } else if (radio.id === "public-course") {
+                // Public Course: Show Public Course layout, hide Company/Course
                 credentialsContainer.classList.remove("d-none");
                 publicCourseContainer.classList.remove("d-none");
                 companyCourseContainer.classList.add("d-none");
@@ -57,6 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // In-person Checkbox Logic
     inpersonCheckbox.addEventListener("change", function () {
         if (inpersonCheckbox.checked) {
             credentialsContainer.classList.add("d-none");
@@ -73,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById('edit_training_submit').addEventListener('click', function (e) {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default submission
 
         function setInvalid(input) {
             input.classList.add('border-danger');
@@ -110,6 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const location = document.getElementById('location');
         const facilitator = document.getElementById('facilitator');
 
+        // Validate location only for "face-to-face" mode
         if (mode === 'face-to-face') {
             if (!location.value.trim()) {
                 setInvalid(location);
@@ -118,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 setValid(location);
             }
         } else {
-            setValid(location);
+            setValid(location); // Reset validation for other modes
         }
 
         if (!facilitator.value.trim()) {
@@ -210,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 $.ajax({
                     url: '/calendar/edit_training/' + trainingId,
                     type: 'PUT',
-                    data: JSON.stringify(data),
+                    data: jsonData,
                     contentType: 'application/json',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
@@ -226,8 +231,13 @@ document.addEventListener("DOMContentLoaded", function () {
                             }
                         });
                     },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX Error:', error);
+                    error: function (xhr, status, error, response) {
+                        console.log('AJAX Error Details:');
+                        console.log('Status:', status);
+                        console.log('Error:', error);
+                        console.log('Response Text:', xhr.responseText);
+                        console.log('ReadyState:', xhr.readyState);
+                        console.log('Response Status:', xhr.status);
                         Swal.fire({
                             title: 'Error!',
                             text: 'There was an error updating the training.',
