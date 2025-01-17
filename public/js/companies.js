@@ -186,13 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
             companyName.classList.remove('is-invalid');
         }
 
-        if (!contactNumber.value.trim()) {
-            contactNumber.classList.add('is-invalid');
-            return;
-        } else {
-            contactNumber.classList.remove('is-invalid');
-        }
-
         // Confirmation dialog
         Swal.fire({
             title: 'Are you sure?',

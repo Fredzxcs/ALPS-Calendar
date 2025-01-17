@@ -222,7 +222,10 @@
 
                         <div class="row mb-5">
                             <label for="company_contact_number" class="form-label fw-bold">Contact Number</label>
-                            <input type="tel" class="form-control form-control-solid" id="edit_company_contact_number" placeholder="Enter Contact Number (Optional)"
+                            <input type="tel" 
+                            class="form-control form-control-solid" 
+                                id="edit_company_contact_number" 
+                                placeholder="Enter Contact Number (Optional)"
                                 value="09009090">
                         </div>
 
