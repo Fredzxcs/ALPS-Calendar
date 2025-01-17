@@ -7,7 +7,7 @@ use App\Models\Schedule;
 use App\Models\Course;
 use App\Models\User;
 use App\Models\Company;
-
+use App\Models\Account;
 
 class Training extends Model
 {
@@ -21,8 +21,7 @@ class Training extends Model
         'platform',
         'mode',
         'location',
-        'credentials_email',
-        'credentials_password',
+        'account_id',
         // 'credentials_id', --if credentials object is done
     ];
 
@@ -44,6 +43,11 @@ class Training extends Model
     public function facilitator()
     {
         return $this->belongsTo(User::class, 'facilitator_id');
+    }
+
+    public function account()
+    {
+        return $this->belongsTo(Account::class);
     }
 
 }

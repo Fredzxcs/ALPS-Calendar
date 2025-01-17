@@ -73,8 +73,11 @@
                                 <label for="credentials" class="fw-bold mb-2 required">Account</label>
                                 <select id="credentials" class="form-select form-select-solid">
                                     <option value="" disabled selected>Select Host Email Account</option>
-                                    <option value="samplezoomaccountpassword"
-                                        {{ $training->credentials_password == 'samplezoomaccountpassword' ? 'selected' : '' }}>alpszoomaccount1@gmail.com</option>
+                                    @foreach ($accounts as $account)
+                                        <option value="{{ $account->id }}">
+                                            {{ $account->account_email }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -167,12 +170,14 @@
                             <label for="facilitator" class="fw-bold mb-2 required">Facilitator</label>
                             <select id="facilitator" class="form-select form-select-solid">
                                 <option disabled selected>Select Facilitator</option>
-                                <option value="">No Facilitator Yet</option>
+                                <option value="" {{ is_null(optional($training->facilitator)->id) ? 'selected' : '' }}>No Facilitator Yet</option>
                                 @foreach ($facilitators as $user)
-                                <option value="{{ $user->id }}"
-                                    {{ $user->id == $training->facilitator->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                                    <option value="{{ $user->id }}" {{ $user->id == optional($training->facilitator)->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
                                 @endforeach
                             </select>
+
                             <div class="invalid-feedback">Required field</div>
 
                         </div>

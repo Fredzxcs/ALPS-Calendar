@@ -8,6 +8,7 @@ use App\Models\Schedule;
 use App\Models\Training;
 use App\Models\Course;
 use App\Models\Company;
+use App\Models\Account;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -32,7 +33,9 @@ class TrainingController extends Controller
 
         $companies = Company::all();
 
-        return view('add_training.add_training', compact('users', 'courses', 'companies'));
+        $accounts = Account::all();
+
+        return view('add_training.add_training', compact('users', 'courses', 'companies', 'accounts'));
     }
 
     /**
@@ -48,8 +51,7 @@ class TrainingController extends Controller
             'company_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:255'],
             'assistant' => ['nullable', 'string'],
-            'credentials_email' => ['nullable'],
-            'credentials_password' => ['nullable', 'string'],
+            'account_id' => ['nullable', 'integer'],
             'from_date' => ['required', 'date'],
             'to_date' => ['required', 'date'],
             'from_time' => ['required'],
@@ -77,8 +79,7 @@ class TrainingController extends Controller
                 'platform' => $request->platform,
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
-                'credentials_email' => $request->credentials_email,
-                'credentials_password' => $request->credentials_password, // Encrypt the password
+                'account_id' => $request->account_id,
             ]);
 
             // Create the Schedule record
@@ -114,7 +115,7 @@ class TrainingController extends Controller
     public function getTraining(Request $request)
     {
         // Include the newly added relationships: course and company
-        $trainings = Training::with(['schedule', 'facilitator', 'course', 'company'])->get();
+        $trainings = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])->get();
 
         if ($trainings->isNotEmpty()) {
             return response()->json([
@@ -144,7 +145,7 @@ class TrainingController extends Controller
     public function edit(Request $request, int $id)
     {
         // Fetch the training with the related schedule and facilitator
-        $training = Training::with(['schedule', 'facilitator', 'course', 'company'])->find($id);
+        $training = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])->find($id);
 
         // Check if the training exists
         if (!$training) {
@@ -159,8 +160,10 @@ class TrainingController extends Controller
 
         $companies = Company::all();
 
+        $accounts = Account::all();
+
         // Pass the training object and facilitators to the view
-        return view('add_training.edit_training', compact('training', 'facilitators', 'courses', 'companies'));
+        return view('add_training.edit_training', compact('training', 'facilitators', 'courses', 'companies', 'accounts'));
     }
 
 
@@ -178,8 +181,7 @@ class TrainingController extends Controller
             'company_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:255'],
             'assistant' => ['nullable', 'string'],
-            'credentials_email' => ['nullable'],
-            'credentials_password' => ['nullable', 'string'],
+            'account_id' => ['nullable', 'integer'],
             'from_date' => ['required', 'date'],
             'to_date' => ['required', 'date'],
             'from_time' => ['required'],
@@ -210,8 +212,7 @@ class TrainingController extends Controller
                 'platform' => $request->platform,
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
-                'credentials_email' => $request->credentials_email,
-                'credentials_password' => $request->credentials_password, // Encrypt the password // Encrypt the password
+                'account_id' => $request->account_id,
             ]);
 
             // Find the existing Schedule record associated with the training session

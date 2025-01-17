@@ -119,8 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let platform = $('#platform').val();
 
                 //account
-                let credentials_email = $('#credentials').find('option:selected').text();
-                let credentials_password = $('#credentials').find('option:selected').val();
+                let account_id = $('#credentials').find('option:selected').val();
 
                 //company
                 let company = $('#company').find('option:selected').val();
@@ -140,8 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 else if (mode === "face-to-face") //f2f - clear email and platform
                 {
                     console.log('f2f mode');
-                    credentials_email = '';
-                    credentials_password = '';
+                    account_id = '';
                 }
                 else if (mode === "public-course")
                 {
@@ -149,8 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if(inpersonCheckbox.checked) //if f2f - clear email and platform
                     {
                         console.log('public mode - inperson');
-                        credentials_email = '';
-                        credentials_password = '';
+                        account_id = '';
                     }
                     else //if virtual - clear location
                     {
@@ -166,8 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     facilitator_id: facilitator_id,
                     company_id: company,
                     assistant: assistant_id,
-                    credentials_email: credentials_email,
-                    credentials_password: credentials_password,
+                    account_id: account_id,
                     mode: mode,
                     from_date: from_date,
                     to_date: to_date,
