@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    var csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     let startDateFormatted = '';
     let endDateFormatted = '';
 
