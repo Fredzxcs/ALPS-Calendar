@@ -46,7 +46,7 @@
                 <tbody>
                     @if($courses->isEmpty())
                     <tr>
-                        <td colspan="3">No courses available.</td>
+                        <td colspan="3">No courses found.</td>
                     </tr>
                     @else
                     <!-- Row -->

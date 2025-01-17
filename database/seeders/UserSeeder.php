@@ -10,7 +10,7 @@ use App\Models\User;
 
 class UserSeeder extends Seeder
 {
-public function run()
+    public function run()
     {
         DB::table('users')->insert([
             [

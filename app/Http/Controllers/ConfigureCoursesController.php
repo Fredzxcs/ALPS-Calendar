@@ -7,7 +7,7 @@ use App\Models\Course; // Ensure the model name matches
 
 class ConfigureCoursesController extends Controller
 {
-    public function showCourses()
+    public function showCourse()
     {
         // Retrieve all courses from the database
         $courses = Course::all();
@@ -29,11 +29,12 @@ class ConfigureCoursesController extends Controller
             'course_code' => $course->course_code
         ]);
     }
+    
     public function addCourse(Request $request)
     {
         // Validate the incoming data
         $validated = $request->validate([
-            'course_name' => 'required|max:255',
+            'course_name' => 'required|unique:course|max:255',
             'course_code' => 'nullable|unique:course|max:255', // Use correct table name
         ]);
     
@@ -76,8 +77,8 @@ class ConfigureCoursesController extends Controller
         ]);
     }
     
-    public function deleteCourse($id){
-        
+    public function deleteCourse($id)
+    {
         $course = Course::findOrFail($id);
 
         $course->delete();

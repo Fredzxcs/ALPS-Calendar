@@ -50,7 +50,7 @@
                 <tbody>
                     @if($company->isEmpty())
                     <tr>
-                        <td colspan="5">No companies available.</td>
+                        <td colspan="5">No companies found.</td>
                     </tr>
                     @else
 

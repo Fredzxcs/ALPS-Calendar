@@ -86,7 +86,7 @@
                         <!--begin::Link item-->
                         <div class="menu-item px-3">
                             <a href="{{ route('config_accounts') }}" class="menu-link px-3" id="event_view">
-                                Account Credentials
+                                Hosting Accounts
                             </a>
                         </div>
                         <!--end::Link item-->

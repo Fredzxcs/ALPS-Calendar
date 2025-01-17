@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// No matching Searches
+//No matching Searches - in progress
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const tableBody = document.querySelector('#companies_table tbody');
@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     noResultsRow.id = 'noResultsRow';
-    noResultsRow.innerHTML = `
-        <td colspan="5" class="text-center">No matching courses found.</td>
-    `;
+    // noResultsRow.innerHTML = `
+    //     <td colspan="5" class="text-center">No matching courses found.</td>
+    // `;
     noResultsRow.style.display = 'none';
     tableBody.appendChild(noResultsRow);
 
@@ -94,8 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const formData = {
                     company_name: companyName.value.trim(),
-                    contact_person: contactPerson.value.trim(),
-                    contact_number: contactNumber.value.trim(),
+                    contact_person: contactPerson.value.trim() || '',
+                    contact_number: contactNumber.value.trim() || '',
                     email: email.value.trim() || ''
                 };
 
@@ -112,12 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     success: function(response){
                         if (response.success) {
                             Swal.fire('Added!', 
-                                'The course has been added successfully.', 
+                                'The company has been added successfully.', 
                                 'success')
                                 .then(() => location.reload());
                         } else {
                             Swal.fire('Error!', 
-                                'There was an issue adding the course.', 
+                                'There was an issue adding the company.', 
                                 'error');
                         }
                     },
@@ -186,13 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
             companyName.classList.remove('is-invalid');
         }
 
-        if (!contactNumber.value.trim()) {
-            contactNumber.classList.add('is-invalid');
-            return;
-        } else {
-            contactNumber.classList.remove('is-invalid');
-        }
-
         // Confirmation dialog
         Swal.fire({
             title: 'Are you sure?',
@@ -213,8 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Prepare the data to send
                 const formData = {
                     company_name: companyName.value.trim(),
-                    contact_person: contactPerson.value.trim(),
-                    contact_number: contactNumber.value.trim(),
+                    contact_person: contactPerson.value.trim() || null,
+                    contact_number: contactNumber.value.trim() || null,
                     email: email.value.trim() || null // Send null if email is empty
                 };
 
@@ -269,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 //Delete company button
-// Delete company button
 document.querySelectorAll('.deleteBtn').forEach(button => {
     button.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default action (e.g., form submission)
@@ -405,6 +397,7 @@ document.addEventListener("DOMContentLoaded", function () {
     createPaginationButtons();
     displayPage(1); // Show the first page initially
 });
+
 
 
 

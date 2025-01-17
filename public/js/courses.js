@@ -19,42 +19,42 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// No matching Searches
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('searchInput');
-    const tableBody = document.querySelector('#courses_table tbody');
-    const tableRows = tableBody.querySelectorAll('tr');
-    const noResultsRow = document.createElement('tr');
+// No matching Searches - in progress
+// document.addEventListener('DOMContentLoaded', () => {
+//     const searchInput = document.getElementById('searchInput');
+//     const tableBody = document.querySelector('#courses_table tbody');
+//     const tableRows = tableBody.querySelectorAll('tr');
+//     const noResultsRow = document.createElement('tr');
 
-    noResultsRow.id = 'noResultsRow';
-    noResultsRow.innerHTML = `
-        <td colspan="3" class="text-center">No matching courses found.</td>
-    `;
-    noResultsRow.style.display = 'none';
-    tableBody.appendChild(noResultsRow);
+//     noResultsRow.id = 'noResultsRow';
+//     noResultsRow.innerHTML = `
+//         <td colspan="3" class="text-center">No matching courses found.</td>
+//     `;
+//     noResultsRow.style.display = 'none';
+//     tableBody.appendChild(noResultsRow);
 
-    searchInput.addEventListener('keyup', () => {
-        const searchValue = searchInput.value.toLowerCase();
-        let visibleRowCount = 0;
+//     searchInput.addEventListener('keyup', () => {
+//         const searchValue = searchInput.value.toLowerCase();
+//         let visibleRowCount = 0;
 
-        tableRows.forEach(row => {
-            if (row.id !== 'noResultsRow') {
-                const cells = row.querySelectorAll('td');
-                const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+//         tableRows.forEach(row => {
+//             if (row.id !== 'noResultsRow') {
+//                 const cells = row.querySelectorAll('td');
+//                 const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
 
-                if (rowText.includes(searchValue)) {
-                    row.style.display = ''; // Show row if it matches search
-                    visibleRowCount++;
-                } else {
-                    row.style.display = 'none'; // Hide row if it doesn't match search
-                }
-            }
-        });
+//                 if (rowText.includes(searchValue)) {
+//                     row.style.display = ''; // Show row if it matches search
+//                     visibleRowCount++;
+//                 } else {
+//                     row.style.display = 'none'; // Hide row if it doesn't match search
+//                 }
+//             }
+//         });
 
-        // Show or hide the "No Results" row
-        noResultsRow.style.display = visibleRowCount === 0 ? '' : 'none';
-    });
-});
+//         // Show or hide the "No Results" row
+//         noResultsRow.style.display = visibleRowCount === 0 ? '' : 'none';
+//     });
+// });
 
 
 
@@ -226,10 +226,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     error: function (xhr, status, error) {
                         console.error('AJAX Error:', xhr.responseText);
-                        Swal.fire('Error!', 
-                            'An unexpected error occurred.', 
-                            'error');
-                    },
+                    
+                        // Check if there are validation errors in the response
+                        if (xhr.responseJSON && xhr.responseJSON.errors) {
+                            // If the account_email error exists, display it in the Swal alert
+                            if (xhr.responseJSON.errors.course_code) {
+                                Swal.fire(
+                                    'Error!',
+                                    xhr.responseJSON.errors.course_code[0],  // Display the error message for account_email
+                                    'error'
+                                );
+                            } else {
+                                // Handle other validation or general errors
+                                Swal.fire(
+                                    'Error!',
+                                    'Please try again.',
+                                    'error'
+                                );
+                            }
+                        } else {
+                            // For any other errors that aren't related to validation
+                            Swal.fire(
+                                'Error!',
+                                'An unexpected error occurred.',
+                                'error'
+                            );
+                        }
+                    },      
                     complete: function () {
                         submitButton.disabled = false;
                     }
