@@ -69,9 +69,229 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-//Validation (in progress)
+//Validation (Initial)
+// document.addEventListener('DOMContentLoaded', () => {
+//     //Validation for Add Account form
+//     document.getElementById('modal_add_account_form').addEventListener('submit', (event) => {
+//         event.preventDefault();
+
+//         const accountEmail = document.getElementById('add_account_email');
+//         const accountPassword = document.getElementById('add_account_password');
+//         const submitButton = document.getElementById('add_account_submit');
+
+//         if (!accountEmail.value.trim()) {
+//             accountEmail.classList.add('is-invalid');
+//             return;
+//         } else {
+//             accountEmail.classList.remove('is-invalid');
+//         }
+
+//         Swal.fire({
+//             title: 'Are you sure?',
+//             text: "You are about to add this account.",
+//             icon: 'warning',
+//             buttonsStyling: false,
+//             showCancelButton: true,
+//             confirmButtonText: 'Yes, Add Account',
+//             cancelButtonText: 'Cancel',
+//             customClass: {
+//                 confirmButton: "btn btn-success",
+//                 cancelButton: 'btn btn-secondary'
+//             }
+//         }).then((result) => {
+//             if (result.isConfirmed) {
+//                 submitButton.disabled = true;
+    
+//                 const formData = {
+//                     account_email: accountEmail.value.trim(),
+//                     account_password: accountPassword.value.trim()
+//                 };
+    
+//                 // FETCH ROUTE URL FROM BLADE DATA ATTRIBUTE
+//                 const routeUrl = document.getElementById('route-config').dataset.url;
+//                 console.log("Route URL:", routeUrl);
+                
+//                 $.ajax({
+//                     url: routeUrl,
+//                     method: 'POST',
+//                     data: formData,
+//                     headers: {
+//                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//                     },
+//                     success: function (response) {
+//                         if (response.success) {
+//                             Swal.fire('Added!', 
+//                                 'The account has been added successfully.', 
+//                                 'success')
+//                                 .then(() => location.reload());
+//                         } else {
+//                             Swal.fire('Error!', 
+//                                 'There was an issue adding the account.', 
+//                                 'error');
+//                         }
+//                     },
+//                     error: function (xhr, status, error) {
+//                         console.error('AJAX Error:', xhr.responseText);
+//                         Swal.fire('Error!', 
+//                             'An unexpected error occurred.', 
+//                             'error');
+//                     },
+//                     complete: function () {
+//                         submitButton.disabled = false;
+//                     }
+//                 });
+//             }
+//         });
+//     });
+
+//     //Populate Existing Entry by id
+//     // Event listener to open the modal and populate it with data
+//     $(document).on('click', '.editAccountBtn', function () {
+//         // Get the account ID from the button's data-id attribute
+//         const accountId = $(this).data('id');
+//         console.log(accountId);
+
+//         // Ensure accountId is not undefined
+//         if (accountId === undefined) {
+//             console.error('Account ID is undefined');
+//             return; // Stop the AJAX request if ID is undefined
+//         }
+    
+//         // Fetch account details using AJAX
+//         $.ajax({
+//             url: `/config/accounts/${accountId}`, // Make sure this is the correct endpoint
+//             method: 'GET',
+//             success: function (response) {
+//                 // Populate the modal with account data
+//                 $('#edit_account_email').val(response.account_email);
+//                 $('#edit_account_password').val(response.account_password);
+    
+//                 // Optionally, store the account ID in the modal form for later use (for saving)
+//                 $('#modal_edit_account_form').data('id', accountId);
+    
+//                 // Open the modal
+//                 $('#modal_edit_account').modal('show');
+//             },
+//             error: function (error) {
+//                 console.error('Failed to fetch account details:', error);
+//                 alert('An error occurred while fetching the account details.');
+//             }
+//         });
+//     });
+
+
+//     //Validation for Edit Account form
+//     document.getElementById('modal_edit_account_form').addEventListener('submit', (event) => {
+//         event.preventDefault();
+
+//         const accountId = $('#modal_edit_account_form').data('id');
+//         const accountEmail = document.getElementById('edit_account_email');
+//         const accountPassword = document.getElementById('edit_account_password');
+//         const submitButton = document.getElementById('edit_account_submit');
+        
+//         if (!accountEmail.value.trim()) {
+//             accountEmail.classList.add('is-invalid');
+//             return;
+//         } else {
+//             accountEmail.classList.remove('is-invalid');
+//         }
+
+//         Swal.fire({
+//             title: 'Are you sure?',
+//             text: "You are about to edit this account.",
+//             icon: 'warning',
+//             buttonsStyling: false,
+//             showCancelButton: true,
+//             confirmButtonText: 'Yes, Edit Account',
+//             cancelButtonText: 'Cancel',
+//             customClass: {
+//                 confirmButton: "btn btn-success",
+//                 cancelButton: 'btn btn-secondary'
+//             }
+//         }).then((result) => {
+//             if (result.isConfirmed) {
+//                 submitButton.disabled = true;
+
+//                 const formData = {
+//                     account_email: accountEmail.value.trim(),
+//                     account_password: accountPassword.value.trim()  
+//                 };
+
+//                 const routeUrl = `/config/accounts/update/${accountId}`;
+                
+//                 console.log("Route URL:", routeUrl);
+
+//                 $.ajax({
+//                     url: routeUrl,
+//                     method: 'PATCH',
+//                     data: formData,
+//                     headers: {
+//                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//                     },
+//                     success: function(response){
+//                         if (response.success) {
+//                             Swal.fire('Updated!',
+//                                 'The account has been updated successfully.',
+//                                 'success')
+//                                 .then(() => location.reload());
+//                         } else {
+//                             Swal.fire('Error!',
+//                                 'There was an issue updating the account.',
+//                                 'error');
+//                         }
+//                     },
+//                     error: function (xhr, status, error) {
+//                         console.error('AJAX Error:', xhr.responseText);
+                    
+//                         // Check if there are validation errors in the response
+//                         if (xhr.responseJSON && xhr.responseJSON.errors) {
+//                             // If the account_email error exists, display it in the Swal alert
+//                             if (xhr.responseJSON.errors.account_email) {
+//                                 Swal.fire(
+//                                     'Error!',
+//                                     xhr.responseJSON.errors.account_email[0],  // Display the error message for account_email
+//                                     'error'
+//                                 );
+//                             } else {
+//                                 // Handle other validation or general errors
+//                                 Swal.fire(
+//                                     'Error!',
+//                                     'Pleas try again.',
+//                                     'error'
+//                                 );
+//                             }
+//                         } else {
+//                             // For any other errors that aren't related to validation
+//                             Swal.fire(
+//                                 'Error!',
+//                                 'An unexpected error occurred.',
+//                                 'error'
+//                             );
+//                         }
+//                     },                 
+//                     complete: function () {
+//                         submitButton.disabled = false;
+//                     }
+//                 });
+
+//             }
+//         });
+//     });
+
+//     //Remove invalid class on input change
+//     document.querySelectorAll('#add_account_email, #edit_account_email').forEach(input => {
+//         input.addEventListener('input', () => {
+//             if (input.value.trim()) {
+//                 input.classList.remove('is-invalid');
+//             }
+//         });
+//     });
+// });
+
+
+//Validation (Updated)
 document.addEventListener('DOMContentLoaded', () => {
-    //Validation for Add Account form
+    // Validation for Add Account form
     document.getElementById('modal_add_account_form').addEventListener('submit', (event) => {
         event.preventDefault();
 
@@ -79,11 +299,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const accountPassword = document.getElementById('add_account_password');
         const submitButton = document.getElementById('add_account_submit');
 
+        let isValid = true;
+
+        // Validate email
         if (!accountEmail.value.trim()) {
-            accountEmail.classList.add('is-invalid');
-            return;
+            accountEmail.classList.add('border-danger');
+            isValid = false;
         } else {
-            accountEmail.classList.remove('is-invalid');
+            accountEmail.classList.remove('border-danger');
+        }
+
+        // Validate password
+        if (!accountPassword.value.trim()) {
+            accountPassword.classList.add('border-danger');
+            isValid = false;
+        } else {
+            accountPassword.classList.remove('border-danger');
+        }
+
+        if (!isValid) {
+            return; // Stop form submission if validation fails
         }
 
         Swal.fire({
@@ -101,16 +336,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 submitButton.disabled = true;
-    
+
                 const formData = {
                     account_email: accountEmail.value.trim(),
                     account_password: accountPassword.value.trim()
                 };
-    
-                // FETCH ROUTE URL FROM BLADE DATA ATTRIBUTE
+
                 const routeUrl = document.getElementById('route-config').dataset.url;
-                console.log("Route URL:", routeUrl);
-                
+
                 $.ajax({
                     url: routeUrl,
                     method: 'POST',
@@ -120,20 +353,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     success: function (response) {
                         if (response.success) {
-                            Swal.fire('Added!', 
-                                'The account has been added successfully.', 
+                            Swal.fire('Added!',
+                                'The account has been added successfully.',
                                 'success')
                                 .then(() => location.reload());
                         } else {
-                            Swal.fire('Error!', 
-                                'There was an issue adding the account.', 
+                            Swal.fire('Error!',
+                                'There was an issue adding the account.',
                                 'error');
                         }
                     },
                     error: function (xhr, status, error) {
                         console.error('AJAX Error:', xhr.responseText);
-                        Swal.fire('Error!', 
-                            'An unexpected error occurred.', 
+                        Swal.fire('Error!',
+                            'An unexpected error occurred.',
                             'error');
                     },
                     complete: function () {
@@ -144,43 +377,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    //Populate Existing Entry by id
-    // Event listener to open the modal and populate it with data
-    $(document).on('click', '.editAccountBtn', function () {
-        // Get the account ID from the button's data-id attribute
-        const accountId = $(this).data('id');
-        console.log(accountId);
-
-        // Ensure accountId is not undefined
-        if (accountId === undefined) {
-            console.error('Account ID is undefined');
-            return; // Stop the AJAX request if ID is undefined
-        }
-    
-        // Fetch account details using AJAX
-        $.ajax({
-            url: `/config/accounts/${accountId}`, // Make sure this is the correct endpoint
-            method: 'GET',
-            success: function (response) {
-                // Populate the modal with account data
-                $('#edit_account_email').val(response.account_email);
-                $('#edit_account_password').val(response.account_password);
-    
-                // Optionally, store the account ID in the modal form for later use (for saving)
-                $('#modal_edit_account_form').data('id', accountId);
-    
-                // Open the modal
-                $('#modal_edit_account').modal('show');
-            },
-            error: function (error) {
-                console.error('Failed to fetch account details:', error);
-                alert('An error occurred while fetching the account details.');
-            }
-        });
-    });
-
-
-    //Validation for Edit Account form
+    // Validation for Edit Account form
     document.getElementById('modal_edit_account_form').addEventListener('submit', (event) => {
         event.preventDefault();
 
@@ -188,12 +385,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const accountEmail = document.getElementById('edit_account_email');
         const accountPassword = document.getElementById('edit_account_password');
         const submitButton = document.getElementById('edit_account_submit');
-        
+
+        let isValid = true;
+
+        // Validate email
         if (!accountEmail.value.trim()) {
-            accountEmail.classList.add('is-invalid');
-            return;
+            accountEmail.classList.add('border-danger');
+            isValid = false;
         } else {
-            accountEmail.classList.remove('is-invalid');
+            accountEmail.classList.remove('border-danger');
+        }
+
+        // Validate password
+        if (!accountPassword.value.trim()) {
+            accountPassword.classList.add('border-danger');
+            isValid = false;
+        } else {
+            accountPassword.classList.remove('border-danger');
+        }
+
+        if (!isValid) {
+            return; // Stop form submission if validation fails
         }
 
         Swal.fire({
@@ -214,12 +426,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const formData = {
                     account_email: accountEmail.value.trim(),
-                    account_password: accountPassword.value.trim()  
+                    account_password: accountPassword.value.trim()
                 };
 
                 const routeUrl = `/config/accounts/update/${accountId}`;
-                
-                console.log("Route URL:", routeUrl);
 
                 $.ajax({
                     url: routeUrl,
@@ -228,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    success: function(response){
+                    success: function (response) {
                         if (response.success) {
                             Swal.fire('Updated!',
                                 'The account has been updated successfully.',
@@ -242,51 +452,53 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     error: function (xhr, status, error) {
                         console.error('AJAX Error:', xhr.responseText);
-                    
-                        // Check if there are validation errors in the response
-                        if (xhr.responseJSON && xhr.responseJSON.errors) {
-                            // If the account_email error exists, display it in the Swal alert
-                            if (xhr.responseJSON.errors.account_email) {
-                                Swal.fire(
-                                    'Error!',
-                                    xhr.responseJSON.errors.account_email[0],  // Display the error message for account_email
-                                    'error'
-                                );
-                            } else {
-                                // Handle other validation or general errors
-                                Swal.fire(
-                                    'Error!',
-                                    'Pleas try again.',
-                                    'error'
-                                );
-                            }
-                        } else {
-                            // For any other errors that aren't related to validation
-                            Swal.fire(
-                                'Error!',
-                                'An unexpected error occurred.',
-                                'error'
-                            );
-                        }
-                    },                 
+                        Swal.fire('Error!',
+                            'An unexpected error occurred.',
+                            'error');
+                    },
                     complete: function () {
                         submitButton.disabled = false;
                     }
                 });
-
             }
         });
     });
 
-    //Remove invalid class on input change
-    document.querySelectorAll('#add_account_email, #edit_account_email').forEach(input => {
+    // Remove danger border class on input change
+    document.querySelectorAll('#add_account_email, #add_account_password, #edit_account_email, #edit_account_password').forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
-                input.classList.remove('is-invalid');
+                input.classList.remove('border-danger');
+            }
+        });
+    });
+
+    // Populate Existing Entry by ID
+    $(document).on('click', '.editAccountBtn', function () {
+        const accountId = $(this).data('id');
+
+        if (accountId === undefined) {
+            console.error('Account ID is undefined');
+            return;
+        }
+
+        $.ajax({
+            url: `/config/accounts/${accountId}`,
+            method: 'GET',
+            success: function (response) {
+                $('#edit_account_email').val(response.account_email);
+                $('#edit_account_password').val(response.account_password);
+                $('#modal_edit_account_form').data('id', accountId);
+                $('#modal_edit_account').modal('show');
+            },
+            error: function (error) {
+                console.error('Failed to fetch account details:', error);
+                alert('An error occurred while fetching the account details.');
             }
         });
     });
 });
+
 
 //Delete account button
 document.querySelectorAll('.deleteBtn').forEach(button => {
