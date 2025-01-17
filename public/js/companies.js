@@ -213,8 +213,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Prepare the data to send
                 const formData = {
                     company_name: companyName.value.trim(),
-                    contact_person: contactPerson.value.trim(),
-                    contact_number: contactNumber.value.trim(),
+                    contact_person: contactPerson.value.trim() || null,
+                    contact_number: contactNumber.value.trim() || null,
                     email: email.value.trim() || null // Send null if email is empty
                 };
 

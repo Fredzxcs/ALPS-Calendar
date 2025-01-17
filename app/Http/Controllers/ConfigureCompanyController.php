@@ -60,7 +60,7 @@ class ConfigureCompanyController extends Controller
     {
         // Define validation rules
         $rules = [
-            'company_name'   => "required|unique:company,contact_name,{$id}|max:255", // Optional, but required if present
+            'company_name'   => "required|unique:company,company_name,{$id}|max:255", // Optional, but required if present
             'contact_person' => 'nullable|max:255', 
             'contact_number' => "nullable|unique:company,contact_number,{$id}|max:255", 
             'email'          => "nullable|unique:company,email,{$id}|max:255", 
