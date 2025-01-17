@@ -60,23 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault(); // Prevent navigation
         window.location.href = '/calendar'; // Redirect to the calendar
     });
-    //     // Show SweetAlert confirmation for cancel
-    //     Swal.fire({
-    //         title: 'Are you sure?',
-    //         text: "Any unsaved changes will be lost. Do you want to proceed?",
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#d33',
-    //         cancelButtonColor: '#3085d6',
-    //         confirmButtonText: 'Yes, cancel',
-    //         cancelButtonText: 'Stay on page'
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             // Redirect back to the calendar page
-    //             window.location.href = "/calendar"; //Note: can't access blade functions in javascript file. Type out the whole route
-    //         }
-    //     }
-    // });
+
     document.getElementById('edit_training_submit').addEventListener('click', function (e) {
         e.preventDefault(); // Prevent default submission
 
@@ -112,10 +96,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 setValid(location);
             }
         } else {
-            setValid(location); // Reset validation for other modes
+            // Reset location validation for other modes
+            setValid(location);
         }
 
-        // Validate facilitator
+        // Validate facilitator (common for all modes)
         if (!facilitator.value.trim()) {
             setInvalid(facilitator);
             isValid = false;
@@ -154,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
                     const value = $(this).val().trim();
-
                     if (value) {
                         if (assistant_id.length > 0) {
                             assistant_id += ', ';
@@ -163,8 +147,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
 
-                let from_date = startDateFormatted;
-                let to_date = endDateFormatted;
+                let from_date = $('#date-range').data('start-date');
+                let to_date = $('#date-range').data('end-date');
                 let from_time = $('#time-start').val();
                 let to_time = $('#time-end').val();
                 let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
@@ -174,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let company = $('#company').find('option:selected').val();
 
                 if (mode === "virtual") {
-                    location.value = '';
+                    location.value = ''; // Reset location for virtual mode
                 } else if (mode === "face-to-face") {
                     credentials_email = '';
                     credentials_password = '';
@@ -190,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 var data = {
                     course: course,
                     platform: platform,
-                    location: location,
+                    location: location.value.trim(),
                     facilitator_id: facilitator_id,
                     company: company,
                     assistant_id: assistant_id,
@@ -203,43 +187,25 @@ document.addEventListener('DOMContentLoaded', function () {
                     to_time: to_time
                 };
 
-                var jsonData = JSON.stringify(data);
-
-                console.log(jsonData);
-
-                //ajax request
-
-                // Get the current URL
                 const url = window.location.href;
-
-                // Use a regular expression to extract the ID (assuming it's the last part of the URL)
                 const match = url.match(/\/edit_training\/(\d+)$/);
-
-                // If a match is found, the ID will be in the first capturing group
-                let trainingId = '';
-
-                if (match) {
-                    trainingId = match[1];
-                    console.log(trainingId);
-                }
+                const trainingId = match ? match[1] : '';
 
                 $.ajax({
-                    url: '/calendar/edit_training/' + trainingId,
+                    url: `/calendar/edit_training/${trainingId}`,
                     type: 'PUT',
-                    data: jsonData,
+                    data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken
                     },
-                    success: function (response, xhr) {
+                    success: function (response) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Saved!',
                             text: response.message,
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.href = '/calendar';
-                            }
+                        }).then(() => {
+                            window.location.href = '/calendar';
                         });
                     },
                     error: function (xhr, status, error, response) {
