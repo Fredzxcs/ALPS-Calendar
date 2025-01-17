@@ -1,12 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const modeRadios = document.querySelectorAll('input[name="mode"]');
-    const companyContainer = document.getElementById("company-container");
-    const credentialsContainer = document.getElementById("credentials-container");
-    const locationContainer = document.getElementById("location-container");
-    const inpersonCheckbox = document.getElementById("inperson-training");
-    const companyCourseContainer = document.getElementById("company-course-container");
-    const publicCourseContainer = document.getElementById("public-course-container");
-
     // Mode of Training Logic
     modeRadios.forEach(radio => {
         radio.addEventListener("change", function () {
@@ -58,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle Cancel Button
     document.getElementById('cancel_training_button').addEventListener('click', function (e) {
         e.preventDefault(); // Prevent navigation
-
         // Show SweetAlert confirmation for cancel
         Swal.fire({
             title: 'Are you sure?',
@@ -73,24 +64,28 @@ document.addEventListener('DOMContentLoaded', function () {
             if (result.isConfirmed) {
                 // Redirect back to the calendar page
                 window.location.href = "/calendar"; //Note: can't access blade functions in javascript file. Type out the whole route
-
             }
-        });
     });
-    // Handle Save Button
+});
+
+
+    // Handle Save/Edit Training Button
     document.getElementById('edit_training_submit').addEventListener('click', function (e) {
         e.preventDefault(); // Prevent default submission
 
-        // Show confirmation if changes were made
+        // Show confirmation SweetAlert
         Swal.fire({
             title: 'Are you sure?',
-            text: "Do you want to save the changes?",
+            text: "You are about to edit this training.",
             icon: 'warning',
+            buttonsStyling: false,
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, save it!',
-            cancelButtonText: 'Cancel'
+            confirmButtonText: 'Yes, Edit Training',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: 'btn btn-secondary'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 //faci
@@ -165,12 +160,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 var data = {
-                    course: course,
+                    course_id: course,
                     platform: platform,
                     location: location,
                     facilitator_id: facilitator_id,
-                    company: company,
-                    assistant_id: assistant_id,
+                    company_id: company,
+                    assistant: assistant_id,
                     credentials_email: credentials_email,
                     credentials_password: credentials_password,
                     mode: mode,

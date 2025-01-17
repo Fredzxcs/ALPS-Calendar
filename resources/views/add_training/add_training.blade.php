@@ -48,9 +48,11 @@
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
                                         <select id="public-course-select" class="form-select form-select-solid">
                                             <option value="" disabled selected>Select Course</option>
-                                            <option value="Advanced Excel Training">Advanced Excel Training</option>
-                                            <option value="Advanced MS Powerpoint Course">Advanced MS Powerpoint Course</option>
-                                            <option value="Advanced Project Management Training Course">Advanced Project Management Training Course</option>
+                                            @foreach ($courses as $course)
+                                            <option value="{{ $course->id }}">
+                                                {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
+                                            </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -62,7 +64,7 @@
                             <div class="col-md-6">
                                 <label for="credentials" class="fw-bold mb-2 required">Account</label>
                                 <select id="credentials" class="form-select form-select-solid">
-                                    <option value="" disabled selected>Select Account to Host Training</option>
+                                    <option value="" disabled selected>Select Host Email Account</option>
                                     <option value="samplezoomaccountpassword">alpszoomaccount1@gmail.com</option>
                                 </select>
                             </div>
@@ -87,9 +89,11 @@
                                 <label for="company" class="fw-bold mb-2 required">Company</label>
                                 <select id="company" class="form-select form-select-solid">
                                     <option value="" disabled selected>Select Company</option>
-                                    <option value="PhilHealth">PhilHealth</option>
-                                    <option value="Pag-ibig">Pag-ibig</option>
-                                    <option value="DOST">DOST</option>
+                                    @foreach ($companies as $company)
+                                    <option value="{{ $company->id }}">
+                                        {{ $company->company_name }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -101,9 +105,11 @@
                                 <label for="course" class="fw-bold mb-2 required">Course</label>
                                 <select id="course" class="form-select form-select-solid">
                                     <option value="" disabled selected>Select Course</option>
-                                    <option value="Advanced Excel Training">Advanced Excel Training</option>
-                                    <option value="Advanced MS Powerpoint Course">Advanced MS Powerpoint Course</option>
-                                    <option value="Advanced Project Management Training Course">Advanced Project Management Training Course</option>
+                                    @foreach ($courses as $course)
+                                    <option value="{{ $course->id }}">
+                                        {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

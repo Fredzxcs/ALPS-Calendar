@@ -125,12 +125,12 @@ $(document).ready(function (e){
 
         let formData = new FormData();
 
-        formData.append('course', course);
+        formData.append('course_id', course);
         formData.append('platform', platform);
         formData.append('location', location);
         formData.append('facilitator_id', facilitator_id);
-        formData.append('company', company);
-        formData.append('assistant_id', assistant_id);
+        formData.append('company_id', company);
+        formData.append('assistant', assistant_id);
         formData.append('credentials_email', credentials_email);
         formData.append('credentials_password', credentials_password);
         formData.append('mode', mode);

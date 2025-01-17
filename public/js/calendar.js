@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const initPopovers = (element, data) => {
         hidePopovers(); // Hide any active popovers
 
+        console.log(data);
+
         // Generate popover content
         const startDate = data.allDay
             ? moment(data.startDate).format('MMM DD, YYYY')
@@ -87,6 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dayMaxEvents: 5,
             dayMaxEvents: true,
             dayMaxEventRows: true,
+            height: 1500,
             events: [],
             moreLinkClick: function (info) {
                 // Slice the excess events, excluding the first 3 visible ones
@@ -135,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 $modalElement.find('#modal-mode-of-training').text(`${mode.toUpperCase() || 'N/A'}`);
                 $modalElement.find('#modal-location').text(`${eventData.location || 'N/A'}`);
 
-                if(eventData.email === "Select Account to Host Training")
+                if(eventData.email === "Select Host Email Account")
                 {
                     $modalElement.find('#modal-credentials').text('N/A');
                 }
@@ -153,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 else if (eventData.modeType === "public-course")
                 {
-                    if(eventData.email !== "Select Account to Host Training")
+                    if(eventData.email !== "Select Host Email Account")
                     {
                         inpersontext = 'No';
                     }
@@ -197,10 +200,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 loaderWrapper.style.display = 'flex';
             },
             success: function (response) {
+
+                console.log(response);
+
                 if (response.success) {
 
                     // Add events to the calendar
                     response.data.forEach(function (training) {
+
                         if (training.schedule) {
                             // Extract the schedule details
                             var fromDateTime = `${training.schedule.from_date}T${training.schedule.from_time}`;
@@ -208,18 +215,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             calendar.addEvent({
                                 id: training.id,
-                                facilitator: training.facilitator,
-                                assistant: training.assistant_id,
+                                facilitator: training.facilitator ? training.facilitator.name : 'N/A',
+                                assistant: training.assistant,
                                 modeType: training.mode,
                                 credentials_email: training.credentials_email,
                                 credentials_password: training.credentials_password,
-                                title: training.course,
-                                company: training.company,
+                                title: training.course.course_name,
+                                company: training.company ? training.company.company_name : 'N/A',
                                 start: fromDateTime,
                                 end: toDateTime,
                                 location: training.location,
                                 allDay: false,
-                                backgroundColor: training.facilitator.color ? training.facilitator.color : '#808080',
+                                backgroundColor: training.facilitator ? training.facilitator.color : '#808080',
 
                             });
                         }

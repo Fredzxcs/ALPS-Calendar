@@ -1,7 +1,13 @@
 @extends('global.layout')
 
 @section('maincontent')
-
+<style>
+    /* Set fixed width and height for each day cell */
+    .fc-daygrid-day {
+    height: 13rem;
+    max-height: 16rem;
+}
+</style>
 
     <div class="mt-4 d-flex flex-wrap gap-4 mt-20">
         {{-- <!-- Left Side: Search Course and Search Trainer -->
@@ -142,7 +148,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-center">
                         <!-- Loader wrapper positioned above the calendar -->
-                        <div id="loader-wrapper" class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center mb-10" style="z-index: 1050;  display: none;">
+                        <div id="loader-wrapper" class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center mb-10" style="  display: none;">
                             <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
