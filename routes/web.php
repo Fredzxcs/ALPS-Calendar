@@ -113,7 +113,7 @@ Route::prefix('/config/accounts')->group(function () {
     Route::delete('/delete/{id}',[ConfigureAccountController::Class, 'deleteAccount'])
         ->middleware(['auth', 'user:admin, coordinator'])
         ->name('delete_account');
-}); 
+});
 
 // config - companies
 Route::prefix('/config/companies')->group(function () {

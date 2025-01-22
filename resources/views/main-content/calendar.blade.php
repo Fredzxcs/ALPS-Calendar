@@ -211,7 +211,7 @@
                     <!-- Course -->
                     <div class="row mb-5 justify-content-between align-items-center text-center">
                         <h1 class="fs-1 fw-boldest text-primary" id="modal-course">Course</h1>
-                        <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span> 
+                        <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span>
                         <br>
                         from <span id="modal-time" class="fw-bold"></span></p>
                     </div>
@@ -378,21 +378,12 @@
                     <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
                 <div class="modal-footer d-flex justify-content-between">
 
-
-                    <!-- Edit and Close -->
-                    <div>
-                        <a href="{{route ('edit_training')}}" class="btn btn-primary me-2">
-                            <i class="bi bi-pencil-fill me-2"></i>EDIT
-                        </a>
-                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
+@endsection
 
-
-        @endsection
     @push('scripts')
         <script src="{{ asset('js/calendar.js') }}"></script>
     @endpush
