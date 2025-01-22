@@ -124,3 +124,7 @@ Route::prefix('/config/companies')->group(function () {
     Route::delete('/delete/{id}',[ConfigureCompanyController::Class, 'deleteCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('delete_company');
 });
 
+// manage access - change credentials
+Route::get('/access/change_credentials', function () {
+    return view('access.change_credentials');})->name('change_credentials');
+

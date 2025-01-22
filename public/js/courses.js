@@ -1,3 +1,4 @@
+
 // Search Filter
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
@@ -73,10 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
             courseName.classList.add('is-invalid');
             return;
         } else {
-            courseName.classList.remove('is-invalid');
+            setValid(courseNameInput);
         }
-    
-        // Display Confirmation Dialog
+
+       // Display Confirmation Dialog
         Swal.fire({
             title: 'Are you sure?',
             text: "You are about to add this course.",
@@ -162,6 +163,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+});
+
+//Validation for edit
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('modal_edit_course_form');
+    const courseNameInput = document.getElementById('edit_course_name');
+
+    // Function to add the Bootstrap 'border-danger' class
+    function setInvalid(input) {
+        input.classList.add('border-danger');
+    }
+
+    // Function to remove the Bootstrap 'border-danger' class
+    function setValid(input) {
+        input.classList.remove('border-danger');
+    }
 
     //Validation for Edit Course form
     
@@ -177,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             courseName.classList.add('is-invalid');
             return;
         } else {
-            courseName.classList.remove('is-invalid');
+            setValid(courseNameInput);
         }
 
         Swal.fire({
@@ -262,11 +279,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    //Remove invalid class on input change
-    document.querySelectorAll('#add_course_name, #edit_course_name').forEach(input => {
+    // Remove invalid border on input change
+    [courseNameInput].forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
-                input.classList.remove('is-invalid');
+                setValid(input);
             }
         });
     });

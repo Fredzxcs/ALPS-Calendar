@@ -318,6 +318,10 @@
                             <div class="fv-row d-flex justify-content-end align-items-center">
                                 <p class="lead fs-6" id="modal-credentials">sample@gmail.com</p>
                             </div>
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
+                                <span class="password-actual d-none" id="modal-password" style="cursor: pointer;">password</span>
+                            </div>
                             <!-- <div class="fv-row d-flex justify-content-end align-items-center">
                                 <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
                                 <span class="password-actual d-none" id="modal-password" style="cursor: pointer;">password</span>
@@ -355,8 +359,16 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Modal Footer -->
                 <div class="modal-footer justify-content-end">
+
+                     <!-- Delete -->
+                    <div>
+                        <button type="button" class="btn btn-danger deleteBtn">
+                            <i class="bi bi-trash me-2"></i>DELETE
+                        </button>
+                    </div>
 
                     @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
                         <a href="#" id="edit-training-link" data-base-url="{{ url('calendar/edit_training') }}/"  class="btn btn-primary me-2">
@@ -364,6 +376,16 @@
                         </a>
                     @endif
                     <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+                <div class="modal-footer d-flex justify-content-between">
+
+
+                    <!-- Edit and Close -->
+                    <div>
+                        <a href="{{route ('edit_training')}}" class="btn btn-primary me-2">
+                            <i class="bi bi-pencil-fill me-2"></i>EDIT
+                        </a>
+                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+                    </div>
                 </div>
             </div>
         </div>
