@@ -9,3 +9,6 @@ create db 'alpstraining'    // Create the database in MySQL
 php artisan key:generate    // Generate the application encryption key
 php artisan migrate         // Run the database migrations
 php artisan serve           // Serve the application locally
+
+php artisan config:clear
+php artisan cache:clear

@@ -1,7 +1,13 @@
 @extends('global.layout')
 
 @section('maincontent')
-
+<style>
+    /* Set fixed width and height for each day cell */
+    .fc-daygrid-day {
+    height: 13rem;
+    max-height: 16rem;
+}
+</style>
 
     <div class="mt-4 d-flex flex-wrap gap-4 mt-20">
         {{-- <!-- Left Side: Search Course and Search Trainer -->
@@ -108,11 +114,17 @@
         <!-- Right Side: Calendar -->
         <div class="card shadow-sm" style="flex: 2;">
             <div class="card-header d-flex justify-content-end align-items-center">
-                <!--begin::Add Button-->
-                <button type="button" class="btn btn-primary btn-lg m-3 btn-hover-rise dropdown-toggle" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
-                    <span class="p-5 fs-4">Add</span>
-                </button>
-                <!--end::Add Button-->
+
+
+                @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+
+                    <!--begin::Add Button-->
+                    <button type="button" class="btn btn-primary btn-lg m-3 btn-hover-rise dropdown-toggle" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
+                        <span class="p-5 fs-4">Add</span>
+                    </button>
+                    <!--end::Add Button-->
+
+                @endif
                 <!--begin::Links-->
                 <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" data-kt-menu="true">
                     <!--begin::Link item-->
@@ -136,7 +148,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-center">
                         <!-- Loader wrapper positioned above the calendar -->
-                        <div id="loader-wrapper" class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center mb-10" style="z-index: 1050;  display: none;">
+                        <div id="loader-wrapper" class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center mb-10" style="  display: none;">
                             <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
@@ -310,6 +322,10 @@
                                 <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
                                 <span class="password-actual d-none" id="modal-password" style="cursor: pointer;">password</span>
                             </div>
+                            <!-- <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
+                                <span class="password-actual d-none" id="modal-password" style="cursor: pointer;">password</span>
+                            </div> -->
                         </div>
                     </div>
                     <!-- In-person -->
@@ -345,13 +361,23 @@
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="modal-footer d-flex justify-content-between">
-                    <!-- Delete -->
+                <div class="modal-footer justify-content-end">
+
+                     <!-- Delete -->
                     <div>
                         <button type="button" class="btn btn-danger deleteBtn">
                             <i class="bi bi-trash me-2"></i>DELETE
                         </button>
                     </div>
+
+                    @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+                        <a href="#" id="edit-training-link" data-base-url="{{ url('calendar/edit_training') }}/"  class="btn btn-primary me-2">
+                            <i class="bi bi-pencil-fill me-2"></i>EDIT
+                        </a>
+                    @endif
+                    <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+                <div class="modal-footer d-flex justify-content-between">
+
 
                     <!-- Edit and Close -->
                     <div>

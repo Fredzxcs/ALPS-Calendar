@@ -1,4 +1,63 @@
-//Validation for add
+// Search Filter
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('#company_table tbody tr');
+
+    searchInput.addEventListener('keyup', () => {
+        const searchValue = searchInput.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+
+            if (rowText.includes(searchValue)) {
+                row.style.display = ''; // Show row if it matches search
+            } else {
+                row.style.display = 'none'; // Hide row if it doesn't match search
+            }
+        });
+    });
+});
+
+//No matching Searches - in progress
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const tableBody = document.querySelector('#companies_table tbody');
+    const tableRows = tableBody.querySelectorAll('tr');
+    const noResultsRow = document.createElement('tr');
+    
+
+    noResultsRow.id = 'noResultsRow';
+    // noResultsRow.innerHTML = `
+    //     <td colspan="5" class="text-center">No matching courses found.</td>
+    // `;
+    noResultsRow.style.display = 'none';
+    tableBody.appendChild(noResultsRow);
+
+    searchInput.addEventListener('keyup', () => {
+        const searchValue = searchInput.value.toLowerCase();
+        let visibleRowCount = 0;
+
+        tableRows.forEach(row => {
+            if (row.id !== 'noResultsRow') {
+                const cells = row.querySelectorAll('td');
+                const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
+
+                if (rowText.includes(searchValue)) {
+                    row.style.display = ''; // Show row if it matches search
+                    visibleRowCount++;
+                } else {
+                    row.style.display = 'none'; // Hide row if it doesn't match search
+                }
+            }
+        });
+
+        // Show or hide the "No Results" row
+        noResultsRow.style.display = visibleRowCount === 0 ? '' : 'none';
+    });
+});
+
+//Validation
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('modal_add_company_form');
     const companyNameInput = document.getElementById('add_company_name');
@@ -16,110 +75,197 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form submission event
     form.addEventListener('submit', (event) => {
         event.preventDefault();
+        
+        const companyName = document.getElementById('add_company_name');
+        const contactPerson = document.getElementById('add_company_contact_person');
+        const contactNumber = document.getElementById('add_company_contact_number');
+        const email = document.getElementById('add_company_email');
+        const submitButton = document.getElementById('add_company_submit');
 
-        let isValid = true;
-
-        if (!companyNameInput.value.trim()) {
-            setInvalid(companyNameInput);
-            isValid = false;
+        if (!companyName.value.trim()) {
+            companyName.classList.add('is-invalid');
+            return;
         } else {
             setValid(companyNameInput);
         }
 
-        // If all fields are valid
-        if (isValid) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to add this company.",
-                icon: 'warning',
-                buttonsStyling: false,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Add Company',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                    confirmButton: "btn btn-success",
-                    cancelButton: 'btn btn-secondary'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Added!',
-                        'The company has been added.',
-                        'success'
-                    );
-                    // TODO: Add logic to perform add company here
-                }
-            });
-        }
-    });
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to add this company.",
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Add Company',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitButton.disabled = true;
 
-    // Remove invalid border on input change
-    [companyNameInput].forEach(input => {
-        input.addEventListener('input', () => {
-            if (input.value.trim()) {
-                setValid(input);
+                const formData = {
+                    company_name: companyName.value.trim(),
+                    contact_person: contactPerson.value.trim() || '',
+                    contact_number: contactNumber.value.trim() || '',
+                    email: email.value.trim() || ''
+                };
+
+                const routeUrl = document.getElementById('route-config-com').dataset.url;
+                console.log("Route URL:", routeUrl);
+
+                $.ajax({
+                    url: routeUrl,
+                    method: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response){
+                        if (response.success) {
+                            Swal.fire('Added!', 
+                                'The company has been added successfully.', 
+                                'success')
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire('Error!', 
+                                'There was an issue adding the company.', 
+                                'error');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', xhr.responseText);
+                        Swal.fire('Error!', 
+                            'An unexpected error occurred.', 
+                            'error');
+                    },
+                    complete: function () {
+                        submitButton.disabled = false;
+                    }
+                });
             }
         });
     });
-});
 
-//Validation for edit
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('modal_edit_company_form');
-    const companyNameInput = document.getElementById('edit_company_name');
+    //Populate Existing Entry by id
+    // Event listener to open the modal and populate it with data
+    $(document).on('click', '.editCompanyBtn', function () {
+        // Get the company ID from the button's data-id attribute
+        const companyId = $(this).data('id');
+    
+        // Fetch company details using AJAX
+        $.ajax({
+            url: `/config/companies/${companyId}`, // Make sure this is the correct endpoint
+            method: 'GET',
+            success: function (response) {
+                // Populate the modal with company data
+                $('#edit_company_name').val(response.company_name);
+                $('#edit_company_contact_person').val(response.contact_person);
+                $('#edit_company_contact_number').val(response.contact_number);
+                $('#edit_company_email').val(response.email);
+    
+                // Optionally, store the company ID in the modal form for later use (for saving)
+                $('#modal_edit_company_form').data('id', companyId);
+    
+                // Open the modal
+                $('#modal_edit_company').modal('show');
+            },
+            error: function (error) {
+                console.error('Failed to fetch company details:', error);
+                alert('An error occurred while fetching the company details.');
+            }
+        });
+    });
+    
 
-    // Function to add the Bootstrap 'border-danger' class
-    function setInvalid(input) {
-        input.classList.add('border-danger');
-    }
 
-    // Function to remove the Bootstrap 'border-danger' class
-    function setValid(input) {
-        input.classList.remove('border-danger');
-    }
-
-    // Form submission event
-    form.addEventListener('submit', (event) => {
+    // Validation for Edit Company form
+    document.getElementById('modal_edit_company_form').addEventListener('submit', (event) => {
         event.preventDefault();
 
-        let isValid = true;
+        const companyId = $('#modal_edit_company_form').data('id');
+        const companyName = document.getElementById('edit_company_name');
+        const contactPerson = document.getElementById('edit_company_contact_person');
+        const contactNumber = document.getElementById('edit_company_contact_number');
+        const email = document.getElementById('edit_company_email');
+        const submitButton = document.getElementById('edit_company_submit');
 
-        if (!companyNameInput.value.trim()) {
-            setInvalid(companyNameInput);
-            isValid = false;
+        // Validate input
+        if (!companyName.value.trim()) {
+            companyName.classList.add('is-invalid');
+            return;
         } else {
             setValid(companyNameInput);
         }
 
-        // If all fields are valid
-        if (isValid) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to edit this company.",
-                icon: 'warning',
-                buttonsStyling: false,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Edit Company',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                    confirmButton: "btn btn-success",
-                    cancelButton: 'btn btn-secondary'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Edited!',
-                        'The company has been edited.',
-                        'success'
-                    );
-                    // TODO: Add logic to perform edit company here
-                }
-            });
-        }
+        // Confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to update this company.",
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Update Company',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                submitButton.disabled = true;
+
+                // Prepare the data to send
+                const formData = {
+                    company_name: companyName.value.trim(),
+                    contact_person: contactPerson.value.trim() || null,
+                    contact_number: contactNumber.value.trim() || null,
+                    email: email.value.trim() || null // Send null if email is empty
+                };
+
+                // Use the proper URL for the update action
+                const routeUrl = `/config/companies/update/${companyId}`; // Ensure this is the correct endpoint
+
+                console.log("Route URL:", routeUrl);
+
+                $.ajax({
+                    url: routeUrl,
+                    method: 'PATCH', // Using PATCH to update the company
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire('Updated!', 
+                                'The company has been updated successfully.', 
+                                'success')
+                                .then(() => location.reload()); // Reload the page or update UI accordingly
+                        } else {
+                            Swal.fire('Error!', 
+                                'There was an issue updating the company.', 
+                                'error');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', xhr.responseText);
+                        Swal.fire('Error!', 
+                            'An unexpected error occurred.', 
+                            'error');
+                    },
+                    complete: function () {
+                        submitButton.disabled = false;
+                    }
+                });
+            }
+        });
     });
 
-    // Remove invalid border on input change
-    [companyNameInput].forEach(input => {
+    
+
+    //Remove invalid class on input change
+    document.querySelectorAll('#add_company_name, #edit_company_name').forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
                 setValid(input);
@@ -134,6 +280,14 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
     button.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default action (e.g., form submission)
 
+        // Get the company ID from a data attribute (e.g., data-id)
+        const companyId = button.getAttribute('data-id');
+
+        if (!companyId) {
+            console.error("Company ID not provided.");
+            return;
+        }
+
         Swal.fire({
             title: 'Are you sure?',
             text: "You are about to delete this company.",
@@ -143,23 +297,50 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
             confirmButtonText: 'Yes, Delete',
             cancelButtonText: 'Cancel',
             customClass: {
-            confirmButton: "btn btn-danger",
-            cancelButton: 'btn btn-secondary'
-        }
+                confirmButton: "btn btn-danger",
+                cancelButton: 'btn btn-secondary'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
-                // Proceed with the delete
-                Swal.fire(
-                    'Deleted!',
-                    'The company has been deleted.',
-                    'success'
-                );
+                // Perform the delete action
+                fetch(`/config/companies/delete/${companyId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire(
+                            'Deleted!',
+                            data.message || 'The company has been deleted.',
+                            'success'
+                        );
 
-                // TODO: Add logic to perform delete
+                        // Optionally remove the company row from the table or reload the page
+                        document.querySelector(`#company-row-${companyId}`).remove();
+                    } else {
+                        Swal.fire(
+                            'Error!',
+                            data.message || 'There was an error deleting the company.',
+                            'error'
+                        );
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire(
+                        'Error!',
+                        'There was an error deleting the company.',
+                        'error'
+                    );
+                });
             }
         });
     });
 });
+
 
 //Pagination
 document.addEventListener("DOMContentLoaded", function () {
@@ -230,6 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
     createPaginationButtons();
     displayPage(1); // Show the first page initially
 });
+
 
 
 

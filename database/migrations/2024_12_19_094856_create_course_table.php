@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('course', function (Blueprint $table) {
             $table->id();
-            $table->string('code'); // Course code
-            $table->string('name'); // Course name
+            $table->string('course_code')->nullable(); // Course code
+            $table->string('course_name'); // Course name
             $table->text('description')->nullable();
             $table->timestamps();
         });
