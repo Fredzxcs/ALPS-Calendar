@@ -15,10 +15,22 @@
                 <div class="p-20 pt-10 pb-6 ">
 
                     <div class="text-center mb-10">
-                        <h3 class="text-center" style="color: #7c0101;">Kimberly Kho (name of user)</h3>
-                        <span class="badge badge-light-warning">SYSTEM ADMIN</span>
-                        <span class="badge badge-light-primary">COORDINATOR</span>
-                        <span class="badge badge-light-info">FACILITATOR</span>
+                        <h3 class="text-center" style="color: #7c0101;">{{ $user->name }}</h3>
+
+                        @if ($user->usertype === "admin")
+
+                            <span class="badge badge-light-warning">SYSTEM ADMIN</span>
+
+                        @elseif ($user->usertype === "facilitator")
+
+                            <span class="badge badge-light-info">FACILITATOR</span>
+
+                        @elseif ($user->usertype === "coordinator")
+
+                            <span class="badge badge-light-primary">COORDINATOR</span>
+
+                        @endif
+
                     </div>
 
                     <form id="add_unavailability_form">
@@ -56,6 +68,11 @@
     </div>
 @endsection
 @push('scripts')
+    <script>
+
+        let user = {{ $user->id }}
+
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="{{ asset('js/add_unavailability.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
