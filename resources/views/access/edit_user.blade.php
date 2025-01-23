@@ -74,42 +74,11 @@
                         <!--end::Line-->
                     </div>
                     <!--end::Step 2-->
-
-                    <!--begin::Step 3-->
-                    <div class="stepper-item mx-8 my-4" data-kt-stepper-element="nav">
-                        <!--begin::Wrapper-->
-                        <div class="stepper-wrapper d-flex align-items-center">
-                            <!--begin::Icon-->
-                            <div class="stepper-icon w-40px h-40px">
-                                <i class="stepper-check fas fa-check"></i>
-                                <span class="stepper-number">3</span>
-                            </div>
-                            <!--begin::Icon-->
-
-                            <!--begin::Label-->
-                            <div class="stepper-label">
-                                <h3 class="stepper-title">
-                                    Step 3
-                                </h3>
-
-                                <div class="stepper-desc">
-                                    Account Creation
-                                </div>
-                            </div>
-                            <!--end::Label-->
-                        </div>
-                        <!--end::Wrapper-->
-
-                        <!--begin::Line-->
-                        <div class="stepper-line h-40px"></div>
-                        <!--end::Line-->
-                    </div>
-                    <!--end::Step 3-->
                 </div>
                 <!--end::Nav-->
 
                 <!--begin::Form-->
-                <form class="form mx-auto w-75 px-5" novalidate="novalidate" id="kt_stepper_example_basic_form">
+                <form class="form mx-auto w-75 px-5" novalidate="novalidate" id="edit_user_form">
                     @csrf
                     <!--begin::Group-->
                     <div class="mb-5">
@@ -192,47 +161,47 @@
                             <div class="row g-5">
                                 <!-- First Name -->
                                 <div class="col-md-6">
-                                    <label for="first_name" class="form-label fw-bold">First Name <span
+                                    <label for="edit_first_name" class="form-label fw-bold">First Name <span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-solid" id="first_name"
+                                    <input type="text" class="form-control form-control-solid" id="edit_first_name"
                                         placeholder="Enter First Name" required>
                                 </div>
                                 <!-- Middle Name -->
                                 <div class="col-md-6">
-                                    <label for="middle_name" class="form-label fw-bold">Middle Name</label>
-                                    <input type="text" class="form-control form-control-solid" id="middle_name"
+                                    <label for="edit_middle_name" class="form-label fw-bold">Middle Name</label>
+                                    <input type="text" class="form-control form-control-solid" id="edit_middle_name"
                                         placeholder="Enter Middle Name (Optional)">
                                 </div>
                                 <!-- Last Name -->
                                 <div class="col-md-6">
-                                    <label for="last_name" class="form-label fw-bold">Last Name <span
+                                    <label for="edit_last_name" class="form-label fw-bold">Last Name <span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-solid" id="last_name"
+                                    <input type="text" class="form-control form-control-solid" id="edit_last_name"
                                         placeholder="Enter Last Name" required>
                                 </div>
                                 <!-- Suffix -->
                                 <div class="col-md-6">
-                                    <label for="suffix" class="form-label fw-bold">Suffix</label>
-                                    <input type="text" class="form-control form-control-solid" id="suffix"
+                                    <label for="edit_suffix" class="form-label fw-bold">Suffix</label>
+                                    <input type="text" class="form-control form-control-solid" id="edit_suffix"
                                         placeholder="Enter Suffix (Optional)">
                                 </div>
                                 <!-- Email Address -->
                                 <div class="col-md-6">
-                                    <label for="email" class="form-label fw-bold">Email Address <span
+                                    <label for="edit_email" class="form-label fw-bold">Email Address <span
                                             class="text-danger">*</span></label>
-                                    <input type="email" class="form-control form-control-solid" id="email"
+                                    <input type="email" class="form-control form-control-solid" id="edit_email"
                                         placeholder="Enter Email Address" required>
                                 </div>
                                 <!-- Contact Number -->
                                 <div class="col-md-6">
-                                    <label for="contact_number" class="form-label fw-bold">Contact Number <span
+                                    <label for="edit_contact_number" class="form-label fw-bold">Contact Number <span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-solid" id="contact_number"
+                                    <input type="text" class="form-control form-control-solid" id="edit_contact_number"
                                         placeholder="Enter Contact Number" required>
                                 </div>
                                 <!-- 1x1 ID Picture -->
                                 <div class="col-md-12 text-center mt-10">
-                                    <label for="id_picture" class="form-label fw-bold required">1x1 ID Picture</label>
+                                    <label for="edit_id_picture" class="form-label fw-bold required">1x1 ID Picture</label>
                                     <div>
                                         <!--begin::Image input-->
                                         <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url('assets/media/svg/avatars/blank.svg')">
@@ -243,7 +212,7 @@
                                             <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Select Image">
                                                 <i class="bi bi-pencil-fill fs-7"></i>
                                                 <!--begin::Inputs-->
-                                                <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
+                                                <input type="file" name="avatar" id="edit_id_picture" accept=".png, .jpg, .jpeg" />
                                                 <input type="hidden" name="avatar_remove" />
                                                 <!--end::Inputs-->
                                             </label>
@@ -260,41 +229,10 @@
                                         <!--end::Hint-->
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                         <!--end::Input Group Step 2-->
-
-                        <!--begin::Input Group Step 3-->
-                        <div class="flex-column" data-kt-stepper-element="content">
-                            <div class="d flex-center px-16">
-                                <div class="row mb-4">
-                                    <!-- Assign Username -->
-                                    <div class="col-md-6">
-                                        <label for="username" class="form-label fw-bold">Assign Username <span
-                                                class="text-danger">*</span></label>
-                                        <input type="text" id="username" class="form-control form-control-solid"
-                                            placeholder="Enter Username" required>
-                                    </div>
-                                    <!-- Assign Password -->
-                                    <div class="col-md-6">
-                                        <label for="password" class="form-label fw-bold">Assign Password <span
-                                                class="text-danger">*</span></label>
-                                        <input type="password" id="password" class="form-control form-control-solid"
-                                            placeholder="Enter Password" required>
-                                    </div>
-                                </div>
-                                <!-- Assign Color -->
-                                <div class="row mb-4">
-                                    <div class="col-md-6">
-                                        <div id="assignColorSection" class="mt-5">
-                                            <label for="color" class="form-label fw-bold required">Assign Color</label>
-                                            <input type="color" id="color" class="form-control form-control-solid w-100px h-50px" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--end::Input Group Step 3-->
 
                         <!--begin::Actions/Buttons-->
                         <div class="d-flex flex-stack mt-5 ">
@@ -309,13 +247,9 @@
 
                             <!--begin::Wrapper-->
                             <div>
-                                <button type="button" class="btn btn-success" id="add_user_submit" data-kt-stepper-action="submit">
+                                <button type="submit" class="btn btn-success" id="edit_user_submit" data-kt-stepper-action="submit">
                                     <span class="indicator-label">
                                         SAVE
-                                    </span>
-                                    <span class="indicator-progress">
-                                        Please wait... <span
-                                            class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                     </span>
                                 </button>
 
@@ -336,23 +270,5 @@
 </div>
 @endsection
 @push('scripts')
-<script src="{{ asset('js/add_user.js') }}"></script>
-<script>
-    const roleRadios = document.querySelectorAll('input[name="radio_buttons_2"]');
-    const assignColorSection = document.getElementById('assignColorSection');
-
-    assignColorSection.style.display = 'none';
-
-    roleRadios.forEach(radio => {
-        radio.addEventListener('change', function() {
-            if (this.value === 'facilitator' && this.id === 'kt_radio_buttons_2_option_2') {
-                // If the role is 'Facilitator' show the 'Assign Color' section
-                assignColorSection.style.display = 'block';
-            } else {
-                // Otherwise hide the 'Assign Color' section
-                assignColorSection.style.display = 'none';
-            }
-        });
-    });
-</script>
+<script src="{{ asset('js/edit_user.js') }}"></script>
 @endpush
