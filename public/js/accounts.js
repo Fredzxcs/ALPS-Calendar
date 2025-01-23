@@ -102,16 +102,16 @@ document.addEventListener('DOMContentLoaded', () => {
 //         }).then((result) => {
 //             if (result.isConfirmed) {
 //                 submitButton.disabled = true;
-    
+
 //                 const formData = {
 //                     account_email: accountEmail.value.trim(),
 //                     account_password: accountPassword.value.trim()
 //                 };
-    
+
 //                 // FETCH ROUTE URL FROM BLADE DATA ATTRIBUTE
 //                 const routeUrl = document.getElementById('route-config').dataset.url;
 //                 console.log("Route URL:", routeUrl);
-                
+
 //                 $.ajax({
 //                     url: routeUrl,
 //                     method: 'POST',
@@ -121,20 +121,20 @@ document.addEventListener('DOMContentLoaded', () => {
 //                     },
 //                     success: function (response) {
 //                         if (response.success) {
-//                             Swal.fire('Added!', 
-//                                 'The account has been added successfully.', 
+//                             Swal.fire('Added!',
+//                                 'The account has been added successfully.',
 //                                 'success')
 //                                 .then(() => location.reload());
 //                         } else {
-//                             Swal.fire('Error!', 
-//                                 'There was an issue adding the account.', 
+//                             Swal.fire('Error!',
+//                                 'There was an issue adding the account.',
 //                                 'error');
 //                         }
 //                     },
 //                     error: function (xhr, status, error) {
 //                         console.error('AJAX Error:', xhr.responseText);
-//                         Swal.fire('Error!', 
-//                             'An unexpected error occurred.', 
+//                         Swal.fire('Error!',
+//                             'An unexpected error occurred.',
 //                             'error');
 //                     },
 //                     complete: function () {
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //             console.error('Account ID is undefined');
 //             return; // Stop the AJAX request if ID is undefined
 //         }
-    
+
 //         // Fetch account details using AJAX
 //         $.ajax({
 //             url: `/config/accounts/${accountId}`, // Make sure this is the correct endpoint
@@ -166,10 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
 //                 // Populate the modal with account data
 //                 $('#edit_account_email').val(response.account_email);
 //                 $('#edit_account_password').val(response.account_password);
-    
+
 //                 // Optionally, store the account ID in the modal form for later use (for saving)
 //                 $('#modal_edit_account_form').data('id', accountId);
-    
+
 //                 // Open the modal
 //                 $('#modal_edit_account').modal('show');
 //             },
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //         const accountEmail = document.getElementById('edit_account_email');
 //         const accountPassword = document.getElementById('edit_account_password');
 //         const submitButton = document.getElementById('edit_account_submit');
-        
+
 //         if (!accountEmail.value.trim()) {
 //             accountEmail.classList.add('is-invalid');
 //             return;
@@ -215,11 +215,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //                 const formData = {
 //                     account_email: accountEmail.value.trim(),
-//                     account_password: accountPassword.value.trim()  
+//                     account_password: accountPassword.value.trim()
 //                 };
 
 //                 const routeUrl = `/config/accounts/update/${accountId}`;
-                
+
 //                 console.log("Route URL:", routeUrl);
 
 //                 $.ajax({
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //                     },
 //                     error: function (xhr, status, error) {
 //                         console.error('AJAX Error:', xhr.responseText);
-                    
+
 //                         // Check if there are validation errors in the response
 //                         if (xhr.responseJSON && xhr.responseJSON.errors) {
 //                             // If the account_email error exists, display it in the Swal alert
@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //                                 'error'
 //                             );
 //                         }
-//                     },                 
+//                     },
 //                     complete: function () {
 //                         submitButton.disabled = false;
 //                     }
@@ -357,7 +357,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             Swal.fire('Added!',
                                 'The account has been added successfully.',
                                 'success')
-                                .then(() => location.reload());
+                                .then((result) => {
+                                    window.location.reload();
+                                });
                         } else {
                             Swal.fire('Error!',
                                 'There was an issue adding the account.',
@@ -373,81 +375,85 @@ document.addEventListener('DOMContentLoaded', () => {
                     complete: function () {
                         submitButton.disabled = false;
                     }
-                });
-//Validation for add
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('modal_add_account_form');
-    const emailInput = document.getElementById('add_account_email');
-    const passwordInput = document.getElementById('add_account_password');
-
-    // Function to add the Bootstrap 'border-danger' class
-    function setInvalid(input) {
-        input.classList.add('border-danger');
-    }
-
-    // Function to remove the Bootstrap 'border-danger' class
-    function setValid(input) {
-        input.classList.remove('border-danger');
-    }
-
-    // Form submission event
-    form.addEventListener('submit', (event) => {
-        event.preventDefault();
-
-        let isValid = true;
-
-        // Validate email
-        if (!emailInput.value.trim()) {
-            setInvalid(emailInput);
-            isValid = false;
-        } else {
-            setValid(emailInput);
-        }
-
-        // Validate password
-        if (!passwordInput.value.trim()) {
-            setInvalid(passwordInput);
-            isValid = false;
-        } else {
-            setValid(passwordInput);
-        }
-
-        // If all fields are valid
-        if (isValid) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to add this account.",
-                icon: 'warning',
-                buttonsStyling: false,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Add Account',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                    confirmButton: "btn btn-success",
-                    cancelButton: 'btn btn-secondary'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Added!',
-                        'The account has been added.',
-                        'success'
-                    );
-                    // TODO: Add logic to perform add acc here
-                }
             });
         }
     });
-
-    // Remove invalid border on input change
-    [emailInput, passwordInput].forEach(input => {
-        input.addEventListener('input', () => {
-            if (input.value.trim()) {
-                setValid(input);
-            }
-        });
-    });
 });
+});
+// //Validation for add
+// document.addEventListener('DOMContentLoaded', () => {
+//     const form = document.getElementById('modal_add_account_form');
+//     const emailInput = document.getElementById('add_account_email');
+//     const passwordInput = document.getElementById('add_account_password');
+
+//     // Function to add the Bootstrap 'border-danger' class
+//     function setInvalid(input) {
+//         input.classList.add('border-danger');
+//     }
+
+//     // Function to remove the Bootstrap 'border-danger' class
+//     function setValid(input) {
+//         input.classList.remove('border-danger');
+//     }
+
+//     // Form submission event
+//     form.addEventListener('submit', (event) => {
+//         event.preventDefault();
+
+//         let isValid = true;
+
+//         // Validate email
+//         if (!emailInput.value.trim()) {
+//             setInvalid(emailInput);
+//             isValid = false;
+//         } else {
+//             setValid(emailInput);
+//         }
+
+//         // Validate password
+//         if (!passwordInput.value.trim()) {
+//             setInvalid(passwordInput);
+//             isValid = false;
+//         } else {
+//             setValid(passwordInput);
+//         }
+
+//         // If all fields are valid
+//         if (isValid) {
+//             Swal.fire({
+//                 title: 'Are you sure?',
+//                 text: "You are about to add this account.",
+//                 icon: 'warning',
+//                 buttonsStyling: false,
+//                 showCancelButton: true,
+//                 confirmButtonText: 'Yes, Add Account',
+//                 cancelButtonText: 'Cancel',
+//                 customClass: {
+//                     confirmButton: "btn btn-success",
+//                     cancelButton: 'btn btn-secondary'
+//                 }
+//             }).then((result) => {
+//                 if (result.isConfirmed) {
+//                     Swal.fire(
+//                         'Added!',
+//                         'The account has been added.',
+//                         'success'
+//                     );
+//                     // TODO: Add logic to perform add acc here
+//                 }
+//             });
+//         }
+//     });
+
+//     // Remove invalid border on input change
+//     [emailInput, passwordInput].forEach(input => {
+//         input.addEventListener('input', () => {
+//             if (input.value.trim()) {
+//                 setValid(input);
+//             }
+//         });
+//     });
+// });
 
     // Validation for Edit Account form
     document.getElementById('modal_edit_account_form').addEventListener('submit', (event) => {
@@ -569,7 +575,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-});
+
 
 
 //Delete account button
@@ -712,7 +718,7 @@ document.addEventListener("DOMContentLoaded", function () {
 $('.togglePassword').on('click', function () {
     const input = $($(this).data('target'));
     const icons = $(this).find('i');
-    
+
     if (input.attr('type') === 'password') {
         input.attr('type', 'text');
         icons.first().addClass('d-none');
