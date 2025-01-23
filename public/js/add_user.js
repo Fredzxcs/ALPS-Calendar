@@ -88,6 +88,20 @@ $(document).ready(function (e){
             }
         });
     });
+});
 
-
+//Toggle password visibility
+$('.togglePassword').on('click', function () {
+    const input = $($(this).data('target'));
+    const icons = $(this).find('i');
+    
+    if (input.attr('type') === 'password') {
+        input.attr('type', 'text');
+        icons.first().addClass('d-none');
+        icons.last().removeClass('d-none');
+    } else {
+        input.attr('type', 'password');
+        icons.first().removeClass('d-none');
+        icons.last().addClass('d-none');
+    }
 });

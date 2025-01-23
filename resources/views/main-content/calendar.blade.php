@@ -136,7 +136,7 @@
                     <!--end::Link item-->
                     <!--begin::Link item-->
                     <div class="menu-item px-3">
-                        <a href="" class="menu-link px-3" id="event_view">
+                        <a href="{{ route('add_unavailability') }}" class="menu-link px-3" id="event_view">
                             <i class="bi bi-calendar-event text-info fs-6 me-2"></i>Unavailability
                         </a>
                     </div>

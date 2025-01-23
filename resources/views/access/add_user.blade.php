@@ -275,12 +275,33 @@
                                             placeholder="Enter Username" required>
                                     </div>
                                     <!-- Assign Password -->
-                                    <div class="col-md-6">
+                                    <!-- <div class="col-md-6">
                                         <label for="password" class="form-label fw-bold">Assign Password <span
                                                 class="text-danger">*</span></label>
                                         <input type="password" id="password" class="form-control form-control-solid"
                                             placeholder="Enter Password" required>
+                                    </div> -->
+
+                                    <!--Assign Password-->
+                                    <div class="col-md-6">
+                                    <label for="password" class="form-label fw-bold required">Assign Password</label>
+                                    <div class="position-relative">
+                                        <input type="password" class="form-control form-control-solid" 
+                                            placeholder="Enter Password" 
+                                            id="password"
+                                            name="password"
+                                        />
+                                        <!-- Visibility toggle -->
+                                        <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2 togglePassword"
+                                            data-kt-password-meter-control="visibility" 
+                                            data-target="#password" 
+                                            aria-label="Toggle Password Visibility">
+                                            <i class="bi bi-eye-slash fs-2"></i>
+                                            <i class="bi bi-eye fs-2 d-none"></i>
+                                        </span>
                                     </div>
+                                </div>
+
                                 </div>
                                 <!-- Assign Color -->
                                 <div class="row mb-4">
