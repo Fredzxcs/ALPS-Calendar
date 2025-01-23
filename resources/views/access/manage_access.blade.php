@@ -166,7 +166,7 @@
                                     </div>
 
                                     <div class="menu-item px-3">
-                                        <a class="menu-link px-3 deleteBtn">
+                                        <a class="menu-link px-3 deleteBtn" data-id="{{ $user->id }}">
                                             <i class="bi bi-trash text-danger me-2"></i> Delete
                                         </a>
                                     </div>

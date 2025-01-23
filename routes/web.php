@@ -67,6 +67,9 @@ Route::prefix('access')->group(function (){
     Route::get('/edit_user/{id}', [ManageAccessController::class, 'edit'])
         ->middleware(['auth', 'user:admin'])
         ->name('edit_user');
+    Route::delete('/delete_user/{id}', [ManageAccessController::class, 'delete_user'])
+        ->middleware(['auth', 'user:admin'])
+        ->name('delete_user');
 });
 
 // Archived Accounts
