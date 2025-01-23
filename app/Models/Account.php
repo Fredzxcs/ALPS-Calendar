@@ -7,27 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Training;
 
-
-class Course extends Model
+class Account extends Model
 {
-    /** @use HasFactory<\Database\Factories\CoursesFactory> */
     use HasFactory;
 
-    protected $table = 'course';
+    protected $table = 'credentials';
 
-    // Define the columns that are mass assignable
     protected $fillable = [
-        'course_code',
-        'course_name',
-        'description',
+        'account_email',
+        'account_password',
     ];
 
-    // Disable timestamps if not used in the database
     public $timestamps = false;
 
     public function trainings()
     {
         return $this->hasMany(Training::class);
     }
-
 }

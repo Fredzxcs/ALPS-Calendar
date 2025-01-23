@@ -50,7 +50,7 @@
                 <tbody>
                     @if($company->isEmpty())
                     <tr>
-                        <td colspan="3">No companies available.</td>
+                        <td colspan="5">No companies found.</td>
                     </tr>
                     @else
 
@@ -132,7 +132,6 @@
                         <div class="row mb-5">
                             <label for="company_name" class="form-label fw-bold required">Company Name</label>
                             <input type="text" class="form-control form-control-solid" id="add_company_name" placeholder="Enter Company Name">
-                            <div class="invalid-feedback">Required field</div>
                         </div>
 
                         <div class="row mb-5">
@@ -211,7 +210,6 @@
                             <label for="company_name" class="form-label fw-bold required">Company Name</label>
                             <input type="text" class="form-control form-control-solid" id="edit_company_name" placeholder="Enter Company Name"
                                 value="sample">
-                            <div class="invalid-feedback">Required field</div>
                         </div>
 
                         <div class="row mb-5">

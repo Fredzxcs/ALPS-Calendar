@@ -1,12 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const modeRadios = document.querySelectorAll('input[name="mode"]');
-    const companyContainer = document.getElementById("company-container");
-    const credentialsContainer = document.getElementById("credentials-container");
-    const locationContainer = document.getElementById("location-container");
-    const inpersonCheckbox = document.getElementById("inperson-training");
-    const companyCourseContainer = document.getElementById("company-course-container");
-    const publicCourseContainer = document.getElementById("public-course-container");
-
     // Mode of Training Logic
     modeRadios.forEach(radio => {
         radio.addEventListener("change", function () {
@@ -58,8 +50,24 @@ document.addEventListener('DOMContentLoaded', function () {
     // Handle Cancel Button
     document.getElementById('cancel_training_button').addEventListener('click', function (e) {
         e.preventDefault(); // Prevent navigation
-        window.location.href = '/calendar'; // Redirect to the calendar
+        // Show SweetAlert confirmation for cancel
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Any unsaved changes will be lost. Do you want to proceed?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, cancel',
+            cancelButtonText: 'Stay on page'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect back to the calendar page
+                window.location.href = "/calendar"; //Note: can't access blade functions in javascript file. Type out the whole route
+            }
     });
+});
+
 
     document.getElementById('edit_training_submit').addEventListener('click', function (e) {
         e.preventDefault(); // Prevent default submission
@@ -153,33 +161,53 @@ document.addEventListener('DOMContentLoaded', function () {
                 let to_time = $('#time-end').val();
                 let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
                 let platform = $('#platform').val();
-                let credentials_email = $('#credentials').find('option:selected').text();
-                let credentials_password = $('#credentials').find('option:selected').val();
+
+                //account
+                let account_id = $('#credentials').find('option:selected').val();
+
+                //company
                 let company = $('#company').find('option:selected').val();
 
-                if (mode === "virtual") {
-                    location.value = ''; // Reset location for virtual mode
-                } else if (mode === "face-to-face") {
-                    credentials_email = '';
-                    credentials_password = '';
-                } else if (mode === "public-course") {
-                    if (inpersonCheckbox.checked) {
-                        credentials_email = '';
-                        credentials_password = '';
-                    } else {
-                        location.value = '';
+                //location
+                let location = $('#location').val();
+
+                //clear other values
+
+                let mode = $('input[name="mode"]:checked').val();
+
+                if(mode === "virtual") //virtual - clear location
+                {
+                    console.log('virtual mode');
+                    location = '';
+                }
+                else if (mode === "face-to-face") //f2f - clear email and platform
+                {
+                    console.log('f2f mode');
+                    account_id = '';
+                }
+                else if (mode === "public-course")
+                {
+                    //check if in-person
+                    if(inpersonCheckbox.checked) //if f2f - clear email and platform
+                    {
+                        console.log('public mode - inperson');
+                        account_id = '';
+                    }
+                    else //if virtual - clear location
+                    {
+                        console.log('public mode - online');
+                        location = '';
                     }
                 }
 
                 var data = {
-                    course: course,
+                    course_id: course,
                     platform: platform,
                     location: location.value.trim(),
                     facilitator_id: facilitator_id,
-                    company: company,
-                    assistant_id: assistant_id,
-                    credentials_email: credentials_email,
-                    credentials_password: credentials_password,
+                    company_id: company,
+                    assistant: assistant_id,
+                    account_id: account_id,
                     mode: mode,
                     from_date: from_date,
                     to_date: to_date,

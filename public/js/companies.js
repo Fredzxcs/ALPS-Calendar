@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// No matching Searches
+//No matching Searches - in progress
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const tableBody = document.querySelector('#companies_table tbody');
@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     noResultsRow.id = 'noResultsRow';
-    noResultsRow.innerHTML = `
-        <td colspan="5" class="text-center">No matching courses found.</td>
-    `;
+    // noResultsRow.innerHTML = `
+    //     <td colspan="5" class="text-center">No matching courses found.</td>
+    // `;
     noResultsRow.style.display = 'none';
     tableBody.appendChild(noResultsRow);
 
@@ -59,8 +59,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //Validation
 document.addEventListener('DOMContentLoaded', () => {
-    //Validation for Add Company form
-    document.getElementById('modal_add_company_form').addEventListener('submit', (event) => {
+    const form = document.getElementById('modal_add_company_form');
+    const companyNameInput = document.getElementById('add_company_name');
+
+    // Function to add the Bootstrap 'border-danger' class
+    function setInvalid(input) {
+        input.classList.add('border-danger');
+    }
+
+    // Function to remove the Bootstrap 'border-danger' class
+    function setValid(input) {
+        input.classList.remove('border-danger');
+    }
+
+    // Form submission event
+    form.addEventListener('submit', (event) => {
         event.preventDefault();
         
         const companyName = document.getElementById('add_company_name');
@@ -73,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             companyName.classList.add('is-invalid');
             return;
         } else {
-            companyName.classList.remove('is-invalid');
+            setValid(companyNameInput);
         }
 
         Swal.fire({
@@ -94,8 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const formData = {
                     company_name: companyName.value.trim(),
-                    contact_person: contactPerson.value.trim(),
-                    contact_number: contactNumber.value.trim(),
+                    contact_person: contactPerson.value.trim() || '',
+                    contact_number: contactNumber.value.trim() || '',
                     email: email.value.trim() || ''
                 };
 
@@ -112,12 +125,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     success: function(response){
                         if (response.success) {
                             Swal.fire('Added!', 
-                                'The course has been added successfully.', 
+                                'The company has been added successfully.', 
                                 'success')
                                 .then(() => location.reload());
                         } else {
                             Swal.fire('Error!', 
-                                'There was an issue adding the course.', 
+                                'There was an issue adding the company.', 
                                 'error');
                         }
                     },
@@ -183,14 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             companyName.classList.add('is-invalid');
             return;
         } else {
-            companyName.classList.remove('is-invalid');
-        }
-
-        if (!contactNumber.value.trim()) {
-            contactNumber.classList.add('is-invalid');
-            return;
-        } else {
-            contactNumber.classList.remove('is-invalid');
+            setValid(companyNameInput);
         }
 
         // Confirmation dialog
@@ -213,8 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Prepare the data to send
                 const formData = {
                     company_name: companyName.value.trim(),
-                    contact_person: contactPerson.value.trim(),
-                    contact_number: contactNumber.value.trim(),
+                    contact_person: contactPerson.value.trim() || null,
+                    contact_number: contactNumber.value.trim() || null,
                     email: email.value.trim() || null // Send null if email is empty
                 };
 
@@ -262,14 +268,14 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#add_company_name, #edit_company_name').forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
-                input.classList.remove('is-invalid');
+                setValid(input);
             }
         });
     });
 });
 
+
 //Delete company button
-// Delete company button
 document.querySelectorAll('.deleteBtn').forEach(button => {
     button.addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default action (e.g., form submission)
@@ -405,6 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
     createPaginationButtons();
     displayPage(1); // Show the first page initially
 });
+
 
 
 

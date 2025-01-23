@@ -55,12 +55,12 @@
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
                                         <select id="public-course-select" class="form-select form-select-solid">
                                             <option value="" disabled selected>Select Course</option>
-                                            <option value="Advanced Excel Training"
-                                                {{ $training->course == 'Advanced Excel Training' ? 'selected' : '' }}>Advanced Excel Training</option>
-                                            <option value="Advanced MS Powerpoint Course"
-                                                {{ $training->course == 'Advanced MS Powerpoint Course' ? 'selected' : '' }}>Advanced MS Powerpoint Course</option>
-                                            <option value="Advanced Project Management Training Course"
-                                                {{ $training->course == 'Advanced Project Management Training Course' ? 'selected' : '' }}>Advanced Project Management Training Course</option>
+                                            @foreach ($courses as $course)
+                                            <option value="{{ $course->id }}"
+                                                {{ $training->course && $course->id === $training->course->id ? 'selected' : '' }}>
+                                                {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
+                                            </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
@@ -73,8 +73,11 @@
                                 <label for="credentials" class="fw-bold mb-2 required">Account</label>
                                 <select id="credentials" class="form-select form-select-solid">
                                     <option value="" disabled selected>Select Host Email Account</option>
-                                    <option value="samplezoomaccountpassword"
-                                        {{ $training->credentials_password == 'samplezoomaccountpassword' ? 'selected' : '' }}>alpszoomaccount1@gmail.com</option>
+                                    @foreach ($accounts as $account)
+                                        <option value="{{ $account->id }}">
+                                            {{ $account->account_email }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -98,9 +101,12 @@
                                 <label for="company" class="fw-bold mb-2 required">Company</label>
                                 <select id="company" class="form-select form-select-solid">
                                     <option value="" disabled {{ !$training->company ? 'selected' : '' }}>Select Company</option>
-                                    <option value="PhilHealth" {{ $training->company == 'PhilHealth' ? 'selected' : '' }}>PhilHealth</option>
-                                    <option value="Pag-ibig" {{ $training->company == 'Pag-ibig' ? 'selected' : '' }}>Pag-ibig</option>
-                                    <option value="DOST" {{ $training->company == 'DOST' ? 'selected' : '' }}>DOST</option>
+                                    @foreach ($companies as $company)
+                                    <option value="{{ $company->id }}"
+                                        {{ $training->company && $company->id === $training->company->id ? 'selected' : '' }}>
+                                        {{ $company->company_name }}
+                                    </option>
+                                @endforeach
                                 </select>
                             </div>
                         </div>
@@ -113,12 +119,11 @@
                                 <label for="course" class="fw-bold mb-2 required">Course</label>
                                 <select id="public-course-select" class="form-select form-select-solid">
                                     <option value="" disabled selected>Select Course</option>
-                                    <option value="Advanced Excel Training"
-                                        {{ $training->course == 'Advanced Excel Training' ? 'selected' : '' }}>Advanced Excel Training</option>
-                                    <option value="Advanced MS Powerpoint Course"
-                                        {{ $training->course == 'Advanced MS Powerpoint Course' ? 'selected' : '' }}>Advanced MS Powerpoint Course</option>
-                                    <option value="Advanced Project Management Training Course"
-                                        {{ $training->course == 'Advanced Project Management Training Course' ? 'selected' : '' }}>Advanced Project Management Training Course</option>
+                                    @foreach ($courses as $course)
+                                    <option value="{{ $course->id }}">
+                                        {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -165,12 +170,15 @@
                             <label for="facilitator" class="fw-bold mb-2 required">Facilitator</label>
                             <select id="facilitator" class="form-select form-select-solid">
                                 <option disabled selected>Select Facilitator</option>
-                                <option value="">No Facilitator Yet</option>
+                                <option value="" {{ is_null(optional($training->facilitator)->id) ? 'selected' : '' }}>No Facilitator Yet</option>
                                 @foreach ($facilitators as $user)
-                                <option value="{{ $user->id }}"
-                                    {{ $user->id == $training->facilitator->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                                    <option value="{{ $user->id }}" {{ $user->id == optional($training->facilitator)->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
                                 @endforeach
                             </select>
+
+                            <div class="invalid-feedback">Required field</div>
 
                         </div>
                         <!-- Assistant -->
@@ -186,7 +194,7 @@
                                         <div data-repeater-item>
                                             <div class="form-group row align-items-center">
                                                 <div class="col-md-9">
-                                                    <input type="text" value="{{ $training->assistant_id }}" class="form-control form-control-solid mb-3 assistant" id="assistant" placeholder="Enter Assistant's Name" />
+                                                    <input type="text" value="{{ $training->assistant }}" class="form-control form-control-solid mb-3 assistant" id="assistant" placeholder="Enter Assistant's Name" />
                                                 </div>
                                                 <div class="col-md-3">
                                                     <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mb-3">
@@ -260,28 +268,28 @@
                     locationContainer.classList.add("d-none");
                 }
 
-            });
+                //Initally check and display the correct fields
+                if ("{{ $training->mode }}" === "virtual") {
+                    // Virtual: Show Email/Password, hide others
+                    credentialsContainer.classList.remove("d-none");
+                    locationContainer.classList.add("d-none");
+                    publicCourseContainer.classList.add("d-none");
+                    companyCourseContainer.classList.remove("d-none");
+                } else if ("{{ $training->mode }}" === "face-to-face") {
+                    // Face-to-Face: Show Location, hide Email/Password
+                    credentialsContainer.classList.add("d-none");
+                    locationContainer.classList.remove("d-none");
+                    publicCourseContainer.classList.add("d-none");
+                    companyCourseContainer.classList.remove("d-none");
+                } else if ("{{ $training->mode }}" === "public-course") {
+                    // Public Course: Show Public Course layout, hide Company/Course
+                    credentialsContainer.classList.remove("d-none");
+                    publicCourseContainer.classList.remove("d-none");
+                    companyCourseContainer.classList.add("d-none");
+                    locationContainer.classList.add("d-none");
+                }
 
-            //Initally check and display the correct fields
-            if ("{{ $training->mode }}" === "virtual") {
-                // Virtual: Show Email/Password, hide others
-                credentialsContainer.classList.remove("d-none");
-                locationContainer.classList.add("d-none");
-                publicCourseContainer.classList.add("d-none");
-                companyCourseContainer.classList.remove("d-none");
-            } else if ("{{ $training->mode }}" === "face-to-face") {
-                // Face-to-Face: Show Location, hide Email/Password
-                credentialsContainer.classList.add("d-none");
-                locationContainer.classList.remove("d-none");
-                publicCourseContainer.classList.add("d-none");
-                companyCourseContainer.classList.remove("d-none");
-            } else if ("{{ $training->mode }}" === "public-course") {
-                // Public Course: Show Public Course layout, hide Company/Course
-                credentialsContainer.classList.remove("d-none");
-                publicCourseContainer.classList.remove("d-none");
-                companyCourseContainer.classList.add("d-none");
-                locationContainer.classList.add("d-none");
-            }
+            });
 
         function formatDate(date) {
             const day = date.getDate().toString().padStart(2, '0'); // Add leading zero for day
