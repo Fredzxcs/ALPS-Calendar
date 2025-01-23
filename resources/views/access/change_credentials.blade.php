@@ -21,7 +21,6 @@
                                     <label for="username" class="form-label fw-bold required">Assign Username</label>
                                     <input type="text" id="username" class="form-control form-control-solid"
                                         placeholder="Enter Username" required>
-                                    <div class="invalid-feedback">Required field</div>
                                 </div>
                                 <!-- Assign Password -->
                                 <!-- <div class="col-md-6">
@@ -40,7 +39,6 @@
                                             id="password"
                                             name="password"
                                         />
-                                        <div class="invalid-feedback">Required field</div>
                                         <!-- Visibility toggle -->
                                         <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2 togglePassword"
                                             data-kt-password-meter-control="visibility" 
@@ -52,8 +50,6 @@
                                     </div>
                                 </div>
 
-
-
                             </div>
                             <!-- Assign Color -->
                             <div class="row mb-4">
@@ -61,7 +57,6 @@
                                     <div id="assignColorSection" class="mt-5">
                                         <label for="color" class="form-label fw-bold required">Assign Color</label>
                                         <input type="color" id="color" class="form-control form-control-solid w-100px h-50px" />
-                                        <div class="invalid-feedback">Required field</div>
                                     </div>
                                 </div>
                             </div>

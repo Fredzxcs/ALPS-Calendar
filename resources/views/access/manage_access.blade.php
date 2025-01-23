@@ -370,7 +370,7 @@
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <a id="edit-user-btn" class="btn btn-primary me-2">
+                        <a href="{{ route('edit_user', ['id' => $user]) }}" id="edit-user-btn" class="btn btn-primary me-2">
                             <i class="bi bi-pencil-fill me-2"></i>EDIT
                         </a>
                         <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
