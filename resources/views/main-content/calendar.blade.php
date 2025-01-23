@@ -361,24 +361,23 @@
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="modal-footer justify-content-end">
+                <div class="modal-footer w-100">
 
-                     <!-- Delete -->
-                    <div>
-                        <button type="button" class="btn btn-danger deleteBtn">
-                            <i class="bi bi-trash me-2"></i>DELETE
-                        </button>
-                    </div>
+                    <!-- Delete Button (Left) -->
+                    <button type="button" class="btn btn-danger deleteBtn me-auto">
+                        <i class="bi bi-trash me-2"></i>DELETE
+                    </button>
 
+                    <!-- Edit and Close Buttons (Right) -->
                     @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
-                        <a href="#" id="edit-training-link" data-base-url="{{ url('calendar/edit_training') }}/"  class="btn btn-primary me-2">
+                        <a href="#" id="edit-training-link" data-base-url="{{ url('calendar/edit_training') }}/" class="btn btn-primary me-2">
                             <i class="bi bi-pencil-fill me-2"></i>EDIT
                         </a>
                     @endif
                     <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
-                <div class="modal-footer d-flex justify-content-between">
 
                 </div>
+
             </div>
         </div>
     </div>
