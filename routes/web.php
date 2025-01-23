@@ -113,7 +113,7 @@ Route::prefix('/config/accounts')->group(function () {
     Route::delete('/delete/{id}',[ConfigureAccountController::Class, 'deleteAccount'])
         ->middleware(['auth', 'user:admin, coordinator'])
         ->name('delete_account');
-}); 
+});
 
 // config - companies
 Route::prefix('/config/companies')->group(function () {
@@ -123,4 +123,8 @@ Route::prefix('/config/companies')->group(function () {
     Route::patch('/update/{id}',[ConfigureCompanyController::Class, 'editCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('edit_company');
     Route::delete('/delete/{id}',[ConfigureCompanyController::Class, 'deleteCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('delete_company');
 });
+
+// manage access - change credentials
+Route::get('/access/change_credentials', function () {
+    return view('access.change_credentials');})->name('change_credentials');
 

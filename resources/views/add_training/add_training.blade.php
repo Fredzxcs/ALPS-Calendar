@@ -65,7 +65,11 @@
                                 <label for="credentials" class="fw-bold mb-2 required">Account</label>
                                 <select id="credentials" class="form-select form-select-solid">
                                     <option value="" disabled selected>Select Host Email Account</option>
-                                    <option value="samplezoomaccountpassword">alpszoomaccount1@gmail.com</option>
+                                    @foreach ($accounts as $account)
+                                        <option value="{{ $account->id }}">
+                                            {{ $account->account_email }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
 

@@ -59,8 +59,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
 //Validation
 document.addEventListener('DOMContentLoaded', () => {
-    //Validation for Add Company form
-    document.getElementById('modal_add_company_form').addEventListener('submit', (event) => {
+    const form = document.getElementById('modal_add_company_form');
+    const companyNameInput = document.getElementById('add_company_name');
+
+    // Function to add the Bootstrap 'border-danger' class
+    function setInvalid(input) {
+        input.classList.add('border-danger');
+    }
+
+    // Function to remove the Bootstrap 'border-danger' class
+    function setValid(input) {
+        input.classList.remove('border-danger');
+    }
+
+    // Form submission event
+    form.addEventListener('submit', (event) => {
         event.preventDefault();
         
         const companyName = document.getElementById('add_company_name');
@@ -73,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             companyName.classList.add('is-invalid');
             return;
         } else {
-            companyName.classList.remove('is-invalid');
+            setValid(companyNameInput);
         }
 
         Swal.fire({
@@ -183,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
             companyName.classList.add('is-invalid');
             return;
         } else {
-            companyName.classList.remove('is-invalid');
+            setValid(companyNameInput);
         }
 
         // Confirmation dialog
@@ -255,11 +268,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('#add_company_name, #edit_company_name').forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
-                input.classList.remove('is-invalid');
+                setValid(input);
             }
         });
     });
 });
+
 
 //Delete company button
 document.querySelectorAll('.deleteBtn').forEach(button => {

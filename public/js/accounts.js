@@ -1,3 +1,4 @@
+
 // Search Filter
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
@@ -373,9 +374,80 @@ document.addEventListener('DOMContentLoaded', () => {
                         submitButton.disabled = false;
                     }
                 });
+//Validation for add
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('modal_add_account_form');
+    const emailInput = document.getElementById('add_account_email');
+    const passwordInput = document.getElementById('add_account_password');
+
+    // Function to add the Bootstrap 'border-danger' class
+    function setInvalid(input) {
+        input.classList.add('border-danger');
+    }
+
+    // Function to remove the Bootstrap 'border-danger' class
+    function setValid(input) {
+        input.classList.remove('border-danger');
+    }
+
+    // Form submission event
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        let isValid = true;
+
+        // Validate email
+        if (!emailInput.value.trim()) {
+            setInvalid(emailInput);
+            isValid = false;
+        } else {
+            setValid(emailInput);
+        }
+
+        // Validate password
+        if (!passwordInput.value.trim()) {
+            setInvalid(passwordInput);
+            isValid = false;
+        } else {
+            setValid(passwordInput);
+        }
+
+        // If all fields are valid
+        if (isValid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to add this account.",
+                icon: 'warning',
+                buttonsStyling: false,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Add Account',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire(
+                        'Added!',
+                        'The account has been added.',
+                        'success'
+                    );
+                    // TODO: Add logic to perform add acc here
+                }
+            });
+        }
+    });
+
+    // Remove invalid border on input change
+    [emailInput, passwordInput].forEach(input => {
+        input.addEventListener('input', () => {
+            if (input.value.trim()) {
+                setValid(input);
             }
         });
     });
+});
 
     // Validation for Edit Account form
     document.getElementById('modal_edit_account_form').addEventListener('submit', (event) => {

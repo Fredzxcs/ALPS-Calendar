@@ -114,8 +114,7 @@ $(document).ready(function (e){
         let platform = $('#platform').val();
 
         //account
-        let credentials_email = $('#credentials').find('option:selected').text();
-        let credentials_password = $('#credentials').find('option:selected').val();
+        let account_id = $('#credentials').find('option:selected').val();
 
         //company
         let company = $('#company').find('option:selected').val();
@@ -131,8 +130,7 @@ $(document).ready(function (e){
         formData.append('facilitator_id', facilitator_id);
         formData.append('company_id', company);
         formData.append('assistant', assistant_id);
-        formData.append('credentials_email', credentials_email);
-        formData.append('credentials_password', credentials_password);
+        formData.append('account_id', account_id);
         formData.append('mode', mode);
 
         formData.append('from_date', from_date);
