@@ -49,6 +49,9 @@ Route::prefix('calendar')->group(function () {
         ->middleware(['auth', 'user:admin,coordinator'])
         ->name('add_training.put');
 
+    Route::get('/add_unavailability', function () {
+        return view('unavailability.add_unavailability');})->name('add_unavailability');
+
 
 });
 
