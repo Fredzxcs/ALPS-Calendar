@@ -113,36 +113,78 @@
     </div> --}}
         <!-- Right Side: Calendar -->
         <div class="card shadow-sm" style="flex: 2;">
-            <div class="card-header d-flex justify-content-end align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center">
+
+                <!-- Filter Button -->
+                <button class="btn btn-lg rounded-3 fw-boldest d-flex align-items-center btn-hover-rise text-white"
+                    style="background-color: #052a43;"
+                    data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
+                    <i class="bi bi-funnel me-1 text-white"></i> FILTER
+                </button>
+
+                <!-- Filter Menu -->
+                <div class="menu menu-sub menu-sub-dropdown w-250px w-md-300px" data-kt-menu="true">
+                    <!-- Menu Header -->
+                    <div class="px-7 py-5">
+                        <div class="fs-5 text-dark fw-bolder">Filter Options</div>
+                    </div>
+
+                    <!-- Separator -->
+                    <div class="separator border-gray-200"></div>
+
+                    <!-- Filter Form -->
+                    <div class="px-7 py-5">
+                        <form id="calendarFilterForm">
+                            <!-- Show Dropdown -->
+                            <div class="mb-10">
+                                <label class="form-label fw-bold">Show in Calendar:</label>
+                                <select class="form-select form-select-solid" data-placeholder="Select option"
+                                    data-allow-clear="true" id="calendarFilterSelect">
+                                    <option value="training" selected>Trainings</option>
+                                    <option value="unavailability">Unavailability</option>
+                                </select>
+                            </div>
+                        </form>
+
+                        <!-- Actions -->
+                        <div class="d-flex justify-content-end">
+                            <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="calendarFilterReset"
+                                data-kt-menu-dismiss="true">RESET</button>
+                            <button type="submit" class="btn btn-sm btn-primary" id="calendarFilterApply"
+                                data-kt-menu-dismiss="true">APPLY</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Filter Menu -->
 
 
                 @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
 
-                    <!--begin::Add Button-->
-                    <button type="button" class="btn btn-primary btn-lg m-3 btn-hover-rise dropdown-toggle" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
-                        <span class="p-5 fs-4">Add</span>
+                     <!--begin::Add Button-->
+                    <button type="button" class="btn btn-primary btn-lg rounded-3 fw-boldest btn-hover-rise text-white dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="p-5">ADD</span>
                     </button>
                     <!--end::Add Button-->
 
                 @endif
-                <!--begin::Links-->
-                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" data-kt-menu="true">
+                <ul class="dropdown-menu px-2" aria-labelledby="dropdownMenuButton">
                     <!--begin::Link item-->
-                    <div class="menu-item px-3">
-                        <a href="{{ route('add_training') }}" class="menu-link px-3">
-                            <i class="bi bi-pencil-square text-primary fs-6 me-2"></i>Training
+                    <li class="py-2">
+                        <a href="{{ route('add_training') }}" class="dropdown-item">
+                            <i class="bi bi-pencil-square text-primary fs-6 me-2"></i>
+                            <span class="text-gray-700 fw-bold">Training</span>
                         </a>
-                    </div>
+                    </li>
                     <!--end::Link item-->
                     <!--begin::Link item-->
-                    <div class="menu-item px-3">
-                        <a href="{{ route('add_unavailability') }}" class="menu-link px-3" id="event_view">
-                            <i class="bi bi-calendar-event text-info fs-6 me-2"></i>Unavailability
+                    <li>
+                        <a href="{{ route('add_unavailability') }}" class="dropdown-item" id="event_view">
+                            <i class="bi bi-calendar-event text-info fs-6 me-2"></i>
+                            <span class="text-gray-700 fw-bold">Unavailability</span>
                         </a>
-                    </div>
+                    </li>
                     <!--end::Link item-->
-                </div>
-                <!--end::Links-->
+                </ul>
             </div>
             <div class="card" style="height: auto;">
                 <div class="card-body">
