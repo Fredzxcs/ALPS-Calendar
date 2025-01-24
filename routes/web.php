@@ -8,6 +8,7 @@ use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\ConfigureCoursesController;
 use App\Http\Controllers\ConfigureCompanyController;
 use App\Http\Controllers\ConfigureAccountController;
+use App\Http\Controllers\UnavailabilityController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -49,8 +50,13 @@ Route::prefix('calendar')->group(function () {
         ->middleware(['auth', 'user:admin,coordinator'])
         ->name('add_training.put');
 
-    Route::get('/add_unavailability', function () {
-        return view('unavailability.add_unavailability');})->name('add_unavailability');
+    Route::get('/add_unavailability', [UnavailabilityController::class, 'create'])
+    ->middleware(['auth', 'user:admin,coordinator,facilitator'])
+    ->name('add_unavailability');
+
+    Route::post('/add_unavailability/store', [UnavailabilityController::class, 'store'])
+    ->middleware(['auth', 'user:admin,coordinator,facilitator'])
+    ->name('add_unavailability.store');
 
 
 });
@@ -70,6 +76,9 @@ Route::prefix('access')->group(function (){
     Route::get('/edit_user/{id}', [ManageAccessController::class, 'edit'])
         ->middleware(['auth', 'user:admin'])
         ->name('edit_user');
+    Route::delete('/delete_user/{id}', [ManageAccessController::class, 'delete_user'])
+        ->middleware(['auth', 'user:admin'])
+        ->name('delete_user');
 });
 
 // Archived Accounts
