@@ -62,10 +62,12 @@ document.querySelectorAll('.deactBtn').forEach(button => {
     });
 });
 
-//Delete button
+// Delete button
 document.querySelectorAll('.deleteBtn').forEach(button => {
     button.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default action (e.g., form submission)
+        event.preventDefault(); // Prevent default action (e.g., link navigation)
+
+        const userId = button.getAttribute('data-id'); // Get the user ID from data-id
 
         Swal.fire({
             title: 'Are you sure?',
@@ -76,23 +78,49 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
             confirmButtonText: 'Yes, Delete',
             cancelButtonText: 'Cancel',
             customClass: {
-            confirmButton: "btn btn-danger",
-            cancelButton: 'btn btn-secondary'
-        }
+                confirmButton: "btn btn-danger",
+                cancelButton: 'btn btn-secondary'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
-                // Proceed with the delete
-                Swal.fire(
-                    'Deleted!',
-                    'The user has been deleted.',
-                    'success'
-                );
-
-                // TODO: Add logic to perform delete
+                // Send AJAX request to delete the user
+                fetch(`/access/delete_user/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Failed to delete user');
+                    }
+                })
+                .then(data => {
+                    Swal.fire(
+                        'Deleted!',
+                        data.message || 'The user has been deleted.',
+                        'success'
+                    );
+                    // Optionally, remove the user's row from the table or update the UI
+                    const userRow = document.querySelector(`[row-id="${userId}"]`);
+                        if (userRow) userRow.remove();
+                })
+                .catch(error => {
+                    Swal.fire(
+                        'Error!',
+                        'An error occurred while deleting the user. Please try again.',
+                        'error'
+                    );
+                    console.error(error);
+                });
             }
         });
     });
 });
+
 
 //Pagination
 document.addEventListener("DOMContentLoaded", function () {
