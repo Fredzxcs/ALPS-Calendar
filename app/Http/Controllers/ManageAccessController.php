@@ -35,6 +35,19 @@ class ManageAccessController extends Controller
         ], 200);
     }
 
+    public function delete_user($id)
+    {
+        $user = User::find($id);
+    
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'User not found'], 404);
+        }
+    
+        $user->delete();
+    
+        return response()->json(['success' => true, 'message' => 'User deleted successfully']);
+    }    
+
     public function edit(Request $request,int $id)
     {
         return view('access.edit_user');
