@@ -58,7 +58,8 @@ Route::prefix('calendar')->group(function () {
     ->middleware(['auth', 'user:admin,coordinator,facilitator'])
     ->name('add_unavailability.store');
 
-
+    Route::get('/api/get/unavailability', [UnavailabilityController::class, 'getUnavailabilities'])
+    ->name('get_unavailability');
 });
 
 Route::prefix('access')->group(function (){
