@@ -94,11 +94,13 @@
                                 <select id="company" class="form-select form-select-solid">
                                     <option value="" disabled selected>Select Company</option>
                                     @foreach ($companies as $company)
-                                    <option value="{{ $company->id }}">
-                                        {{ $company->company_name }}
-                                    </option>
+                                        <option value="{{ $company->id }}">
+                                            {{ $company->company_name }}
+                                        </option>
                                     @endforeach
+                                    <option value="other">Other</option>
                                 </select>
+                                <input type="text" id="enter-company" class="form-control form-control-solid d-none" placeholder="Enter Company">
                             </div>
                         </div>
 
