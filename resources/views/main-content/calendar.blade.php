@@ -427,7 +427,7 @@
 
     @push('scripts')
 
-        @if (Auth::check() && Auth::user()->usertype, ['admin', 'coordinator'])
+        @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
             <script src="{{ asset('js/calendar.js') }}"></script>
         @else
             <script src="{{ asset('js/unavailability_calendar.js') }}"></script>

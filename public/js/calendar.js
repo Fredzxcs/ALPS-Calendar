@@ -224,6 +224,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 id: info.event.id || '',
             };
 
+            const $modalElement = $('#kt_modal_view_training');
+            $modalElement.find('#modal-title').text('VIEW TRAINING');
+
+            const baseUrl = $('#edit-training-link').data('base-url');
+            const editUrl = `${baseUrl}${eventData.id}`;
+            $('#edit-training-link').attr('href', editUrl);
+
+            const mode = eventData.modeType;
+            $modalElement.find('#modal-mode-of-training').text(mode.toUpperCase());
+
+            $modalElement.find('#modal-location').text(eventData.location);
+
+            const accountEmail = eventData.account.account_email;
+            $modalElement.find('#modal-credentials').text(accountEmail || 'N/A');
+
+            let inPersonText = mode === 'virtual' ? 'No' : 'Yes';
+            if (mode === 'public-course' && accountEmail) {
+                inPersonText = 'No';
+            }
+            $modalElement.find('#modal-in-person').text(inPersonText);
+
+            $modalElement.find('#modal-company').text(eventData.company);
+            $modalElement.find('#modal-course').text(eventData.eventName);
+            $modalElement.find('#modal-facilitator').text(eventData.facilitator);
+            $modalElement.find('#modal-assistant').text(eventData.assistant);
+
+            const formattedStartDate = eventData.startDate ? moment(eventData.startDate).format('MMM DD, YYYY') : 'N/A';
+            const formattedEndDate = eventData.endDate ? moment(eventData.endDate).format('MMM DD, YYYY') : 'N/A';
+            $modalElement.find('#modal-date').text(`${formattedStartDate} to ${formattedEndDate}`);
+
+            const formattedStartTime = eventData.startDate ? moment(eventData.startDate).format('h:mm A') : 'N/A';
+            const formattedEndTime = eventData.endDate ? moment(eventData.endDate).format('h:mm A') : 'N/A';
+            $modalElement.find('#modal-time').text(`${formattedStartTime} to ${formattedEndTime}`);
+
             initPopovers(info.el, eventData);
         });
 
