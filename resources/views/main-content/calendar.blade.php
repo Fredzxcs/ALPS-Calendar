@@ -426,6 +426,11 @@
 @endsection
 
     @push('scripts')
-        <script src="{{ asset('js/calendar.js') }}"></script>
-        <script src="{{ asset('js/unavailability_calendar.js') }}"></script>
+
+        @if (Auth::check() && Auth::user()->usertype, ['admin', 'coordinator'])
+            <script src="{{ asset('js/calendar.js') }}"></script>
+        @else
+            <script src="{{ asset('js/unavailability_calendar.js') }}"></script>
+        @endif
+
     @endpush
