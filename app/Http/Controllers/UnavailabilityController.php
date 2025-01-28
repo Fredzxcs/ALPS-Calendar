@@ -74,6 +74,26 @@ class UnavailabilityController extends Controller //TODO: Update return views
     }
 
 
+    public function getUnavailabilities(Request $request)
+    {
+        // Include the relationship to users
+        $unavailabilities = Unavailability::with('user')->get();
+
+        if ($unavailabilities->isNotEmpty()) {
+            return response()->json([
+                'success' => true,
+                'data' => $unavailabilities
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'No unavailabilities found'
+            ], 404);
+        }
+    }
+
+
+
     /**
      * Display the specified resource.
      */

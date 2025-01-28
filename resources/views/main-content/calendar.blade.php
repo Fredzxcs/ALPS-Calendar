@@ -111,8 +111,8 @@
             </div>
         </div>
     </div> --}}
-         <!-- Right Side: Calendar -->
-         <div class="card shadow-sm" style="flex: 2;">
+        <!-- Right Side: Calendar -->
+        <div class="card shadow-sm" style="flex: 2;">
             <div class="card-header d-flex justify-content-between align-items-center">
 
                 <!-- Filter Button -->
@@ -138,9 +138,9 @@
                             <!-- Show Dropdown -->
                             <div class="mb-10">
                                 <label class="form-label fw-bold">Show in Calendar:</label>
-                                <select class="form-select form-select-solid" data-placeholder="Select option"
+                                <select id="filters" class="form-select form-select-solid" data-placeholder="Select option"
                                     data-allow-clear="true" id="calendarFilterSelect">
-                                    <option value="training" selected>Trainings</option>
+                                    <option value="trainings" selected>Trainings</option>
                                     <option value="unavailability">Unavailability</option>
                                 </select>
                             </div>
@@ -150,7 +150,7 @@
                         <div class="d-flex justify-content-end">
                             <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="calendarFilterReset"
                                 data-kt-menu-dismiss="true">RESET</button>
-                            <button type="submit" class="btn btn-sm btn-primary" id="calendarFilterApply"
+                            <button id="applyFilter" type="button" class="btn btn-sm btn-primary" id="calendarFilterApply"
                                 data-kt-menu-dismiss="true">APPLY</button>
                         </div>
                     </div>
@@ -511,6 +511,11 @@
 @endsection
 
     @push('scripts')
-        <script src="{{ asset('js/calendar.js') }}"></script>
-        <script src="{{ asset('js/unavailability_calendar.js') }}"></script>
+
+        @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+            <script src="{{ asset('js/calendar.js') }}"></script>
+        @else
+            <script src="{{ asset('js/unavailability_calendar.js') }}"></script>
+        @endif
+
     @endpush
