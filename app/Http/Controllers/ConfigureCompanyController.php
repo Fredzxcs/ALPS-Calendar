@@ -37,8 +37,8 @@ class ConfigureCompanyController extends Controller
     public function addCompany(Request $request)
     {
         $validated = $request->validate([
-            'company_name' => 'required|unique:company|max:255', 
-            'contact_person'=> 'nullable|max:255', 
+            'company_name' => 'required|unique:company|max:255',
+            'contact_person'=> 'nullable|max:255',
             'contact_number'=> 'nullable|unique:company|max:255',
             'email' => 'nullable|unique:company|max:255',
         ]);
@@ -52,6 +52,7 @@ class ConfigureCompanyController extends Controller
 
         return response()->json([
             'success' => true,
+            'company' => $company,
             'message' => 'Company added successfully!'
         ]);
     }
@@ -61,30 +62,30 @@ class ConfigureCompanyController extends Controller
         // Define validation rules
         $rules = [
             'company_name'   => "required|unique:company,company_name,{$id}|max:255", // Optional, but required if present
-            'contact_person' => 'nullable|max:255', 
-            'contact_number' => "nullable|unique:company,contact_number,{$id}|max:255", 
-            'email'          => "nullable|unique:company,email,{$id}|max:255", 
+            'contact_person' => 'nullable|max:255',
+            'contact_number' => "nullable|unique:company,contact_number,{$id}|max:255",
+            'email'          => "nullable|unique:company,email,{$id}|max:255",
         ];
-    
+
         // Validate incoming data
         $validated = $request->validate($rules);
-    
+
         // Find the company by ID
         $company = Company::findOrFail($id);
-    
+
         // Update only the fields provided in the request
         $company->fill($validated);
-    
+
         // Save the updated company
         $company->save();
-    
+
         // Return a success response
         return response()->json([
             'success' => true,
             'message' => 'Company updated successfully!',
         ]);
     }
-    
+
     public function deleteCompany($id)
     {
         // Find the company by ID

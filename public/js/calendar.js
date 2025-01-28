@@ -180,11 +180,15 @@ document.addEventListener('DOMContentLoaded', function () {
                     loaderWrapper.classList.add('d-none');
                     $('#calendar').removeClass('blur-effect');
                 } else {
+                    clearCalendarEvents(calendar);
+                    bindEventListeners();
                     console.error('Failed to load events:', response.message);
                     loaderWrapper.classList.add('d-none');
                 }
             },
             error: function (xhr, status, error) {
+                clearCalendarEvents(calendar);
+                bindEventListeners();
                 console.error('Error fetching events:', error);
                 loaderWrapper.classList.add('d-none');
             },
