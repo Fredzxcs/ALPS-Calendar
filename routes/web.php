@@ -52,6 +52,7 @@ Route::prefix('calendar')->group(function () {
 
 });
 
+// Manage Access
 Route::prefix('access')->group(function (){
     Route::get('/', [ManageAccessController::class, 'index'])
         ->middleware(['auth', 'user:admin'])

@@ -121,7 +121,6 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
     });
 });
 
-
 //Pagination
 document.addEventListener("DOMContentLoaded", function () {
     const rowsPerPage = 5; // Number of rows per page

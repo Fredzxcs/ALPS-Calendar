@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 $('#edit_company_contact_number').val(response.contact_number);
                 $('#edit_company_email').val(response.email);
     
-                // Optionally, store the company ID in the modal form for later use (for saving)
+                // Store company ID in the modal form (for saving)
                 $('#modal_edit_company_form').data('id', companyId);
     
                 // Open the modal
