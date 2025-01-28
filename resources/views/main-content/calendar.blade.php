@@ -423,6 +423,91 @@
             </div>
         </div>
     </div>
+ <!--begin::Modal - View Unavailability-->
+ <div class="modal fade" id="kt_modal_view_unavailability" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Modal header-->
+            <div class="modal-header border-0 justify-content-between align-items-center">
+                <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="modal-title">VIEW UNAVAILABILITY</h1>
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                    <span class="svg-icon svg-icon-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black" />
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                </div>
+                <!--end::Close-->
+            </div>
+            <hr class="my-2 opacity-10 mb-3 mt-1">
+            <!--end::Modal header-->
+            <!--begin::Modal body-->
+            <div class="modal-body py-10 px-lg-17">
+                <!-- Data Rows -->
+                <!-- Course -->
+                <div class="row mb-5 justify-content-between align-items-center text-center">
+                    <h1 class="fs-1 fw-boldest text-primary" id="modal-course">Course</h1>
+                    <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span>
+                    <br>
+                    from <span id="modal-time" class="fw-bold"></span></p>
+                </div>
+                <!-- Date -->
+                <div class="row mb-5 justify-content-between align-items-center">
+                    <div class="col-5">
+                        <div class="fv-row">
+                            <label class="fs-6 fw-bold mb-2">
+                                <i class="bi bi-building fs-3 me-5" style="color: #7c0101;"></i>Date Unavailable
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="fv-row d-flex justify-content-end align-items-center">
+                            <p class="lead fs-6" id="modal-date"></p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Purpose -->
+                <div class="row mb-5 justify-content-between align-items-center">
+                    <div class="col-5">
+                        <div class="fv-row">
+                            <label class="fs-6 fw-bold mb-2">
+                                <i class="bi bi-person-workspace fs-3 me-5" style="color: #7c0101;"></i>Purpose
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="fv-row d-flex justify-content-end align-items-center">
+                            <p class="lead fs-6" id="modal-purpose">Team Building</p>
+                        </div>
+                    </div>
+                </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer w-100">
+
+                <!-- Delete Button (Left) -->
+                <button type="button" class="btn btn-danger deleteBtn me-auto">
+                    <i class="bi bi-trash me-2"></i>DELETE
+                </button>
+
+                <!-- Edit and Close Buttons (Right) -->
+                @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+                    <a href="#" id="edit-unavailability-link" data-base-url="{{ url('calendar/edit_unvailability') }}/" class="btn btn-primary me-2">
+                        <i class="bi bi-pencil-fill me-2"></i>EDIT
+                    </a>
+                @endif
+                <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 @endsection
 
     @push('scripts')

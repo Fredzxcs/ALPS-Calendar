@@ -194,3 +194,26 @@ $(document).ready(function (e){
         });
     });
 });
+
+// Add a company input field
+document.addEventListener("DOMContentLoaded", function () {
+    const companyDropdown = document.getElementById("company");
+    const companyInput = document.getElementById("enter-company");
+
+    companyDropdown.addEventListener("change", function () {
+        if (companyDropdown.value === "other") {
+            // Show input field, hide dropdown
+            companyDropdown.classList.add("d-none");
+            companyInput.classList.remove("d-none");
+            companyInput.focus();
+        }
+    });
+
+    companyInput.addEventListener("blur", function () {
+        if (companyInput.value.trim() === "") {
+            companyInput.classList.add("d-none");
+            companyDropdown.classList.remove("d-none");
+            companyDropdown.value = "";
+        }
+    });
+});
