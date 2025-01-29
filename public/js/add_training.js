@@ -71,16 +71,15 @@ const fp = flatpickr("#date-range", {
     }
 });
 
-$(document).ready(function (e){
-
+$(document).ready(function (e) {
     $('#add_training_submit').click(function (e) {
         e.preventDefault();
 
         let mode = $('input[name="mode"]:checked').val();
-        let facilitator_id = $('#facilitator').find('option:selected').val();
+        let facilitator_id = $('#facilitator').find('option:selected').val(); // Get facilitator ID
 
         let assistant_id = '';
-        $('div[data-repeater-list="asst_repeat"] .assistant').each(function() {
+        $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
             const value = $(this).val().trim();
             if (value) {
                 if (assistant_id.length > 0) {
@@ -100,32 +99,35 @@ $(document).ready(function (e){
         let location = $('#location').val();
         let company = $('#company').find('option:selected').val();
 
-        // Step 1: Check facilitator availability first
-        checkAvailability(facilitator_id, from_date, to_date, function(isAvailable) {
-            if (isAvailable) {
-                // Proceed normally
-                handleCompanyAndStoreTraining(company);
-            } else {
-                // Facilitator is unavailable, show confirmation modal
-                Swal.fire({
-                    title: 'Facilitator Unavailable',
-                    text: 'The selected facilitator is unavailable on the selected date(s). Do you want to proceed anyway?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Proceed',
-                    cancelButtonText: 'Cancel',
-                    customClass: {
-                        confirmButton: "btn btn-primary",
-                        cancelButton: 'btn btn-secondary'
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // Proceed with training creation
-                        handleCompanyAndStoreTraining(company);
-                    }
-                });
-            }
-        });
+        // Step 1: Check if facilitator is provided
+        if (!facilitator_id || facilitator_id === "") {
+            // Skip checking availability and proceed
+            handleCompanyAndStoreTraining(company);
+        } else {
+            // Check facilitator availability
+            checkAvailability(facilitator_id, from_date, to_date, function (isAvailable) {
+                if (isAvailable) {
+                    handleCompanyAndStoreTraining(company);
+                } else {
+                    Swal.fire({
+                        title: 'Facilitator Unavailable',
+                        text: 'The selected facilitator is unavailable on the selected date(s). Do you want to proceed anyway?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Proceed',
+                        cancelButtonText: 'Cancel',
+                        customClass: {
+                            confirmButton: "btn btn-primary",
+                            cancelButton: 'btn btn-secondary'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            handleCompanyAndStoreTraining(company);
+                        }
+                    });
+                }
+            });
+        }
     });
 
     // Step 2: Function to check if a facilitator is available
@@ -141,11 +143,11 @@ $(document).ready(function (e){
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            success: function(response) {
+            success: function (response) {
                 console.log('Availability Response:', response);
                 callback(response.available); // Pass result to callback
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.error('Error checking availability:', xhr.responseText);
                 Swal.fire('Error!', 'Could not check facilitator availability.', 'error');
                 callback(false); // Assume unavailable if error occurs
@@ -171,7 +173,7 @@ $(document).ready(function (e){
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         console.log('Company Created:', response.company.id);
                         createTraining(response.company.id);
@@ -179,7 +181,7 @@ $(document).ready(function (e){
                         Swal.fire('Error!', 'Failed to create company.', 'error');
                     }
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error('AJAX Error:', xhr.responseText);
                     Swal.fire('Error!', 'An unexpected error occurred.', 'error');
                 }
@@ -195,9 +197,9 @@ $(document).ready(function (e){
         formData.append('course_id', $('#course').find('option:selected').val());
         formData.append('platform', $('#platform').val());
         formData.append('location', $('#location').val());
-        formData.append('facilitator_id', $('#facilitator').find('option:selected').val());
+        formData.append('facilitator_id', $('#facilitator').find('option:selected').val() || ''); // Allow empty facilitator
         formData.append('company_id', companyId);
-        formData.append('assistant', $('div[data-repeater-list="asst_repeat"] .assistant').map(function() { return $(this).val().trim(); }).get().join(', '));
+        formData.append('assistant', $('div[data-repeater-list="asst_repeat"] .assistant').map(function () { return $(this).val().trim(); }).get().join(', '));
         formData.append('account_id', $('#credentials').find('option:selected').val());
         formData.append('mode', $('input[name="mode"]:checked').val());
         formData.append('from_date', startDateFormatted);
@@ -215,7 +217,7 @@ $(document).ready(function (e){
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.message === '200') {
                     Swal.fire({
                         title: 'Success!',
@@ -238,7 +240,7 @@ $(document).ready(function (e){
                     });
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 console.log('AJAX Error Details:', xhr.responseText);
                 Swal.fire({
                     title: 'Error!',
@@ -249,9 +251,8 @@ $(document).ready(function (e){
             }
         });
     }
-
-
 });
+
 
 // Add a company input field
 document.addEventListener("DOMContentLoaded", function () {

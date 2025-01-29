@@ -64,6 +64,9 @@ Route::prefix('calendar')->group(function () {
 
     Route::get('/api/get/unavailability', [UnavailabilityController::class, 'getUnavailabilities'])
     ->name('get_unavailability');
+
+    Route::post('/api/check-unavailability/{id}', [UnavailabilityController::class, 'checkUnavailability'])
+    ->name('check_unavailability');
 });
 
 Route::prefix('access')->group(function (){
