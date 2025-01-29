@@ -22,8 +22,8 @@ jobs:
         run: npm ci
       - name: Setup Project
         run: |
-          php artisan config:clear
-          php artisan cache:clear
+          php artisan config:clear || true
+          php artisan cache:clear || true
           php artisan key:generate
           npm run build
       - name: Directory Permissions
