@@ -1,0 +1,62 @@
+Blade File Modal
+
+    <div class="modal fade" id="modal_add_course" tabindex="-1" aria-hidden="true">
+        <!--begin::Modal dialog-->
+        <div class="modal-dialog modal-dialog-centered mw-650px">
+            <!--begin::Modal content-->
+            <div class="modal-content">
+                <!--begin::Form-->
+                <form class="form" id="modal_add_course_form">
+
+                    <input class="" type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                    <!--begin::Modal header-->
+                    <div class="modal-header">
+                        <h2 class="fw-boldest" data-kt-calendar="title" style="color: #7c0101;">ADD COURSE</h2>
+                        <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
+                            <span class="svg-icon svg-icon-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                    <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black" />
+                                    <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black" />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+                    <!--end::Modal header-->
+
+                    
+                    <!--begin::Modal body-->
+                    <div class="modal-body py-10 px-lg-17">
+                        <div class="row mb-5">
+                            <label for="course_name" class="form-label fw-bold required">Course Name</label>
+                            <input type="text" class="form-control form-control-solid" id="add_course_name" placeholder="Enter Course Name">
+                            <div class="invalid-feedback">Required field</div>
+                        </div>
+
+                        <div class="row mb-5">
+                            <label for="course_code" class="form-label fw-bold">Course Code</label>
+                            <input type="text" class="form-control form-control-solid" id="add_course_code" placeholder="Enter Course Code (Optional)">
+                        </div>
+                    </div>
+                    <!--end::Modal body-->
+                    <!--begin::Modal footer-->
+                    
+                    <!-- DOM element to store the route URL -->
+                    <div id="route-config" data-url="{{ route('add_course') }}"></div>
+                    
+                    <div class="modal-footer justify-content-end">
+                        <!--begin::Button-->
+                        <button type="submit" class="btn btn-success me-2 addBtn" id="add_course_submit">
+                            SAVE
+                        </button>
+                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">
+                            CANCEL
+                        </button>
+                        <!--end::Button-->
+                    </div>
+                    <!--end::Modal footer-->
+                </form>
+                <!--end::Form-->
+            </div>
+        </div>
+    </div>
