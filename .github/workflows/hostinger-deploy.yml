@@ -53,4 +53,4 @@ jobs:
            }}/public/build/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST
            }}:~/domains/alpscalendar.com/public/build
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
