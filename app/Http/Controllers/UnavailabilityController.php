@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Unavailability;
+use App\Models\Training;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -71,6 +72,51 @@ class UnavailabilityController extends Controller //TODO: Update return views
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+
+    public function getUnavailabilities(Request $request)
+    {
+        // Fetch unavailabilities with user relationships
+        $unavailabilities = Unavailability::with('user')->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $unavailabilities,
+            'message' => $unavailabilities->isEmpty() ? 'No unavailabilities found' : 'Unavailabilities retrieved successfully'
+        ], 200);
+    }
+
+
+    public function checkUnavailability(Request $request, $id)
+    {
+        // Validate incoming request (expects `from_date` and `to_date` in payload)
+        $request->validate([
+            'from_date' => 'required|date',
+            'to_date' => 'required|date|after_or_equal:from_date',
+        ]);
+
+        // Extract dates from request
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
+
+        // Check for overlapping unavailability records
+        $isUnavailable = Unavailability::where('user_id', $id)
+            ->where(function ($query) use ($fromDate, $toDate) {
+                $query->whereBetween('from_date', [$fromDate, $toDate])
+                      ->orWhereBetween('to_date', [$fromDate, $toDate])
+                      ->orWhere(function ($query) use ($fromDate, $toDate) {
+                          $query->where('from_date', '<=', $fromDate)
+                                ->where('to_date', '>=', $toDate);
+                      });
+            })
+            ->exists(); // Returns `true` if an overlapping record exists
+
+        return response()->json([
+            'success' => true,
+            'user_id' => $id,
+            'available' => !$isUnavailable // Return `true` if user is available
+        ]);
     }
 
 

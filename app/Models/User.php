@@ -34,6 +34,12 @@ class User extends Authenticatable
         return $this->belongsTo(Training::class, 'facilitator_id');
     }
 
+    public function unavailabilities()
+    {
+        return $this->hasMany(Unavailability::class, 'user_id');
+    }
+
+
     /**
      * The attributes that should be hidden for serialization.
      *

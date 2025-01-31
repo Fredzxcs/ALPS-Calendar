@@ -253,6 +253,35 @@ class TrainingController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        \DB::beginTransaction();
+
+        try {
+            $trainingSession = Training::findOrFail($id);
+
+            $schedule = Schedule::where('training_id', $trainingSession->id)->first();
+
+            if ($schedule) {
+                $schedule->delete();
+            }
+
+            $trainingSession->delete();
+
+            \DB::commit();
+
+            return response()->json([
+                'message' => 'Training session and its associated schedule deleted successfully',
+            ], 200);
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+
+            \Log::error('Error deleting training session: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'Error occurred while deleting the training session',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+
 }

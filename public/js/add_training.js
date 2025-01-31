@@ -71,25 +71,16 @@ const fp = flatpickr("#date-range", {
     }
 });
 
-$(document).ready(function (e){
-
-    $('#add_training_submit').click(function (e){
-
+$(document).ready(function (e) {
+    $('#add_training_submit').click(function (e) {
         e.preventDefault();
-        //get radio val to get mode of training
+
         let mode = $('input[name="mode"]:checked').val();
+        let facilitator_id = $('#facilitator').find('option:selected').val(); // Get facilitator ID
 
-        console.log(mode);
-
-        //faci
-        let facilitator_id = $('#facilitator').find('option:selected').val();
-
-        //asst
         let assistant_id = '';
-
-        $('div[data-repeater-list="asst_repeat"] .assistant').each(function() {
+        $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
             const value = $(this).val().trim();
-
             if (value) {
                 if (assistant_id.length > 0) {
                     assistant_id += ', ';
@@ -98,62 +89,135 @@ $(document).ready(function (e){
             }
         });
 
-        console.log(assistant_id);
-
-        //dates
         let from_date = startDateFormatted;
         let to_date = endDateFormatted;
-
-        //time
         let from_time = $('#time-start').val();
         let to_time = $('#time-end').val();
-
-        //course
         let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
-
         let platform = $('#platform').val();
-
-        //account
         let account_id = $('#credentials').find('option:selected').val();
-
-        //company
+        let location = $('#location').val();
         let company = $('#company').find('option:selected').val();
 
-        //location
-        let location = $('#location').val();
-
-        let formData = new FormData();
-
-        formData.append('course_id', course);
-        formData.append('platform', platform);
-        formData.append('location', location);
-        formData.append('facilitator_id', facilitator_id);
-        formData.append('company_id', company);
-        formData.append('assistant', assistant_id);
-        formData.append('account_id', account_id);
-        formData.append('mode', mode);
-
-        formData.append('from_date', from_date);
-        formData.append('to_date', to_date);
-        formData.append('from_time', from_time);
-        formData.append('to_time', to_time);
-
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
+        // Step 1: Check if facilitator is provided
+        if (!facilitator_id || facilitator_id === "") {
+            // Skip checking availability and proceed
+            handleCompanyAndStoreTraining(company);
+        } else {
+            // Check facilitator availability
+            checkAvailability(facilitator_id, from_date, to_date, function (isAvailable) {
+                if (isAvailable) {
+                    handleCompanyAndStoreTraining(company);
+                } else {
+                    Swal.fire({
+                        title: 'Facilitator Unavailable',
+                        text: 'The selected facilitator is unavailable on the selected date(s). Do you want to proceed anyway?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Proceed',
+                        cancelButtonText: 'Cancel',
+                        customClass: {
+                            confirmButton: "btn btn-primary",
+                            cancelButton: 'btn btn-secondary'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            handleCompanyAndStoreTraining(company);
+                        }
+                    });
+                }
+            });
         }
+    });
 
-        //ajax
+    // Step 2: Function to check if a facilitator is available
+    function checkAvailability(userId, fromDate, toDate, callback) {
         $.ajax({
-            url: '',
+            url: `/calendar/api/check-unavailability/${userId}`,
+            method: 'POST',
+            data: JSON.stringify({
+                from_date: fromDate,
+                to_date: toDate
+            }),
+            contentType: 'application/json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                console.log('Availability Response:', response);
+                callback(response.available); // Pass result to callback
+            },
+            error: function (xhr, status, error) {
+                console.error('Error checking availability:', xhr.responseText);
+                Swal.fire('Error!', 'Could not check facilitator availability.', 'error');
+                callback(false); // Assume unavailable if error occurs
+            }
+        });
+    }
+
+    // Step 3: Function to handle company creation and training storage
+    function handleCompanyAndStoreTraining(company) {
+        if (company === "other") {
+            let companyData = new FormData();
+            companyData.append('company_name', $('#enter-company').val());
+            companyData.append('contact_person', '');
+            companyData.append('contact_number', '');
+            companyData.append('email', '');
+
+            $.ajax({
+                url: '/config/companies/add',
+                method: 'POST',
+                data: companyData,
+                contentType: false,
+                processData: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    if (response.success) {
+                        console.log('Company Created:', response.company.id);
+                        createTraining(response.company.id);
+                    } else {
+                        Swal.fire('Error!', 'Failed to create company.', 'error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error:', xhr.responseText);
+                    Swal.fire('Error!', 'An unexpected error occurred.', 'error');
+                }
+            });
+        } else {
+            createTraining(company);
+        }
+    }
+
+    // Step 4: Function to create the training session
+    function createTraining(companyId) {
+        let formData = new FormData();
+        formData.append('course_id', $('#course').find('option:selected').val());
+        formData.append('platform', $('#platform').val());
+        formData.append('location', $('#location').val());
+        formData.append('facilitator_id', $('#facilitator').find('option:selected').val() || ''); // Allow empty facilitator
+        formData.append('company_id', companyId);
+        formData.append('assistant', $('div[data-repeater-list="asst_repeat"] .assistant').map(function () { return $(this).val().trim(); }).get().join(', '));
+        formData.append('account_id', $('#credentials').find('option:selected').val());
+        formData.append('mode', $('input[name="mode"]:checked').val());
+        formData.append('from_date', startDateFormatted);
+        formData.append('to_date', endDateFormatted);
+        formData.append('from_time', $('#time-start').val());
+        formData.append('to_time', $('#time-end').val());
+
+        $.ajax({
+            url: '/calendar/add_training',
             type: 'POST',
             data: formData,
             processData: false,
             contentType: false,
             cache: false,
             headers: {
-                'X-CSRF-TOKEN': csrfToken // Add CSRF token to headers
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            success: function(response) {
+            success: function (response) {
                 if (response.message === '200') {
                     Swal.fire({
                         title: 'Success!',
@@ -161,8 +225,7 @@ $(document).ready(function (e){
                         icon: 'success',
                         confirmButtonText: 'OK'
                     }).then((result) => {
-                        if(result.isConfirmed)
-                        {
+                        if (result.isConfirmed) {
                             window.location.href = '/calendar';
                         }
                     });
@@ -177,20 +240,39 @@ $(document).ready(function (e){
                     });
                 }
             },
-            error: function(xhr, status, error, response) {
-                console.log('AJAX Error Details:');
-                console.log('Status:', status);
-                console.log('Error:', error);
-                console.log('Response Text:', xhr.responseText);
-                console.log('ReadyState:', xhr.readyState);
-                console.log('Response Status:', xhr.status);
+            error: function (xhr, status, error) {
+                console.log('AJAX Error Details:', xhr.responseText);
                 Swal.fire({
                     title: 'Error!',
-                    text: response.message || 'There was an error adding the user.',
+                    text: 'There was an error adding the training.',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             }
         });
+    }
+});
+
+
+// Add a company input field
+document.addEventListener("DOMContentLoaded", function () {
+    const companyDropdown = document.getElementById("company");
+    const companyInput = document.getElementById("enter-company");
+
+    companyDropdown.addEventListener("change", function () {
+        if (companyDropdown.value === "other") {
+            // Show input field, hide dropdown
+            companyDropdown.classList.add("d-none");
+            companyInput.classList.remove("d-none");
+            companyInput.focus();
+        }
+    });
+
+    companyInput.addEventListener("blur", function () {
+        if (companyInput.value.trim() === "") {
+            companyInput.classList.add("d-none");
+            companyDropdown.classList.remove("d-none");
+            companyDropdown.value = "";
+        }
     });
 });
