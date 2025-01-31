@@ -69,6 +69,7 @@ Route::prefix('calendar')->group(function () {
     ->name('check_unavailability');
 });
 
+// Manage Access
 Route::prefix('access')->group(function (){
     Route::get('/', [ManageAccessController::class, 'index'])
         ->middleware(['auth', 'user:admin'])

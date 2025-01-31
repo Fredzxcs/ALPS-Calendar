@@ -14,7 +14,45 @@ stepper.on("kt.stepper.previous", function (stepper) {
     stepper.goPrevious(); // go previous step
 });
 
-// Validation
+//Populate Existing Entry by id
+function fetchUserData(userId) {
+    $.ajax({
+        url: `/access/api/get/user/${userId}`,
+        method: 'GET',
+        success: function (response) {
+            // Populate form fields with the data
+            $('#edit_first_name').val(response.user.name);
+            $('#edit_middle_name').val(response.middle_name || ''); // Optional field
+            $('#edit_last_name').val(response.last_name);
+            $('#edit_suffix').val(response.suffix || ''); // Optional field
+            $('#edit_email').val(response.user.email);
+            $('#edit_contact_number').val(response.user.contact_number);
+
+            // Set the radio button for user role
+            $(`input[name="radio_buttons_2"][value="${response.user.usertype}"]`).prop('checked', true);
+
+            // Update the image preview
+            if (response.user.image) {
+                $('.image-input-wrapper').css('background-image', `url(${response.user.image})`);
+            }
+            console.log('get_success', response)
+        },
+        error: function (error) {
+            console.error('Error fetching user data:', error);
+            alert('Failed to fetch user data.');
+        }
+    });
+}
+
+// Example usage: Fetch user data on page load
+$(document).ready(function () {
+    const userId = 1; // Replace with the actual user ID
+    fetchUserData(userId);
+});
+
+
+
+
 // Validation
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('edit_user_form');
@@ -113,8 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
-
 
 //Contact number allows only numbers
 const contactNumberInput = document.getElementById('edit_contact_number');

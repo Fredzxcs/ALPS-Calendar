@@ -392,6 +392,9 @@
 
 @push('scripts')
 <script src="{{ asset('js/manage_access.js') }}"></script>
+<script src="{{ asset('js/edit_user.js') }}"></script>
+
+<!-- VIEW USER DATA  -->
 <script>
     $(document).ready(function (){
 
