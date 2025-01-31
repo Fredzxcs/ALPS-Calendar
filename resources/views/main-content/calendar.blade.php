@@ -466,7 +466,7 @@
                     </div>
                     <div class="col-7">
                         <div class="fv-row d-flex justify-content-end align-items-center">
-                            <p class="lead fs-6" id="modal-date"></p>
+                            <p class="lead fs-6" id="modal-date">January 10 to January 15</p>
                         </div>
                     </div>
                 </div>
@@ -485,6 +485,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
             <!-- Modal Footer -->
             <div class="modal-footer w-100">
                 <!-- Delete Button (Left) -->
@@ -493,7 +494,6 @@
                 </button>
                 <!-- Close Buttons (Right) -->
                 <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
-
             </div>
 
         </div>
