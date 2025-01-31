@@ -69,6 +69,46 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    // popovers for Unavailability
+    const initUnavailabilityPopover = (element, data) => {
+        hidePopovers(); // Hide any active popovers
+
+        console.log("Unavailability Data:", data);
+
+        const popoverHtml = `
+            <div class="fw-bolder mb-2">Unavailability - ${data.user || 'Unknown User'}</div>
+            <div class="fs-7"><span class="fw-bold">Start:</span> ${moment(data.startDate).format('MMM DD, YYYY')}</div>
+            <div class="fs-7 mb-2"><span class="fw-bold">End:</span> ${moment(data.endDate).format('MMM DD, YYYY')}</div>
+            <div class="fs-7"><span class="fw-bold">Reason:</span> ${data.reason || 'No reason provided'}</div>
+            <a id="kt_calendar_unavailability_view" type="button" class="btn btn-sm btn-light-danger mt-2" data-event-id="${data.id}">
+                VIEW MORE
+            </a>
+        `;
+        var options = {
+            container: 'body',
+            trigger: 'manual',
+            boundary: 'window',
+            placement: 'auto',
+            dismiss: true,
+            html: true,
+            title: 'Unavailability Summary',
+            content: popoverHtml,
+
+        };
+        // Initialize popover
+        popover = KTApp.initBootstrapPopover(element, options);
+        popover.show();
+        popoverState = true;
+
+
+        // Attach the modal event listener after popover HTML is inserted
+        document.getElementById('kt_calendar_unavailability_view').addEventListener('click', function (e) {
+            e.preventDefault();
+            const modalElement = document.getElementById('kt_modal_view_unavailability');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        });
+    };
     // Function to hide active popovers
     const hidePopovers = () => {
         if (popoverState && popover) {
@@ -173,35 +213,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         });
                     }
-                    // Function to show View Unavailability modal
-                    const showUnavailabilityModal = (event) => {
-                        const modalElement = document.getElementById('kt_modal_view_unavailability');
-                        const modal = new bootstrap.Modal(modalElement);
-
-                        // Populate modal fields
-                        document.getElementById('modal-title').textContent = 'VIEW UNAVAILABILITY';
-                        document.getElementById('modal-date').textContent = moment(event.start).format('MMM DD, YYYY') +
-                            (event.end ? ' to ' + moment(event.end).format('MMM DD, YYYY') : '');
-                        document.getElementById('modal-purpose').textContent = event.title || 'Unavailable';
-
-                        // Show the modal
-                        modal.show();
-                    };
-
-                    // Function to bind event listeners to FullCalendar events
-                    const bindEventListeners = () => {
-                        calendar.setOption('eventClick', function (info) {
-                            const eventData = info.event.extendedProps;
-
-                            if (eventData.hasOwnProperty('user')) {
-                                // This is an Unavailability Event
-                                showUnavailabilityModal(info.event);
-                            } else {
-                                // This is a Training Event
-                                showTrainingModal(info.event);
-                            }
-                        });
-                    };
 
                     // Rebind event listeners for popovers
                     bindEventListeners();
@@ -224,22 +235,34 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-
-    // Function to bind event listeners to FullCalendar events
-    const bindEventListeners = () => {
-        calendar.setOption('eventMouseEnter', function (info) {
-            // Safely dispose of any existing popover
-            if (popover) {
-                try {
-                    popover.dispose();
-                } catch (error) {
-                    console.error("Error disposing popover:", error);
-                }
-                popoverState = false;
-                popover = null;
+// Function to bind event listeners to FullCalendar events
+const bindEventListeners = () => {
+    calendar.setOption('eventMouseEnter', function (info) {
+        // Safely dispose of any existing popover
+        if (popover) {
+            try {
+                popover.dispose();
+            } catch (error) {
+                console.error("Error disposing popover:", error);
             }
+            popoverState = false;
+            popover = null;
+        }
 
-            // Extract event data and initialize a new popover
+        // Check if unavailability event
+        if (info.event.extendedProps.user) {
+            const unavailabilityData = {
+                id: info.event.id,
+                user: info.event.extendedProps.user || 'Unknown User',
+                reason: info.event.title || 'Unavailable',
+                startDate: info.event.start,
+                endDate: info.event.end,
+            };
+            initUnavailabilityPopover(info.el, unavailabilityData);
+        }
+
+        // check if training
+        else if (info.event.extendedProps.modeType) {
             const eventData = {
                 eventName: info.event.title || 'No Title',
                 startDate: info.event.start || null,
@@ -253,6 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 location: info.event.extendedProps.location || 'N/A',
                 id: info.event.id || '',
             };
+            initTrainingPopover(info.el, eventData);
 
             const $modalElement = $('#kt_modal_view_training');
             $modalElement.find('#modal-title').text('VIEW TRAINING');
@@ -289,12 +313,15 @@ document.addEventListener('DOMContentLoaded', function () {
             $modalElement.find('#modal-time').text(`${formattedStartTime} to ${formattedEndTime}`);
 
             initPopovers(info.el, eventData);
-        });
+        }
+    });
 
-        calendar.setOption('eventMouseLeave', function () {
-            // hidePopovers(); // Ensure safe disposal of the popover
-        });
-    };
+    calendar.setOption('eventMouseLeave', function () {
+        setTimeout(() => {
+            hidePopovers();
+        }, 3000); // Small delay before hiding popovers
+    });
+};
 
 
     // Initialize the calendar and its initial population
@@ -343,6 +370,38 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
         Swal.fire({
             title: 'Are you sure?',
             text: "You are about to delete this training.",
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: "btn btn-danger",
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with the delete
+                Swal.fire(
+                    'Deleted!',
+                    'The training has been deleted.',
+                    'success'
+                );
+
+                // TODO: Add logic to perform delete
+            }
+        });
+    });
+});
+
+//Delete unavailability button
+document.querySelectorAll('.deleteBtnUnavailability').forEach(button => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default action (e.g., form submission)
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to delete this unavailability.",
             icon: 'warning',
             buttonsStyling: false,
             showCancelButton: true,

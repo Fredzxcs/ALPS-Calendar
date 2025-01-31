@@ -421,6 +421,7 @@
             </div>
         </div>
     </div>
+
 <!--begin::Modal - View Unavailability-->
 <div class="modal fade" id="kt_modal_view_unavailability" tabindex="-1" aria-hidden="true">
     <!--begin::Modal dialog-->
@@ -450,7 +451,7 @@
                 <!-- Data Rows -->
                 <!-- Course -->
                 <div class="row mb-5 justify-content-between align-items-center text-center">
-                    <h1 class="fs-1 fw-boldest text-primary" id="modal-course">USER</h1>
+                    <h1 class="fs-1 fw-boldest text-primary" id="modal-user">USER</h1>
                     {{-- <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span>
                     <br>
                     from <span id="modal-time" class="fw-bold"></span></p> --}}
@@ -466,7 +467,7 @@
                     </div>
                     <div class="col-7">
                         <div class="fv-row d-flex justify-content-end align-items-center">
-                            <p class="lead fs-6" id="modal-date">January 10 to January 15</p>
+                            <p class="lead fs-6" id="modal-date-unavailable">January 10 to January 15</p>
                         </div>
                     </div>
                 </div>
@@ -489,7 +490,7 @@
             <!-- Modal Footer -->
             <div class="modal-footer w-100">
                 <!-- Delete Button (Left) -->
-                <button type="button" class="btn btn-danger deleteBtn me-auto">
+                <button type="button" class="btn btn-danger deleteBtnUnavailability me-auto">
                     <i class="bi bi-trash me-2"></i>DELETE
                 </button>
                 <!-- Close Buttons (Right) -->
