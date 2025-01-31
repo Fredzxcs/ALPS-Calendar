@@ -266,7 +266,7 @@ const bindEventListeners = () => {
         }
 
         // check if training
-        else if (info.event.extendedProps.modeType) {
+        if (info.event.extendedProps.modeType) {
             const eventData = {
                 eventName: info.event.title || 'No Title',
                 startDate: info.event.start || null,
@@ -280,7 +280,7 @@ const bindEventListeners = () => {
                 location: info.event.extendedProps.location || 'N/A',
                 id: info.event.id || '',
             };
-            initTrainingPopover(info.el, eventData);
+            initPopovers(info.el, eventData);
 
             const $modalElement = $('#kt_modal_view_training');
             $modalElement.find('#modal-title').text('VIEW TRAINING');
