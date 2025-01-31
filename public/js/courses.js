@@ -61,7 +61,6 @@ function setValid(input) {
     input.classList.remove('border-danger');
 }
 
-//Validation
 document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('modal_add_course_form').addEventListener('submit', (event) => {
@@ -74,10 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Basic Validation for Course Name
         if (!courseName.value.trim()) {
-            courseName.classList.add('is-invalid');
+            courseName.classList.add('border-danger');
             return;
         } else {
-            setValid(courseNameInput);
+            courseName.classList.remove('border-danger');
         }
 
        // Display Confirmation Dialog
@@ -140,24 +139,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     //Populate Existing Entry by id
-    // Event listener to open the modal and populate it with data
     $(document).on('click', '.editCourseBtn', function () {
-        // Get the course ID from the button's data-id attribute
         const courseId = $(this).data('id');
 
-        // Fetch course details using AJAX
         $.ajax({
-            url: `/config/courses/${courseId}`, // Make sure this is the correct endpoint
+            url: `/config/courses/${courseId}`,
             method: 'GET',
             success: function (response) {
-                // Populate the modal with course data
                 $('#edit_course_name').val(response.course_name);
                 $('#edit_course_code').val(response.course_code);
-
-                // Optionally, store the course ID in the modal form for later use (for saving)
                 $('#modal_edit_course_form').data('id', courseId);
-
-                // Open the modal
                 $('#modal_edit_course').modal('show');
             },
             error: function (error) {
@@ -168,22 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-//Validation for edit
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('modal_edit_course_form');
     const courseNameInput = document.getElementById('edit_course_name');
-
-    // Function to add the Bootstrap 'border-danger' class
-    function setInvalid(input) {
-        input.classList.add('border-danger');
-    }
-
-    // Function to remove the Bootstrap 'border-danger' class
-    function setValid(input) {
-        input.classList.remove('border-danger');
-    }
-
-    //Validation for Edit Course form
 
     document.getElementById('modal_edit_course_form').addEventListener('submit', (event) => {
         event.preventDefault();
@@ -194,10 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitButton = document.getElementById('edit_course_submit');
 
         if (!courseName.value.trim()) {
-            courseName.classList.add('is-invalid');
+            courseName.classList.add('border-danger');
             return;
         } else {
-            setValid(courseNameInput);
+            courseName.classList.remove('border-danger');
         }
 
         Swal.fire({
@@ -223,8 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const routeUrl = `/config/courses/update/${courseId}`;
 
-                console.log("Route URL:", routeUrl);
-
                 $.ajax({
                     url: routeUrl,
                     method: 'PATCH',
@@ -246,51 +222,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     error: function (xhr, status, error) {
                         console.error('AJAX Error:', xhr.responseText);
-
-                        // Check if there are validation errors in the response
-                        if (xhr.responseJSON && xhr.responseJSON.errors) {
-                            // If the account_email error exists, display it in the Swal alert
-                            if (xhr.responseJSON.errors.course_code) {
-                                Swal.fire(
-                                    'Error!',
-                                    xhr.responseJSON.errors.course_code[0],  // Display the error message for account_email
-                                    'error'
-                                );
-                            } else {
-                                // Handle other validation or general errors
-                                Swal.fire(
-                                    'Error!',
-                                    'Please try again.',
-                                    'error'
-                                );
-                            }
-                        } else {
-                            // For any other errors that aren't related to validation
-                            Swal.fire(
-                                'Error!',
-                                'An unexpected error occurred.',
-                                'error'
-                            );
-                        }
+                        Swal.fire('Error!',
+                            'An unexpected error occurred.',
+                            'error');
                     },
                     complete: function () {
                         submitButton.disabled = false;
                     }
                 });
-
             }
         });
     });
 
-    // Remove invalid border on input change
     [courseNameInput].forEach(input => {
         input.addEventListener('input', () => {
             if (input.value.trim()) {
-                setValid(input);
+                input.classList.remove('border-danger');
             }
         });
     });
 });
+
 
 //Delete course button
 document.querySelectorAll('.deleteBtn').forEach(button => {
@@ -361,12 +313,14 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
 //Pagination
 document.addEventListener("DOMContentLoaded", function () {
     const rowsPerPage = 5; // Number of rows per page
+    const pagesPerBatch = 5; // Number of pages per batch
     const table = document.querySelector("#courses_table tbody");
     const rows = Array.from(table.rows);
     const pagination = document.querySelector(".pagination");
     const totalPages = Math.ceil(rows.length / rowsPerPage);
 
     let currentPage = 1; // Track the current page
+    let currentBatch = 1; // Track the current batch
 
     function displayPage(page) {
         const start = (page - 1) * rowsPerPage;
@@ -377,55 +331,62 @@ document.addEventListener("DOMContentLoaded", function () {
             row.style.display = index >= start && index < end ? "" : "none";
         });
 
-        // Update active state for pagination buttons
-        Array.from(pagination.querySelectorAll(".page-item")).forEach((item, idx) => {
-            item.classList.toggle("active", idx === page);
-        });
-
-        // Enable/disable "Previous" and "Next" buttons
-        pagination.querySelector(".prev").classList.toggle("disabled", page === 1);
-        pagination.querySelector(".next").classList.toggle("disabled", page === totalPages);
-
         currentPage = page; // Update the current page
+        updatePagination(); // Update pagination UI
     }
 
-    // Create pagination buttons
-    function createPaginationButtons() {
-        // Add "Previous" button
-        const prevButton = document.createElement("li");
-        prevButton.className = "page-item prev disabled";
-        prevButton.innerHTML = `<a class="page-link" href="#">Previous</a>`;
-        prevButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (currentPage > 1) displayPage(currentPage - 1);
-        });
-        pagination.appendChild(prevButton);
+    function updatePagination() {
+        pagination.innerHTML = ""; // Clear existing pagination
 
-        // Add page number buttons
-        for (let i = 1; i <= totalPages; i++) {
+        const totalBatches = Math.ceil(totalPages / pagesPerBatch);
+        const startPage = (currentBatch - 1) * pagesPerBatch + 1;
+        const endPage = Math.min(startPage + pagesPerBatch - 1, totalPages);
+
+        // Previous Batch Button
+        const prevBatchButton = document.createElement("li");
+        prevBatchButton.className = `page-item prev-batch ${currentBatch === 1 ? "disabled" : ""}`;
+        prevBatchButton.innerHTML = `<a class="page-link" href="#">«</a>`;
+        prevBatchButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (currentBatch > 1) {
+                currentBatch--;
+                updatePagination();
+                displayPage((currentBatch - 1) * pagesPerBatch + 1);
+            }
+        });
+        pagination.appendChild(prevBatchButton);
+
+        // Page Number Buttons
+        for (let i = startPage; i <= endPage; i++) {
             const li = document.createElement("li");
-            li.className = "page-item" + (i === 1 ? " active" : "");
+            li.className = `page-item ${i === currentPage ? "active" : ""}`;
             li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
             li.addEventListener("click", (e) => {
                 e.preventDefault();
-                displayPage(i);
+                displayPage(i); // Navigate to selected page
             });
             pagination.appendChild(li);
         }
 
-        // Add "Next" button
-        const nextButton = document.createElement("li");
-        nextButton.className = "page-item next" + (totalPages === 1 ? " disabled" : "");
-        nextButton.innerHTML = `<a class="page-link" href="#">Next</a>`;
-        nextButton.addEventListener("click", (e) => {
+        // Next Batch Button
+        const nextBatchButton = document.createElement("li");
+        nextBatchButton.className = `page-item next-batch ${currentBatch === totalBatches ? "disabled" : ""}`;
+        nextBatchButton.innerHTML = `<a class="page-link" href="#">»</a>`;
+        nextBatchButton.addEventListener("click", (e) => {
             e.preventDefault();
-            if (currentPage < totalPages) displayPage(currentPage + 1);
+            if (currentBatch < totalBatches) {
+                currentBatch++;
+                updatePagination();
+                displayPage((currentBatch - 1) * pagesPerBatch + 1);
+            }
         });
-        pagination.appendChild(nextButton);
+        pagination.appendChild(nextBatchButton);
     }
 
-    createPaginationButtons();
-    displayPage(1); // Show the first page initially
+    if (totalPages > 0) {
+        updatePagination();
+        displayPage(1); // Show the first page initially
+    }
 });
 
 
