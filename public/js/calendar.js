@@ -173,6 +173,35 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         });
                     }
+                    // Function to show View Unavailability modal
+                    const showUnavailabilityModal = (event) => {
+                        const modalElement = document.getElementById('kt_modal_view_unavailability');
+                        const modal = new bootstrap.Modal(modalElement);
+
+                        // Populate modal fields
+                        document.getElementById('modal-title').textContent = 'VIEW UNAVAILABILITY';
+                        document.getElementById('modal-date').textContent = moment(event.start).format('MMM DD, YYYY') +
+                            (event.end ? ' to ' + moment(event.end).format('MMM DD, YYYY') : '');
+                        document.getElementById('modal-purpose').textContent = event.title || 'Unavailable';
+
+                        // Show the modal
+                        modal.show();
+                    };
+
+                    // Function to bind event listeners to FullCalendar events
+                    const bindEventListeners = () => {
+                        calendar.setOption('eventClick', function (info) {
+                            const eventData = info.event.extendedProps;
+
+                            if (eventData.hasOwnProperty('user')) {
+                                // This is an Unavailability Event
+                                showUnavailabilityModal(info.event);
+                            } else {
+                                // This is a Training Event
+                                showTrainingModal(info.event);
+                            }
+                        });
+                    };
 
                     // Rebind event listeners for popovers
                     bindEventListeners();
@@ -194,6 +223,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
         });
     };
+
 
     // Function to bind event listeners to FullCalendar events
     const bindEventListeners = () => {
@@ -319,9 +349,9 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
             confirmButtonText: 'Yes, Delete',
             cancelButtonText: 'Cancel',
             customClass: {
-            confirmButton: "btn btn-danger",
-            cancelButton: 'btn btn-secondary'
-        }
+                confirmButton: "btn btn-danger",
+                cancelButton: 'btn btn-secondary'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 // Proceed with the delete
@@ -338,14 +368,14 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
 });
 
 //Password reveal in view modal
-$(document).ready(function() {
-    $(".password-display").click(function() {
+$(document).ready(function () {
+    $(".password-display").click(function () {
         var actualPassword = $(this).next(".password-actual");
         $(this).addClass("d-none");
         actualPassword.removeClass("d-none");
     });
 
-    $(".password-actual").click(function() {
+    $(".password-actual").click(function () {
         var passwordDisplay = $(this).prev(".password-display");
         $(this).addClass("d-none");
         passwordDisplay.removeClass("d-none");
