@@ -23,23 +23,35 @@ $(document).ready(function (e){
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
         let usertype = $('input[name="radio_buttons_2"]:checked').val();
-        let name = $('#first_name').val() + ' ' + $('#middle_name').val() + ' ' + $('#last_name').val() + ' ' + $('#suffix').val();
+        let first_name = $('#first_name').val().trim();
+        let middle_name = $('#middle_name').val().trim();
+        let last_name = $('#last_name').val().trim();
+        let suffix = $('#suffix').val().trim(); // Fixed missing #
+        
+        let fullname = first_name + 
+            (middle_name ? ' ' + middle_name : '') + 
+            ' ' + last_name + 
+            (suffix ? ' ' + suffix : '');
+        
         let email = $('#email').val();
         let contact_number = $('#contact_number').val();
         let image = $('input[name="avatar"]')[0].files[0];
         let username = $('#username').val();
         let password = $('#password').val();
         let color = $('#color').val();
-
+        
         let formData = new FormData();
         formData.append('usertype', usertype);
-        formData.append('name', name);
+        formData.append('name', fullname);
         formData.append('color', color);
         formData.append('email', email);
         formData.append('contact_number', contact_number);
         formData.append('image', image);
         formData.append('username', username);
         formData.append('password', password);
+        
+        console.log(fullname); // Debugging
+        console.log(usertype);        
 
         $.ajax({
             url: 'add_user',
@@ -51,8 +63,8 @@ $(document).ready(function (e){
             headers: {
                 'X-CSRF-TOKEN': csrfToken // Add CSRF token to headers
             },
-            success: function(response) {
-                if (response.message === '200') {
+            success: function(response, textStatus, xhr) {
+                if (xhr.status === 201) { 
                     Swal.fire({
                         title: 'Success!',
                         text: 'User has been added.',
@@ -71,21 +83,33 @@ $(document).ready(function (e){
                         location.reload();
                     });
                 }
-            },
+            },            
             error: function(xhr, status, error) {
-                console.log('AJAX Error Details:');
-                console.log('Status:', status);
-                console.log('Error:', error);
-                console.log('Response Text:', xhr.responseText);
-                console.log('ReadyState:', xhr.readyState);
-                console.log('Response Status:', xhr.status);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'There was an error adding the user.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessages = Object.values(errors).flat().join("\n");
+            
+                    Swal.fire({
+                        title: 'Validation Error!',
+                        text: errorMessages,
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    console.log('AJAX Error Details:');
+                    console.log('Status:', status);
+                    console.log('Error:', error);
+                    console.log('Response Text:', xhr.responseText);
+                    console.log('ReadyState:', xhr.readyState);
+                    console.log('Response Status:', xhr.status);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'There was an error adding the user.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }            
         });
     });
 });
