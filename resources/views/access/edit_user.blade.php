@@ -272,5 +272,9 @@
 </div>
 @endsection
 @push('scripts')
+<script>
+    var userId = {{ $user ?? 'null' }}; // Pass user ID to JavaScript
+</script>
+
 <script src="{{ asset('js/edit_user.js') }}"></script>
 @endpush
