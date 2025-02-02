@@ -82,11 +82,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('add_company_email');
         const submitButton = document.getElementById('add_company_submit');
 
+        let isValid = true;
+
         if (!companyName.value.trim()) {
             companyName.classList.add('border-danger');
-            return;
+            isValid = false;
         } else {
             companyName.classList.remove('border-danger');
+        }
+
+        if (!isValid) {
+             Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop submission if validation fails
         }
 
         Swal.fire({
@@ -191,12 +203,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('edit_company_email');
         const submitButton = document.getElementById('edit_company_submit');
 
+        let isValid = true;
+
         // Validate input
         if (!companyName.value.trim()) {
             companyName.classList.add('border-danger');
-            return;
+            isValid = false;
         } else {
             companyName.classList.remove('border-danger');
+        }
+
+        if (!isValid) {
+             Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop submission if validation fails
         }
 
         // Confirmation dialog
