@@ -60,7 +60,7 @@ let endDateFormatted;
 const fp = flatpickr("#date-range", {
     mode: "range",
     dateFormat: "m-d-Y",
-    onChange: function(selectedDates) {
+    onChange: function (selectedDates) {
         if (selectedDates.length >= 2) {
             const initalStartDate = selectedDates[0];
             const initialEndDate = selectedDates[1];
@@ -76,6 +76,69 @@ $(document).ready(function (e) {
     $('#add_training_submit').click(function (e) {
         e.preventDefault();
 
+        // Validation Logic
+        let requiredFields = [
+            'input[name="mode"]:checked',   // Mode of Training (Radio)
+            '#credentials',                 // Account (Dropdown)
+            '#company',                     // Company (Dropdown)
+            '#course',                      // Course (Dropdown)
+            '#date-range',                  // Date Range (Input)
+            '#time-start',                  // Time Start (Input)
+            '#time-end',                     // Time End (Input)
+            '#facilitator'
+        ];
+
+        let isValid = true;
+
+        requiredFields.forEach(function (selector) {
+            let element = $(selector);
+
+            if (selector === 'input[name="mode"]:checked') {
+                if ($('input[name="mode"]:checked').length === 0) {
+                    $('input[name="mode"]').closest('.form-group').addClass('border-danger');
+                    isValid = false;
+                } else {
+                    $('input[name="mode"]').closest('.form-group').removeClass('border-danger');
+                }
+            } else if (element.is('select')) { // Handle dropdown validation
+                if (element.val() === '' || element.val() === null) {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            } else { // Handle input fields
+                if (element.val().trim() === '') {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            }
+        });
+        // Facilitator Validation
+        let facilitator = $('#facilitator').val();
+        if (facilitator === '' || facilitator === null) {
+            // If no facilitator is selected, mark as invalid
+            $('#facilitator').addClass('border-danger');
+            isValid = false;
+        } else {
+            // If 'No Facilitator Yet' or any other valid option is selected, mark as valid
+            $('#facilitator').removeClass('border-danger');
+        }
+
+
+        if (!isValid) {
+            Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop submission if validation fails
+        }
+
+        // Form Data Collection
         let mode = $('input[name="mode"]:checked').val();
         let facilitator_id = $('#facilitator').find('option:selected').val(); // Get facilitator ID
 
@@ -155,6 +218,27 @@ $(document).ready(function (e) {
 
     // Step 3: Function to handle company creation and training storage
     function handleCompanyAndStoreTraining(company) {
+        // Check for duplicate company
+        const enteredCompany = $('#enter-company').val().trim().toLowerCase();
+        let isDuplicate = false;
+
+        $('#company option').each(function () {
+            if ($(this).text().trim().toLowerCase() === enteredCompany) {
+                isDuplicate = true;
+                return false; // Exit loop if duplicate found
+            }
+        });
+
+        if (isDuplicate) {
+            Swal.fire({
+                title: 'Duplicate Company!',
+                text: 'The company already exists in the list.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop the submission if duplicate
+        }
+
         if (company === "other") {
             let companyData = new FormData();
             companyData.append('company_name', $('#enter-company').val());
@@ -195,7 +279,6 @@ $(document).ready(function (e) {
         formData.append('course_id', $('#course').find('option:selected').val());
         formData.append('platform', $('#platform').val());
         formData.append('location', $('#location').val());
-        formData.append('facilitator_id', $('#facilitator').find('option:selected').val() || ''); // Allow empty facilitator
         formData.append('company_id', companyId);
         formData.append('assistant', $('div[data-repeater-list="asst_repeat"] .assistant').map(function () { return $(this).val().trim(); }).get().join(', '));
         formData.append('account_id', $('#credentials').find('option:selected').val());
@@ -204,6 +287,16 @@ $(document).ready(function (e) {
         formData.append('to_date', endDateFormatted);
         formData.append('from_time', $('#time-start').val());
         formData.append('to_time', $('#time-end').val());
+        let facilitator_id = $('#facilitator').find('option:selected').val();
+        if ($.isNumeric(facilitator_id)) {
+            formData.append('facilitator_id', facilitator_id);
+        }
+        else if (facilitator_id === 'no_facilitator' || facilitator_id === '') {
+        }
+        else {
+            formData.append('facilitator_id', null);
+        }
+
 
         $.ajax({
             url: '/calendar/add_training',
@@ -274,3 +367,4 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
