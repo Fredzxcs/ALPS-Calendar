@@ -173,10 +173,21 @@ class UnavailabilityController extends Controller //TODO: Update return views
         try {
             $unavailability->delete();
 
+            // Check if the request is AJAX and return JSON
+            if (request()->ajax()) {
+                return response()->json(['success' => 'Unavailability record deleted successfully.']);
+            }
+
+            // For non-AJAX requests, redirect as usual
             return redirect()->route('unavailabilities.index')
                 ->with('success', 'Unavailability record deleted successfully.');
         } catch (\Exception $e) {
+            if (request()->ajax()) {
+                return response()->json(['error' => 'An error occurred while deleting the record: ' . $e->getMessage()], 500);
+            }
+
             return back()->with('error', 'An error occurred while deleting the record: ' . $e->getMessage());
         }
     }
+
 }
