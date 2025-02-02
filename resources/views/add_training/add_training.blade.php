@@ -94,11 +94,21 @@
                                 <select id="company" class="form-select form-select-solid">
                                     <option value="" disabled selected>Select Company</option>
                                     @foreach ($companies as $company)
-                                    <option value="{{ $company->id }}">
-                                        {{ $company->company_name }}
-                                    </option>
+                                        <option value="{{ $company->id }}">
+                                            {{ $company->company_name }}
+                                        </option>
                                     @endforeach
+                                    <option value="other">Other</option>
                                 </select>
+                                <input type="text" id="enter-company" class="form-control form-control-solid d-none" placeholder="Enter Company"
+                                {{-- onfocus="showCloseIcon()" onblur="hideCloseIcon()" --}}
+                                >
+
+                                <!-- X Icon for Back to Dropdown -->
+                                <span id="close-icon" class="d-none" onclick="toggleBackToDropdown()"
+                                style="position: absolute; right: 10px; top: 35px; font-size: 18px; color: red; cursor: pointer;">
+                                    &#x2715;
+                                </span>
                             </div>
                         </div>
 
@@ -149,7 +159,7 @@
                             <label for="facilitator" class="fw-bold mb-2 required">Facilitator</label>
                             <select id="facilitator" class="form-select form-select-solid">
                                 <option disabled selected>Select Facilitator</option>
-                                <option value="">No Facilitator Yet</option>
+                                <option value="no_facilitator">No Facilitator Yet</option>
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
@@ -172,7 +182,7 @@
                                                     <input type="text" class="form-control form-control-solid mb-3 assistant" id="assistant" placeholder="Enter Assistant's Name" />
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mb-3">
+                                                    <a href="javascript:;" data-repeater-delete class="btn btn-lg btn-light-danger mb-3">
                                                         <i class="la la-trash-o"></i> DELETE
                                                     </a>
                                                 </div>
@@ -183,7 +193,7 @@
 
                                 <!-- Add Button -->
                                 <div class="form-group mt-3">
-                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary btn-sm">
+                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary btn-lg">
                                         <i class="la la-plus"></i> ADD
                                     </a>
                                 </div>
@@ -230,5 +240,6 @@
                 $(this).slideUp(deleteElement);
             }
         });
+
     </script>
 @endpush

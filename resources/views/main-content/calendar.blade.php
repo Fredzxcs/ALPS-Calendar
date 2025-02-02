@@ -113,36 +113,78 @@
     </div> --}}
         <!-- Right Side: Calendar -->
         <div class="card shadow-sm" style="flex: 2;">
-            <div class="card-header d-flex justify-content-end align-items-center">
+            <div class="card-header d-flex justify-content-between align-items-center">
+
+                <!-- Filter Button -->
+                <button class="btn btn-lg rounded-3 fw-boldest d-flex align-items-center btn-hover-rise text-white"
+                    style="background-color: #052a43;"
+                    data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
+                    <i class="bi bi-funnel me-1 text-white"></i> FILTER
+                </button>
+
+                <!-- Filter Menu -->
+                <div class="menu menu-sub menu-sub-dropdown w-250px w-md-300px" data-kt-menu="true">
+                    <!-- Menu Header -->
+                    <div class="px-7 py-5">
+                        <div class="fs-5 text-dark fw-bolder">Filter Options</div>
+                    </div>
+
+                    <!-- Separator -->
+                    <div class="separator border-gray-200"></div>
+
+                    <!-- Filter Form -->
+                    <div class="px-7 py-5">
+                        <form id="calendarFilterForm">
+                            <!-- Show Dropdown -->
+                            <div class="mb-10">
+                                <label class="form-label fw-bold">Show in Calendar:</label>
+                                <select id="filters" class="form-select form-select-solid" data-placeholder="Select option"
+                                    data-allow-clear="true" id="calendarFilterSelect">
+                                    <option value="trainings" selected>Trainings</option>
+                                    <option value="unavailability">Unavailability</option>
+                                </select>
+                            </div>
+                        </form>
+
+                        <!-- Actions -->
+                        <div class="d-flex justify-content-end">
+                            <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="calendarFilterReset"
+                                data-kt-menu-dismiss="true">RESET</button>
+                            <button id="applyFilter" type="button" class="btn btn-sm btn-primary" id="calendarFilterApply"
+                                data-kt-menu-dismiss="true">APPLY</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Filter Menu -->
 
 
                 @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
 
-                    <!--begin::Add Button-->
-                    <button type="button" class="btn btn-primary btn-lg m-3 btn-hover-rise dropdown-toggle" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
-                        <span class="p-5 fs-4">Add</span>
+                     <!--begin::Add Button-->
+                    <button type="button" class="btn btn-primary btn-lg rounded-3 fw-boldest btn-hover-rise text-white dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="p-5">ADD</span>
                     </button>
                     <!--end::Add Button-->
 
                 @endif
-                <!--begin::Links-->
-                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" data-kt-menu="true">
+                <ul class="dropdown-menu px-2" aria-labelledby="dropdownMenuButton">
                     <!--begin::Link item-->
-                    <div class="menu-item px-3">
-                        <a href="{{ route('add_training') }}" class="menu-link px-3">
-                            <i class="bi bi-pencil-square text-primary fs-6 me-2"></i>Training
+                    <li class="py-2">
+                        <a href="{{ route('add_training') }}" class="dropdown-item">
+                            <i class="bi bi-pencil-square text-primary fs-6 me-2"></i>
+                            <span class="text-gray-700 fw-bold">Training</span>
                         </a>
-                    </div>
+                    </li>
                     <!--end::Link item-->
                     <!--begin::Link item-->
-                    <div class="menu-item px-3">
-                        <a href="" class="menu-link px-3" id="event_view">
-                            <i class="bi bi-calendar-event text-info fs-6 me-2"></i>Unavailability
+                    <li>
+                        <a href="{{ route('add_unavailability') }}" class="dropdown-item" id="event_view">
+                            <i class="bi bi-calendar-event text-info fs-6 me-2"></i>
+                            <span class="text-gray-700 fw-bold">Unavailability</span>
                         </a>
-                    </div>
+                    </li>
                     <!--end::Link item-->
-                </div>
-                <!--end::Links-->
+                </ul>
             </div>
             <div class="card" style="height: auto;">
                 <div class="card-body">
@@ -361,29 +403,111 @@
                 </div>
 
                 <!-- Modal Footer -->
-                <div class="modal-footer justify-content-end">
+                <div class="modal-footer w-100">
 
-                     <!-- Delete -->
-                    <div>
-                        <button type="button" class="btn btn-danger deleteBtn">
-                            <i class="bi bi-trash me-2"></i>DELETE
-                        </button>
-                    </div>
+                    <!-- Delete Button (Left) -->
+                    <button type="button" class="btn btn-danger deleteBtn me-auto">
+                        <i class="bi bi-trash me-2"></i>DELETE
+                    </button>
 
+                    <!-- Edit and Close Buttons (Right) -->
                     @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
-                        <a href="#" id="edit-training-link" data-base-url="{{ url('calendar/edit_training') }}/"  class="btn btn-primary me-2">
+                        <a href="#" id="edit-training-link" data-base-url="{{ url('calendar/edit_training') }}/" class="btn btn-primary me-2">
                             <i class="bi bi-pencil-fill me-2"></i>EDIT
                         </a>
                     @endif
                     <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
-                <div class="modal-footer d-flex justify-content-between">
-
                 </div>
             </div>
         </div>
     </div>
+
+<!--begin::Modal - View Unavailability-->
+<div class="modal fade" id="kt_modal_view_unavailability" tabindex="-1" aria-hidden="true">
+    <!--begin::Modal dialog-->
+    <div class="modal-dialog modal-dialog-centered mw-650px">
+        <!--begin::Modal content-->
+        <div class="modal-content">
+            <!--begin::Modal header-->
+            <div class="modal-header border-0 justify-content-between align-items-center">
+                <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="modal-title">VIEW UNAVAILABILITY</h1>
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
+                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
+                    <span class="svg-icon svg-icon-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black" />
+                            <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black" />
+                        </svg>
+                    </span>
+                    <!--end::Svg Icon-->
+                </div>
+                <!--end::Close-->
+            </div>
+            <hr class="my-2 opacity-10 mb-3 mt-1">
+            <!--end::Modal header-->
+            <!--begin::Modal body-->
+            <div class="modal-body py-10 px-lg-17">
+                <!-- Data Rows -->
+                <!-- Course -->
+                <div class="row mb-5 justify-content-between align-items-center text-center">
+                    <h1 class="fs-1 fw-boldest text-primary" id="modal-user">USER</h1>
+                    {{-- <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span>
+                    <br>
+                    from <span id="modal-time" class="fw-bold"></span></p> --}}
+                </div>
+                <!-- Date -->
+                <div class="row mb-5 justify-content-between align-items-center">
+                    <div class="col-5">
+                        <div class="fv-row">
+                            <label class="fs-6 fw-bold mb-2">
+                                <i class="bi bi-building fs-3 me-5" style="color: #7c0101;"></i>Date Unavailable
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="fv-row d-flex justify-content-end align-items-center">
+                            <p class="lead fs-6" id="modal-date-unavailable">January 10 to January 15</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Purpose -->
+                <div class="row mb-5 justify-content-between align-items-center">
+                    <div class="col-5">
+                        <div class="fv-row">
+                            <label class="fs-6 fw-bold mb-2">
+                                <i class="bi bi-person-workspace fs-3 me-5" style="color: #7c0101;"></i>Purpose
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-7">
+                        <div class="fv-row d-flex justify-content-end align-items-center">
+                            <p class="lead fs-6" id="modal-purpose">Team Building</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer w-100">
+                <!-- Delete Button (Left) -->
+                <button type="button" class="btn btn-danger deleteBtnUnavailability me-auto">
+                    <i class="bi bi-trash me-2"></i>DELETE
+                </button>
+                <!-- Close Buttons (Right) -->
+                <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 @endsection
 
     @push('scripts')
-        <script src="{{ asset('js/calendar.js') }}"></script>
+
+        @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+            <script src="{{ asset('js/calendar.js') }}"></script>
+        @else
+            <script src="{{ asset('js/unavailability_calendar.js') }}"></script>
+        @endif
+
     @endpush

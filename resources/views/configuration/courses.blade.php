@@ -200,14 +200,12 @@
                     <div class="modal-body py-10 px-lg-17">
                         <div class="row mb-5">
                             <label for="course_name" class="form-label fw-bold required">Course Name</label>
-                            <input type="text" class="form-control form-control-solid" id="edit_course_name" placeholder="Enter Course Name"
-                                value="Sample Course Name">
+                            <input type="text" class="form-control form-control-solid" id="edit_course_name" placeholder="Enter Course Name">
                         </div>
 
                         <div class="row mb-5">
                             <label for="course_code" class="form-label fw-bold">Course Code</label>
-                            <input type="text" class="form-control form-control-solid" id="edit_course_code" placeholder="Enter Course Code (Optional)"
-                                value="SCN-01">
+                            <input type="text" class="form-control form-control-solid" id="edit_course_code" placeholder="Enter Course Code (Optional)"">
                         </div>
                     </div>
                     <!--end::Modal body-->

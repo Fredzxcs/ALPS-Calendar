@@ -14,32 +14,62 @@ stepper.on("kt.stepper.previous", function (stepper) {
     stepper.goPrevious(); // go previous step
 });
 
-$(document).ready(function (e){
-
+$(document).ready(function () {
     $('#add_user_submit').click(function (e) {
         e.preventDefault();
 
         // Get the CSRF token from the meta tag
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
+        // Required fields
+        let requiredFields = ['#first_name', '#last_name', '#email', '#contact_number', 'input[name="avatar"]', '#username', '#password', '#color'];
+        let isValid = true;
+
+        requiredFields.forEach(function (selector) {
+            let element = $(selector);
+            if (element.is(':file')) { // Check for file input
+                if (element[0].files.length === 0) {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            } else {
+                if (element.val().trim() === '') {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            }
+        });
+
+        if (!isValid) {
+            Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return;
+        } // Stop submission if validation fails
+
+        // Proceed with backend request if validation passes
         let usertype = $('input[name="radio_buttons_2"]:checked').val();
         let first_name = $('#first_name').val().trim();
         let middle_name = $('#middle_name').val().trim();
         let last_name = $('#last_name').val().trim();
-        let suffix = $('#suffix').val().trim(); // Fixed missing #
-        
-        let fullname = first_name + 
-            (middle_name ? ' ' + middle_name : '') + 
-            ' ' + last_name + 
-            (suffix ? ' ' + suffix : '');
-        
+        let suffix = $('#suffix').val().trim();
+
+        let fullname = first_name + (middle_name ? ' ' + middle_name : '') + ' ' + last_name + (suffix ? ' ' + suffix : '');
+
         let email = $('#email').val();
         let contact_number = $('#contact_number').val();
         let image = $('input[name="avatar"]')[0].files[0];
         let username = $('#username').val();
         let password = $('#password').val();
         let color = $('#color').val();
-        
+
         let formData = new FormData();
         formData.append('usertype', usertype);
         formData.append('name', fullname);
@@ -49,9 +79,6 @@ $(document).ready(function (e){
         formData.append('image', image);
         formData.append('username', username);
         formData.append('password', password);
-        
-        console.log(fullname); // Debugging
-        console.log(usertype);        
 
         $.ajax({
             url: 'add_user',
@@ -61,10 +88,10 @@ $(document).ready(function (e){
             contentType: false,
             cache: false,
             headers: {
-                'X-CSRF-TOKEN': csrfToken // Add CSRF token to headers
+                'X-CSRF-TOKEN': csrfToken
             },
-            success: function(response, textStatus, xhr) {
-                if (xhr.status === 201) { 
+            success: function (response, textStatus, xhr) {
+                if (xhr.status === 201) {
                     Swal.fire({
                         title: 'Success!',
                         text: 'User has been added.',
@@ -83,12 +110,12 @@ $(document).ready(function (e){
                         location.reload();
                     });
                 }
-            },            
-            error: function(xhr, status, error) {
+            },
+            error: function (xhr, status, error) {
                 if (xhr.status === 422) {
                     let errors = xhr.responseJSON.errors;
                     let errorMessages = Object.values(errors).flat().join("\n");
-            
+
                     Swal.fire({
                         title: 'Validation Error!',
                         text: errorMessages,
@@ -96,12 +123,6 @@ $(document).ready(function (e){
                         confirmButtonText: 'OK'
                     });
                 } else {
-                    console.log('AJAX Error Details:');
-                    console.log('Status:', status);
-                    console.log('Error:', error);
-                    console.log('Response Text:', xhr.responseText);
-                    console.log('ReadyState:', xhr.readyState);
-                    console.log('Response Status:', xhr.status);
                     Swal.fire({
                         title: 'Error!',
                         text: 'There was an error adding the user.',
@@ -109,9 +130,24 @@ $(document).ready(function (e){
                         confirmButtonText: 'OK'
                     });
                 }
-            }            
+            }
         });
     });
+});
 
 
+//Toggle password visibility
+$('.togglePassword').on('click', function () {
+    const input = $($(this).data('target'));
+    const icons = $(this).find('i');
+    
+    if (input.attr('type') === 'password') {
+        input.attr('type', 'text');
+        icons.first().addClass('d-none');
+        icons.last().removeClass('d-none');
+    } else {
+        input.attr('type', 'password');
+        icons.first().removeClass('d-none');
+        icons.last().addClass('d-none');
+    }
 });

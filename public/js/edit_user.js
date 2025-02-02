@@ -297,7 +297,15 @@ function fetchUserData(userId) {
                 }
             }
 
-            if (!isValid) return; // Stop submission if validation fails
+            if (!isValid) {
+                Swal.fire({
+                    title: 'Missing Fields!',
+                    text: 'Please fill in all required fields.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            } // Stop submission if validation fails
 
             // Confirmation Dialog
             Swal.fire({
