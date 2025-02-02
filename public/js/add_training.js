@@ -80,11 +80,11 @@ $(document).ready(function (e) {
         let requiredFields = [
             'input[name="mode"]:checked',   // Mode of Training (Radio)
             '#credentials',                 // Account (Dropdown)
-            '#company',                     // Company (Dropdown)
+            '#company',                     // Company (Dropdown/Input)
             '#course',                      // Course (Dropdown)
             '#date-range',                  // Date Range (Input)
             '#time-start',                  // Time Start (Input)
-            '#time-end',                     // Time End (Input)
+            '#time-end',                    // Time End (Input)
             '#facilitator'
         ];
 
@@ -116,6 +116,7 @@ $(document).ready(function (e) {
                 }
             }
         });
+
         // Facilitator Validation
         let facilitator = $('#facilitator').val();
         if (facilitator === '' || facilitator === null) {
@@ -157,7 +158,7 @@ $(document).ready(function (e) {
         let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
         let platform = $('#platform').val();
         let account_id = $('#credentials').find('option:selected').val();
-        let company = $('#company').find('option:selected').val();
+        let company = $('#company').val().trim(); // Updated to get text input value
         let location = $('#location').val();
 
         let formData = new FormData();
@@ -165,7 +166,6 @@ $(document).ready(function (e) {
         formData.append('platform', platform);
         formData.append('location', location);
         formData.append('facilitator_id', facilitator_id);
-        formData.append('company_id', company);
         formData.append('assistant', assistant_id);
         formData.append('account_id', account_id);
         formData.append('mode', mode);
@@ -173,6 +173,17 @@ $(document).ready(function (e) {
         formData.append('to_date', to_date);
         formData.append('from_time', from_time);
         formData.append('to_time', to_time);
+
+        // Check if the company is numeric (dropdown) or text (new company)
+        if ($.isNumeric(company)) {
+            formData.append('company_id', company);
+        } else {
+            formData.append('company_name', company);
+        }
+
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
 
         //ajax
         $.ajax({

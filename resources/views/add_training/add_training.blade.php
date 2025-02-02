@@ -100,10 +100,13 @@
                                     @endforeach
                                     <option value="other">Other</option>
                                 </select>
-                                <input type="text" id="enter-company" class="form-control form-control-solid d-none" placeholder="Enter Company" onfocus="showCloseIcon()" onblur="hideCloseIcon()">
+                                <input type="text" id="enter-company" class="form-control form-control-solid d-none" placeholder="Enter Company"
+                                {{-- onfocus="showCloseIcon()" onblur="hideCloseIcon()" --}}
+                                >
 
                                 <!-- X Icon for Back to Dropdown -->
-                                <span id="close-icon" class="d-none" onclick="toggleBackToDropdown()" style="position: absolute; right: 30px; top: 50%; transform: translateY(-50%); font-size: 18px; color: red; cursor: pointer;">
+                                <span id="close-icon" class="d-none" onclick="toggleBackToDropdown()"
+                                style="position: absolute; right: 10px; top: 35px; font-size: 18px; color: red; cursor: pointer;">
                                     &#x2715;
                                 </span>
                             </div>
