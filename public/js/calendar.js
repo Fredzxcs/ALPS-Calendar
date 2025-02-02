@@ -60,6 +60,70 @@ document.addEventListener('DOMContentLoaded', function () {
         popover.show();
         popoverState = true;
 
+        //Delete training button
+        document.querySelectorAll('.deleteBtn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                // event.preventDefault(); // Prevent default action (e.g., form submission)
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You are about to delete this training.",
+                    icon: 'warning',
+                    buttonsStyling: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Delete',
+                    cancelButtonText: 'Cancel',
+                    customClass: {
+                        confirmButton: "btn btn-danger",
+                        cancelButton: 'btn btn-secondary'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/calendar/delete_training/'+data.id,
+                                type: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                success: function (response) {
+                                    if (response) {
+                                        Swal.fire({
+                                            title: 'Success!',
+                                            text: 'The training has been deleted.',
+                                            icon: 'success',
+                                            confirmButtonText: 'OK'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '/calendar';
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Wait!',
+                                            text: response.message,
+                                            icon: 'warning',
+                                            confirmButtonText: 'OK'
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log('AJAX Error Details:', xhr.responseText);
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'There was an error deleting the training.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            });
+                    }
+                });
+            });
+        });
+
+
         // Attach the modal event listener after popover HTML is inserted
         document.getElementById('kt_calendar_event_view').addEventListener('click', function (e) {
             e.preventDefault(); // Prevent default link action
@@ -455,45 +519,7 @@ const bindEventListeners = () => {
             getPopulation(filter);
         });
     }
-
-
 });
-
-//Delete training button
-document.querySelectorAll('.deleteBtn').forEach(button => {
-    button.addEventListener('click', (event) => {
-        // event.preventDefault(); // Prevent default action (e.g., form submission)
-
-
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to delete this training.",
-            icon: 'warning',
-            buttonsStyling: false,
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Delete',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: "btn btn-danger",
-                cancelButton: 'btn btn-secondary'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Proceed with the delete
-                Swal.fire(
-                    'Deleted!',
-                    'The training has been deleted.',
-                    'success'
-                );
-
-
-            }
-        });
-    });
-});
-
-
 
 //Password reveal in view modal
 $(document).ready(function () {
