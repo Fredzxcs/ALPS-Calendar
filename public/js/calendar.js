@@ -106,6 +106,18 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             const modalElement = document.getElementById('kt_modal_view_unavailability');
             const modal = new bootstrap.Modal(modalElement);
+
+            let date_unavailable = ` ${moment(data.startDate).format('MMM DD, YYYY')} to ${moment(data.endDate).format('MMM DD, YYYY')} `
+
+            $('h1[id="modal-user"]').text(data.user);
+            $('p[id="modal-date-unavailable"]').text(date_unavailable);
+            $('p[id="modal-purpose"]').text(data.reason);
+
+            if(parseInt(data.user_id) === authenticated_user)
+            {
+                $('.deleteBtnUnavailability').addClass('d-none');
+            }
+
             modal.show();
         });
     };
@@ -195,16 +207,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else if (route == 'unavailability') {
                         response.data.forEach(function (unavailability) {
                             if (unavailability.from_date && unavailability.to_date) {
+                                // var fromDateTime = `${unavailability.from_date}`;
+                                // var toDateTime = `${unavailability.to_date}`;
+
                                 var fromDateTime = moment(unavailability.from_date).toISOString();
                                 var toDateTime = moment(unavailability.to_date).add(1, 'days').toISOString();
 
                                 calendar.addEvent({
                                     id: unavailability.id,
+                                    user_id: unavailability.user.id,
                                     title: unavailability.reason || 'Unavailable',
                                     start: fromDateTime,
                                     end: toDateTime,
                                     allDay: true,
-                                    backgroundColor: '#FF5E5E',
+                                    backgroundColor: unavailability.user.color || '#FF5E5E',
                                     borderColor: unavailability.user.color || '#FF5E5E',
                                     extendedProps: {
                                         user: unavailability.user ? unavailability.user.name : 'Unknown User',
@@ -258,6 +274,7 @@ const bindEventListeners = () => {
             const unavailabilityData = {
                 id: info.event.id,
                 user: info.event.extendedProps.user || 'Unknown User',
+                user_id: info.event.id,
                 reason: info.event.title || 'Unavailable',
                 startDate: info.event.start,
                 endDate: info.event.end,
@@ -295,12 +312,21 @@ const bindEventListeners = () => {
             $modalElement.find('#modal-location').text(eventData.location);
 
             const accountEmail = eventData.account.account_email;
+            console.log(accountEmail);
             $modalElement.find('#modal-credentials').text(accountEmail || 'N/A');
 
             let inPersonText = mode === 'virtual' ? 'No' : 'Yes';
-            if (mode === 'public-course' && accountEmail) {
+            if (mode === 'public-course' && accountEmail !== 'N/A' || mode === "virtual") {
                 inPersonText = 'No';
+                $modalElement.find('#modal-password').html(eventData.account.account_password);
             }
+            else if (mode === 'public-course' && accountEmail === 'N/A')
+            {
+                $modalElement.find('#password-container').addClass('d-none');
+            }
+
+            console.log(eventData.account.account_password);
+
             $modalElement.find('#modal-in-person').text(inPersonText);
 
             $modalElement.find('#modal-company').text(eventData.company);
@@ -369,7 +395,9 @@ const bindEventListeners = () => {
 //Delete training button
 document.querySelectorAll('.deleteBtn').forEach(button => {
     button.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default action (e.g., form submission)
+        // event.preventDefault(); // Prevent default action (e.g., form submission)
+
+
 
         Swal.fire({
             title: 'Are you sure?',
@@ -392,7 +420,7 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
                     'success'
                 );
 
-                // TODO: Add logic to perform delete
+
             }
         });
     });

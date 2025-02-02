@@ -108,13 +108,13 @@ document.addEventListener('DOMContentLoaded', function () {
             setValid(location);
         }
 
-        // Validate facilitator (common for all modes)
-        if (!facilitator.value.trim()) {
-            setInvalid(facilitator);
-            isValid = false;
-        } else {
-            setValid(facilitator);
-        }
+        // // Validate facilitator (common for all modes)
+        // if (!facilitator.value.trim()) {
+        //     setInvalid(facilitator);
+        //     isValid = false;
+        // } else {
+        //     setValid(facilitator);
+        // }
 
         if (!isValid) {
             Swal.fire({
@@ -203,14 +203,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 var data = {
                     course_id: course,
                     platform: platform,
-                    location: location.value.trim(),
+                    location: location.value,
                     facilitator_id: facilitator_id,
                     company_id: company,
                     assistant: assistant_id,
                     account_id: account_id,
                     mode: mode,
-                    from_date: from_date,
-                    to_date: to_date,
+                    from_date: startDateFormatted,
+                    to_date: endDateFormatted,
                     from_time: from_time,
                     to_time: to_time
                 };
