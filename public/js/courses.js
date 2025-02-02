@@ -71,13 +71,25 @@ document.addEventListener('DOMContentLoaded', () => {
         const submitButton = document.getElementById('add_course_submit');
         const courseNameInput = document.getElementById('edit_course_name');
 
+        let isValid = true;
+
         // Basic Validation for Course Name
         if (!courseName.value.trim()) {
             courseName.classList.add('border-danger');
-            return;
+            isValid = false;
         } else {
             courseName.classList.remove('border-danger');
         }
+
+        if (!isValid) {
+            Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return;
+        } // Stop submission if validation fails
 
        // Display Confirmation Dialog
         Swal.fire({
@@ -171,12 +183,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const courseCode = document.getElementById('edit_course_code');
         const submitButton = document.getElementById('edit_course_submit');
 
+        let isValid = true;
+
         if (!courseName.value.trim()) {
             courseName.classList.add('border-danger');
-            return;
+            isValid = false;
         } else {
             courseName.classList.remove('border-danger');
         }
+
+        if (!isValid) {
+            Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return;
+        } // Stop submission if validation fails
 
         Swal.fire({
             title: 'Are you sure?',

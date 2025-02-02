@@ -97,7 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!isValid) {
-            return; // Stop form submission if validation fails
+             Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop submission if validation fails
         }
 
         Swal.fire({
@@ -187,7 +193,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (!isValid) {
-            return; // Stop form submission if validation fails
+             Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop submission if validation fails
         }
 
         Swal.fire({

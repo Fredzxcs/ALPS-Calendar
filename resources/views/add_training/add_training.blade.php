@@ -174,7 +174,7 @@
                                                     <input type="text" class="form-control form-control-solid mb-3 assistant" id="assistant" placeholder="Enter Assistant's Name" />
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mb-3">
+                                                    <a href="javascript:;" data-repeater-delete class="btn btn-lg btn-light-danger mb-3">
                                                         <i class="la la-trash-o"></i> DELETE
                                                     </a>
                                                 </div>
@@ -185,7 +185,7 @@
 
                                 <!-- Add Button -->
                                 <div class="form-group mt-3">
-                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary btn-sm">
+                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary btn-lg">
                                         <i class="la la-plus"></i> ADD
                                     </a>
                                 </div>
