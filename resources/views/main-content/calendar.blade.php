@@ -402,7 +402,7 @@
                     </div>
                 </div>
 
-                <!-- Modal Footer -->
+                <!-- Modal Fo   er -->
                 <div class="modal-footer w-100">
 
                     <!-- Delete Button (Left) -->
@@ -461,7 +461,7 @@
                     <div class="col-5">
                         <div class="fv-row">
                             <label class="fs-6 fw-bold mb-2">
-                                <i class="bi bi-building fs-3 me-5" style="color: #7c0101;"></i>Date Unavailable
+                                <i class="bi bi-calendar-x-fill fs-3 me-5" style="color: #7c0101;"></i>Date Unavailable
                             </label>
                         </div>
                     </div>
@@ -476,7 +476,7 @@
                     <div class="col-5">
                         <div class="fv-row">
                             <label class="fs-6 fw-bold mb-2">
-                                <i class="bi bi-person-workspace fs-3 me-5" style="color: #7c0101;"></i>Purpose
+                                <i class="bi bi-patch-question-fill fs-3 me-5" style="color: #7c0101;"></i>Purpose
                             </label>
                         </div>
                     </div>

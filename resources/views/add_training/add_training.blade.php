@@ -47,7 +47,7 @@
                                     <div class="flex-grow-1">
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
                                         <select id="public-course-select" class="form-select form-select-solid">
-                                            <option value="" disabled selected>Select Course</option>
+                                            <option value="no_facilitator" disabled selected>Select Course</option>
                                             @foreach ($courses as $course)
                                             <option value="{{ $course->id }}">
                                                 {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
