@@ -1,4 +1,5 @@
 var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
 document.addEventListener("DOMContentLoaded", function () {
     const modeRadios = document.querySelectorAll('input[name="mode"]');
     const companyContainer = document.getElementById("company-container");
@@ -82,10 +83,7 @@ $(document).ready(function (e) {
         $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
             const value = $(this).val().trim();
             if (value) {
-                if (assistant_id.length > 0) {
-                    assistant_id += ', ';
-                }
-                assistant_id += value;
+                assistant_id += (assistant_id.length > 0 ? ', ' : '') + value;
             }
         });
 
