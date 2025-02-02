@@ -58,7 +58,6 @@
                                         <option value="1">System Admin</option>
                                         <option value="2">Coordinator</option>
                                         <option value="3">Facilitator</option>
-                                        <option value="4">Assistant</option>
                                     </select>
                                 </div>
                             </form>
