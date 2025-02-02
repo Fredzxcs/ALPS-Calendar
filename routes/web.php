@@ -64,8 +64,12 @@ Route::prefix('calendar')->group(function () {
 
     Route::get('/api/get/unavailability', [UnavailabilityController::class, 'getUnavailabilities'])
     ->name('get_unavailability');
+
+    Route::post('/api/check-unavailability/{id}', [UnavailabilityController::class, 'checkUnavailability'])
+    ->name('check_unavailability');
 });
 
+// Manage Access
 Route::prefix('access')->group(function (){
     Route::get('/', [ManageAccessController::class, 'index'])
         ->middleware(['auth', 'user:admin'])
@@ -78,9 +82,12 @@ Route::prefix('access')->group(function (){
         ->name('add_user.store');
     Route::get('/api/get/user/{id}', [ManageAccessController::class, 'get_user'])
         ->name('get_user');
-    Route::get('/edit_user/{id}', [ManageAccessController::class, 'edit'])
+    Route::get('/edit_user/{id}', [ManageAccessController::class, 'edit_user'])
         ->middleware(['auth', 'user:admin'])
         ->name('edit_user');
+    Route::post('/update_user/{id}', [ManageAccessController::class, 'update_user'])
+        ->middleware(['auth', 'user:admin'])
+        ->name('update_user');
     Route::delete('/delete_user/{id}', [ManageAccessController::class, 'delete_user'])
         ->middleware(['auth', 'user:admin'])
         ->name('delete_user');

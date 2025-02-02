@@ -82,11 +82,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('add_company_email');
         const submitButton = document.getElementById('add_company_submit');
 
+        let isValid = true;
+
         if (!companyName.value.trim()) {
-            companyName.classList.add('is-invalid');
-            return;
+            companyName.classList.add('border-danger');
+            isValid = false;
         } else {
-            setValid(companyNameInput);
+            companyName.classList.remove('border-danger');
+        }
+
+        if (!isValid) {
+             Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop submission if validation fails
         }
 
         Swal.fire({
@@ -165,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 $('#edit_company_contact_number').val(response.contact_number);
                 $('#edit_company_email').val(response.email);
     
-                // Optionally, store the company ID in the modal form for later use (for saving)
+                // Store company ID in the modal form (for saving)
                 $('#modal_edit_company_form').data('id', companyId);
     
                 // Open the modal
@@ -191,12 +203,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('edit_company_email');
         const submitButton = document.getElementById('edit_company_submit');
 
+        let isValid = true;
+
         // Validate input
         if (!companyName.value.trim()) {
-            companyName.classList.add('is-invalid');
-            return;
+            companyName.classList.add('border-danger');
+            isValid = false;
         } else {
-            setValid(companyNameInput);
+            companyName.classList.remove('border-danger');
+        }
+
+        if (!isValid) {
+             Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop submission if validation fails
         }
 
         // Confirmation dialog
@@ -345,12 +369,14 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
 //Pagination
 document.addEventListener("DOMContentLoaded", function () {
     const rowsPerPage = 5; // Number of rows per page
+    const pagesPerBatch = 5; // Number of pages per batch
     const table = document.querySelector("#companies_table tbody");
     const rows = Array.from(table.rows);
     const pagination = document.querySelector(".pagination");
     const totalPages = Math.ceil(rows.length / rowsPerPage);
 
     let currentPage = 1; // Track the current page
+    let currentBatch = 1; // Track the current batch
 
     function displayPage(page) {
         const start = (page - 1) * rowsPerPage;
@@ -361,56 +387,65 @@ document.addEventListener("DOMContentLoaded", function () {
             row.style.display = index >= start && index < end ? "" : "none";
         });
 
-        // Update active state for pagination buttons
-        Array.from(pagination.querySelectorAll(".page-item")).forEach((item, idx) => {
-            item.classList.toggle("active", idx === page);
-        });
-
-        // Enable/disable "Previous" and "Next" buttons
-        pagination.querySelector(".prev").classList.toggle("disabled", page === 1);
-        pagination.querySelector(".next").classList.toggle("disabled", page === totalPages);
-
         currentPage = page; // Update the current page
+        updatePagination(); // Update pagination UI
     }
 
-    // Create pagination buttons
-    function createPaginationButtons() {
-        // Add "Previous" button
-        const prevButton = document.createElement("li");
-        prevButton.className = "page-item prev disabled";
-        prevButton.innerHTML = `<a class="page-link" href="#">Previous</a>`;
-        prevButton.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (currentPage > 1) displayPage(currentPage - 1);
-        });
-        pagination.appendChild(prevButton);
+    function updatePagination() {
+        pagination.innerHTML = ""; // Clear existing pagination
 
-        // Add page number buttons
-        for (let i = 1; i <= totalPages; i++) {
+        const totalBatches = Math.ceil(totalPages / pagesPerBatch);
+        const startPage = (currentBatch - 1) * pagesPerBatch + 1;
+        const endPage = Math.min(startPage + pagesPerBatch - 1, totalPages);
+
+        // Previous Batch Button
+        const prevBatchButton = document.createElement("li");
+        prevBatchButton.className = `page-item prev-batch ${currentBatch === 1 ? "disabled" : ""}`;
+        prevBatchButton.innerHTML = `<a class="page-link" href="#">«</a>`;
+        prevBatchButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (currentBatch > 1) {
+                currentBatch--;
+                updatePagination();
+                displayPage((currentBatch - 1) * pagesPerBatch + 1);
+            }
+        });
+        pagination.appendChild(prevBatchButton);
+
+        // Page Number Buttons
+        for (let i = startPage; i <= endPage; i++) {
             const li = document.createElement("li");
-            li.className = "page-item" + (i === 1 ? " active" : "");
+            li.className = `page-item ${i === currentPage ? "active" : ""}`;
             li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
             li.addEventListener("click", (e) => {
                 e.preventDefault();
-                displayPage(i);
+                displayPage(i); // Navigate to selected page
             });
             pagination.appendChild(li);
         }
 
-        // Add "Next" button
-        const nextButton = document.createElement("li");
-        nextButton.className = "page-item next" + (totalPages === 1 ? " disabled" : "");
-        nextButton.innerHTML = `<a class="page-link" href="#">Next</a>`;
-        nextButton.addEventListener("click", (e) => {
+        // Next Batch Button
+        const nextBatchButton = document.createElement("li");
+        nextBatchButton.className = `page-item next-batch ${currentBatch === totalBatches ? "disabled" : ""}`;
+        nextBatchButton.innerHTML = `<a class="page-link" href="#">»</a>`;
+        nextBatchButton.addEventListener("click", (e) => {
             e.preventDefault();
-            if (currentPage < totalPages) displayPage(currentPage + 1);
+            if (currentBatch < totalBatches) {
+                currentBatch++;
+                updatePagination();
+                displayPage((currentBatch - 1) * pagesPerBatch + 1);
+            }
         });
-        pagination.appendChild(nextButton);
+        pagination.appendChild(nextBatchButton);
     }
 
-    createPaginationButtons();
-    displayPage(1); // Show the first page initially
+    if (totalPages > 0) {
+        updatePagination();
+        displayPage(1); // Show the first page initially
+    }
 });
+
+
 
 
 
