@@ -1,4 +1,5 @@
 var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
 document.addEventListener("DOMContentLoaded", function () {
     const modeRadios = document.querySelectorAll('input[name="mode"]');
     const companyContainer = document.getElementById("company-container");
@@ -71,59 +72,95 @@ const fp = flatpickr("#date-range", {
     }
 });
 
-$(document).ready(function (e){
-
-    $('#add_training_submit').click(function (e){
-
+$(document).ready(function (e) {
+    $('#add_training_submit').click(function (e) {
         e.preventDefault();
-        //get radio val to get mode of training
+
+        // Validation Logic
+        let requiredFields = [
+            'input[name="mode"]:checked',   // Mode of Training (Radio)
+            '#credentials',                 // Account (Dropdown)
+            '#company',                     // Company (Dropdown)
+            '#course',                      // Course (Dropdown)
+            '#date-range',                  // Date Range (Input)
+            '#time-start',                  // Time Start (Input)
+            '#time-end',                     // Time End (Input)
+            '#facilitator'
+        ];
+
+        let isValid = true;
+
+        requiredFields.forEach(function (selector) {
+            let element = $(selector);
+
+            if (selector === 'input[name="mode"]:checked') {
+                if ($('input[name="mode"]:checked').length === 0) {
+                    $('input[name="mode"]').closest('.form-group').addClass('border-danger');
+                    isValid = false;
+                } else {
+                    $('input[name="mode"]').closest('.form-group').removeClass('border-danger');
+                }
+            } else if (element.is('select')) { // Handle dropdown validation
+                if (element.val() === '' || element.val() === null) {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            } else { // Handle input fields
+                if (element.val().trim() === '') {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            }
+        });
+        // Facilitator Validation
+        let facilitator = $('#facilitator').val();
+        if (facilitator === '' || facilitator === null) {
+            // If no facilitator is selected, mark as invalid
+            $('#facilitator').addClass('border-danger');
+            isValid = false;
+        } else {
+            // If 'No Facilitator Yet' or any other valid option is selected, mark as valid
+            $('#facilitator').removeClass('border-danger');
+        }
+
+
+        if (!isValid) {
+            Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop submission if validation fails
+        }
+
+        // Form Data Collection
         let mode = $('input[name="mode"]:checked').val();
-
-        console.log(mode);
-
-        //faci
-        let facilitator_id = $('#facilitator').find('option:selected').val();
-
-        //asst
+        let facilitator_id = (facilitator === 'no_facilitator') ? '' : facilitator;
         let assistant_id = '';
 
-        $('div[data-repeater-list="asst_repeat"] .assistant').each(function() {
+        $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
             const value = $(this).val().trim();
-
             if (value) {
-                if (assistant_id.length > 0) {
-                    assistant_id += ', ';
-                }
-                assistant_id += value;
+                assistant_id += (assistant_id.length > 0 ? ', ' : '') + value;
             }
         });
 
-        console.log(assistant_id);
-
-        //dates
         let from_date = startDateFormatted;
         let to_date = endDateFormatted;
-
-        //time
         let from_time = $('#time-start').val();
         let to_time = $('#time-end').val();
-
-        //course
         let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
-
         let platform = $('#platform').val();
-
-        //account
         let account_id = $('#credentials').find('option:selected').val();
-
-        //company
         let company = $('#company').find('option:selected').val();
-
-        //location
         let location = $('#location').val();
 
         let formData = new FormData();
-
         formData.append('course_id', course);
         formData.append('platform', platform);
         formData.append('location', location);
@@ -132,15 +169,10 @@ $(document).ready(function (e){
         formData.append('assistant', assistant_id);
         formData.append('account_id', account_id);
         formData.append('mode', mode);
-
         formData.append('from_date', from_date);
         formData.append('to_date', to_date);
         formData.append('from_time', from_time);
         formData.append('to_time', to_time);
-
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
 
         //ajax
         $.ajax({

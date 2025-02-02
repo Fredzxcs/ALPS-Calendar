@@ -100,7 +100,12 @@
                                     @endforeach
                                     <option value="other">Other</option>
                                 </select>
-                                <input type="text" id="enter-company" class="form-control form-control-solid d-none" placeholder="Enter Company">
+                                <input type="text" id="enter-company" class="form-control form-control-solid d-none" placeholder="Enter Company" onfocus="showCloseIcon()" onblur="hideCloseIcon()">
+
+                                <!-- X Icon for Back to Dropdown -->
+                                <span id="close-icon" class="d-none" onclick="toggleBackToDropdown()" style="position: absolute; right: 30px; top: 50%; transform: translateY(-50%); font-size: 18px; color: red; cursor: pointer;">
+                                    &#x2715;
+                                </span>
                             </div>
                         </div>
 
@@ -151,7 +156,7 @@
                             <label for="facilitator" class="fw-bold mb-2 required">Facilitator</label>
                             <select id="facilitator" class="form-select form-select-solid">
                                 <option disabled selected>Select Facilitator</option>
-                                <option value="">No Facilitator Yet</option>
+                                <option value="no_facilitator">No Facilitator Yet</option>
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
@@ -232,5 +237,6 @@
                 $(this).slideUp(deleteElement);
             }
         });
+
     </script>
 @endpush
