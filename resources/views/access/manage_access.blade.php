@@ -193,6 +193,7 @@
 
     </div>
     <!--begin::Modals-->
+
     <!--begin::Modal - View User-->
     <div class="modal fade" id="modal_view_user" tabindex="-1" aria-hidden="true">
         <!--begin::Modal dialog-->
@@ -369,12 +370,14 @@
                         <!--end::Color-->
                     </div>
                     <!--end::Modal body-->
+                    
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <a href="{{ route('edit_user', ['id' => $user]) }}" id="edit-user-btn" class="btn btn-primary me-2">
+                        <a href="#" id="edit-user-btn" class="btn btn-primary me-2">
                             <i class="bi bi-pencil-fill me-2"></i>EDIT
                         </a>
+
                         <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
                         <!--end::Button-->
                     </div>
@@ -392,21 +395,16 @@
 
 @push('scripts')
 <script src="{{ asset('js/manage_access.js') }}"></script>
+<script src="{{ asset('js/edit_user.js') }}"></script>
+<!-- VIEW USER DATA  -->
 <script>
     $(document).ready(function (){
 
-        $('#edit-user-btn').click(function (e){
-
-            console.log('1');
-
-        });
-
         $('a[data-bs-target="#modal_view_user"]').click(function (e){
-
-            let user = $(this).closest('tr').attr('row-id');
+            let userId = $(this).closest('tr').attr('row-id');  // Get user ID
 
             $.ajax({
-                url: `/access/api/get/user/${user}`,
+                url: `/access/api/get/user/${userId}`,
                 type: 'GET',
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -414,46 +412,38 @@
                 success: function(response) {
                     console.log('User Data:', response);
 
-                    //role
+                    // Role
                     let role = '-';
-
-                    if(response.user.usertype === "admin")
-                    {
-                        role = 'System Admin'
-                    }
-                    else if(response.user.usertype === "coordinator")
-                    {
+                    if(response.user.usertype === "admin") {
+                        role = 'System Admin';
+                    } else if(response.user.usertype === "coordinator") {
                         role = 'Training Coordinator';
-                    }
-                    else if(response.user.usertype === "facilitator")
-                    {
+                    } else if(response.user.usertype === "facilitator") {
                         role = 'Facilitator';
                     }
 
                     $('#role').text(role);
-                    //fullname
                     $('#fullname').text(response.user.name);
-                    //email
                     $('#email').text(response.user.email);
-                    //num
                     $('#num').text(response.user.contact_number);
-                    //idpic
-
-                    if (response.user.image)
-                    {
-                        let picture = `<img class="w-125px h-125px" src="{{ asset('storage') }}/${response.user.image}" alt="default-image">`;
+                    
+                    if (response.user.image) {
+                        let picture = `<img class="w-125px h-125px" src="/storage/${response.user.image}" alt="default-image">`;
                         $('#idpic').html(picture);
-                    }
-                    else
-                    {
+                    } else {
                         $('#idpic').html('<p>No Image</p>');
                     }
-                    //username
+
                     $('#username').text(response.user.username);
-                    //pass
                     $('#pass').text(response.user.password);
-                    //color
                     $('#color').css('background-color', response.user.color);
+
+                    // Set the correct edit URL dynamically
+                    let editUrl = `/access/edit_user/${userId}`; 
+                    $('#edit-user-btn').attr('href', editUrl);
+
+                    console.log("Edit Button Updated:", $('#edit-user-btn').attr('href'));
+
                 },
                 error: function(xhr) {
                     console.error('Error:', xhr.responseJSON?.error || 'An error occurred');
@@ -463,6 +453,6 @@
         });
 
     });
-
 </script>
+
 @endpush
