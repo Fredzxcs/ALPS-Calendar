@@ -50,6 +50,10 @@ Route::prefix('calendar')->group(function () {
         ->middleware(['auth', 'user:admin,coordinator'])
         ->name('add_training.put');
 
+    Route::delete('/delete_unavailability/{unavailability}', [UnavailabilityController::class, 'destroy'])
+        ->middleware(['auth', 'user:admin,coordinator,facilitator'])
+        ->name('unavailability.destroy');
+
     Route::delete('/delete_training/{id}', [TrainingController::class, 'destroy'])
     ->middleware(['auth', 'user:admin,coordinator'])
     ->name('delete_training');
