@@ -161,7 +161,7 @@
                             <div class="row g-5">
                                 <!-- First Name -->
                                 <div class="col-md-6">
-                                    <label for="edit_first_name" class="form-label fw-bold">First Name <span
+                                    <label for=" " class="form-label fw-bold">First Name <span
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control form-control-solid" id="edit_first_name"
                                         placeholder="Enter First Name" required>
@@ -211,10 +211,12 @@
                                             <!--begin::Label-->
                                             <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Select Image">
                                                 <i class="bi bi-pencil-fill fs-7"></i>
+
                                                 <!--begin::Inputs-->
                                                 <input type="file" name="avatar" id="edit_id_picture" accept=".png, .jpg, .jpeg" />
                                                 <input type="hidden" name="avatar_remove" />
                                                 <!--end::Inputs-->
+                                                
                                             </label>
                                             <!--end::Label-->
                                             <!--begin::Cancel-->
@@ -270,5 +272,9 @@
 </div>
 @endsection
 @push('scripts')
+<script>
+    var userId = {{ $user ?? 'null' }}; // Pass user ID to JavaScript
+</script>
+
 <script src="{{ asset('js/edit_user.js') }}"></script>
 @endpush

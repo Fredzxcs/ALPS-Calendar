@@ -35,6 +35,16 @@ document.addEventListener('DOMContentLoaded', () => {
             colorInput.classList.remove('border-danger');
         }
 
+        if (!isValid) {
+            Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return;
+        } // Stop submission if validation fails
+
         // If all fields are valid
         if (isValid) {
             Swal.fire({

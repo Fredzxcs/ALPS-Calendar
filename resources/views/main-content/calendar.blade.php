@@ -360,9 +360,9 @@
                             <div class="fv-row d-flex justify-content-end align-items-center">
                                 <p class="lead fs-6" id="modal-credentials">sample@gmail.com</p>
                             </div>
-                            <div class="fv-row d-flex justify-content-end align-items-center">
+                            <div id="password-container" class="fv-row d-flex justify-content-end align-items-center">
                                 <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
-                                <span class="password-actual d-none" id="modal-password" style="cursor: pointer;">password</span>
+                                <p class="password-actual d-none" id="modal-password" style="cursor: pointer;"></p>
                             </div>
                             <!-- <div class="fv-row d-flex justify-content-end align-items-center">
                                 <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
@@ -402,7 +402,7 @@
                     </div>
                 </div>
 
-                <!-- Modal Footer -->
+                <!-- Modal Fo   er -->
                 <div class="modal-footer w-100">
 
                     <!-- Delete Button (Left) -->
@@ -417,14 +417,13 @@
                         </a>
                     @endif
                     <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
-
                 </div>
-
             </div>
         </div>
     </div>
- <!--begin::Modal - View Unavailability-->
- <div class="modal fade" id="kt_modal_view_unavailability" tabindex="-1" aria-hidden="true">
+
+<!--begin::Modal - View Unavailability-->
+<div class="modal fade" id="kt_modal_view_unavailability" tabindex="-1" aria-hidden="true">
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-650px">
         <!--begin::Modal content-->
@@ -452,23 +451,23 @@
                 <!-- Data Rows -->
                 <!-- Course -->
                 <div class="row mb-5 justify-content-between align-items-center text-center">
-                    <h1 class="fs-1 fw-boldest text-primary" id="modal-course">Course</h1>
-                    <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span>
+                    <h1 class="fs-1 fw-boldest text-primary" id="modal-user">USER</h1>
+                    {{-- <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span>
                     <br>
-                    from <span id="modal-time" class="fw-bold"></span></p>
+                    from <span id="modal-time" class="fw-bold"></span></p> --}}
                 </div>
                 <!-- Date -->
                 <div class="row mb-5 justify-content-between align-items-center">
                     <div class="col-5">
                         <div class="fv-row">
                             <label class="fs-6 fw-bold mb-2">
-                                <i class="bi bi-building fs-3 me-5" style="color: #7c0101;"></i>Date Unavailable
+                                <i class="bi bi-calendar-x-fill fs-3 me-5" style="color: #7c0101;"></i>Date Unavailable
                             </label>
                         </div>
                     </div>
                     <div class="col-7">
                         <div class="fv-row d-flex justify-content-end align-items-center">
-                            <p class="lead fs-6" id="modal-date"></p>
+                            <p class="lead fs-6" id="modal-date-unavailable"></p>
                         </div>
                     </div>
                 </div>
@@ -477,7 +476,7 @@
                     <div class="col-5">
                         <div class="fv-row">
                             <label class="fs-6 fw-bold mb-2">
-                                <i class="bi bi-person-workspace fs-3 me-5" style="color: #7c0101;"></i>Purpose
+                                <i class="bi bi-patch-question-fill fs-3 me-5" style="color: #7c0101;"></i>Purpose
                             </label>
                         </div>
                     </div>
@@ -487,22 +486,15 @@
                         </div>
                     </div>
                 </div>
+            </div>
             <!-- Modal Footer -->
             <div class="modal-footer w-100">
-
                 <!-- Delete Button (Left) -->
-                <button type="button" class="btn btn-danger deleteBtn me-auto">
+                <button type="button" class="btn btn-danger deleteBtnUnavailability me-auto">
                     <i class="bi bi-trash me-2"></i>DELETE
                 </button>
-
-                <!-- Edit and Close Buttons (Right) -->
-                @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
-                    <a href="#" id="edit-unavailability-link" data-base-url="{{ url('calendar/edit_unvailability') }}/" class="btn btn-primary me-2">
-                        <i class="bi bi-pencil-fill me-2"></i>EDIT
-                    </a>
-                @endif
+                <!-- Close Buttons (Right) -->
                 <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
-
             </div>
 
         </div>
@@ -513,6 +505,11 @@
     @push('scripts')
 
         @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+            <script>
+
+               let authenticated_user = {{ Auth::user()->id }};
+
+            </script>
             <script src="{{ asset('js/calendar.js') }}"></script>
         @else
             <script src="{{ asset('js/unavailability_calendar.js') }}"></script>

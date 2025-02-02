@@ -74,7 +74,15 @@
                                 <select id="credentials" class="form-select form-select-solid">
                                     <option value="" disabled selected>Select Host Email Account</option>
                                     @foreach ($accounts as $account)
-                                        <option value="{{ $account->id }}">
+                                        <option value="{{ $account->id }}"
+
+                                            @isset($training->account->id)
+
+                                                {{ $account->id === $training->account->id ? 'selected' : '' }}
+
+                                            @endisset
+
+                                            >
                                             {{ $account->account_email }}
                                         </option>
                                     @endforeach

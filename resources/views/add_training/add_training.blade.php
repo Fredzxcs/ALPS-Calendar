@@ -47,7 +47,7 @@
                                     <div class="flex-grow-1">
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
                                         <select id="public-course-select" class="form-select form-select-solid">
-                                            <option value="" disabled selected>Select Course</option>
+                                            <option value="no_facilitator" disabled selected>Select Course</option>
                                             @foreach ($courses as $course)
                                             <option value="{{ $course->id }}">
                                                 {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
@@ -100,7 +100,15 @@
                                     @endforeach
                                     <option value="other">Other</option>
                                 </select>
-                                <input type="text" id="enter-company" class="form-control form-control-solid d-none" placeholder="Enter Company">
+                                <input type="text" id="enter-company" class="form-control form-control-solid d-none" placeholder="Enter Company"
+                                {{-- onfocus="showCloseIcon()" onblur="hideCloseIcon()" --}}
+                                >
+
+                                <!-- X Icon for Back to Dropdown -->
+                                <span id="close-icon" class="d-none" onclick="toggleBackToDropdown()"
+                                style="position: absolute; right: 10px; top: 35px; font-size: 18px; color: red; cursor: pointer;">
+                                    &#x2715;
+                                </span>
                             </div>
                         </div>
 
@@ -174,7 +182,7 @@
                                                     <input type="text" class="form-control form-control-solid mb-3 assistant" id="assistant" placeholder="Enter Assistant's Name" />
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mb-3">
+                                                    <a href="javascript:;" data-repeater-delete class="btn btn-lg btn-light-danger mb-3">
                                                         <i class="la la-trash-o"></i> DELETE
                                                     </a>
                                                 </div>
@@ -185,7 +193,7 @@
 
                                 <!-- Add Button -->
                                 <div class="form-group mt-3">
-                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary btn-sm">
+                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary btn-lg">
                                         <i class="la la-plus"></i> ADD
                                     </a>
                                 </div>
@@ -232,5 +240,6 @@
                 $(this).slideUp(deleteElement);
             }
         });
+
     </script>
 @endpush

@@ -69,6 +69,58 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    // popovers for Unavailability
+    const initUnavailabilityPopover = (element, data) => {
+        hidePopovers(); // Hide any active popovers
+
+        console.log("Unavailability Data:", data);
+
+        const popoverHtml = `
+            <div class="fw-bolder mb-2">Unavailability - ${data.user || 'Unknown User'}</div>
+            <div class="fs-7"><span class="fw-bold">Start:</span> ${moment(data.startDate).format('MMM DD, YYYY')}</div>
+            <div class="fs-7 mb-2"><span class="fw-bold">End:</span> ${moment(data.endDate).format('MMM DD, YYYY')}</div>
+            <div class="fs-7"><span class="fw-bold">Reason:</span> ${data.reason || 'No reason provided'}</div>
+            <a id="kt_calendar_unavailability_view" type="button" class="btn btn-sm btn-light-danger mt-2" data-event-id="${data.id}">
+                VIEW MORE
+            </a>
+        `;
+        var options = {
+            container: 'body',
+            trigger: 'manual',
+            boundary: 'window',
+            placement: 'auto',
+            dismiss: true,
+            html: true,
+            title: 'Unavailability Summary',
+            content: popoverHtml,
+
+        };
+        // Initialize popover
+        popover = KTApp.initBootstrapPopover(element, options);
+        popover.show();
+        popoverState = true;
+
+
+        // Attach the modal event listener after popover HTML is inserted
+        document.getElementById('kt_calendar_unavailability_view').addEventListener('click', function (e) {
+            e.preventDefault();
+            const modalElement = document.getElementById('kt_modal_view_unavailability');
+            const modal = new bootstrap.Modal(modalElement);
+
+            let date_unavailable = ` ${moment(data.startDate).format('MMM DD, YYYY')} to ${moment(data.endDate).format('MMM DD, YYYY')} `
+
+            $('h1[id="modal-user"]').text(data.user);
+            $('p[id="modal-date-unavailable"]').text(date_unavailable);
+            $('p[id="modal-purpose"]').text(data.reason);
+
+            if(parseInt(data.user_id) === authenticated_user)
+            {
+                $('.deleteBtnUnavailability').addClass('d-none');
+            }
+
+            modal.show();
+        });
+    };
     // Function to hide active popovers
     const hidePopovers = () => {
         if (popoverState && popover) {
@@ -155,16 +207,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else if (route == 'unavailability') {
                         response.data.forEach(function (unavailability) {
                             if (unavailability.from_date && unavailability.to_date) {
+                                // var fromDateTime = `${unavailability.from_date}`;
+                                // var toDateTime = `${unavailability.to_date}`;
+
                                 var fromDateTime = moment(unavailability.from_date).toISOString();
                                 var toDateTime = moment(unavailability.to_date).add(1, 'days').toISOString();
 
                                 calendar.addEvent({
                                     id: unavailability.id,
+                                    user_id: unavailability.user.id,
                                     title: unavailability.reason || 'Unavailable',
                                     start: fromDateTime,
                                     end: toDateTime,
                                     allDay: true,
-                                    backgroundColor: '#FF5E5E',
+                                    backgroundColor: unavailability.user.color || '#FF5E5E',
                                     borderColor: unavailability.user.color || '#FF5E5E',
                                     extendedProps: {
                                         user: unavailability.user ? unavailability.user.name : 'Unknown User',
@@ -199,21 +255,35 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    // Function to bind event listeners to FullCalendar events
-    const bindEventListeners = () => {
-        calendar.setOption('eventMouseEnter', function (info) {
-            // Safely dispose of any existing popover
-            if (popover) {
-                try {
-                    popover.dispose();
-                } catch (error) {
-                    console.error("Error disposing popover:", error);
-                }
-                popoverState = false;
-                popover = null;
+// Function to bind event listeners to FullCalendar events
+const bindEventListeners = () => {
+    calendar.setOption('eventMouseEnter', function (info) {
+        // Safely dispose of any existing popover
+        if (popover) {
+            try {
+                popover.dispose();
+            } catch (error) {
+                console.error("Error disposing popover:", error);
             }
+            popoverState = false;
+            popover = null;
+        }
 
-            // Extract event data and initialize a new popover
+        // Check if unavailability event
+        if (info.event.extendedProps.user) {
+            const unavailabilityData = {
+                id: info.event.id,
+                user: info.event.extendedProps.user || 'Unknown User',
+                user_id: info.event.id,
+                reason: info.event.title || 'Unavailable',
+                startDate: info.event.start,
+                endDate: info.event.end,
+            };
+            initUnavailabilityPopover(info.el, unavailabilityData);
+        }
+
+        // check if training
+        if (info.event.extendedProps.modeType) {
             const eventData = {
                 eventName: info.event.title || 'No Title',
                 startDate: info.event.start || null,
@@ -227,6 +297,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 location: info.event.extendedProps.location || 'N/A',
                 id: info.event.id || '',
             };
+            initPopovers(info.el, eventData);
 
             const $modalElement = $('#kt_modal_view_training');
             $modalElement.find('#modal-title').text('VIEW TRAINING');
@@ -241,12 +312,21 @@ document.addEventListener('DOMContentLoaded', function () {
             $modalElement.find('#modal-location').text(eventData.location);
 
             const accountEmail = eventData.account.account_email;
+            console.log(accountEmail);
             $modalElement.find('#modal-credentials').text(accountEmail || 'N/A');
 
             let inPersonText = mode === 'virtual' ? 'No' : 'Yes';
-            if (mode === 'public-course' && accountEmail) {
+            if (mode === 'public-course' && accountEmail !== 'N/A' || mode === "virtual") {
                 inPersonText = 'No';
+                $modalElement.find('#modal-password').html(eventData.account.account_password);
             }
+            else if (mode === 'public-course' && accountEmail === 'N/A')
+            {
+                $modalElement.find('#password-container').addClass('d-none');
+            }
+
+            console.log(eventData.account.account_password);
+
             $modalElement.find('#modal-in-person').text(inPersonText);
 
             $modalElement.find('#modal-company').text(eventData.company);
@@ -263,12 +343,15 @@ document.addEventListener('DOMContentLoaded', function () {
             $modalElement.find('#modal-time').text(`${formattedStartTime} to ${formattedEndTime}`);
 
             initPopovers(info.el, eventData);
-        });
+        }
+    });
 
-        calendar.setOption('eventMouseLeave', function () {
-            // hidePopovers(); // Ensure safe disposal of the popover
-        });
-    };
+    calendar.setOption('eventMouseLeave', function () {
+        setTimeout(() => {
+            hidePopovers();
+        }, 3000); // Small delay before hiding popovers
+    });
+};
 
 
     // Initialize the calendar and its initial population
@@ -312,7 +395,9 @@ document.addEventListener('DOMContentLoaded', function () {
 //Delete training button
 document.querySelectorAll('.deleteBtn').forEach(button => {
     button.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default action (e.g., form submission)
+        // event.preventDefault(); // Prevent default action (e.g., form submission)
+
+
 
         Swal.fire({
             title: 'Are you sure?',
@@ -323,9 +408,41 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
             confirmButtonText: 'Yes, Delete',
             cancelButtonText: 'Cancel',
             customClass: {
-            confirmButton: "btn btn-danger",
-            cancelButton: 'btn btn-secondary'
-        }
+                confirmButton: "btn btn-danger",
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with the delete
+                Swal.fire(
+                    'Deleted!',
+                    'The training has been deleted.',
+                    'success'
+                );
+
+
+            }
+        });
+    });
+});
+
+//Delete unavailability button
+document.querySelectorAll('.deleteBtnUnavailability').forEach(button => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default action (e.g., form submission)
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to delete this unavailability.",
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: "btn btn-danger",
+                cancelButton: 'btn btn-secondary'
+            }
         }).then((result) => {
             if (result.isConfirmed) {
                 // Proceed with the delete
@@ -342,14 +459,14 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
 });
 
 //Password reveal in view modal
-$(document).ready(function() {
-    $(".password-display").click(function() {
+$(document).ready(function () {
+    $(".password-display").click(function () {
         var actualPassword = $(this).next(".password-actual");
         $(this).addClass("d-none");
         actualPassword.removeClass("d-none");
     });
 
-    $(".password-actual").click(function() {
+    $(".password-actual").click(function () {
         var passwordDisplay = $(this).prev(".password-display");
         $(this).addClass("d-none");
         passwordDisplay.removeClass("d-none");
