@@ -80,7 +80,6 @@
 </div>
 @endsection
 @push('scripts')
-
 <script src="{{ asset('js/manage_access.js') }}"></script>
 <script src="{{ asset('js/change_credentials.js') }}"></script>
 @endpush
