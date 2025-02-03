@@ -360,9 +360,9 @@
                             <div class="fv-row d-flex justify-content-end align-items-center">
                                 <p class="lead fs-6" id="modal-credentials">sample@gmail.com</p>
                             </div>
-                            <div class="fv-row d-flex justify-content-end align-items-center">
+                            <div id="password-container" class="fv-row d-flex justify-content-end align-items-center">
                                 <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
-                                <span class="password-actual d-none" id="modal-password" style="cursor: pointer;">password</span>
+                                <p class="password-actual d-none" id="modal-password" style="cursor: pointer;"></p>
                             </div>
                             <!-- <div class="fv-row d-flex justify-content-end align-items-center">
                                 <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
@@ -402,13 +402,15 @@
                     </div>
                 </div>
 
-                <!-- Modal Footer -->
+                <!-- Modal Fo   er -->
                 <div class="modal-footer w-100">
 
+                    @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
                     <!-- Delete Button (Left) -->
                     <button type="button" class="btn btn-danger deleteBtn me-auto">
                         <i class="bi bi-trash me-2"></i>DELETE
                     </button>
+                    @endif
 
                     <!-- Edit and Close Buttons (Right) -->
                     @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
@@ -461,13 +463,13 @@
                     <div class="col-5">
                         <div class="fv-row">
                             <label class="fs-6 fw-bold mb-2">
-                                <i class="bi bi-building fs-3 me-5" style="color: #7c0101;"></i>Date Unavailable
+                                <i class="bi bi-calendar-x-fill fs-3 me-5" style="color: #7c0101;"></i>Date Unavailable
                             </label>
                         </div>
                     </div>
                     <div class="col-7">
                         <div class="fv-row d-flex justify-content-end align-items-center">
-                            <p class="lead fs-6" id="modal-date-unavailable">January 10 to January 15</p>
+                            <p class="lead fs-6" id="modal-date-unavailable"></p>
                         </div>
                     </div>
                 </div>
@@ -476,7 +478,7 @@
                     <div class="col-5">
                         <div class="fv-row">
                             <label class="fs-6 fw-bold mb-2">
-                                <i class="bi bi-person-workspace fs-3 me-5" style="color: #7c0101;"></i>Purpose
+                                <i class="bi bi-patch-question-fill fs-3 me-5" style="color: #7c0101;"></i>Purpose
                             </label>
                         </div>
                     </div>
@@ -504,7 +506,12 @@
 
     @push('scripts')
 
-        @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+        @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator', 'facilitator']))
+            <script>
+
+               let authenticated_user = {{ Auth::user()->id }};
+
+            </script>
             <script src="{{ asset('js/calendar.js') }}"></script>
         @else
             <script src="{{ asset('js/unavailability_calendar.js') }}"></script>

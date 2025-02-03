@@ -1,3 +1,4 @@
+var csrfToken = $('meta[name="csrf-token"]').attr('content');
 document.addEventListener('DOMContentLoaded', function () {
     var calendarEl = document.getElementById('calendar');
     var loaderWrapper = document.getElementById('loader-wrapper');
@@ -59,6 +60,70 @@ document.addEventListener('DOMContentLoaded', function () {
         popover.show();
         popoverState = true;
 
+        //Delete training button
+        document.querySelectorAll('.deleteBtn').forEach(button => {
+            button.addEventListener('click', (event) => {
+                // event.preventDefault(); // Prevent default action (e.g., form submission)
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You are about to delete this training.",
+                    icon: 'warning',
+                    buttonsStyling: false,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, Delete',
+                    cancelButtonText: 'Cancel',
+                    customClass: {
+                        confirmButton: "btn btn-danger",
+                        cancelButton: 'btn btn-secondary'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/calendar/delete_training/'+data.id,
+                                type: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                success: function (response) {
+                                    if (response) {
+                                        Swal.fire({
+                                            title: 'Success!',
+                                            text: 'The training has been deleted.',
+                                            icon: 'success',
+                                            confirmButtonText: 'OK'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '/calendar';
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Wait!',
+                                            text: response.message,
+                                            icon: 'warning',
+                                            confirmButtonText: 'OK'
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log('AJAX Error Details:', xhr.responseText);
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'There was an error deleting the training.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            });
+                    }
+                });
+            });
+        });
+
+
         // Attach the modal event listener after popover HTML is inserted
         document.getElementById('kt_calendar_event_view').addEventListener('click', function (e) {
             e.preventDefault(); // Prevent default link action
@@ -101,11 +166,89 @@ document.addEventListener('DOMContentLoaded', function () {
         popoverState = true;
 
 
+
         // Attach the modal event listener after popover HTML is inserted
         document.getElementById('kt_calendar_unavailability_view').addEventListener('click', function (e) {
             e.preventDefault();
             const modalElement = document.getElementById('kt_modal_view_unavailability');
             const modal = new bootstrap.Modal(modalElement);
+
+            let date_unavailable = ` ${moment(data.startDate).format('MMM DD, YYYY')} to ${moment(data.endDate).format('MMM DD, YYYY')} `
+
+            $('h1[id="modal-user"]').text(data.user);
+            $('p[id="modal-date-unavailable"]').text(date_unavailable);
+            $('p[id="modal-purpose"]').text(data.reason);
+
+            if(parseInt(data.user_id) !== authenticated_user)
+            {
+                $('.deleteBtnUnavailability').addClass('d-none');
+            }
+
+            //Delete unavailability button
+            document.querySelectorAll('.deleteBtnUnavailability').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.preventDefault(); // Prevent default action (e.g., form submission)
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You are about to delete this unavailability.",
+                        icon: 'warning',
+                        buttonsStyling: false,
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, Delete',
+                        cancelButtonText: 'Cancel',
+                        customClass: {
+                            confirmButton: "btn btn-danger",
+                            cancelButton: 'btn btn-secondary'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Proceed with the delete
+
+                            $.ajax({
+                                url: '/calendar/delete_unavailability/'+data.id,
+                                type: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                success: function (response) {
+                                    if (response) {
+                                        Swal.fire({
+                                            title: 'Success!',
+                                            text: 'The unavailability has been deleted.',
+                                            icon: 'success',
+                                            confirmButtonText: 'OK'
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '/calendar';
+                                            }
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            title: 'Wait!',
+                                            text: response.message,
+                                            icon: 'warning',
+                                            confirmButtonText: 'OK'
+                                        }).then(() => {
+                                            location.reload();
+                                        });
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log('AJAX Error Details:', xhr.responseText);
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: 'There was an error deleting the unavailability.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+
             modal.show();
         });
     };
@@ -195,16 +338,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     } else if (route == 'unavailability') {
                         response.data.forEach(function (unavailability) {
                             if (unavailability.from_date && unavailability.to_date) {
+                                // var fromDateTime = `${unavailability.from_date}`;
+                                // var toDateTime = `${unavailability.to_date}`;
+
                                 var fromDateTime = moment(unavailability.from_date).toISOString();
                                 var toDateTime = moment(unavailability.to_date).add(1, 'days').toISOString();
 
                                 calendar.addEvent({
                                     id: unavailability.id,
+                                    user_id: unavailability.user.id,
                                     title: unavailability.reason || 'Unavailable',
                                     start: fromDateTime,
                                     end: toDateTime,
                                     allDay: true,
-                                    backgroundColor: '#FF5E5E',
+                                    backgroundColor: unavailability.user.color || '#FF5E5E',
                                     borderColor: unavailability.user.color || '#FF5E5E',
                                     extendedProps: {
                                         user: unavailability.user ? unavailability.user.name : 'Unknown User',
@@ -258,6 +405,7 @@ const bindEventListeners = () => {
             const unavailabilityData = {
                 id: info.event.id,
                 user: info.event.extendedProps.user || 'Unknown User',
+                user_id: info.event.extendedProps.user_id,
                 reason: info.event.title || 'Unavailable',
                 startDate: info.event.start,
                 endDate: info.event.end,
@@ -295,12 +443,21 @@ const bindEventListeners = () => {
             $modalElement.find('#modal-location').text(eventData.location);
 
             const accountEmail = eventData.account.account_email;
+            console.log(accountEmail);
             $modalElement.find('#modal-credentials').text(accountEmail || 'N/A');
 
             let inPersonText = mode === 'virtual' ? 'No' : 'Yes';
-            if (mode === 'public-course' && accountEmail) {
+            if (mode === 'public-course' && accountEmail !== 'N/A' || mode === "virtual") {
                 inPersonText = 'No';
+                $modalElement.find('#modal-password').html(eventData.account.account_password);
             }
+            else if (mode === 'public-course' && accountEmail === 'N/A')
+            {
+                $modalElement.find('#password-container').addClass('d-none');
+            }
+
+            console.log(eventData.account.account_password);
+
             $modalElement.find('#modal-in-person').text(inPersonText);
 
             $modalElement.find('#modal-company').text(eventData.company);
@@ -362,72 +519,6 @@ const bindEventListeners = () => {
             getPopulation(filter);
         });
     }
-
-
-});
-
-//Delete training button
-document.querySelectorAll('.deleteBtn').forEach(button => {
-    button.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default action (e.g., form submission)
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to delete this training.",
-            icon: 'warning',
-            buttonsStyling: false,
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Delete',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: "btn btn-danger",
-                cancelButton: 'btn btn-secondary'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Proceed with the delete
-                Swal.fire(
-                    'Deleted!',
-                    'The training has been deleted.',
-                    'success'
-                );
-
-                // TODO: Add logic to perform delete
-            }
-        });
-    });
-});
-
-//Delete unavailability button
-document.querySelectorAll('.deleteBtnUnavailability').forEach(button => {
-    button.addEventListener('click', (event) => {
-        event.preventDefault(); // Prevent default action (e.g., form submission)
-
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You are about to delete this unavailability.",
-            icon: 'warning',
-            buttonsStyling: false,
-            showCancelButton: true,
-            confirmButtonText: 'Yes, Delete',
-            cancelButtonText: 'Cancel',
-            customClass: {
-                confirmButton: "btn btn-danger",
-                cancelButton: 'btn btn-secondary'
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Proceed with the delete
-                Swal.fire(
-                    'Deleted!',
-                    'The training has been deleted.',
-                    'success'
-                );
-
-                // TODO: Add logic to perform delete
-            }
-        });
-    });
 });
 
 //Password reveal in view modal

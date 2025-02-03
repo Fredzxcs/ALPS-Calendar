@@ -47,7 +47,7 @@
                                     <div class="flex-grow-1">
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
                                         <select id="public-course-select" class="form-select form-select-solid">
-                                            <option value="" disabled selected>Select Course</option>
+                                            <option value="no_facilitator" disabled selected>Select Course</option>
                                             @foreach ($courses as $course)
                                             <option value="{{ $course->id }}">
                                                 {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
@@ -159,7 +159,7 @@
                             <label for="facilitator" class="fw-bold mb-2 required">Facilitator</label>
                             <select id="facilitator" class="form-select form-select-solid">
                                 <option disabled selected>Select Facilitator</option>
-                                <option value="no_facilitator">No Facilitator Yet</option>
+                                <option value="">No Facilitator Yet</option>
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                 @endforeach
