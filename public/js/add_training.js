@@ -76,67 +76,67 @@ $(document).ready(function (e) {
     $('#add_training_submit').click(function (e) {
         e.preventDefault();
 
-        // Validation Logic
-        let requiredFields = [
-            'input[name="mode"]:checked',   // Mode of Training (Radio)
-            '#credentials',                 // Account (Dropdown)
-            '#company',                     // Company (Dropdown)
-            '#course',                      // Course (Dropdown)
-            '#date-range',                  // Date Range (Input)
-            '#time-start',                  // Time Start (Input)
-            '#time-end',                     // Time End (Input)
-            '#facilitator'
-        ];
+        // // Validation Logic
+        // let requiredFields = [
+        //     'input[name="mode"]:checked',   // Mode of Training (Radio)
+        //     '#credentials',                 // Account (Dropdown)
+        //     '#company',                     // Company (Dropdown)
+        //     '#course',                      // Course (Dropdown)
+        //     '#date-range',                  // Date Range (Input)
+        //     '#time-start',                  // Time Start (Input)
+        //     '#time-end',                     // Time End (Input)
+        //     '#facilitator'
+        // ];
 
-        let isValid = true;
+        // let isValid = true;
 
-        requiredFields.forEach(function (selector) {
-            let element = $(selector);
+        // requiredFields.forEach(function (selector) {
+        //     let element = $(selector);
 
-            if (selector === 'input[name="mode"]:checked') {
-                if ($('input[name="mode"]:checked').length === 0) {
-                    $('input[name="mode"]').closest('.form-group').addClass('border-danger');
-                    isValid = false;
-                } else {
-                    $('input[name="mode"]').closest('.form-group').removeClass('border-danger');
-                }
-            } else if (element.is('select')) { // Handle dropdown validation
-                if (element.val() === '' || element.val() === null) {
-                    element.addClass('border-danger');
-                    isValid = false;
-                } else {
-                    element.removeClass('border-danger');
-                }
-            } else { // Handle input fields
-                if (element.val().trim() === '') {
-                    element.addClass('border-danger');
-                    isValid = false;
-                } else {
-                    element.removeClass('border-danger');
-                }
-            }
-        });
-        // Facilitator Validation
-        let facilitator = $('#facilitator').val();
-        if (facilitator === '' || facilitator === null) {
-            // If no facilitator is selected, mark as invalid
-            $('#facilitator').addClass('border-danger');
-            isValid = false;
-        } else {
-            // If 'No Facilitator Yet' or any other valid option is selected, mark as valid
-            $('#facilitator').removeClass('border-danger');
-        }
+        //     if (selector === 'input[name="mode"]:checked') {
+        //         if ($('input[name="mode"]:checked').length === 0) {
+        //             $('input[name="mode"]').closest('.form-group').addClass('border-danger');
+        //             isValid = false;
+        //         } else {
+        //             $('input[name="mode"]').closest('.form-group').removeClass('border-danger');
+        //         }
+        //     } else if (element.is('select')) { // Handle dropdown validation
+        //         if (element.val() === '' || element.val() === null) {
+        //             element.addClass('border-danger');
+        //             isValid = false;
+        //         } else {
+        //             element.removeClass('border-danger');
+        //         }
+        //     } else { // Handle input fields
+        //         if (element.val().trim() === '') {
+        //             element.addClass('border-danger');
+        //             isValid = false;
+        //         } else {
+        //             element.removeClass('border-danger');
+        //         }
+        //     }
+        // });
+        // // Facilitator Validation
+        // let facilitator = $('#facilitator').val();
+        // if (facilitator === '' || facilitator === null) {
+        //     // If no facilitator is selected, mark as invalid
+        //     $('#facilitator').addClass('border-danger');
+        //     isValid = false;
+        // } else {
+        //     // If 'No Facilitator Yet' or any other valid option is selected, mark as valid
+        //     $('#facilitator').removeClass('border-danger');
+        // }
 
 
-        if (!isValid) {
-            Swal.fire({
-                title: 'Missing Fields!',
-                text: 'Please fill in all required fields.',
-                icon: 'warning',
-                confirmButtonText: 'OK'
-            });
-            return; // Stop submission if validation fails
-        }
+        // if (!isValid) {
+        //     Swal.fire({
+        //         title: 'Missing Fields!',
+        //         text: 'Please fill in all required fields.',
+        //         icon: 'warning',
+        //         confirmButtonText: 'OK'
+        //     });
+        //     return; // Stop submission if validation fails
+        // }
 
         // Form Data Collection
         let mode = $('input[name="mode"]:checked').val();
@@ -276,7 +276,7 @@ $(document).ready(function (e) {
     // Step 4: Function to create the training session
     function createTraining(companyId) {
         let formData = new FormData();
-        formData.append('course_id', $('#course').find('option:selected').val());
+        formData.append('course_id', $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val());
         formData.append('platform', $('#platform').val());
         formData.append('location', $('#location').val());
         formData.append('company_id', companyId);
@@ -295,6 +295,10 @@ $(document).ready(function (e) {
         }
         else {
             formData.append('facilitator_id', null);
+        }
+
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
         }
 
 
