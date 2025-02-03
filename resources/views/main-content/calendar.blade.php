@@ -504,7 +504,7 @@
 
     @push('scripts')
 
-        @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+        @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator', 'facilitator']))
             <script>
 
                let authenticated_user = {{ Auth::user()->id }};
