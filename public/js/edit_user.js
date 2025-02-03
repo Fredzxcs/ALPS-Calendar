@@ -223,7 +223,7 @@ function fetchUserData(userId) {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const userId = document.getElementById('userId')?.value || null;
+    const userId = window.userId;
 
     if (!userId) {
         console.error("User ID not found.");
@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     text: 'User updated successfully.',
                     icon: 'success'
                 }).then(() => {
-                    window.location.reload(); // Reload the page after update
+                    window.location.href = response.redirect_url;
                 });
             },
             error: function (xhr) {

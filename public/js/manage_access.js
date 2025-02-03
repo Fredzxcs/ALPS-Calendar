@@ -1,3 +1,51 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const accessFilter = document.getElementById('accessFilterSelect');
+    const tableRows = document.querySelectorAll('#access_table tbody tr');
+    const resetButton = document.getElementById('accessFilterReset');
+
+    // Ensure the elements exist before adding event listeners
+    if (searchInput) {
+        searchInput.addEventListener('keyup', filterTable);
+    }
+
+    if (accessFilter) {
+        accessFilter.addEventListener('change', filterTable);
+    }
+
+    if (resetButton) {
+        resetButton.addEventListener('click', () => {
+            searchInput.value = "";
+            accessFilter.value = "Show All";
+            filterTable();
+        });
+    }
+
+    function filterTable() {
+        const searchValue = searchInput ? searchInput.value.toLowerCase() : "";
+        const selectedRole = accessFilter ? accessFilter.value.toLowerCase() : ""; // Ensure accessFilter exists
+
+        //console.log('Selected Role:', selectedRole); // Debugging log
+
+        tableRows.forEach(row => {
+            const rowText = row.textContent.toLowerCase();
+            const roleValue = row.getAttribute('data-role') ? row.getAttribute('data-role').toLowerCase() : "";
+
+            //console.log('Row Role Value:', roleValue); // Debugging log
+
+            // Match both search & role filter
+            const matchesSearch = rowText.includes(searchValue);
+            const matchesRole = selectedRole === "show all" || roleValue.includes(selectedRole);
+
+            row.style.display = matchesSearch && matchesRole ? '' : 'none';
+        });
+    }
+});
+
+
+
+
+
 //Reactivate button
 document.querySelectorAll('.reactBtn').forEach(button => {
     button.addEventListener('click', (event) => {

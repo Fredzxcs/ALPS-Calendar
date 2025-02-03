@@ -94,7 +94,12 @@ class ManageAccessController extends Controller
 
             $user->save();
 
-            return response()->json(['success' => true, 'message' => 'User updated successfully.']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Credentials updated successfully.',
+                'redirect_url' => route('manage_access') // Send route URL to frontend
+            ]);
+
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error updating user: ' . $e->getMessage()], 500);
         }
@@ -114,35 +119,38 @@ class ManageAccessController extends Controller
 
     public function update_credentials(Request $request, $id)
     {
-        $request->validate([
-            'username' => 'required|string|max:255',
-            'color' => 'nullable|string',
-            'password' => 'nullable|max:30' // Password is optional but must be confirmed
-        ]);
-
-        $user = User::find($id);
-
-        if (!$user) {
-            return redirect()->back()->with('error', 'User not found.');
+        try {
+            $request->validate([
+                'username' => 'required|string|max:255',
+                'color' => 'nullable|string',
+                'password' => 'nullable|max:30' // Password is optional but must be confirmed
+            ]);
+    
+            $user = User::find($id);
+    
+            if (!$user) {
+                return redirect()->back()->with('error', 'User not found.');
+            }
+    
+            // Update fields
+            $user->username = $request->username;
+            $user->color = $request->color;
+    
+            // Only update password if it's provided
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            } 
+    
+            $user->save();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Credentials updated successfully.',
+                'redirect_url' => route('manage_access') // Send route URL to manage_access page
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error updating user: ' . $e->getMessage()], 500);
         }
-
-        // Update fields
-        $user->username = $request->username;
-        $user->color = $request->color;
-
-        // Only update password if it's provided
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
-        } 
-
-        $user->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Credentials updated successfully.',
-            'redirect_url' => route('manage_access') // Send route URL to frontend
-        ]);
-        
     }
         
     // public function edit_user($encryptedId)

@@ -140,14 +140,18 @@ document.addEventListener('DOMContentLoaded', () => {
             usernameInput.classList.remove('border-danger');
         }
 
-        // Validate password (optional)
-        // if (passwordInput.value.trim().length > 0 && passwordInput.value.trim().length < 6) {
-        //     passwordInput.classList.add('border-danger');
-        //     Swal.fire('Warning!', 'Password must be at least 6 characters.', 'warning');
-        //     isValid = false;
-        // } else {
-        //     passwordInput.classList.remove('border-danger');
-        // }
+        // Validate password 
+        if (passwordInput.value.trim().length > 0 && passwordInput.value.trim().length < 8) {
+            passwordInput.classList.add('border-danger');
+            Swal.fire({
+                title: 'Warning!', 
+                text: 'Password must be at least 8 characters.', 
+                icon: 'warning',
+            });
+            return;
+        } else {
+            passwordInput.classList.remove('border-danger');
+        }
 
         //Validate color
         if (!colorInput.value) {
@@ -160,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: 'Missing Fields!',
                 text: 'Please fill in all required fields.',
                 icon: 'warning',
-                confirmButtonText: 'OK'
             });
             return;
         }
