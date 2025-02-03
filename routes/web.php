@@ -105,22 +105,22 @@ Route::get('/access/archive', function () {
 Route::prefix('/config/courses')->group(function(){
     // view courses
     Route::get('/',[ConfigureCoursesController::class, 'showCourse'])
-        ->middleware(['auth', 'user:admin, coordinator'])
+        ->middleware(['auth', 'user:admin,coordinator'])
         ->name('config_courses');
     // add courses
     Route::post('/add', [ConfigureCoursesController::class, 'addCourse'])
-        ->middleware(['auth', 'user:admin, coordinator'])
+        ->middleware(['auth', 'user:admin,coordinator'])
         ->name('add_course');
     // show course entry
     Route::get('/{id}', [ConfigureCoursesController::class, 'showCourseDetails'])
-        ->middleware(['auth', 'user:admin, coordinator']);
+        ->middleware(['auth', 'user:admin,coordinator']);
     // update course
     Route::patch('/update/{id}',[ConfigureCoursesController::Class, 'editCourse'])
-        ->middleware(['auth', 'user:admin, coordinator'])
+        ->middleware(['auth', 'user:admin,coordinator'])
         ->name('edit_course');
     // delete course
     Route::delete('/delete/{id}',[ConfigureCoursesController::Class, 'deleteCourse'])
-        ->middleware(['auth', 'user:admin, coordinator'])
+        ->middleware(['auth', 'user:admin,coordinator'])
         ->name('delete_course');
 
 });
@@ -128,28 +128,28 @@ Route::prefix('/config/courses')->group(function(){
 // config - accounts
 Route::prefix('/config/accounts')->group(function () {
     Route::get('/',[ConfigureAccountController::class, 'showAccount'])
-        ->middleware(['auth', 'user:admin, coordinator'])
+        ->middleware(['auth', 'user:admin,coordinator'])
         ->name('config_accounts');
     Route::post('/add', [ConfigureAccountController::class, 'addAccount'])
-        ->middleware(['auth', 'user:admin, coordinator'])
+        ->middleware(['auth', 'user:admin,coordinator'])
         ->name('add_account');
     Route::get('/{id}', [ConfigureAccountController::class, 'showAccountDetails'])
-        ->middleware(['auth', 'user:admin, coordinator']);
+        ->middleware(['auth', 'user:admin,coordinator']);
     Route::patch('/update/{id}',[ConfigureAccountController::Class, 'editAccount'])
-        ->middleware(['auth', 'user:admin, coordinator'])
+        ->middleware(['auth', 'user:admin,coordinator'])
         ->name('edit_account');
     Route::delete('/delete/{id}',[ConfigureAccountController::Class, 'deleteAccount'])
-        ->middleware(['auth', 'user:admin, coordinator'])
+        ->middleware(['auth', 'user:admin,coordinator'])
         ->name('delete_account');
 });
 
 // config - companies
 Route::prefix('/config/companies')->group(function () {
-    Route::get('/',[ConfigureCompanyController::Class, 'showCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('config_companies');
-    Route::post('/add',[ConfigureCompanyController::Class, 'addCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('add_company');
-    Route::get('/{id}', [ConfigureCompanyController::class, 'showCompanyDetails'])->middleware(['auth', 'user:admin, coordinator']);
-    Route::patch('/update/{id}',[ConfigureCompanyController::Class, 'editCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('edit_company');
-    Route::delete('/delete/{id}',[ConfigureCompanyController::Class, 'deleteCompany'])->middleware(['auth', 'user:admin, coordinator'])->name('delete_company');
+    Route::get('/',[ConfigureCompanyController::Class, 'showCompany'])->middleware(['auth', 'user:admin,coordinator'])->name('config_companies');
+    Route::post('/add',[ConfigureCompanyController::Class, 'addCompany'])->middleware(['auth', 'user:admin,coordinator'])->name('add_company');
+    Route::get('/{id}', [ConfigureCompanyController::class, 'showCompanyDetails'])->middleware(['auth', 'user:admin,coordinator']);
+    Route::patch('/update/{id}',[ConfigureCompanyController::Class, 'editCompany'])->middleware(['auth', 'user:admin,coordinator'])->name('edit_company');
+    Route::delete('/delete/{id}',[ConfigureCompanyController::Class, 'deleteCompany'])->middleware(['auth', 'user:admin,coordinator'])->name('delete_company');
 });
 
 // manage access - change credentials
