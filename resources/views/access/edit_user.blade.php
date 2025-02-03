@@ -82,8 +82,11 @@
                     @csrf
                     <!--begin::Group-->
                     <div class="mb-5">
+
                         <!--begin::Step 1-->
                         <div class="flex-column current" data-kt-stepper-element="content">
+                            <!-- hidden input to pass id -->
+                            <input type="hidden" id="userId" value="{{ $user->id ?? '' }}"> 
                             <!--begin::Option-->
                             <input type="radio" class="btn-check" name="radio_buttons_2" value="admin" checked="checked"  id="kt_radio_buttons_2_option_0"/>
                             <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-5" for="kt_radio_buttons_2_option_0">
@@ -272,9 +275,10 @@
 </div>
 @endsection
 @push('scripts')
+
 <script>
     var userId = {{ $user ?? 'null' }}; // Pass user ID to JavaScript
 </script>
-
+<script src="{{ asset('js/manage_access.js') }}"></script>
 <script src="{{ asset('js/edit_user.js') }}"></script>
 @endpush

@@ -99,8 +99,46 @@ class ManageAccessController extends Controller
         }
     }
 
+    // 
+    public function change_credentials($id)
+    {
+        $user = User::find($id);
         
-       
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+    
+        return view('access.change_credentials', compact('user'));
+    }
+
+    public function update_credentials(Request $request, $id)
+    {
+        $request->validate([
+            'username' => 'required|string|max:255',
+            'color' => 'nullable|string',
+            'password' => 'nullable|min:6|confirmed' // Password is optional but must be confirmed
+        ]);
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+
+        // Update fields
+        $user->username = $request->username;
+        $user->color = $request->color;
+
+        // Only update password if it's provided
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'Credentials updated successfully.');
+    }
+        
     // public function edit_user($encryptedId)
     // {
     //     try {

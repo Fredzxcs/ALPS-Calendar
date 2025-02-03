@@ -1,3 +1,36 @@
+$(document).ready(function () {
+    // Get the user ID from the URL path
+    var pathArray = window.location.pathname.split('/'); // Split path by '/'
+    var userId = pathArray[pathArray.length - 1]; // Get the last part (which should be the ID)
+
+    if (userId) {
+        fetchUserData(userId); // Fetch data for the user if ID is found
+    } else {
+        console.error("No user ID provided.");
+    }
+});
+
+// Function to fetch user data and populate the form
+function fetchUserData(userId) {
+    $.ajax({
+        url: `/access/api/get/user/${userId}`,  // API endpoint to get user data
+        method: 'GET',
+        success: function (response) {
+            console.log("Fetched User Data:", response);
+            if (response.user) {
+                // Populate form fields with user data
+                $('#username').val(response.user.username);
+                $('#password').val(response.user.password);
+                $('#color').val(response.user.color);
+            }
+        },
+        error: function (error) {
+            console.error("Error fetching user data:", error);
+            alert("Failed to fetch user data.");
+        }
+    });
+}
+
 // Validation
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('change_credentials_form');
@@ -26,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             passwordInput.classList.remove('border-danger');
         }
-
         // Validate color
         if (!colorInput.value) {
             colorInput.classList.add('border-danger'); // Add Bootstrap danger border

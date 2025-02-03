@@ -221,157 +221,159 @@ function fetchUserData(userId) {
 
 //Contact number allows only numbers
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('edit_user_form');
+document.addEventListener('DOMContentLoaded', () => {
 
-        if (!form || userId === 'null') return; // Ensure form exists and userId is valid
+    const userId = document.getElementById('userId')?.value || null;
 
-        const firstnameInput = document.getElementById('edit_first_name');
-        const middlenameInput = document.getElementById('edit_middle_name');
-        const lastnameInput = document.getElementById('edit_last_name');
-        const suffixInput = document.getElementById('edit_suffix');
-        const emailInput = document.getElementById('edit_email');
-        const contactNumberInput = document.getElementById('edit_contact_number');
-        const idPictureInput = document.getElementById('edit_id_picture');
+    if (!userId) {
+        console.error("User ID not found.");
+        return;
+    }
 
-        // Remove error border when user starts typing
-        [firstnameInput, lastnameInput, emailInput, contactNumberInput].forEach(input => {
-            input.addEventListener('input', () => {
-                if (input.value.trim()) {
-                    input.classList.remove('border-danger');
-                }
-            });
+    console.log("User ID:", userId);
+    
+    const form = document.getElementById('edit_user_form');
+
+    if (!form || userId === 'null') return; // Ensure form exists and userId is valid
+
+    const firstnameInput = document.getElementById('edit_first_name');
+    const middlenameInput = document.getElementById('edit_middle_name');
+    const lastnameInput = document.getElementById('edit_last_name');
+    const suffixInput = document.getElementById('edit_suffix');
+    const emailInput = document.getElementById('edit_email');
+    const contactNumberInput = document.getElementById('edit_contact_number');
+    const idPictureInput = document.getElementById('edit_id_picture');
+
+    // Remove error border when user starts typing
+    [firstnameInput, lastnameInput, emailInput, contactNumberInput].forEach(input => {
+        input.addEventListener('input', () => {
+            if (input.value.trim()) {
+                input.classList.remove('border-danger');
+            }
         });
-
-        // Form Submission Event
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-
-            let isValid = true;
-
-            // Validate First Name
-            if (!firstnameInput.value.trim()) {
-                firstnameInput.classList.add('border-danger');
-                isValid = false;
-            } else {
-                firstnameInput.classList.remove('border-danger');
-            }
-
-            // Validate Last Name
-            if (!lastnameInput.value.trim()) {
-                lastnameInput.classList.add('border-danger');
-                isValid = false;
-            } else {
-                lastnameInput.classList.remove('border-danger');
-            }
-
-            // Validate Email
-            if (!emailInput.value.trim()) {
-                emailInput.classList.add('border-danger');
-                isValid = false;
-            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
-                emailInput.classList.add('border-danger');
-                isValid = false;
-            } else {
-                emailInput.classList.remove('border-danger');
-            }
-
-            // Validate Contact Number
-            if (!contactNumberInput.value.trim()) {
-                contactNumberInput.classList.add('border-danger');
-                isValid = false;
-            } else if (!/^\d{11,15}$/.test(contactNumberInput.value.trim())) { // Ensure it's numeric and 11-15 digits
-                contactNumberInput.classList.add('border-danger');
-                isValid = false;
-            } else {
-                contactNumberInput.classList.remove('border-danger');
-            }
-
-            // Validate ID Picture (Optional)
-            if (idPictureInput.files.length > 0) {
-                let file = idPictureInput.files[0];
-                let allowedExtensions = ["image/jpeg", "image/png", "image/jpg", "image/gif"];
-                if (!allowedExtensions.includes(file.type)) {
-                    alert("Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.");
-                    isValid = false;
-                }
-            }
-
-            if (!isValid) {
-                Swal.fire({
-                    title: 'Missing Fields!',
-                    text: 'Please fill in all required fields.',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            } // Stop submission if validation fails
-
-            // Confirmation Dialog
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to update this user.",
-                icon: 'warning',
-                buttonsStyling: false,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Update it',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                    confirmButton: "btn btn-success",
-                    cancelButton: 'btn btn-secondary'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    updateUser();
-                }
-            });
-        });
-
-        function updateUser() {
-
-            let usertype = $('input[name="radio_buttons_2"]:checked').val();
-
-            let formData = new FormData();
-            formData.append('usertype', usertype);
-            formData.append('first_name', firstnameInput.value.trim());
-            formData.append('middle_name', middlenameInput.value.trim());
-            formData.append('last_name', lastnameInput.value.trim());
-            formData.append('suffix', suffixInput.value.trim());
-            formData.append('email', emailInput.value.trim());
-            formData.append('contact_number', contactNumberInput.value.trim());
-
-
-            if (idPictureInput.files.length > 0) {
-                formData.append('id_picture', idPictureInput.files[0]);
-            }
-
-            formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
-
-            $.ajax({
-                url: `/access/update_user/${userId}`,  // Use the userId from the script tag
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    Swal.fire({
-                        title: 'Updated!',
-                        text: 'User updated successfully.',
-                        icon: 'success'
-                    }).then(() => {
-                        window.location.reload(); // Reload the page after update
-                    });
-                },
-                error: function (xhr) {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: xhr.responseJSON?.error || 'There was an issue updating the user.',
-                        icon: 'error'
-                    });
-                }
-            });
-        }
     });
+
+    // Form Submission Event
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        let isValid = true;
+
+        // Validate First Name
+        if (!firstnameInput.value.trim()) {
+            firstnameInput.classList.add('border-danger');
+            isValid = false;
+        } else {
+            firstnameInput.classList.remove('border-danger');
+        }
+
+        // Validate Last Name
+        if (!lastnameInput.value.trim()) {
+            lastnameInput.classList.add('border-danger');
+            isValid = false;
+        } else {
+            lastnameInput.classList.remove('border-danger');
+        }
+
+        // Validate Email
+        if (!emailInput.value.trim()) {
+            emailInput.classList.add('border-danger');
+            isValid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+            emailInput.classList.add('border-danger');
+            isValid = false;
+        } else {
+            emailInput.classList.remove('border-danger');
+        }
+
+        // Validate Contact Number
+        if (!contactNumberInput.value.trim()) {
+            contactNumberInput.classList.add('border-danger');
+            isValid = false;
+        } else if (!/^\d{11,15}$/.test(contactNumberInput.value.trim())) { // Ensure it's numeric and 11-15 digits
+            contactNumberInput.classList.add('border-danger');
+            isValid = false;
+        } else {
+            contactNumberInput.classList.remove('border-danger');
+        }
+
+        // Validate ID Picture (Optional)
+        if (idPictureInput.files.length > 0) {
+            let file = idPictureInput.files[0];
+            let allowedExtensions = ["image/jpeg", "image/png", "image/jpg", "image/gif"];
+            if (!allowedExtensions.includes(file.type)) {
+                alert("Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.");
+                isValid = false;
+            }
+        }
+
+        if (!isValid) return; // Stop submission if validation fails
+
+        // Confirmation Dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to update this user.",
+            icon: 'warning',
+            buttonsStyling: false,
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Update it',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                updateUser();
+            }
+        });
+    });
+
+    function updateUser() {
+
+        let usertype = $('input[name="radio_buttons_2"]:checked').val();
+
+        let formData = new FormData();
+        formData.append('usertype', usertype);
+        formData.append('first_name', firstnameInput.value.trim());
+        formData.append('middle_name', middlenameInput.value.trim());
+        formData.append('last_name', lastnameInput.value.trim());
+        formData.append('suffix', suffixInput.value.trim());
+        formData.append('email', emailInput.value.trim());
+        formData.append('contact_number', contactNumberInput.value.trim());
+
+
+        if (idPictureInput.files.length > 0) {
+            formData.append('id_picture', idPictureInput.files[0]);
+        }
+
+        formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+        $.ajax({
+            url: `/access/update_user/${userId}`,  // Use the userId from the script tag
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                Swal.fire({
+                    title: 'Updated!',
+                    text: 'User updated successfully.',
+                    icon: 'success'
+                }).then(() => {
+                    window.location.reload(); // Reload the page after update
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: xhr.responseJSON?.error || 'There was an issue updating the user.',
+                    icon: 'error'
+                });
+            }
+        });
+    }
+});
 
 
 

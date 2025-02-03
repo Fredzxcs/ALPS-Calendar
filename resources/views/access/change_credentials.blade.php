@@ -10,6 +10,7 @@
             </div>
             <!--begin::Form-->
             <form class="form mx-auto w-75 px-5" novalidate="novalidate" id="change_credentials_form">
+                @csrf
                 <!--begin::Group-->
                 <div class="mb-5 my-10">
                     <!--begin::Input Group-->
@@ -79,8 +80,7 @@
 </div>
 @endsection
 @push('scripts')
+
+<script src="{{ asset('js/manage_access.js') }}"></script>
 <script src="{{ asset('js/change_credentials.js') }}"></script>
-<script>
-    
-</script>
 @endpush

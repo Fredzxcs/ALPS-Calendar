@@ -161,9 +161,9 @@
                                     </div>
 
                                     <div class="menu-item px-3">
-                                        <a href="{{route ('change_credentials')}}" class="menu-link px-3">
-                                            <i class="bi bi-unlock-fill text-info me-2"></i> Change Credentials
-                                        </a>
+                                    <a href="{{ route('change_credential', [$user->id]) }}" id="edit-credential-btn" class="menu-link px-3">
+                                        <i class="bi bi-unlock-fill text-info me-2"></i> Change Credentials
+                                    </a>
                                     </div>
 
                                     <div class="menu-item px-3">
@@ -395,6 +395,8 @@
 @push('scripts')
 <script src="{{ asset('js/manage_access.js') }}"></script>
 <script src="{{ asset('js/edit_user.js') }}"></script>
+
+
 <!-- VIEW USER DATA  -->
 <script>
     $(document).ready(function (){
