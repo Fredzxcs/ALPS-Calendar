@@ -405,10 +405,12 @@
                 <!-- Modal Fo   er -->
                 <div class="modal-footer w-100">
 
+                    @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
                     <!-- Delete Button (Left) -->
                     <button type="button" class="btn btn-danger deleteBtn me-auto">
                         <i class="bi bi-trash me-2"></i>DELETE
                     </button>
+                    @endif
 
                     <!-- Edit and Close Buttons (Right) -->
                     @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
