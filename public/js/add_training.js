@@ -76,70 +76,106 @@ $(document).ready(function (e) {
     $('#add_training_submit').click(function (e) {
         e.preventDefault();
 
-        // // Validation Logic
-        // let requiredFields = [
-        //     'input[name="mode"]:checked',   // Mode of Training (Radio)
-        //     '#credentials',                 // Account (Dropdown)
-        //     '#company',                     // Company (Dropdown)
-        //     '#course',                      // Course (Dropdown)
-        //     '#date-range',                  // Date Range (Input)
-        //     '#time-start',                  // Time Start (Input)
-        //     '#time-end',                     // Time End (Input)
-        //     '#facilitator'
-        // ];
+        // Identify selected mode of training
+        let mode = $('input[name="mode"]:checked').val();
+        let isValid = true;
 
-        // let isValid = true;
+        // Validation Logic
+        let requiredFields = [
+            'input[name="mode"]:checked',   // Mode of Training (Radio)
+            '#credentials',                 // Account (Dropdown)
+            '#company',                     // Company (Dropdown)
+            '#course',                      // Course (Dropdown)
+            '#date-range',                  // Date Range (Input)
+            '#time-start',                  // Time Start (Input)
+            '#time-end',                     // Time End (Input)
+            '#facilitator',                 // Facilitator
+            '#location'                     // Location
+        ];
 
-        // requiredFields.forEach(function (selector) {
-        //     let element = $(selector);
-
-        //     if (selector === 'input[name="mode"]:checked') {
-        //         if ($('input[name="mode"]:checked').length === 0) {
-        //             $('input[name="mode"]').closest('.form-group').addClass('border-danger');
-        //             isValid = false;
-        //         } else {
-        //             $('input[name="mode"]').closest('.form-group').removeClass('border-danger');
-        //         }
-        //     } else if (element.is('select')) { // Handle dropdown validation
-        //         if (element.val() === '' || element.val() === null) {
-        //             element.addClass('border-danger');
-        //             isValid = false;
-        //         } else {
-        //             element.removeClass('border-danger');
-        //         }
-        //     } else { // Handle input fields
-        //         if (element.val().trim() === '') {
-        //             element.addClass('border-danger');
-        //             isValid = false;
-        //         } else {
-        //             element.removeClass('border-danger');
-        //         }
-        //     }
-        // });
-        // // Facilitator Validation
-        // let facilitator = $('#facilitator').val();
-        // if (facilitator === '' || facilitator === null) {
-        //     // If no facilitator is selected, mark as invalid
-        //     $('#facilitator').addClass('border-danger');
-        //     isValid = false;
-        // } else {
-        //     // If 'No Facilitator Yet' or any other valid option is selected, mark as valid
-        //     $('#facilitator').removeClass('border-danger');
-        // }
+        //  Add mode-specific required fields
+        if (mode === 'virtual') {
+            requiredFields.push('#credentials'); // Virtual-specific
+        } else if (mode === 'face-to-face') {
+            requiredFields.push('#location');                 // Face-to-Face-specific
+        } else if (mode === 'public-course') {
+            requiredFields.push('#public-course-select');     // Public Course-specific
+        }
 
 
-        // if (!isValid) {
-        //     Swal.fire({
-        //         title: 'Missing Fields!',
-        //         text: 'Please fill in all required fields.',
-        //         icon: 'warning',
-        //         confirmButtonText: 'OK'
-        //     });
-        //     return; // Stop submission if validation fails
-        // }
+        requiredFields.forEach(function (selector) {
+            let element = $(selector);
+
+            // skip hidden fields on other mode of training
+            if (element.length && !element.is(':visible')) {
+                return;
+            }
+
+            //  Skip facilitator from general validation
+            if (selector === '#facilitator') {
+                return;
+            }
+
+            if (selector === 'input[name="mode"]:checked') {
+                if ($('input[name="mode"]:checked').length === 0) {
+                    $('input[name="mode"]').closest('.form-group').addClass('border-danger');
+                    isValid = false;
+                } else {
+                    $('input[name="mode"]').closest('.form-group').removeClass('border-danger');
+                }
+            } else if (element.is('select')) { // Handle dropdown validation
+                if (element.val() === '' || element.val() === null) {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            } else { // Handle input fields
+                if (element.val().trim() === '') {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            }
+        });
+        let facilitator = $('#facilitator').find('option:selected').val();
+        let facilitatorText = $('#facilitator').find('option:selected').text().trim();
+
+        if ($('#facilitator').is(':visible')) {
+            // Check if the selection is invalid
+            if (
+                facilitatorText === 'Select Facilitator' ||
+                (facilitator === '' && facilitatorText !== 'No Facilitator Yet') ||
+                facilitator === null
+            ) {
+                $('#facilitator').addClass('border-danger');
+                isValid = false;
+            }
+            //  Allow "No Facilitator Yet"
+            else if (facilitatorText === 'No Facilitator Yet') {
+                $('#facilitator').removeClass('border-danger');
+            }
+            //  Valid facilitator selected
+            else {
+                $('#facilitator').removeClass('border-danger');
+            }
+        }
+
+
+        if (!isValid) {
+            Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop submission if validation fails
+        }
+
 
         // Form Data Collection
-        let mode = $('input[name="mode"]:checked').val();
+        // let mode = $('input[name="mode"]:checked').val();
         let facilitator_id = $('#facilitator').find('option:selected').val(); // Get facilitator ID
 
         let assistant_id = '';
@@ -287,15 +323,11 @@ $(document).ready(function (e) {
         formData.append('to_date', endDateFormatted);
         formData.append('from_time', $('#time-start').val());
         formData.append('to_time', $('#time-end').val());
-        let facilitator_id = $('#facilitator').find('option:selected').val();
-        if ($.isNumeric(facilitator_id)) {
-            formData.append('facilitator_id', facilitator_id);
+            if ($.isNumeric(facilitator)) {
+            formData.append('facilitator_id', facilitator);
         }
-        else if (facilitator_id === 'no_facilitator' || facilitator_id === '') {
-        }
-        else {
-            formData.append('facilitator_id', null);
-        }
+
+
 
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);

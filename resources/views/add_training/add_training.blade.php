@@ -47,7 +47,7 @@
                                     <div class="flex-grow-1">
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
                                         <select id="public-course-select" class="form-select form-select-solid">
-                                            <option value="no_facilitator" disabled selected>Select Course</option>
+                                            <option value="" disabled selected>Select Course</option>
                                             @foreach ($courses as $course)
                                             <option value="{{ $course->id }}">
                                                 {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
@@ -101,14 +101,7 @@
                                     <option value="other">Other</option>
                                 </select>
                                 <input type="text" id="enter-company" class="form-control form-control-solid d-none" placeholder="Enter Company"
-                                {{-- onfocus="showCloseIcon()" onblur="hideCloseIcon()" --}}
-                                >
-
-                                <!-- X Icon for Back to Dropdown -->
-                                <span id="close-icon" class="d-none" onclick="toggleBackToDropdown()"
-                                style="position: absolute; right: 10px; top: 35px; font-size: 18px; color: red; cursor: pointer;">
-                                    &#x2715;
-                                </span>
+                                {{-- onfocus="showCloseIcon()" onblur="hideCloseIcon()" --}}>
                             </div>
                         </div>
 

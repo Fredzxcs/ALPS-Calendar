@@ -480,7 +480,7 @@ const bindEventListeners = () => {
     calendar.setOption('eventMouseLeave', function () {
         setTimeout(() => {
             hidePopovers();
-        }, 3000); // Small delay before hiding popovers
+        }, 4000); // Small delay before hiding popovers
     });
 };
 
