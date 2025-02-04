@@ -510,6 +510,7 @@
             <script>
 
                let authenticated_user = {{ Auth::user()->id }};
+               let authenticated_usertype = {{ Auth::user()->usertype }};
 
             </script>
             <script src="{{ asset('js/calendar.js') }}"></script>
