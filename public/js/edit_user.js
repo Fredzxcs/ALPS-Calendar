@@ -43,9 +43,10 @@ function fetchUserData(userId) {
 
 
                 // Populate form fields
-                $('#edit_full_name').val(fullName);
-                $('#edit_email').val(response.user.email);
-                $('#edit_contact_number').val(response.user.contact_number);
+                $('#edit_full_name').val(fullName).trigger('input');
+                $('#edit_email').val(response.user.email).trigger('input');
+                $('#edit_contact_number').val(response.user.contact_number).trigger('input');
+                
 
                 // Set radio button for user role
                 $(`input[name="radio_buttons_2"][value="${response.user.usertype}"]`).prop('checked', true);
@@ -257,12 +258,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Check if file is uploaded (optional for updates)
-        if (idPictureInput.length > 0 && idPictureInput[0].files.length === 0) {
+        if (idPictureInput.length > 0 && idPictureInput[0].files.length === 0 && !$('.image-input-wrapper').css('background-image').includes('url')) {
             idPictureInput.addClass('border-danger');
             isValid = false;
         } else {
             idPictureInput.removeClass('border-danger');
         }
+        
 
         if (!isValid) {
             Swal.fire({
