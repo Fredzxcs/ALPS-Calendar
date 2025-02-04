@@ -129,7 +129,7 @@ class RegisteredUserController extends Controller
             'color' => ['required', 'string'],
             'contact_number' => ['required', 'string', 'max:15'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
-            'password' => ['required'],
+            'password' => ['required', 'min:8'],
         ]);
 
         if ($validator->fails()) {
