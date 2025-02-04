@@ -540,59 +540,59 @@ document.addEventListener('DOMContentLoaded', function () {
             },
         });
     };
-    calendar.setOption('eventMouseLeave', function () {
-        setTimeout(() => {
+
+        // Initialize the calendar and its initial population
+        if (calendarEl) {
+            let initial = 'trainings';
+
             hidePopovers();
-        }, 4000); // Small delay before hiding popovers
-    });
-};
 
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                },
+                dayMaxEvents: 5,
+                height: 1500,
+                events: [],
 
-    // Initialize the calendar and its initial population
-    if (calendarEl) {
-        let initial = 'trainings';
-
-        hidePopovers();
-
-        calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay',
-            },
-            dayMaxEvents: 5,
-            height: 1500,
-            events: [],
-
-            eventDidMount: function(info) {
-                // Check if the event is a holiday (using extendedProps)
-                if (info.event.extendedProps.isHoliday) {
-                    // Directly modify the DOM element to make the text bright red
-                    info.el.style.color = '#FF0000';  // Bright red
-                    info.el.style.fontWeight = 'bold'; // Make it bold for better visibility
+                eventDidMount: function(info) {
+                    // Check if the event is a holiday (using extendedProps)
+                    if (info.event.extendedProps.isHoliday) {
+                        // Directly modify the DOM element to make the text bright red
+                        info.el.style.color = '#FF0000';  // Bright red
+                        info.el.style.fontWeight = 'bold'; // Make it bold for better visibility
+                    }
                 }
-            }
-        });
+            });
 
-        calendar.render();
+            calendar.setOption('eventMouseLeave', function () {
+                setTimeout(() => {
+                    hidePopovers();
+                }, 4000); // Small delay before hiding popovers
+            });
 
-        // Load initial data
-        getPopulation(initial);
-        getHolidays();
+            calendar.render();
 
-        // Bind filter change to update events
-        $('#applyFilter').click(function (e) {
-            e.preventDefault();
-
-            let filter = $('#filters').find('option:selected').val();
-
-            hidePopovers();
-
-            getPopulation(filter);
+            // Load initial data
+            getPopulation(initial);
             getHolidays();
-        });
-    }
+
+            // Bind filter change to update events
+            $('#applyFilter').click(function (e) {
+                e.preventDefault();
+
+                let filter = $('#filters').find('option:selected').val();
+
+                hidePopovers();
+
+                getPopulation(filter);
+                getHolidays();
+            });
+        }
+
 });
 
 //Password reveal in view modal
