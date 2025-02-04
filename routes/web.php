@@ -9,6 +9,7 @@ use App\Http\Controllers\ConfigureCoursesController;
 use App\Http\Controllers\ConfigureCompanyController;
 use App\Http\Controllers\ConfigureAccountController;
 use App\Http\Controllers\UnavailabilityController;
+use App\Http\Controllers\HolidayController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -71,6 +72,10 @@ Route::prefix('calendar')->group(function () {
 
     Route::post('/api/check-unavailability/{id}', [UnavailabilityController::class, 'checkUnavailability'])
     ->name('check_unavailability');
+
+    Route::get('/api/get/holidays', [HolidayController::class, 'get_holidays'])
+    ->name('get_holidays');
+
 });
 
 // Manage Access
@@ -98,7 +103,7 @@ Route::prefix('access')->group(function (){
     Route::post('/update_credentials/{id}', [ManageAccessController::class, 'update_credentials'])
         ->middleware(['auth', 'user:admin'])
         ->name('update_credentials');
-        
+
     Route::delete('/delete_user/{id}', [ManageAccessController::class, 'delete_user'])
         ->middleware(['auth', 'user:admin'])
         ->name('delete_user');
