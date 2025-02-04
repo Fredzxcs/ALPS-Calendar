@@ -1,5 +1,126 @@
+$(document).ready(function () {
+    // Get the user ID from the URL path
+    var pathArray = window.location.pathname.split('/'); // Split path by '/'
+    var userId = pathArray[pathArray.length - 1]; // Get the last part (which should be the ID)
+
+    if (userId) {
+        fetchUserData(userId); // Fetch data for the user if ID is found
+    } else {
+        console.error("No user ID provided.");
+    }
+});
+
+// Function to fetch user data and populate the form
+function fetchUserData(userId) {
+    $.ajax({
+        url: `/access/api/get/user/${userId}`,  // API endpoint to get user data
+        method: 'GET',
+        success: function (response) {
+            console.log("Fetched User Data:", response);
+            if (response.user) {
+                // Populate form fields with user data
+                $('#username').val(response.user.username);
+                $('#password').val(response.user.password);
+                $('#color').val(response.user.color);
+            }
+        },
+        error: function (error) {
+            console.error("Error fetching user data:", error);
+            alert("Failed to fetch user data.");
+        }
+    });
+}
+
 // Validation
+// document.addEventListener('DOMContentLoaded', () => {
+//     const form = document.getElementById('change_credentials_form');
+//     const usernameInput = document.getElementById('username');
+//     const passwordInput = document.getElementById('password');
+//     const colorInput = document.getElementById('color');
+
+//     // Form submission event
+//     form.addEventListener('submit', (event) => {
+//         event.preventDefault();
+
+//         let isValid = true;
+
+//         // Validate username
+//         if (!usernameInput.value.trim()) {
+//             usernameInput.classList.add('border-danger'); // Add Bootstrap danger border
+//             isValid = false;
+//         } else {
+//             usernameInput.classList.remove('border-danger');
+//         }
+
+//         // Validate password
+//         if (!passwordInput.value.trim()) {
+//             passwordInput.classList.add('border-danger'); // Add Bootstrap danger border
+//             isValid = false;
+//         } else {
+//             passwordInput.classList.remove('border-danger');
+//         }
+//         // Validate color
+//         if (!colorInput.value) {
+//             colorInput.classList.add('border-danger'); // Add Bootstrap danger border
+//             isValid = false;
+//         } else {
+//             colorInput.classList.remove('border-danger');
+//         }
+
+//         if (!isValid) {
+//             Swal.fire({
+//                 title: 'Missing Fields!',
+//                 text: 'Please fill in all required fields.',
+//                 icon: 'warning',
+//                 confirmButtonText: 'OK'
+//             });
+//             return;
+//         } // Stop submission if validation fails
+
+//         // If all fields are valid
+//         if (isValid) {
+//             Swal.fire({
+//                 title: 'Are you sure?',
+//                 text: "You are about to update these credentials.",
+//                 icon: 'warning',
+//                 buttonsStyling: false,
+//                 showCancelButton: true,
+//                 confirmButtonText: 'Yes, Update it',
+//                 cancelButtonText: 'Cancel',
+//                 customClass: {
+//                     confirmButton: "btn btn-success",
+//                     cancelButton: 'btn btn-secondary'
+//                 }
+//             }).then((result) => {
+//                 if (result.isConfirmed) {
+//                     Swal.fire(
+//                         'Updated!',
+//                         'The credentials have been updated.',
+//                         'success'
+//                     );
+//                     // TODO: Add logic to perform credential changes here
+//                 }
+//             });
+//         }
+//     });
+
+//     // Remove danger border on input change
+//     [usernameInput, passwordInput, colorInput].forEach(input => {
+//         input.addEventListener('input', () => {
+//             if (input.value.trim()) {
+//                 input.classList.remove('border-danger');
+//             }
+//         });
+//     });
+// });
+
 document.addEventListener('DOMContentLoaded', () => {
+
+    // Get User ID from URL
+    var pathArray = window.location.pathname.replace(/\/$/, "").split('/');
+    var userId = pathArray[pathArray.length - 1];
+    console.log('Id detected',userId);
+
     const form = document.getElementById('change_credentials_form');
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
@@ -13,63 +134,94 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Validate username
         if (!usernameInput.value.trim()) {
-            usernameInput.classList.add('border-danger'); // Add Bootstrap danger border
+            usernameInput.classList.add('border-danger');
             isValid = false;
         } else {
             usernameInput.classList.remove('border-danger');
         }
 
-        // Validate password
-        if (!passwordInput.value.trim()) {
-            passwordInput.classList.add('border-danger'); // Add Bootstrap danger border
-            isValid = false;
+        // Validate password 
+        if (passwordInput.value.trim().length > 0 && passwordInput.value.trim().length < 8) {
+            passwordInput.classList.add('border-danger');
+            Swal.fire({
+                title: 'Warning!', 
+                text: 'Password must be at least 8 characters.', 
+                icon: 'warning',
+            });
+            return;
         } else {
             passwordInput.classList.remove('border-danger');
         }
 
-        // Validate color
+        //Validate color
         if (!colorInput.value) {
-            colorInput.classList.add('border-danger'); // Add Bootstrap danger border
+            colorInput.classList.add('border-danger');
             isValid = false;
-        } else {
-            colorInput.classList.remove('border-danger');
-        }
+        } 
 
         if (!isValid) {
             Swal.fire({
                 title: 'Missing Fields!',
                 text: 'Please fill in all required fields.',
                 icon: 'warning',
-                confirmButtonText: 'OK'
             });
             return;
-        } // Stop submission if validation fails
-
-        // If all fields are valid
-        if (isValid) {
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to update these credentials.",
-                icon: 'warning',
-                buttonsStyling: false,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Update it',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                    confirmButton: "btn btn-success",
-                    cancelButton: 'btn btn-secondary'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Updated!',
-                        'The credentials have been updated.',
-                        'success'
-                    );
-                    // TODO: Add logic to perform credential changes here
-                }
-            });
         }
+
+        // Confirmation before submitting
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You are about to update these credentials.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Update it',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Send AJAX Request
+                let formData = new FormData();
+                formData.append('username', usernameInput.value.trim());
+                if (passwordInput.value.trim()) { // Only send password if it's not empty
+                    formData.append('password', passwordInput.value.trim());
+                }
+                formData.append('color', colorInput.value.trim());
+                formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
+
+                $.ajax({
+                    url: `/access/update_credentials/${userId}`,
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: 'Updated!',
+                                text: 'The credentials have been updated.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                window.location.href = response.redirect_url; // Use Laravel's route
+                            });
+                        } else {
+                            Swal.fire('Error!', response.message, 'error');
+                        }
+                    },
+                    error: function (xhr) {
+                        console.error("AJAX Error:", xhr.responseText); // Log the actual error message
+                        Swal.fire('Error!', `Something went wrong: ${xhr.responseText}`, 'error'); // Show actual error
+                    }
+                });
+                
+            }
+        });
     });
 
     // Remove danger border on input change
@@ -81,6 +233,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+
 
 
 

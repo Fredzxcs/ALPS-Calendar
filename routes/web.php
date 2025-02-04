@@ -90,8 +90,15 @@ Route::prefix('access')->group(function (){
         ->middleware(['auth', 'user:admin'])
         ->name('edit_user');
     Route::post('/update_user/{id}', [ManageAccessController::class, 'update_user'])
+        ->middleware(['auth', 'user:admin']);
+    Route::get('/change_credentials/{id}', [ManageAccessController::class, 'change_credentials'])
         ->middleware(['auth', 'user:admin'])
-        ->name('update_user');
+        ->name('change_credential');
+
+    Route::post('/update_credentials/{id}', [ManageAccessController::class, 'update_credentials'])
+        ->middleware(['auth', 'user:admin'])
+        ->name('update_credentials');
+        
     Route::delete('/delete_user/{id}', [ManageAccessController::class, 'delete_user'])
         ->middleware(['auth', 'user:admin'])
         ->name('delete_user');
