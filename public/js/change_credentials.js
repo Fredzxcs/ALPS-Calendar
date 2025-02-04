@@ -235,9 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-
-
-
 //Toggle password visibility
 $('.togglePassword').on('click', function () {
     const input = $($(this).data('target'));

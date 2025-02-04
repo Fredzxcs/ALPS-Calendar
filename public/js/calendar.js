@@ -266,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-
     const clearCalendarEvents = (calendar) => {
         if (calendar) {
             calendar.removeAllEvents();
@@ -312,9 +311,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Clear all existing events
                     clearCalendarEvents(calendar);
 
+                    console.log(response);
+
                     // Add new events to the calendar
                     if (route == 'trainings') {
                         response.data.forEach(function (training) {
+
                             if (training.schedule) {
                                 var fromDateTime = `${training.schedule.from_date}T${training.schedule.from_time}`;
                                 var toDateTime = `${training.schedule.to_date}T${training.schedule.to_time}`;
@@ -476,7 +478,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 initPopovers(info.el, eventData);
             }
         });
-
         calendar.setOption('eventMouseLeave', function () {
             setTimeout(() => {
                 hidePopovers();
@@ -541,52 +542,57 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-
-    // Initialize the calendar and its initial population
-    if (calendarEl) {
-        let initial = 'trainings';
-
-        hidePopovers();
-
-        calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay',
-            },
-            dayMaxEvents: 5,
-            height: 1500,
-            events: [],
-
-            eventDidMount: function(info) {
-                // Check if the event is a holiday (using extendedProps)
-                if (info.event.extendedProps.isHoliday) {
-                    // Directly modify the DOM element to make the text bright red
-                    info.el.style.color = '#FF0000';  // Bright red
-                    info.el.style.fontWeight = 'bold'; // Make it bold for better visibility
-                }
-            }
-        });
-
-        calendar.render();
-
-        // Load initial data
-        getPopulation(initial);
-        getHolidays();
-
-        // Bind filter change to update events
-        $('#applyFilter').click(function (e) {
-            e.preventDefault();
-
-            let filter = $('#filters').find('option:selected').val();
+        // Initialize the calendar and its initial population
+        if (calendarEl) {
+            let initial = 'trainings';
 
             hidePopovers();
 
-            getPopulation(filter);
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                },
+                dayMaxEvents: 5,
+                height: 1500,
+                events: [],
+
+                eventDidMount: function(info) {
+                    // Check if the event is a holiday (using extendedProps)
+                    if (info.event.extendedProps.isHoliday) {
+                        // Directly modify the DOM element to make the text bright red
+                        info.el.style.color = '#FF0000';  // Bright red
+                        info.el.style.fontWeight = 'bold'; // Make it bold for better visibility
+                    }
+                }
+            });
+
+            calendar.setOption('eventMouseLeave', function () {
+                setTimeout(() => {
+                    hidePopovers();
+                }, 4000); // Small delay before hiding popovers
+            });
+
+            calendar.render();
+
+            // Load initial data
+            getPopulation(initial);
             getHolidays();
-        });
-    }
+
+            // Bind filter change to update events
+            $('#applyFilter').click(function (e) {
+                e.preventDefault();
+
+                let filter = $('#filters').find('option:selected').val();
+
+                hidePopovers();
+
+                getPopulation(filter);
+                getHolidays();
+            });
+        }
 });
 
 //Password reveal in view modal
