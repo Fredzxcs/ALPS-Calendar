@@ -179,15 +179,11 @@ document.addEventListener('DOMContentLoaded', function () {
             $('p[id="modal-date-unavailable"]').text(date_unavailable);
             $('p[id="modal-purpose"]').text(data.reason);
 
-            if (parseInt(data.user_id, 10) !== parseInt(authenticated_user, 10)) {
-                if (authenticated_usertype == "admin") {
-                    return;
-                } else {
+            if (data.user_id !== authenticated_user) {
+                if (!(authenticated_usertype == "admin")) {
                     $('.deleteBtnUnavailability').addClass('d-none');
-                }
             }
-
-
+        }
             //Delete unavailability button
             document.querySelectorAll('.deleteBtnUnavailability').forEach(button => {
                 button.addEventListener('click', (event) => {
