@@ -348,9 +348,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                     id: unavailability.id,
                                     user_id: unavailability.user.id,
                                     title: unavailability.reason || 'Unavailable',
-                                    start: fromDateTime,
-                                    end: toDateTime,
-                                    allDay: true,
+                                    start: moment(unavailability.from_date).startOf('day').toISOString(), // Start at 00:00 on the start date
+                                    end: moment(unavailability.to_date).endOf('day').toISOString(),       // End at 23:59 on the end date
+                                    allDay: false,  // Disable all-day behavior
                                     backgroundColor: unavailability.user.color || '#FF5E5E',
                                     borderColor: unavailability.user.color || '#FF5E5E',
                                     extendedProps: {
