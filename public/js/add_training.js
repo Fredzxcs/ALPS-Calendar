@@ -201,13 +201,18 @@ $(document).ready(function (e) {
         // Step 1: Check if facilitator is provided
         if (!facilitator_id || facilitator_id === "") {
             // Skip checking availability and proceed
+
+            console.log('1');
+
             handleCompanyAndStoreTraining(company);
         } else {
             // Check facilitator availability
             checkAvailability(facilitator_id, from_date, to_date, function (isAvailable) {
                 if (isAvailable) {
+                    console.log('2');
                     handleCompanyAndStoreTraining(company);
                 } else {
+                    console.log('3');
                     Swal.fire({
                         title: 'Facilitator Unavailable',
                         text: 'The selected facilitator is unavailable on the selected date(s). Do you want to proceed anyway?',
@@ -268,6 +273,7 @@ $(document).ready(function (e) {
         });
 
         if (isDuplicate) {
+            console.log('4');
             Swal.fire({
                 title: 'Duplicate Company!',
                 text: 'The company already exists in the list.',
@@ -278,6 +284,7 @@ $(document).ready(function (e) {
         }
 
         if (company === "other") {
+            console.log('5');
             let companyData = new FormData();
             companyData.append('company_name', $('#enter-company').val());
             companyData.append('contact_person', '');
@@ -307,6 +314,7 @@ $(document).ready(function (e) {
                 }
             });
         } else {
+            console.log('6');
             createTraining(company);
         }
     }
@@ -325,16 +333,14 @@ $(document).ready(function (e) {
         formData.append('to_date', endDateFormatted);
         formData.append('from_time', $('#time-start').val());
         formData.append('to_time', $('#time-end').val());
-            if ($.isNumeric(facilitator)) {
-            formData.append('facilitator_id', facilitator);
-        }
-
+        formData.append('facilitator_id', $('#facilitator').find('option:selected').val());
 
 
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
         }
 
+        console.log('sending request');
 
         $.ajax({
             url: '/calendar/add_training',
@@ -380,6 +386,7 @@ $(document).ready(function (e) {
             }
         });
     }
+
 });
 
 

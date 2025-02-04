@@ -266,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-
     const clearCalendarEvents = (calendar) => {
         if (calendar) {
             calendar.removeAllEvents();
@@ -312,9 +311,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Clear all existing events
                     clearCalendarEvents(calendar);
 
+                    console.log(response);
+
                     // Add new events to the calendar
                     if (route == 'trainings') {
                         response.data.forEach(function (training) {
+
                             if (training.schedule) {
                                 var fromDateTime = `${training.schedule.from_date}T${training.schedule.from_time}`;
                                 var toDateTime = `${training.schedule.to_date}T${training.schedule.to_time}`;
