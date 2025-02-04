@@ -584,6 +584,7 @@ document.addEventListener('DOMContentLoaded', function () {
             hidePopovers();
 
             getPopulation(filter);
+            getHolidays();
         });
     }
 });
