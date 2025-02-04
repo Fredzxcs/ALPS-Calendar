@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function () {
             $('p[id="modal-purpose"]').text(data.reason);
 
             if (parseInt(data.user_id, 10) !== parseInt(authenticated_user, 10)) {
-                if (authenticated_usertype === "admin") {
+                if (authenticated_usertype == "admin") {
                     return;
                 } else {
                     $('.deleteBtnUnavailability').addClass('d-none');
