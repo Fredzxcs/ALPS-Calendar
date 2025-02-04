@@ -478,7 +478,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 initPopovers(info.el, eventData);
             }
         });
-
         calendar.setOption('eventMouseLeave', function () {
             setTimeout(() => {
                 hidePopovers();
@@ -594,7 +593,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 getHolidays();
             });
         }
-
 });
 
 //Password reveal in view modal
