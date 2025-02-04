@@ -540,6 +540,12 @@ document.addEventListener('DOMContentLoaded', function () {
             },
         });
     };
+    calendar.setOption('eventMouseLeave', function () {
+        setTimeout(() => {
+            hidePopovers();
+        }, 4000); // Small delay before hiding popovers
+    });
+};
 
 
     // Initialize the calendar and its initial population
