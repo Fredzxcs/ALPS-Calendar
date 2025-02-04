@@ -60,17 +60,19 @@ let endDateFormatted;
 const fp = flatpickr("#date-range", {
     mode: "range",
     dateFormat: "m-d-Y",
+    minDate: "today",
     onChange: function (selectedDates) {
         if (selectedDates.length >= 2) {
-            const initalStartDate = selectedDates[0];
+            const initialStartDate = selectedDates[0];
             const initialEndDate = selectedDates[1];
-            startDateFormatted = formatDate(initalStartDate);
-            endDateFormatted = formatDate(initialEndDate);
+            const startDateFormatted = formatDate(initialStartDate);
+            const endDateFormatted = formatDate(initialEndDate);
             console.log("Start Date:", startDateFormatted);
             console.log("End Date:", endDateFormatted);
         }
     }
 });
+
 
 $(document).ready(function (e) {
     $('#add_training_submit').click(function (e) {
