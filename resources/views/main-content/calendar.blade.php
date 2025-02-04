@@ -148,8 +148,8 @@
 
                         <!-- Actions -->
                         <div class="d-flex justify-content-end">
-                            <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="calendarFilterReset"
-                                data-kt-menu-dismiss="true">RESET</button>
+                            <!-- <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="calendarFilterReset"
+                                data-kt-menu-dismiss="true">RESET</button> -->
                             <button id="applyFilter" type="button" class="btn btn-sm btn-primary" id="calendarFilterApply"
                                 data-kt-menu-dismiss="true">APPLY</button>
                         </div>
@@ -510,6 +510,7 @@
             <script>
 
                let authenticated_user = {{ Auth::user()->id }};
+               let authenticated_usertype = "{{ Auth::user()->usertype }}";
 
             </script>
             <script src="{{ asset('js/calendar.js') }}"></script>

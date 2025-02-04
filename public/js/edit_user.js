@@ -40,23 +40,13 @@ function fetchUserData(userId) {
         success: function (response) {
             if (response.user) {
                 let fullName = response.user.name;
-                // let suffix = '';
-                // let nameParts = fullName.split(", ");
-                // let mainName = nameParts[0];
-                // if (nameParts.length > 1) suffix = nameParts[1];
 
-                // nameParts = mainName.split(" ");
-                // let firstName = nameParts[0] || '';
-                // let lastName = nameParts[nameParts.length - 1] || '';
-                // let middleName = nameParts.length > 2 ? nameParts.slice(1, -1).join(" ") : '';
 
                 // Populate form fields
-                $('#edit_full_name').val(fullName);
-                // $('#edit_middle_name').val(middleName);
-                // $('#edit_last_name').val(lastName);
-                // $('#edit_suffix').val(suffix);
-                $('#edit_email').val(response.user.email);
-                $('#edit_contact_number').val(response.user.contact_number);
+                $('#edit_full_name').val(fullName).trigger('input');
+                $('#edit_email').val(response.user.email).trigger('input');
+                $('#edit_contact_number').val(response.user.contact_number).trigger('input');
+                
 
                 // Set radio button for user role
                 $(`input[name="radio_buttons_2"][value="${response.user.usertype}"]`).prop('checked', true);
@@ -257,38 +247,24 @@ document.addEventListener('DOMContentLoaded', () => {
         let isValid = true;
         let requiredFields = ['#edit_full_name', '#edit_email', '#edit_contact_number'];
 
-        // requiredFields.forEach(function (selector) {
-        //     let element = $(selector);
-        //     if (!element.val().trim()) {
-        //         element.addClass('border-danger');
-        //         isValid = false;
-        //     } else {
-        //         element.removeClass('border-danger');
-        //     }
-        // });
-
         requiredFields.forEach(function (selector) {
             let element = $(selector);
-            if (element.is(':file')) { // Check for file input
-                if (element[0].files.length === 0) {
-                    element.addClass('border-danger');
-                    isValid = false;
-                } else {
-                    element.removeClass('border-danger');
-                }
+            if (!element.val().trim()) {
+                element.addClass('border-danger');
+                isValid = false;
             } else {
                 element.removeClass('border-danger');
             }
         });
 
-
         // Check if file is uploaded (optional for updates)
-        if (idPictureInput.length > 0 && idPictureInput[0].files.length === 0) {
+        if (idPictureInput.length > 0 && idPictureInput[0].files.length === 0 && !$('.image-input-wrapper').css('background-image').includes('url')) {
             idPictureInput.addClass('border-danger');
             isValid = false;
         } else {
             idPictureInput.removeClass('border-danger');
         }
+        
 
         if (!isValid) {
             Swal.fire({
@@ -388,7 +364,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-
+$(document).on('input change', 'input, select, textarea', function () {
+    if ($(this).val().trim()) {
+        $(this).removeClass('border-danger');
+    }
+});
 
 
 

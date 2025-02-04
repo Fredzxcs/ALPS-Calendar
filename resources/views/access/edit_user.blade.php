@@ -162,9 +162,9 @@
                         <!--begin::Input Group Step 2-->
                         <div class="flex-column" data-kt-stepper-element="content">
                             <div class="row g-5">
-                                <!-- First Name -->
+                                <!-- Full Name -->
                                 <div class="col-md-6">
-                                    <label for="edit_full_name" class="form-label fw-bold">First Name <span class="text-danger">*</span></label>
+                                    <label for="edit_full_name" class="form-label fw-bold">Full Name <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control form-control-solid" id="edit_full_name" placeholder="Enter First Name">
                                 </div>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -128,6 +129,7 @@ class ManageAccessController extends Controller
         return view('access.change_credentials', compact('user'));
     }
 
+
     public function update_credentials(Request $request, $id)
     {
         try {
@@ -163,6 +165,7 @@ class ManageAccessController extends Controller
             return response()->json(['error' => 'Error updating user: ' . $e->getMessage()], 500);
         }
     }
+
         
     // public function edit_user($encryptedId)
     // {
