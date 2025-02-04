@@ -183,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!(authenticated_usertype == "admin")) {
                     $('.deleteBtnUnavailability').addClass('d-none');
             }
+        }
             //Delete unavailability button
             document.querySelectorAll('.deleteBtnUnavailability').forEach(button => {
                 button.addEventListener('click', (event) => {
