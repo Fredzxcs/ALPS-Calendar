@@ -54,8 +54,8 @@ function formatDate(date) {
     return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
 }
 
-let startDateFormatted;
-let endDateFormatted;
+let startDateFormatted = '';
+let endDateFormatted = '';
 
 const fp = flatpickr("#date-range", {
     mode: "range",
@@ -65,8 +65,8 @@ const fp = flatpickr("#date-range", {
         if (selectedDates.length >= 2) {
             const initialStartDate = selectedDates[0];
             const initialEndDate = selectedDates[1];
-            const startDateFormatted = formatDate(initialStartDate);
-            const endDateFormatted = formatDate(initialEndDate);
+            startDateFormatted = formatDate(initialStartDate);
+            endDateFormatted = formatDate(initialEndDate);
             console.log("Start Date:", startDateFormatted);
             console.log("End Date:", endDateFormatted);
         }
