@@ -22,11 +22,12 @@ $(document).ready(function () {
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
         // Required fields
-        let requiredFields = ['#full_name', '#last_name', '#email', '#contact_number', 'input[name="avatar"]', '#username', '#password', '#color'];
+        let requiredFields = ['#full_name', '#email', '#contact_number', 'input[name="avatar"]', '#username', '#password', '#color'];
         let isValid = true;
 
         requiredFields.forEach(function (selector) {
             let element = $(selector);
+        
             if (element.is(':file')) { // Check for file input
                 if (element[0].files.length === 0) {
                     element.addClass('border-danger');
@@ -34,10 +35,14 @@ $(document).ready(function () {
                 } else {
                     element.removeClass('border-danger');
                 }
+            } else if (!element.val().trim()) { // Check for empty text fields
+                element.addClass('border-danger');
+                isValid = false;
             } else {
-                element.removeClass('border-danger');
+                element.removeClass('border-danger'); // Only remove if the field is valid
             }
         });
+        
 
         if (!isValid) {
             Swal.fire({
@@ -52,11 +57,6 @@ $(document).ready(function () {
         // Proceed with backend request if validation passes
         let usertype = $('input[name="radio_buttons_2"]:checked').val();
         let fullname = $('#full_name').val();
-
-        // let middle_name = $('#middle_name').val().trim();
-        // let last_name = $('#last_name').val().trim();
-        // let suffix = $('#suffix').val().trim();
-
         let email = $('#email').val();
         let contact_number = $('#contact_number').val();
         let image = $('input[name="avatar"]')[0].files[0];
