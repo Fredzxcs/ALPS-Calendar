@@ -348,9 +348,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                     id: unavailability.id,
                                     user_id: unavailability.user.id,
                                     title: unavailability.reason || 'Unavailable',
-                                    start: fromDateTime,
-                                    end: toDateTime,
-                                    allDay: true,
+                                    start: moment(unavailability.from_date).startOf('day').toISOString(), // Start at 00:00 on the start date
+                                    end: moment(unavailability.to_date).endOf('day').toISOString(),       // End at 23:59 on the end date
+                                    allDay: false,  // Disable all-day behavior
                                     backgroundColor: unavailability.user.color || '#FF5E5E',
                                     borderColor: unavailability.user.color || '#FF5E5E',
                                     extendedProps: {
@@ -386,103 +386,160 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-// Function to bind event listeners to FullCalendar events
-const bindEventListeners = () => {
-    calendar.setOption('eventMouseEnter', function (info) {
-        // Safely dispose of any existing popover
-        if (popover) {
-            try {
-                popover.dispose();
-            } catch (error) {
-                console.error("Error disposing popover:", error);
-            }
-            popoverState = false;
-            popover = null;
-        }
-
-        // Check if unavailability event
-        if (info.event.extendedProps.user) {
-            const unavailabilityData = {
-                id: info.event.id,
-                user: info.event.extendedProps.user || 'Unknown User',
-                user_id: info.event.extendedProps.user_id,
-                reason: info.event.title || 'Unavailable',
-                startDate: info.event.start,
-                endDate: info.event.end,
-            };
-            initUnavailabilityPopover(info.el, unavailabilityData);
-        }
-
-        // check if training
-        if (info.event.extendedProps.modeType) {
-            const eventData = {
-                eventName: info.event.title || 'No Title',
-                startDate: info.event.start || null,
-                endDate: info.event.end || null,
-                allDay: info.event.allDay || false,
-                modeType: info.event.extendedProps.modeType || 'N/A',
-                company: info.event.extendedProps.company || 'N/A',
-                facilitator: info.event.extendedProps.facilitator?.name || 'No Facilitator Yet',
-                assistant: info.event.extendedProps.assistant || 'No Assistant Yet',
-                account: info.event.extendedProps.account || { account_email: 'N/A' },
-                location: info.event.extendedProps.location || 'N/A',
-                id: info.event.id || '',
-            };
-            initPopovers(info.el, eventData);
-
-            const $modalElement = $('#kt_modal_view_training');
-            $modalElement.find('#modal-title').text('VIEW TRAINING');
-
-            const baseUrl = $('#edit-training-link').data('base-url');
-            const editUrl = `${baseUrl}${eventData.id}`;
-            $('#edit-training-link').attr('href', editUrl);
-
-            const mode = eventData.modeType;
-            $modalElement.find('#modal-mode-of-training').text(mode.toUpperCase());
-
-            $modalElement.find('#modal-location').text(eventData.location);
-
-            const accountEmail = eventData.account.account_email;
-            console.log(accountEmail);
-            $modalElement.find('#modal-credentials').text(accountEmail || 'N/A');
-
-            let inPersonText = mode === 'virtual' ? 'No' : 'Yes';
-            if (mode === 'public-course' && accountEmail !== 'N/A' || mode === "virtual") {
-                inPersonText = 'No';
-                $modalElement.find('#modal-password').html(eventData.account.account_password);
-            }
-            else if (mode === 'public-course' && accountEmail === 'N/A')
-            {
-                $modalElement.find('#password-container').addClass('d-none');
+    // Function to bind event listeners to FullCalendar events
+    const bindEventListeners = () => {
+        calendar.setOption('eventMouseEnter', function (info) {
+            // Safely dispose of any existing popover
+            if (popover) {
+                try {
+                    popover.dispose();
+                } catch (error) {
+                    console.error("Error disposing popover:", error);
+                }
+                popoverState = false;
+                popover = null;
             }
 
-            console.log(eventData.account.account_password);
+            // Check if unavailability event
+            if (info.event.extendedProps.user) {
+                const unavailabilityData = {
+                    id: info.event.id,
+                    user: info.event.extendedProps.user || 'Unknown User',
+                    user_id: info.event.extendedProps.user_id,
+                    reason: info.event.title || 'Unavailable',
+                    startDate: info.event.start,
+                    endDate: info.event.end,
+                };
+                initUnavailabilityPopover(info.el, unavailabilityData);
+            }
 
-            $modalElement.find('#modal-in-person').text(inPersonText);
+            // check if training
+            if (info.event.extendedProps.modeType) {
+                const eventData = {
+                    eventName: info.event.title || 'No Title',
+                    startDate: info.event.start || null,
+                    endDate: info.event.end || null,
+                    allDay: info.event.allDay || false,
+                    modeType: info.event.extendedProps.modeType || 'N/A',
+                    company: info.event.extendedProps.company || 'N/A',
+                    facilitator: info.event.extendedProps.facilitator?.name || 'No Facilitator Yet',
+                    assistant: info.event.extendedProps.assistant || 'No Assistant Yet',
+                    account: info.event.extendedProps.account || { account_email: 'N/A' },
+                    location: info.event.extendedProps.location || 'N/A',
+                    id: info.event.id || '',
+                };
+                initPopovers(info.el, eventData);
 
-            $modalElement.find('#modal-company').text(eventData.company);
-            $modalElement.find('#modal-course').text(eventData.eventName);
-            $modalElement.find('#modal-facilitator').text(eventData.facilitator);
-            $modalElement.find('#modal-assistant').text(eventData.assistant);
+                const $modalElement = $('#kt_modal_view_training');
+                $modalElement.find('#modal-title').text('VIEW TRAINING');
 
-            const formattedStartDate = eventData.startDate ? moment(eventData.startDate).format('MMM DD, YYYY') : 'N/A';
-            const formattedEndDate = eventData.endDate ? moment(eventData.endDate).format('MMM DD, YYYY') : 'N/A';
-            $modalElement.find('#modal-date').text(`${formattedStartDate} to ${formattedEndDate}`);
+                const baseUrl = $('#edit-training-link').data('base-url');
+                const editUrl = `${baseUrl}${eventData.id}`;
+                $('#edit-training-link').attr('href', editUrl);
 
-            const formattedStartTime = eventData.startDate ? moment(eventData.startDate).format('h:mm A') : 'N/A';
-            const formattedEndTime = eventData.endDate ? moment(eventData.endDate).format('h:mm A') : 'N/A';
-            $modalElement.find('#modal-time').text(`${formattedStartTime} to ${formattedEndTime}`);
+                const mode = eventData.modeType;
+                $modalElement.find('#modal-mode-of-training').text(mode.toUpperCase());
 
-            initPopovers(info.el, eventData);
-        }
-    });
+                $modalElement.find('#modal-location').text(eventData.location);
 
-    calendar.setOption('eventMouseLeave', function () {
-        setTimeout(() => {
-            hidePopovers();
-        }, 3000); // Small delay before hiding popovers
-    });
-};
+                const accountEmail = eventData.account.account_email;
+                console.log(accountEmail);
+                $modalElement.find('#modal-credentials').text(accountEmail || 'N/A');
+
+                let inPersonText = mode === 'virtual' ? 'No' : 'Yes';
+                if (mode === 'public-course' && accountEmail !== 'N/A' || mode === "virtual") {
+                    inPersonText = 'No';
+                    $modalElement.find('#modal-password').html(eventData.account.account_password);
+                }
+                else if (mode === 'public-course' && accountEmail === 'N/A')
+                {
+                    $modalElement.find('#password-container').addClass('d-none');
+                }
+
+                console.log(eventData.account.account_password);
+
+                $modalElement.find('#modal-in-person').text(inPersonText);
+
+                $modalElement.find('#modal-company').text(eventData.company);
+                $modalElement.find('#modal-course').text(eventData.eventName);
+                $modalElement.find('#modal-facilitator').text(eventData.facilitator);
+                $modalElement.find('#modal-assistant').text(eventData.assistant);
+
+                const formattedStartDate = eventData.startDate ? moment(eventData.startDate).format('MMM DD, YYYY') : 'N/A';
+                const formattedEndDate = eventData.endDate ? moment(eventData.endDate).format('MMM DD, YYYY') : 'N/A';
+                $modalElement.find('#modal-date').text(`${formattedStartDate} to ${formattedEndDate}`);
+
+                const formattedStartTime = eventData.startDate ? moment(eventData.startDate).format('h:mm A') : 'N/A';
+                const formattedEndTime = eventData.endDate ? moment(eventData.endDate).format('h:mm A') : 'N/A';
+                $modalElement.find('#modal-time').text(`${formattedStartTime} to ${formattedEndTime}`);
+
+                initPopovers(info.el, eventData);
+            }
+        });
+
+        calendar.setOption('eventMouseLeave', function () {
+            setTimeout(() => {
+                hidePopovers();
+            }, 3000); // Small delay before hiding popovers
+        });
+    };
+
+    const getHolidays = () => {
+        $.ajax({
+            url: '/calendar/api/get/holidays',
+            method: 'GET',
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function () {
+                $('#calendar').addClass('blur-effect');
+                loaderWrapper.style.display = 'flex';
+            },
+            success: function (response) {
+                console.log(response);
+
+                if (response.response && response.response.holidays) {
+                    // Clear all existing background events
+                    calendar.getEvents().forEach(event => {
+                        if (event.extendedProps.isHoliday) {
+                            event.remove();
+                        }
+                    });
+
+                    // Add holidays as background events
+                    response.response.holidays.forEach(function (holiday) {
+                        calendar.addEvent({
+                            title: holiday.name,
+                            start: holiday.date.iso,
+                            display: 'background',         // Keeps the event as a background highlight
+                            backgroundColor: '#FFCCCC',    // Light red background
+                            borderColor: '#FFCCCC',
+                            textColor: '#FF0000',          // Bright red text
+                            allDay: true,
+                            extendedProps: {
+                                isHoliday: true
+                            }
+                        });
+                    });
+                }
+
+                // Rebind other event listeners if needed
+                bindEventListeners();
+
+                loaderWrapper.classList.add('d-none');
+                $('#calendar').removeClass('blur-effect');
+            },
+            error: function (xhr, status, error) {
+                console.error('Error fetching holidays:', error);
+                loaderWrapper.classList.add('d-none');
+            },
+            complete: function () {
+                loaderWrapper.classList.add('d-none');
+                $('#calendar').removeClass('blur-effect');
+            },
+        });
+    };
 
 
     // Initialize the calendar and its initial population
@@ -501,12 +558,22 @@ const bindEventListeners = () => {
             dayMaxEvents: 5,
             height: 1500,
             events: [],
+
+            eventDidMount: function(info) {
+                // Check if the event is a holiday (using extendedProps)
+                if (info.event.extendedProps.isHoliday) {
+                    // Directly modify the DOM element to make the text bright red
+                    info.el.style.color = '#FF0000';  // Bright red
+                    info.el.style.fontWeight = 'bold'; // Make it bold for better visibility
+                }
+            }
         });
 
         calendar.render();
 
         // Load initial data
         getPopulation(initial);
+        getHolidays();
 
         // Bind filter change to update events
         $('#applyFilter').click(function (e) {
@@ -517,6 +584,7 @@ const bindEventListeners = () => {
             hidePopovers();
 
             getPopulation(filter);
+            getHolidays();
         });
     }
 });
