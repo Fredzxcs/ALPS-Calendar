@@ -40,21 +40,21 @@ function fetchUserData(userId) {
         success: function (response) {
             if (response.user) {
                 let fullName = response.user.name;
-                let suffix = '';
-                let nameParts = fullName.split(", ");
-                let mainName = nameParts[0];
-                if (nameParts.length > 1) suffix = nameParts[1];
+                // let suffix = '';
+                // let nameParts = fullName.split(", ");
+                // let mainName = nameParts[0];
+                // if (nameParts.length > 1) suffix = nameParts[1];
 
-                nameParts = mainName.split(" ");
-                let firstName = nameParts[0] || '';
-                let lastName = nameParts[nameParts.length - 1] || '';
-                let middleName = nameParts.length > 2 ? nameParts.slice(1, -1).join(" ") : '';
+                // nameParts = mainName.split(" ");
+                // let firstName = nameParts[0] || '';
+                // let lastName = nameParts[nameParts.length - 1] || '';
+                // let middleName = nameParts.length > 2 ? nameParts.slice(1, -1).join(" ") : '';
 
                 // Populate form fields
-                $('#edit_first_name').val(firstName);
-                $('#edit_middle_name').val(middleName);
-                $('#edit_last_name').val(lastName);
-                $('#edit_suffix').val(suffix);
+                $('#edit_full_name').val(fullName);
+                // $('#edit_middle_name').val(middleName);
+                // $('#edit_last_name').val(lastName);
+                // $('#edit_suffix').val(suffix);
                 $('#edit_email').val(response.user.email);
                 $('#edit_contact_number').val(response.user.contact_number);
 
@@ -225,30 +225,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const userId = window.userId;
 
-    if (!userId) {
+    if (!userId || userId === 'null') {
         console.error("User ID not found.");
         return;
     }
 
     console.log("User ID:", userId);
-    
+
     const form = document.getElementById('edit_user_form');
+    if (!form) return; // Ensure form exists
 
-    if (!form || userId === 'null') return; // Ensure form exists and userId is valid
-
-    const firstnameInput = document.getElementById('edit_first_name');
-    const middlenameInput = document.getElementById('edit_middle_name');
-    const lastnameInput = document.getElementById('edit_last_name');
-    const suffixInput = document.getElementById('edit_suffix');
-    const emailInput = document.getElementById('edit_email');
-    const contactNumberInput = document.getElementById('edit_contact_number');
-    const idPictureInput = document.getElementById('edit_id_picture');
+    // Get input fields
+    let fullnameInput = $('#edit_full_name');
+    let emailInput = $('#edit_email');
+    let contactNumberInput = $('#edit_contact_number');
+    let idPictureInput = $('input[name="avatar"]');
 
     // Remove error border when user starts typing
-    [firstnameInput, lastnameInput, emailInput, contactNumberInput].forEach(input => {
-        input.addEventListener('input', () => {
-            if (input.value.trim()) {
-                input.classList.remove('border-danger');
+    [fullnameInput, emailInput, contactNumberInput].forEach(input => {
+        input.on('input', function () {
+            if ($(this).val().trim()) {
+                $(this).removeClass('border-danger');
             }
         });
     });
@@ -258,56 +255,50 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
 
         let isValid = true;
+        let requiredFields = ['#edit_full_name', '#edit_email', '#edit_contact_number'];
 
-        // Validate First Name
-        if (!firstnameInput.value.trim()) {
-            firstnameInput.classList.add('border-danger');
-            isValid = false;
-        } else {
-            firstnameInput.classList.remove('border-danger');
-        }
+        // requiredFields.forEach(function (selector) {
+        //     let element = $(selector);
+        //     if (!element.val().trim()) {
+        //         element.addClass('border-danger');
+        //         isValid = false;
+        //     } else {
+        //         element.removeClass('border-danger');
+        //     }
+        // });
 
-        // Validate Last Name
-        if (!lastnameInput.value.trim()) {
-            lastnameInput.classList.add('border-danger');
-            isValid = false;
-        } else {
-            lastnameInput.classList.remove('border-danger');
-        }
-
-        // Validate Email
-        if (!emailInput.value.trim()) {
-            emailInput.classList.add('border-danger');
-            isValid = false;
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
-            emailInput.classList.add('border-danger');
-            isValid = false;
-        } else {
-            emailInput.classList.remove('border-danger');
-        }
-
-        // Validate Contact Number
-        if (!contactNumberInput.value.trim()) {
-            contactNumberInput.classList.add('border-danger');
-            isValid = false;
-        } else if (!/^\d{11,15}$/.test(contactNumberInput.value.trim())) { // Ensure it's numeric and 11-15 digits
-            contactNumberInput.classList.add('border-danger');
-            isValid = false;
-        } else {
-            contactNumberInput.classList.remove('border-danger');
-        }
-
-        // Validate ID Picture (Optional)
-        if (idPictureInput.files.length > 0) {
-            let file = idPictureInput.files[0];
-            let allowedExtensions = ["image/jpeg", "image/png", "image/jpg", "image/gif"];
-            if (!allowedExtensions.includes(file.type)) {
-                alert("Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.");
-                isValid = false;
+        requiredFields.forEach(function (selector) {
+            let element = $(selector);
+            if (element.is(':file')) { // Check for file input
+                if (element[0].files.length === 0) {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            } else {
+                element.removeClass('border-danger');
             }
+        });
+
+
+        // Check if file is uploaded (optional for updates)
+        if (idPictureInput.length > 0 && idPictureInput[0].files.length === 0) {
+            idPictureInput.addClass('border-danger');
+            isValid = false;
+        } else {
+            idPictureInput.removeClass('border-danger');
         }
 
-        if (!isValid) return; // Stop submission if validation fails
+        if (!isValid) {
+            Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return; // Stop submission if validation fails
+        }
 
         // Confirmation Dialog
         Swal.fire({
@@ -330,21 +321,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateUser() {
-
         let usertype = $('input[name="radio_buttons_2"]:checked').val();
 
         let formData = new FormData();
         formData.append('usertype', usertype);
-        formData.append('first_name', firstnameInput.value.trim());
-        formData.append('middle_name', middlenameInput.value.trim());
-        formData.append('last_name', lastnameInput.value.trim());
-        formData.append('suffix', suffixInput.value.trim());
-        formData.append('email', emailInput.value.trim());
-        formData.append('contact_number', contactNumberInput.value.trim());
+        formData.append('fullname', fullnameInput.val().trim());
+        formData.append('email', emailInput.val().trim());
+        formData.append('contact_number', contactNumberInput.val().trim());
 
-
-        if (idPictureInput.files.length > 0) {
-            formData.append('id_picture', idPictureInput.files[0]);
+        // Append file if uploaded
+        if (idPictureInput.length > 0 && idPictureInput[0].files.length > 0) {
+            formData.append('id_picture', idPictureInput[0].files[0]);
         }
 
         formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
@@ -355,25 +342,52 @@ document.addEventListener('DOMContentLoaded', () => {
             data: formData,
             processData: false,
             contentType: false,
-            success: function (response) {
-                Swal.fire({
-                    title: 'Updated!',
-                    text: 'User updated successfully.',
-                    icon: 'success'
-                }).then(() => {
-                    window.location.href = response.redirect_url;
-                });
+            cache: false,
+            success: function (response, textStatus, xhr) {
+                if (xhr.status === 200) { // Fix: 200 OK for updates
+                    Swal.fire({
+                        title: 'Success!',
+                        text: 'User has been updated.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        window.location.href = '/access';
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Wait!',
+                        text: response.message,
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload();
+                    });
+                }
             },
-            error: function (xhr) {
-                Swal.fire({
-                    title: 'Error!',
-                    text: xhr.responseJSON?.error || 'There was an issue updating the user.',
-                    icon: 'error'
-                });
+            error: function (xhr, status, error) {
+                if (xhr.status === 422) {
+                    let errors = xhr.responseJSON.errors;
+                    let errorMessages = Object.values(errors).flat().join("\n");
+
+                    Swal.fire({
+                        title: 'Validation Error!',
+                        text: errorMessages,
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'There was an error updating the user.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
             }
         });
     }
 });
+
 
 
 
@@ -385,3 +399,51 @@ contactNumberInput.addEventListener('input', function(event) {
     // Replace any non-digit characters with an empty string
     this.value = this.value.replace(/\D/g, '');
 });
+
+        // formData.append('middle_name', middlenameInput.value.trim());
+        // formData.append('last_name', lastnameInput.value.trim());
+        // formData.append('suffix', suffixInput.value.trim());
+
+        // Validate First Name
+        // if (!firstnameInput.value.trim()) {
+        //     firstnameInput.classList.add('border-danger');
+        //     isValid = false;
+        // } else {
+        //     firstnameInput.classList.remove('border-danger');
+        // }
+
+        // if (!lastnameInput.value.trim()) {
+        //     lastnameInput.classList.add('border-danger');
+        //     isValid = false;
+        // } else {
+        //     lastnameInput.classList.remove('border-danger');
+        // }
+
+        // if (!emailInput.value.trim()) {
+        //     emailInput.classList.add('border-danger');
+        //     isValid = false;
+        // } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+        //     emailInput.classList.add('border-danger');
+        //     isValid = false;
+        // } else {
+        //     emailInput.classList.remove('border-danger');
+        // }
+
+        // if (!contactNumberInput.value.trim()) {
+        //     contactNumberInput.classList.add('border-danger');
+        //     isValid = false;
+        // } else if (!/^\d{11,15}$/.test(contactNumberInput.value.trim())) { // Ensure it's numeric and 11-15 digits
+        //     contactNumberInput.classList.add('border-danger');
+        //     isValid = false;
+        // } else {
+        //     contactNumberInput.classList.remove('border-danger');
+        // }
+
+        // if (idPictureInput.files.length > 0) {
+        //     let file = idPictureInput.files[0];
+        //     let allowedExtensions = ["image/jpeg", "image/png", "image/jpg", "image/gif"];
+        //     if (!allowedExtensions.includes(file.type)) {
+        //         alert("Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.");
+        //         isValid = false;
+        //     }
+        // }

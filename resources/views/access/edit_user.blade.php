@@ -164,47 +164,25 @@
                             <div class="row g-5">
                                 <!-- First Name -->
                                 <div class="col-md-6">
-                                    <label for=" " class="form-label fw-bold">First Name <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-solid" id="edit_first_name"
-                                        placeholder="Enter First Name" required>
+                                    <label for="edit_full_name" class="form-label fw-bold">First Name <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-solid" id="edit_full_name" placeholder="Enter First Name">
                                 </div>
-                                <!-- Middle Name -->
-                                <div class="col-md-6">
-                                    <label for="edit_middle_name" class="form-label fw-bold">Middle Name</label>
-                                    <input type="text" class="form-control form-control-solid" id="edit_middle_name"
-                                        placeholder="Enter Middle Name (Optional)">
-                                </div>
-                                <!-- Last Name -->
-                                <div class="col-md-6">
-                                    <label for="edit_last_name" class="form-label fw-bold">Last Name <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-solid" id="edit_last_name"
-                                        placeholder="Enter Last Name" required>
-                                </div>
-                                <!-- Suffix -->
-                                <div class="col-md-6">
-                                    <label for="edit_suffix" class="form-label fw-bold">Suffix</label>
-                                    <input type="text" class="form-control form-control-solid" id="edit_suffix"
-                                        placeholder="Enter Suffix (Optional)">
-                                </div>
+
                                 <!-- Email Address -->
                                 <div class="col-md-6">
-                                    <label for="edit_email" class="form-label fw-bold">Email Address <span
-                                            class="text-danger">*</span></label>
-                                    <input type="email" class="form-control form-control-solid" id="edit_email"
-                                        placeholder="Enter Email Address" required>
+                                    <label for="edit_email" class="form-label fw-bold">Email Address <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control form-control-solid" id="edit_email" placeholder="Enter Email Address">
                                 </div>
+
                                 <!-- Contact Number -->
                                 <div class="col-md-6">
-                                    <label for="edit_contact_number" class="form-label fw-bold">Contact Number <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-solid" id="edit_contact_number"
-                                        placeholder="Enter Contact Number" required>
+                                    <label for="edit_contact_number" class="form-label fw-bold">Contact Number <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control form-control-solid" id="edit_contact_number" placeholder="Enter Contact Number">
                                 </div>
+
                                 <!-- 1x1 ID Picture -->
                                 <div class="col-md-12 text-center mt-10">
-                                    <label for="edit_id_picture" class="form-label fw-bold required">1x1 ID Picture</label>
+                                    <label for="edit_id_picture" class="form-label fw-bold">1x1 ID Picture</label>
                                     <div>
                                         <!--begin::Image input-->
                                         <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url('assets/media/svg/avatars/blank.svg')">
@@ -214,12 +192,10 @@
                                             <!--begin::Label-->
                                             <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Select Image">
                                                 <i class="bi bi-pencil-fill fs-7"></i>
-
                                                 <!--begin::Inputs-->
                                                 <input type="file" name="avatar" id="edit_id_picture" accept=".png, .jpg, .jpeg" />
                                                 <input type="hidden" name="avatar_remove" />
                                                 <!--end::Inputs-->
-                                                
                                             </label>
                                             <!--end::Label-->
                                             <!--begin::Cancel-->
@@ -234,9 +210,9 @@
                                         <!--end::Hint-->
                                     </div>
                                 </div>
-
                             </div>
                         </div>
+
                         <!--end::Input Group Step 2-->
 
                         <!--begin::Actions/Buttons-->
