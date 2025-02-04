@@ -158,7 +158,6 @@
                 <!-- End Filter Menu -->
 
 
-                @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
 
                      <!--begin::Add Button-->
                     <button type="button" class="btn btn-primary btn-lg rounded-3 fw-boldest btn-hover-rise text-white dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -166,16 +165,17 @@
                     </button>
                     <!--end::Add Button-->
 
-                @endif
                 <ul class="dropdown-menu px-2" aria-labelledby="dropdownMenuButton">
-                    <!--begin::Link item-->
-                    <li class="py-2">
-                        <a href="{{ route('add_training') }}" class="dropdown-item">
-                            <i class="bi bi-pencil-square text-primary fs-6 me-2"></i>
-                            <span class="text-gray-700 fw-bold">Training</span>
-                        </a>
-                    </li>
-                    <!--end::Link item-->
+                    @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
+                        <!--begin::Link item-->
+                        <li class="py-2">
+                            <a href="{{ route('add_training') }}" class="dropdown-item">
+                                <i class="bi bi-pencil-square text-primary fs-6 me-2"></i>
+                                <span class="text-gray-700 fw-bold">Training</span>
+                            </a>
+                        </li>
+                        <!--end::Link item-->
+                    @endif
                     <!--begin::Link item-->
                     <li>
                         <a href="{{ route('add_unavailability') }}" class="dropdown-item" id="event_view">

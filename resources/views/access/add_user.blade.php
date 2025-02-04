@@ -191,30 +191,32 @@
                             <div class="row g-5">
                                 <!-- First Name -->
                                 <div class="col-md-6">
-                                    <label for="first_name" class="form-label fw-bold">First Name <span
+                                    <label for="first_name" class="form-label fw-bold">Full Name <span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control form-control-solid" id="first_name"
-                                        placeholder="Enter First Name" required>
+                                    <input type="text" class="form-control form-control-solid" id="full_name"
+                                        placeholder="Enter Full Name" required>
                                 </div>
+
                                 <!-- Middle Name -->
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <label for="middle_name" class="form-label fw-bold">Middle Name</label>
                                     <input type="text" class="form-control form-control-solid" id="middle_name"
                                         placeholder="Enter Middle Name (Optional)">
-                                </div>
+                                </div> -->
                                 <!-- Last Name -->
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <label for="last_name" class="form-label fw-bold">Last Name <span
                                             class="text-danger">*</span></label>
                                     <input type="text" class="form-control form-control-solid" id="last_name"
                                         placeholder="Enter Last Name" required>
-                                </div>
+                                </div> -->
                                 <!-- Suffix -->
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <label for="suffix" class="form-label fw-bold">Suffix</label>
                                     <input type="text" class="form-control form-control-solid" id="suffix"
                                         placeholder="Enter Suffix (Optional)">
-                                </div>
+                                </div> -->
+
                                 <!-- Email Address -->
                                 <div class="col-md-6">
                                     <label for="email" class="form-label fw-bold">Email Address <span

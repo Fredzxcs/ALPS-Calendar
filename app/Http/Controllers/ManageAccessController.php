@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 use App\Models\User;
+//use Illuminate\Support\Facades\Crypt;
 
 class ManageAccessController extends Controller
 {
@@ -59,48 +61,109 @@ class ManageAccessController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-
-            // Validate Request
-            $request->validate([
+    
+            \Log::info('User data:', $request->all()); // Log request data for debugging
+    
+            // Validate the request
+            $validator = Validator::make($request->all(), [
                 'usertype' => 'required|string|max:15',
-                'first_name' => 'required|string|max:255',
-                'middle_name' => 'nullable|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'suffix' => 'nullable|string|max:10',
+                'fullname' => 'required|string|max:255',
                 'email' => 'required|email|max:255|unique:users,email,' . $user->id,
                 'contact_number' => 'required|numeric|digits_between:11,15',
-                'id_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // 2MB max
+                'id_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
-
-            // Construct the full name
-            $fullName = trim("{$request->first_name} " . 
-                ($request->middle_name ? "{$request->middle_name} " : '') . 
-                "{$request->last_name}" . 
-                ($request->suffix ? ", {$request->suffix}" : ''));
-
+    
+            if ($validator->fails()) {
+                \Log::error('Validation failed:', $validator->errors()->toArray());
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+    
             // Update User Fields
-            $user->name = $fullName; // Store full name in 'name' column
+            $user->name = $request->fullname;
             $user->email = $request->email;
             $user->contact_number = $request->contact_number;
             $user->usertype = $request->usertype;
-            // Handle ID Picture Upload
+    
+            //Handle ID Picture Upload (Optional)
             if ($request->hasFile('id_picture')) {
-
+                // Delete old picture if exists
+                if ($user->image) {
+                    Storage::disk('public')->delete($user->image);
+                }
+    
                 // Save new picture
                 $path = $request->file('id_picture')->store('images', 'public');
                 $user->image = $path;
             }
-
+    
             $user->save();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'User updated successfully.',
+                'redirect_url' => route('manage_access'),
+            ], 200);
+    
+        } catch (\Exception $e) {
+            \Log::error('Error updating user:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'error' => 'Error updating user: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    
 
-            return response()->json(['success' => true, 'message' => 'User updated successfully.']);
+    // 
+    public function change_credentials($id)
+    {
+        $user = User::find($id);
+        
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found.');
+        }
+    
+        return view('access.change_credentials', compact('user'));
+    }
+
+    public function update_credentials(Request $request, $id)
+    {
+        try {
+            $request->validate([
+                'username' => 'required|string|max:255',
+                'color' => 'nullable|string',
+                'password' => 'nullable|max:30' // Password is optional but must be confirmed
+            ]);
+    
+            $user = User::find($id);
+    
+            if (!$user) {
+                return redirect()->back()->with('error', 'User not found.');
+            }
+    
+            // Update fields
+            $user->username = $request->username;
+            $user->color = $request->color;
+    
+            // Only update password if it's provided
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            } 
+    
+            $user->save();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Credentials updated successfully.',
+                'redirect_url' => route('manage_access') // Send route URL to manage_access page
+            ]);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Error updating user: ' . $e->getMessage()], 500);
         }
     }
-
         
-       
     // public function edit_user($encryptedId)
     // {
     //     try {
@@ -120,3 +183,9 @@ class ManageAccessController extends Controller
 
     
 }
+
+            // Construct the full name
+            // $fullName = trim("{$request->first_name} " . 
+            //     ($request->middle_name ? "{$request->middle_name} " : '') . 
+            //     "{$request->last_name}" . 
+            //     ($request->suffix ? ", {$request->suffix}" : ''));

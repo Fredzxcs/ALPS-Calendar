@@ -22,7 +22,7 @@ $(document).ready(function () {
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
         // Required fields
-        let requiredFields = ['#first_name', '#last_name', '#email', '#contact_number', 'input[name="avatar"]', '#username', '#password', '#color'];
+        let requiredFields = ['#full_name', '#last_name', '#email', '#contact_number', 'input[name="avatar"]', '#username', '#password', '#color'];
         let isValid = true;
 
         requiredFields.forEach(function (selector) {
@@ -35,12 +35,7 @@ $(document).ready(function () {
                     element.removeClass('border-danger');
                 }
             } else {
-                if (element.val().trim() === '') {
-                    element.addClass('border-danger');
-                    isValid = false;
-                } else {
-                    element.removeClass('border-danger');
-                }
+                element.removeClass('border-danger');
             }
         });
 
@@ -56,12 +51,11 @@ $(document).ready(function () {
 
         // Proceed with backend request if validation passes
         let usertype = $('input[name="radio_buttons_2"]:checked').val();
-        let first_name = $('#first_name').val().trim();
-        let middle_name = $('#middle_name').val().trim();
-        let last_name = $('#last_name').val().trim();
-        let suffix = $('#suffix').val().trim();
+        let fullname = $('#full_name').val();
 
-        let fullname = first_name + (middle_name ? ' ' + middle_name : '') + ' ' + last_name + (suffix ? ' ' + suffix : '');
+        // let middle_name = $('#middle_name').val().trim();
+        // let last_name = $('#last_name').val().trim();
+        // let suffix = $('#suffix').val().trim();
 
         let email = $('#email').val();
         let contact_number = $('#contact_number').val();

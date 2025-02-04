@@ -12,7 +12,7 @@
         <div class="d-flex justify-content-between align-items-center mb-8">
             <div class="position-relative" style="max-width: 300px;">
                 <!-- Input Field -->
-                <input type="text" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
+                <input type="text" id="searchInput" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
                     placeholder="&#xF52A; Search..." style="font-family: 'Bootstrap-icons', sans-serif;">
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
@@ -54,21 +54,21 @@
                                     <label class="form-label fw-bold">Role:</label>
                                     <select class="form-select form-select-solid" data-placeholder="Select option"
                                         data-allow-clear="true" id="accessFilterSelect">
-                                        <option>Show All</option>
-                                        <option value="1">System Admin</option>
-                                        <option value="2">Coordinator</option>
-                                        <option value="3">Facilitator</option>
+                                        <option value="show all">Show All</option>
+                                        <option value="admin">System Admin</option>
+                                        <option value="coordinator">Coordinator</option>
+                                        <option value="facilitator">Facilitator</option>
                                     </select>
                                 </div>
                             </form>
 
-                            <!-- Actions -->
+                            <!-- Actions NO NEED. IT FILTERS IMEDIATELY UPON CLICK
                             <div class="d-flex justify-content-end">
                                 <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="accessFilterReset"
                                     data-kt-menu-dismiss="true">RESET</button>
                                 <button type="submit" class="btn btn-sm btn-primary" id="accessFilterApply"
                                     data-kt-menu-dismiss="true">APPLY</button>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <!-- End Filter Menu -->
@@ -94,7 +94,7 @@
 
                     @foreach ($users as $user)
 
-                        <tr row-id="{{ $user->id }}">
+                        <tr row-id="{{ $user->id }}" data-role="{{ strtolower($user->usertype) }}">
                             <td class="d-flex align-items-center text-start">
                                 <div class="symbol symbol-50px me-3 border border-2 border-dark">
                                     @isset($user->image)
@@ -109,8 +109,8 @@
                                 </div>
                             </td>
                             <td>{{ $user->email }}</td>
-                            <td>
 
+                            <td class="user-role" data-role="{{ strtolower($user->usertype) }}"> 
                                 @switch($user->usertype)
                                     @case("admin")
                                         <span class="badge badge-light-warning">SYSTEM ADMIN</span>
@@ -121,9 +121,9 @@
                                     @case("facilitator")
                                         <span class="badge badge-light-info">FACILITATOR</span>
                                         @break
-                                    @case("assistant")
+                                    <!-- @case("assistant")
                                         <span class="badge badge-light-success">ASSISTANT</span>
-                                        @break
+                                        @break -->
                                     @default
                                         <span class="badge badge-light-secondary">-</span>
                                 @endswitch
@@ -161,9 +161,9 @@
                                     </div>
 
                                     <div class="menu-item px-3">
-                                        <a href="{{route ('change_credentials')}}" class="menu-link px-3">
-                                            <i class="bi bi-unlock-fill text-info me-2"></i> Change Credentials
-                                        </a>
+                                    <a href="{{ route('change_credential', [$user->id]) }}" id="edit-credential-btn" class="menu-link px-3">
+                                        <i class="bi bi-unlock-fill text-info me-2"></i> Change Credentials
+                                    </a>
                                     </div>
 
                                     <div class="menu-item px-3">
@@ -395,6 +395,8 @@
 @push('scripts')
 <script src="{{ asset('js/manage_access.js') }}"></script>
 <script src="{{ asset('js/edit_user.js') }}"></script>
+
+
 <!-- VIEW USER DATA  -->
 <script>
     $(document).ready(function (){
