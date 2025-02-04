@@ -566,6 +566,38 @@ document.addEventListener('DOMContentLoaded', function () {
                         info.el.style.color = '#FF0000';  // Bright red
                         info.el.style.fontWeight = 'bold'; // Make it bold for better visibility
                     }
+                },
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+
+                    if (popover) {
+                        try {
+                            popover.dispose();
+                        } catch (error) {
+                            console.error("Error disposing popover:", error);
+                        }
+                        popover = null;
+                        popoverState = false;
+                    }
+
+                    const $modalElement = $('#kt_modal_view_training');
+                    const eventData = info.event.extendedProps;
+
+                    $modalElement.find('#modal-title').text(info.event.title || 'No Title');
+                    $modalElement.find('#modal-company').text(eventData.company || 'N/A');
+                    $modalElement.find('#modal-facilitator').text(eventData.facilitator?.name || 'No Facilitator Yet');
+                    $modalElement.find('#modal-assistant').text(eventData.assistant || 'No Assistant Yet');
+
+                    const formattedStartDate = info.event.start ? moment(info.event.start).format('MMM DD, YYYY') : 'N/A';
+                    const formattedEndDate = info.event.end ? moment(info.event.end).format('MMM DD, YYYY') : 'N/A';
+                    $modalElement.find('#modal-date').text(`${formattedStartDate} to ${formattedEndDate}`);
+
+                    const formattedStartTime = info.event.start ? moment(info.event.start).format('h:mm A') : 'N/A';
+                    const formattedEndTime = info.event.end ? moment(info.event.end).format('h:mm A') : 'N/A';
+                    $modalElement.find('#modal-time').text(`${formattedStartTime} to ${formattedEndTime}`);
+
+                    const modal = new bootstrap.Modal(document.getElementById('kt_modal_view_training'));
+                    modal.show();
                 }
             });
 
