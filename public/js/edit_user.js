@@ -290,9 +290,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!contactNumberInput.value.trim()) {
             contactNumberInput.classList.add('border-danger');
             isValid = false;
-        } else if (!/^\d{11,15}$/.test(contactNumberInput.value.trim())) { // Ensure it's numeric and 11-15 digits
-            contactNumberInput.classList.add('border-danger');
-            isValid = false;
+        // } else if (!/^\d{11,15}$/.test(contactNumberInput.value.trim())) { // Ensure it's numeric and 11-15 digits
+        //     contactNumberInput.classList.add('border-danger');
+        //     isValid = false;
         } else {
             contactNumberInput.classList.remove('border-danger');
         }
