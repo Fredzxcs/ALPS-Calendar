@@ -17,7 +17,7 @@
     <!--end::Global Stylesheets Bundle-->
 </head>
 <div class="bg-image"
-    style="background-image: url('{{ asset('img/LoginBG.png') }}'); background-repeat: no-repeat; background-size: fit; background-position: center; height: 100vh; width: 100vw;">
+    style="background-image: url('{{ asset('img/LoginBG.png') }}'); background-repeat: no-repeat; background-size: cover; background-position: center; height: 100vh; width: 100vw;">
     <div class="d-flex justify-content-center align-items-center vh-100">
 
         <!-- Logo -->
