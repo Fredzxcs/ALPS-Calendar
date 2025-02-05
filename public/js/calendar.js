@@ -356,7 +356,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                     backgroundColor: unavailability.user.color || '#FF5E5E',
                                     borderColor: unavailability.user.color || '#FF5E5E',
                                     extendedProps: {
+                                        eventType: 'unavailability',
                                         user: unavailability.user ? unavailability.user.name : 'Unknown User',
+                                        reason: unavailability.reason || 'Unavailable'
                                     },
                                 });
                             }
@@ -580,8 +582,51 @@ document.addEventListener('DOMContentLoaded', function () {
                         popoverState = false;
                     }
 
-                    const $modalElement = $('#kt_modal_view_training');
                     const eventData = info.event.extendedProps;
+
+
+                    // 1. Check for Holiday Event
+                    if (eventData.isHoliday) {
+
+                        const holidayDate = info.event.start ? moment(info.event.start).format('MMMM DD, YYYY') : 'N/A';
+
+                        Swal.fire({
+                            icon: 'info',
+                            title: info.event.title,
+                            html: `<strong>Date:</strong> ${holidayDate}`,
+                            confirmButtonText: 'Close',
+                            customClass: {
+                                confirmButton: "btn btn-light",
+                            }
+                        });
+                        return;
+                    }
+
+                    //  2. Check for Unavailability Event
+                    if (eventData.eventType === 'unavailability' || eventData.reason) {
+
+                        const $modalElement = $('#kt_modal_view_unavailability');
+
+                        $modalElement.find('#modal-title').text(info.event.title || 'Unavailability');
+                        $modalElement.find('#modal-user').text(eventData.user || 'Unknown User');
+
+
+                        const formattedStartDate = info.event.start ? moment(info.event.start).format('MMM DD, YYYY') : 'N/A';
+                        const formattedEndDate = info.event.end ? moment(info.event.end).format('MMM DD, YYYY') : 'N/A';
+
+                        const dateUnavailable = `${formattedStartDate} to ${formattedEndDate}`;
+
+                        $modalElement.find('#modal-date-unavailable').text(dateUnavailable);
+                        $modalElement.find('#modal-reason').text(eventData.reason || 'No reason provided');
+
+                        const modal = new bootstrap.Modal(document.getElementById('kt_modal_view_unavailability'));
+                        modal.show();
+
+                        return;
+                    }
+
+                    // 3. Default: Handle as Training Event
+                    const $modalElement = $('#kt_modal_view_training');
 
                     $modalElement.find('#modal-title').text(info.event.title || 'No Title');
                     $modalElement.find('#modal-company').text(eventData.company || 'N/A');
