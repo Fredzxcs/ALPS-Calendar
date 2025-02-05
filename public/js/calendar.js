@@ -452,8 +452,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (mode === 'public-course' && accountEmail !== 'N/A' || mode === "virtual") {
                     inPersonText = 'No';
                     $modalElement.find('#modal-password').html(eventData.account.account_password);
+                    $modalElement.find('#password-container').removeClass('d-none'); // Ensure it's visible
                 }
-                else if (mode === 'public-course' && accountEmail === 'N/A')
+                else if (mode === 'public-course' && accountEmail === 'N/A' || mode === "face-to-face")
                 {
                     $modalElement.find('#password-container').addClass('d-none');
                 }
