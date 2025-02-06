@@ -61,14 +61,12 @@
                                     </select>
                                 </div>
                             </form>
-
-                            <!-- Actions NO NEED. IT FILTERS IMEDIATELY UPON CLICK
                             <div class="d-flex justify-content-end">
                                 <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="accessFilterReset"
                                     data-kt-menu-dismiss="true">RESET</button>
-                                <button type="submit" class="btn btn-sm btn-primary" id="accessFilterApply"
-                                    data-kt-menu-dismiss="true">APPLY</button>
-                            </div> -->
+                                <!-- <button type="submit" class="btn btn-sm btn-primary" id="accessFilterApply"
+                                    data-kt-menu-dismiss="true">APPLY</button> -->
+                            </div>
                         </div>
                     </div>
                     <!-- End Filter Menu -->

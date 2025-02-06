@@ -200,23 +200,46 @@ document.addEventListener('DOMContentLoaded', () => {
                     data: formData,
                     processData: false,
                     contentType: false,
-                    success: function (response) {
-                        if (response.success) {
+                    success: function (response, textStatus, xhr) {
+                        if (xhr.status === 200) {
                             Swal.fire({
-                                title: 'Updated!',
-                                text: 'The credentials have been updated.',
+                                title: 'Success!',
+                                text: 'User has been added.',
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             }).then(() => {
-                                window.location.href = response.redirect_url; // Use Laravel's route
+                                window.location.href = '/access';
                             });
                         } else {
-                            Swal.fire('Error!', response.message, 'error');
+                            Swal.fire({
+                                title: 'Wait!',
+                                text: response.message,
+                                icon: 'warning',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                location.reload();
+                            });
                         }
                     },
-                    error: function (xhr) {
-                        console.error("AJAX Error:", xhr.responseText); // Log the actual error message
-                        Swal.fire('Error!', `Something went wrong: ${xhr.responseText}`, 'error'); // Show actual error
+                    error: function (xhr, status, error) {
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            let errorMessages = Object.values(errors).flat().join("\n");
+        
+                            Swal.fire({
+                                title: 'Validation Error!',
+                                text: errorMessages,
+                                icon: 'warning',
+                                confirmButtonText: 'OK'
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'There was an error adding the user.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
                     }
                 });
                 

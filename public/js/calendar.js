@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 else if (mode === 'public-course' && accountEmail === 'N/A' || mode === "face-to-face")
                 {
-                    $modalElement.find('#password-container').addClass('d-none');
+                    $modalElement.find('#password-container').addClass('d-none'); // Remove container
                 }
 
                 console.log(eventData.account.account_password);

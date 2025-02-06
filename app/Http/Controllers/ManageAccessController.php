@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -132,12 +133,20 @@ class ManageAccessController extends Controller
     public function update_credentials(Request $request, $id)
     {
         try {
-            $request->validate([
-                'username' => 'required|string|max:255',
+            $validator = Validator::make($request->all(), [
+                'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($id)],
                 'color' => 'nullable|string',
-                'password' => 'nullable|max:30' // Password is optional but must be confirmed
+                'password' => ['required', 'min:8'], // Password is optional but must be confirmed
             ]);
     
+            if ($validator->fails()) {
+                \Log::error('Validation failed:', $validator->errors()->toArray());
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
             $user = User::find($id);
     
             if (!$user) {
@@ -151,7 +160,7 @@ class ManageAccessController extends Controller
             // Only update password if it's provided
             if ($request->filled('password')) {
                 $user->password = Hash::make($request->password);
-            } 
+            }
     
             $user->save();
     
@@ -159,11 +168,16 @@ class ManageAccessController extends Controller
                 'success' => true,
                 'message' => 'Credentials updated successfully.',
                 'redirect_url' => route('manage_access') // Send route URL to manage_access page
-            ]);
+            ], 200);
+
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Error updating user: ' . $e->getMessage()], 500);
+            \Log::error('Error updating user:', ['error' => $e->getMessage()]);
+            return response()->json([
+                'error' => 'Error updating user: ' . $e->getMessage()
+            ], 500);
         }
     }
+    
         
     // public function edit_user($encryptedId)
     // {
