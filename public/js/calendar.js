@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     assistant: training.assistant,
                                     modeType: training.mode,
                                     account: training.account,
-                                    title: training.course.course_name,
+                                    title: `${training.course.course_code} - ${training.company ? training.company.company_name : 'Public Course'} - ${training.facilitator ? training.facilitator.name.split(' ')[0] : 'No Facilitator'}`,
                                     company: training.company ? training.company.company_name : 'No Company (Public Course)',
                                     start: fromDateTime,
                                     end: toDateTime,

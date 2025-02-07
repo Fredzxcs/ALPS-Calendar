@@ -14,7 +14,7 @@
                 <!-- Input Field -->
                 <input type="text" id="searchInput"
                     class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
-                    placeholder="&#xF52A; Search..." 
+                    placeholder="&#xF52A; Search..."
                     style="font-family: 'Bootstrap-icons', sans-serif;">
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
@@ -25,7 +25,7 @@
                             <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
                             <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="black" />
                         </svg>
-                    </span> 
+                    </span>
                     ADD COURSE
                 </a>
             </div>
@@ -33,8 +33,8 @@
 
         <!-- Table -->
         <div class="table-responsive" style="padding: 0; margin: 0;">
-            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" 
-                id="courses_table" 
+            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100"
+                id="courses_table"
                 style="margin: auto;">
                 <thead>
                     <tr class="fw-boldest text-gray-800 fs-5">
@@ -56,18 +56,18 @@
                         <td>{{ $course->course_code }}</td>
                         <td>
                             <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
+                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
                                 data-kt-menu-trigger="click"
                                 data-kt-menu-placement="bottom-start">
                                 MENU
                             </button>
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
+                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4"
                                 data-kt-menu="true">
 
                                 <div class="menu-item px-3">
-                                    <a class="menu-link px-3 editCourseBtn" 
+                                    <a class="menu-link px-3 editCourseBtn"
                                         data-id="{{ $course->id }}"
-                                        data-bs-toggle="modal" 
+                                        data-bs-toggle="modal"
                                         data-bs-target="#modal_edit_course">
                                         <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
                                     </a>
@@ -124,43 +124,43 @@
                         </div>
                     </div>
                     <!--end::Modal header-->
-                    
+
                     <!--begin::Modal body-->
                     <div class="modal-body py-10 px-lg-17">
                         <div class="row mb-5">
 
                             <label for="course_name" class="form-label fw-bold required">Course Name</label>
-                            <input type="text" 
-                                class="form-control form-control-solid" 
-                                id="add_course_name" 
+                            <input type="text"
+                                class="form-control form-control-solid"
+                                id="add_course_name"
                                 placeholder="Enter Course Name">
 
                             <div class="invalid-feedback">Required field</div>
                         </div>
 
                         <div class="row mb-5">
-                            <label for="course_code" class="form-label fw-bold">Course Code</label>
-                            <input type="text" 
-                                class="form-control form-control-solid" 
-                                id="add_course_code" 
+                            <label for="course_code" class="form-label fw-bold required">Course Code</label>
+                            <input type="text"
+                                class="form-control form-control-solid"
+                                id="add_course_code"
                                 placeholder="Enter Course Code (Optional)">
                         </div>
                     </div>
                     <!--end::Modal body-->
-                    
+
                     <!-- DOM element to store the route URL -->
                     <div id="route-config" data-url="{{ route('add_course') }}"></div>
-     
+
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" 
-                            class="btn btn-success me-2 addBtn" 
+                        <button type="submit"
+                            class="btn btn-success me-2 addBtn"
                             id="add_course_submit">
                             SAVE
                         </button>
-                        <button type="reset" 
-                            class="btn btn-light" 
+                        <button type="reset"
+                            class="btn btn-light"
                             data-bs-dismiss="modal">
                             CANCEL
                         </button>
@@ -204,7 +204,7 @@
                         </div>
 
                         <div class="row mb-5">
-                            <label for="course_code" class="form-label fw-bold">Course Code</label>
+                            <label for="course_code" class="form-label fw-bold required">Course Code</label>
                             <input type="text" class="form-control form-control-solid" id="edit_course_code" placeholder="Enter Course Code (Optional)"">
                         </div>
                     </div>

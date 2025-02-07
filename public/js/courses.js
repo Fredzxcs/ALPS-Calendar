@@ -81,6 +81,13 @@ document.addEventListener('DOMContentLoaded', () => {
             courseName.classList.remove('border-danger');
         }
 
+        if (!courseCode.value.trim()) {
+            courseCode.classList.add('border-danger');
+            isValid = false;
+        } else {
+            courseCode.classList.remove('border-danger');
+        }
+
         if (!isValid) {
             Swal.fire({
                 title: 'Missing Fields!',
@@ -191,6 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             courseName.classList.remove('border-danger');
         }
+
+        if (!courseCode.value.trim()) {
+            courseCode.classList.add('border-danger');
+            isValid = false;
+        } else {
+            courseCode.classList.remove('border-danger');
+        }
+
 
         if (!isValid) {
             Swal.fire({

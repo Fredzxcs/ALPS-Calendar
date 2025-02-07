@@ -14,7 +14,7 @@
                 <!-- Input Field -->
                 <input type="text" id="searchInput"
                     class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
-                    placeholder="&#xF52A; Search..." 
+                    placeholder="&#xF52A; Search..."
                     style="font-family: 'Bootstrap-icons', sans-serif;">
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
@@ -25,7 +25,7 @@
                             <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
                             <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="black" />
                         </svg>
-                    </span> 
+                    </span>
                     ADD ACCOUNT
                 </a>
             </div>
@@ -63,18 +63,18 @@
 
                         <td>
                             <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
+                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
                                 data-kt-menu-trigger="click"
                                 data-kt-menu-placement="bottom-start">
                                 MENU
                             </button>
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
+                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4"
                                 data-kt-menu="true">
 
                                 <div class="menu-item px-3">
-                                <a class="menu-link px-3 editAccountBtn" 
-                                    data-id="{{ $account->id }}"  
-                                    data-bs-toggle="modal" 
+                                <a class="menu-link px-3 editAccountBtn"
+                                    data-id="{{ $account->id }}"
+                                    data-bs-toggle="modal"
                                     data-bs-target="#modal_edit_account">
                                     <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
                                 </a>
@@ -133,14 +133,14 @@
                     <!--end::Modal header-->
                     <!--begin::Modal body-->
                     <div class="modal-body py-10 px-lg-17">
-                        
+
                     <div class="row mb-5">
                         <!-- Account Email -->
                         <div class="col-12">
                             <label for="add_account_email" class="form-label fw-bold required">Account Email</label>
-                            <input type="email" 
-                                class="form-control form-control-solid" 
-                                id="add_account_email" 
+                            <input type="email"
+                                class="form-control form-control-solid"
+                                id="add_account_email"
                                 placeholder="Enter Account Email"
                             />
                             <div class="invalid-feedback">Required field</div>
@@ -152,16 +152,16 @@
                         <div class="col-12">
                             <label for="add_account_password" class="form-label fw-bold required">Account Password</label>
                             <div class="position-relative">
-                                <input type="password" class="form-control form-control-solid" 
-                                    placeholder="Enter Account Password" 
+                                <input type="password" class="form-control form-control-solid"
+                                    placeholder="Enter Account Password"
                                     id="add_account_password"
                                     name="add_account_password"/>
                                 <div class="invalid-feedback">Required field</div>
 
                                 <!-- Visibility toggle -->
                                 <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2 togglePassword"
-                                    data-kt-password-meter-control="visibility" 
-                                    data-target="#add_account_password" 
+                                    data-kt-password-meter-control="visibility"
+                                    data-target="#add_account_password"
                                     aria-label="Toggle Password Visibility">
                                     <i class="bi bi-eye-slash fs-2"></i>
                                     <i class="bi bi-eye fs-2 d-none"></i>
@@ -177,13 +177,13 @@
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" 
-                            class="btn btn-success me-2 addBtn" 
+                        <button type="submit"
+                            class="btn btn-success me-2 addBtn"
                             id="add_account_submit">
                             SAVE
                         </button>
-                        <button type="reset" 
-                            class="btn btn-light" 
+                        <button type="reset"
+                            class="btn btn-light"
                             data-bs-dismiss="modal">
                             CANCEL
                         </button>
@@ -238,16 +238,16 @@
                             <div class="col-12">
                                 <label for="add_account_password" class="form-label fw-bold required">Account Password</label>
                                 <div class="position-relative">
-                                    <input type="password" class="form-control form-control-solid" 
-                                        placeholder="Enter Account Password" 
+                                    <input type="password" class="form-control form-control-solid"
+                                        placeholder="Enter Account Password"
                                         id="edit_account_password"
                                         name="edit_account_password"
                                         value="sample"
                                     />
                                     <!-- Visibility toggle -->
                                     <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2 togglePassword"
-                                        data-kt-password-meter-control="visibility" 
-                                        data-target="#add_account_password" aria-label="Toggle Password Visibility">
+                                        data-kt-password-meter-control="visibility"
+                                        data-target="#edit_account_password" aria-label="Toggle Password Visibility">
                                         <i class="bi bi-eye-slash fs-2"></i>
                                         <i class="bi bi-eye fs-2 d-none"></i>
                                     </span>
@@ -281,6 +281,6 @@
 <script src="{{ asset('js/accounts.js') }}"></script>
 
 <script>
-    
+
 </script>
 @endpush
