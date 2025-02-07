@@ -328,6 +328,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     modeType: training.mode,
                                     account: training.account,
                                     title: `${training.course.course_code} - ${training.company ? training.company.company_name : 'Public Course'} - ${training.facilitator ? training.facilitator.name.split(' ')[0] : 'No Facilitator Yet'}`,
+                                    course: training.course.course_name,
                                     company: training.company ? training.company.company_name : 'No Company (Public Course)',
                                     start: fromDateTime,
                                     end: toDateTime,
@@ -422,6 +423,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     startDate: info.event.start || null,
                     endDate: info.event.end || null,
                     allDay: info.event.allDay || false,
+                    course: info.event.extendedProps.course,
                     modeType: info.event.extendedProps.modeType || 'N/A',
                     company: info.event.extendedProps.company || 'N/A',
                     facilitator: info.event.extendedProps.facilitator?.name || 'No Facilitator Yet',
@@ -464,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 $modalElement.find('#modal-in-person').text(inPersonText);
 
                 $modalElement.find('#modal-company').text(eventData.company);
-                $modalElement.find('#modal-course').text(eventData.eventName);
+                $modalElement.find('#modal-course').text(eventData.course);
                 $modalElement.find('#modal-facilitator').text(eventData.facilitator);
                 $modalElement.find('#modal-assistant').text(eventData.assistant);
 
