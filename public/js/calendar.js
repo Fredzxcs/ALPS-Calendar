@@ -488,62 +488,62 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    const getHolidays = () => {
-        $.ajax({
-            url: '/calendar/api/get/holidays',
-            method: 'GET',
-            dataType: 'json',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            beforeSend: function () {
-                $('#calendar').addClass('blur-effect');
-                loaderWrapper.style.display = 'flex';
-            },
-            success: function (response) {
-                console.log(response);
+    // const getHolidays = () => {
+    //     $.ajax({
+    //         url: '/calendar/api/get/holidays',
+    //         method: 'GET',
+    //         dataType: 'json',
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         beforeSend: function () {
+    //             $('#calendar').addClass('blur-effect');
+    //             loaderWrapper.style.display = 'flex';
+    //         },
+    //         success: function (response) {
+    //             console.log(response);
 
-                if (response.response && response.response.holidays) {
-                    // Clear all existing background events
-                    calendar.getEvents().forEach(event => {
-                        if (event.extendedProps.isHoliday) {
-                            event.remove();
-                        }
-                    });
+    //             if (response.response && response.response.holidays) {
+    //                 // Clear all existing background events
+    //                 calendar.getEvents().forEach(event => {
+    //                     if (event.extendedProps.isHoliday) {
+    //                         event.remove();
+    //                     }
+    //                 });
 
-                    // Add holidays as background events
-                    response.response.holidays.forEach(function (holiday) {
-                        calendar.addEvent({
-                            title: holiday.name,
-                            start: holiday.date.iso,
-                            display: 'background',         // Keeps the event as a background highlight
-                            backgroundColor: '#FFCCCC',    // Light red background
-                            borderColor: '#FFCCCC',
-                            textColor: '#FF0000',          // Bright red text
-                            allDay: true,
-                            extendedProps: {
-                                isHoliday: true
-                            }
-                        });
-                    });
-                }
+    //                 // Add holidays as background events
+    //                 response.response.holidays.forEach(function (holiday) {
+    //                     calendar.addEvent({
+    //                         title: holiday.name,
+    //                         start: holiday.date.iso,
+    //                         display: 'background',         // Keeps the event as a background highlight
+    //                         backgroundColor: '#FFCCCC',    // Light red background
+    //                         borderColor: '#FFCCCC',
+    //                         textColor: '#FF0000',          // Bright red text
+    //                         allDay: true,
+    //                         extendedProps: {
+    //                             isHoliday: true
+    //                         }
+    //                     });
+    //                 });
+    //             }
 
-                // Rebind other event listeners if needed
-                bindEventListeners();
+    //             // Rebind other event listeners if needed
+    //             bindEventListeners();
 
-                loaderWrapper.classList.add('d-none');
-                $('#calendar').removeClass('blur-effect');
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching holidays:', error);
-                loaderWrapper.classList.add('d-none');
-            },
-            complete: function () {
-                loaderWrapper.classList.add('d-none');
-                $('#calendar').removeClass('blur-effect');
-            },
-        });
-    };
+    //             loaderWrapper.classList.add('d-none');
+    //             $('#calendar').removeClass('blur-effect');
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error('Error fetching holidays:', error);
+    //             loaderWrapper.classList.add('d-none');
+    //         },
+    //         complete: function () {
+    //             loaderWrapper.classList.add('d-none');
+    //             $('#calendar').removeClass('blur-effect');
+    //         },
+    //     });
+    // };
 
         // Initialize the calendar and its initial population
         if (calendarEl) {
@@ -614,7 +614,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Load initial data
             getPopulation(initial);
-            getHolidays();
+            // getHolidays();
 
             // Bind filter change to update events
             $('#applyFilter').click(function (e) {
@@ -625,7 +625,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 hidePopovers();
 
                 getPopulation(filter);
-                getHolidays();
+                // getHolidays();
             });
         }
 });
