@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     modeType: training.mode,
                                     account: training.account,
                                     title: training.course.course_name,
-                                    company: training.company ? training.company.company_name : 'N/A',
+                                    company: training.company ? training.company.company_name : 'No Company (Public Course)',
                                     start: fromDateTime,
                                     end: toDateTime,
                                     location: training.location,
