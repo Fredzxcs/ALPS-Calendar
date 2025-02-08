@@ -97,10 +97,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     $(document).ready(function () {
+        updateLocationVisibility();
+
+        let previousMode = $('input[name="mode"]:checked').val();
+
         $('input[name="mode"]').change(function () {
-            const mode = $(this).val();
-            clearFields(mode);
+            const newMode = $(this).val();
+            clearFields(newMode, previousMode);
             updateLocationVisibility();
+            previousMode = newMode; // Store the previous mode
         });
 
         $('#inperson-training').change(function () {
@@ -130,31 +135,40 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        function clearFields(mode) {
-            // Clear common fields
-            $('#credentials, #company, #course, #public-course-select, #platform, #location')
-                .val('')
-                .trigger('change');
-
+        function clearFields(mode, previousMode) {
             const isInPerson = $('#inperson-training').is(':checked');
-            // Hide/Show based on the mode
+
             if (mode === 'virtual') {
+                $('#credentials, #platform').val('').trigger('change');
                 $('#credentials-container').removeClass('d-none');
-                $('#public-course-container, #company-container').addClass('d-none');
+                $('#public-course-container, #company-container, #location-container').addClass('d-none');
+
+                if (previousMode === 'public-course') {
+                    return;
+                }
             } else if (mode === 'face-to-face') {
+                $('#credentials, #platform').val('').trigger('change');
                 $('#location-container').removeClass('d-none');
                 $('#credentials-container, #public-course-container').addClass('d-none');
+
+                $('#account').val('').trigger('change');
             } else if (mode === 'public-course') {
                 $('#public-course-container, #credentials-container').removeClass('d-none');
-                $('#location-container, #company-container').addClass('d-none');
+                $('#company').val('').trigger('change');
+                $('#company-container').addClass('d-none');
 
                 if (isInPerson) {
                     $('#location-container').removeClass('d-none');
                 } else {
                     $('#location-container').addClass('d-none');
                 }
+
+                if (previousMode === 'virtual') {
+                    return;
+                }
             }
         }
+
     });
 
     document.getElementById('edit_training_submit').addEventListener('click', function (e) {
