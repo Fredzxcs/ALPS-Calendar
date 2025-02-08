@@ -98,7 +98,7 @@
                                     @isset($user->image)
                                         <img src="{{ asset('storage/' . $user->image) }}" alt="Profile Picture">
                                     @else
-                                        <img src="{{ asset('img/avatar.jpg') }}" alt="default-image">
+                                        <img src="{{ asset('img/img_default.jpg') }}" alt="default-image">
                                     @endisset
                                 </div>
                                 <div class="fs-5">

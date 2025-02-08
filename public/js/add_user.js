@@ -21,28 +21,20 @@ $(document).ready(function () {
         // Get the CSRF token from the meta tag
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-        // Required fields
-        let requiredFields = ['#full_name', '#email', '#contact_number', 'input[name="avatar"]', '#username', '#password', '#color'];
+        // Required fields (excluding image)
+        let requiredFields = ['#full_name', '#email', '#contact_number', '#username', '#password', '#color'];
         let isValid = true;
 
         requiredFields.forEach(function (selector) {
             let element = $(selector);
         
-            if (element.is(':file')) { // Check for file input
-                if (element[0].files.length === 0) {
-                    element.addClass('border-danger');
-                    isValid = false;
-                } else {
-                    element.removeClass('border-danger');
-                }
-            } else if (!element.val().trim()) { // Check for empty text fields
+            if (!element.val().trim()) { // Check for empty text fields
                 element.addClass('border-danger');
                 isValid = false;
             } else {
                 element.removeClass('border-danger'); // Only remove if the field is valid
             }
         });
-        
 
         if (!isValid) {
             Swal.fire({
@@ -52,14 +44,14 @@ $(document).ready(function () {
                 confirmButtonText: 'OK'
             });
             return;
-        } // Stop submission if validation fails
+        }
 
         // Proceed with backend request if validation passes
         let usertype = $('input[name="radio_buttons_2"]:checked').val();
         let fullname = $('#full_name').val();
         let email = $('#email').val();
         let contact_number = $('#contact_number').val();
-        let image = $('input[name="avatar"]')[0].files[0];
+        let imageInput = $('input[name="avatar"]')[0];
         let username = $('#username').val();
         let password = $('#password').val();
         let color = $('#color').val();
@@ -70,9 +62,13 @@ $(document).ready(function () {
         formData.append('color', color);
         formData.append('email', email);
         formData.append('contact_number', contact_number);
-        formData.append('image', image);
         formData.append('username', username);
         formData.append('password', password);
+
+        // Append image only if a file is selected
+        if (imageInput.files.length > 0) {
+            formData.append('image', imageInput.files[0]);
+        }
 
         $.ajax({
             url: 'add_user',
@@ -128,6 +124,7 @@ $(document).ready(function () {
         });
     });
 });
+
 
 
 //Toggle password visibility
