@@ -233,7 +233,7 @@
                                 </div>
                                 <!-- 1x1 ID Picture -->
                                 <div class="col-md-12 text-center mt-10">
-                                    <label for="id_picture" class="form-label fw-bold">1x1 ID Picture (Optional)</label>
+                                    <label for="id_picture" class="form-label fw-bold">1x1 ID Picture</label>
                                     <div>
                                         <!--begin::Image input-->
                                         <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url('assets/media/svg/avatars/blank.svg')">
