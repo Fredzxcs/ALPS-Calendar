@@ -45,7 +45,7 @@
                                         type="checkbox"
                                         id="inperson-training"
                                         class="form-check-input"
-                                        {{ $training->mode == 'public-course' && $training->location ? 'checked' : '' }}>
+                                        >
                                     <label for="inperson-training" class="form-check-label fw-bold">In-person training?</label>
                                 </div>
 
@@ -89,7 +89,7 @@
                                 </select>
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="platform-container">
                                 <label for="platform" class="fw-bold mb-2">Platform</label>
                                 <input type="text" value="{{ $training->platform }}" name="platform" id="platform" class="form-control form-control-solid" placeholder="Enter Platform (e.g. Zoom)">
                             </div>
@@ -115,7 +115,9 @@
                                         {{ $company->company_name }}
                                     </option>
                                 @endforeach
+                                    <option value="other">Other</option>
                                 </select>
+                                <input type="text" id="enter-company" class="form-control form-control-solid d-none" placeholder="Enter Company">
                             </div>
                         </div>
 
@@ -125,11 +127,12 @@
                         <div class="col-md-6 d-flex align-items-center">
                             <div class="flex-grow-1">
                                 <label for="course" class="fw-bold mb-2 required">Course</label>
-                                <select id="public-course-select" class="form-select form-select-solid">
+                                <select id="course" class="form-select form-select-solid">
                                     <option value="" disabled selected>Select Course</option>
                                     @foreach ($courses as $course)
-                                    <option value="{{ $course->id }}">
-                                        {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
+                                    <option value="{{ $course->id }}"
+                                        {{ $training->course && $training->course->id === $course->id ? 'selected' : '' }}>
+                                        {{ $course->course_name }}
                                     </option>
                                     @endforeach
                                 </select>
@@ -268,13 +271,13 @@
 
             $(document).ready(function (){
 
-                if (inpersonCheckbox.checked) {
-                    credentialsContainer.classList.add("d-none");
-                    locationContainer.classList.remove("d-none");
-                } else {
-                    credentialsContainer.classList.remove("d-none");
-                    locationContainer.classList.add("d-none");
-                }
+                // if (inpersonCheckbox.checked) {
+                //     credentialsContainer.classList.add("d-none");
+                //     locationContainer.classList.remove("d-none");
+                // } else {
+                //     credentialsContainer.classList.remove("d-none");
+                //     locationContainer.classList.add("d-none");
+                // }
 
                 //Initally check and display the correct fields
                 if ("{{ $training->mode }}" === "virtual") {
