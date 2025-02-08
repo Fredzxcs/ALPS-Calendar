@@ -143,7 +143,7 @@
                             <input type="text"
                                 class="form-control form-control-solid"
                                 id="add_course_code"
-                                placeholder="Enter Course Code (Optional)">
+                                placeholder="Enter Course Code">
                         </div>
                     </div>
                     <!--end::Modal body-->
@@ -205,7 +205,7 @@
 
                         <div class="row mb-5">
                             <label for="course_code" class="form-label fw-bold required">Course Code</label>
-                            <input type="text" class="form-control form-control-solid" id="edit_course_code" placeholder="Enter Course Code (Optional)"">
+                            <input type="text" class="form-control form-control-solid" id="edit_course_code" placeholder="Enter Course Code"">
                         </div>
                     </div>
                     <!--end::Modal body-->
