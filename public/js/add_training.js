@@ -221,7 +221,7 @@ $(document).ready(function (e) {
                         confirmButtonText: 'Proceed',
                         cancelButtonText: 'Cancel',
                         customClass: {
-                            confirmButton: "btn btn-primary",
+                            confirmButton: "btn btn-success",
                             cancelButton: 'btn btn-secondary'
                         }
                     }).then((result) => {
@@ -233,6 +233,39 @@ $(document).ready(function (e) {
             });
         }
     });
+    $(document).ready(function () {
+        $('input[name="mode"]').change(function () {
+            const mode = $(this).val();
+            clearFields(mode);
+        });
+
+        function clearFields(mode) {
+            // Clear all input fields, dropdowns, and date pickers
+            $('#credentials, #company, #course, #public-course-select, #platform, #location, #facilitator, #assistant, #date-range, #time-start, #time-end')
+                .val('')
+                .trigger('change');
+
+            // Clear datepicker selections if used
+            $('#date-range').datepicker('clearDates');
+
+            // Uncheck checkboxes (like In-person training)
+            $('input[type="checkbox"]').prop('checked', false);
+
+            // Hide/Show based on the selected mode
+            if (mode === 'virtual') {
+                $('#credentials-container').show();
+                $('#location-container, #public-course-container, #company-container').hide();
+            } else if (mode === 'face-to-face') {
+                $('#location-container').show();
+                $('#credentials-container, #public-course-container').hide();
+            } else if (mode === 'public-course') {
+                $('#public-course-container, #credentials-container').show();
+                $('#location-container, #company-container').hide();
+            }
+        }
+    });
+
+
 
     // Step 2: Function to check if a facilitator is available
     function checkAvailability(userId, fromDate, toDate, callback) {
@@ -358,11 +391,11 @@ $(document).ready(function (e) {
                         title: 'Success!',
                         text: 'Training has been added.',
                         icon: 'success',
-                        confirmButtonText: 'OK'
+                        confirmButtonText: 'OK',
+                        allowOutsideClick: false,    // Disable click outside the modal
+                        allowEscapeKey: false        // Disable closing with ESC key
                     }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location.href = '/calendar';
-                        }
+                        window.location.href = '/calendar';
                     });
                 } else {
                     Swal.fire({

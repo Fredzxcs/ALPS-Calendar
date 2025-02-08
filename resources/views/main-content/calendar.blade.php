@@ -231,7 +231,7 @@
             <div class="modal-content">
                 <!--begin::Modal header-->
                 <div class="modal-header border-0 justify-content-between align-items-center">
-                    <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="modal-title">VIEW TRAINING</h1>
+                    <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="">VIEW TRAINING</h1>
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -253,12 +253,13 @@
                     <!-- Course -->
                     <div class="row mb-5 justify-content-between align-items-center text-center">
                         <h1 class="fs-1 fw-boldest text-primary" id="modal-course">Course</h1>
+                        <h1 class="fs-4 fw-boldest" id="modal-company" style="color: #7c0101;">Company</h1>
                         <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span>
                         <br>
                         from <span id="modal-time" class="fw-bold"></span></p>
                     </div>
                     <!-- Company -->
-                    <div class="row mb-5 justify-content-between align-items-center">
+                    <!-- <div class="row mb-5 justify-content-between align-items-center">
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
@@ -271,7 +272,7 @@
                                 <p class="lead fs-6" id="modal-company">PUPQC</p>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- Facilitator -->
                     <div class="row mb-5 justify-content-between align-items-center">
                         <div class="col-5">
