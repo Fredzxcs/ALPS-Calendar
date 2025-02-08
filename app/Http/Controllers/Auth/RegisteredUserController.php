@@ -124,7 +124,7 @@ class RegisteredUserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
-            'username' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'usertype' => ['required', 'string'],
             'color' => ['required', 'string'],
             'contact_number' => ['required', 'string', 'max:15'],
@@ -140,11 +140,8 @@ class RegisteredUserController extends Controller
         }
 
         // Handle image upload
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('images', 'public');
-        }
-
+        $imagePath = $request->hasFile('image') ? $request->file('image')->store('images', 'public') : null;
+        
         // Create the new user
         $user = User::create([
             'name' => $request->name,
