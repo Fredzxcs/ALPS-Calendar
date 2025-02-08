@@ -280,6 +280,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         let facilitator_id = $('#facilitator').find('option:selected').val(); // Get facilitator ID
 
+        let company = $('#company').find('option:selected').val();
+
         // Step 1: Check if facilitator is provided
         if (!facilitator_id || facilitator_id === "") {
             // Skip checking availability and proceed
@@ -384,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     success: function (response) {
                         if (response.success) {
                             console.log('Company Created:', response.company.id);
-                            createTraining(response.company.id);
+                            editTraining(response.company.id);
                         } else {
                             Swal.fire('Error!', 'Failed to create company.', 'error');
                         }
@@ -461,20 +463,25 @@ document.addEventListener('DOMContentLoaded', function () {
                         to_time: to_time
                     };
 
+                    console.log(data);
+
                     const url = window.location.href;
                     const match = url.match(/\/edit_training\/(\d+)$/);
                     const trainingId = match ? match[1] : '';
 
                     $.ajax({
                         url: `/calendar/edit_training/${trainingId}`,
-                        type: 'POST',
+                        type: 'PUT',
                         data: JSON.stringify(data),
                         contentType: 'application/json',
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function (response) {
-                            if (response.message === '200') {
+
+                            console.log(response);
+
+                            if (response.code === '200') {
                                 Swal.fire({
                                     title: 'Success!',
                                     text: 'Training has been updated.',
@@ -492,7 +499,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     icon: 'warning',
                                     confirmButtonText: 'OK'
                                 }).then(() => {
-                                    location.reload();
+                                    window.location.reload();
                                 });
                             }
                         },
@@ -509,113 +516,113 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
-            // Confirmation before submission
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "You are about to edit this training.",
-                icon: 'warning',
-                buttonsStyling: false,
-                showCancelButton: true,
-                confirmButtonText: 'Yes, Edit Training',
-                cancelButtonText: 'Cancel',
-                customClass: {
-                    confirmButton: "btn btn-success",
-                    cancelButton: 'btn btn-secondary'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Gathering data for submission
-                    let facilitator_id = $('#facilitator').find('option:selected').val();
-                    let assistant_id = '';
+            // // Confirmation before submission
+            // Swal.fire({
+            //     title: 'Are you sure?',
+            //     text: "You are about to edit this training.",
+            //     icon: 'warning',
+            //     buttonsStyling: false,
+            //     showCancelButton: true,
+            //     confirmButtonText: 'Yes, Edit Training',
+            //     cancelButtonText: 'Cancel',
+            //     customClass: {
+            //         confirmButton: "btn btn-success",
+            //         cancelButton: 'btn btn-secondary'
+            //     }
+            // }).then((result) => {
+            //     if (result.isConfirmed) {
+            //         // Gathering data for submission
+            //         let facilitator_id = $('#facilitator').find('option:selected').val();
+            //         let assistant_id = '';
 
-                    $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
-                        const value = $(this).val().trim();
-                        if (value) {
-                            assistant_id += (assistant_id.length > 0 ? ', ' : '') + value;
-                        }
-                    });
+            //         $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
+            //             const value = $(this).val().trim();
+            //             if (value) {
+            //                 assistant_id += (assistant_id.length > 0 ? ', ' : '') + value;
+            //             }
+            //         });
 
-                    console.log('From Date:', from_date);
-                    console.log('To Date:', to_date);
+            //         console.log('From Date:', from_date);
+            //         console.log('To Date:', to_date);
 
-                    let from_time = $('#time-start').val();
-                    let to_time = $('#time-end').val();
-                    let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
-                    let platform = $('#platform').val();
-                    let account_id = $('#credentials').find('option:selected').val();
-                    let company = $('#company').find('option:selected').val();
-                    let location = $('#location').val();
+            //         let from_time = $('#time-start').val();
+            //         let to_time = $('#time-end').val();
+            //         let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
+            //         let platform = $('#platform').val();
+            //         let account_id = $('#credentials').find('option:selected').val();
+            //         let company = $('#company').find('option:selected').val();
+            //         let location = $('#location').val();
 
 
-                    // Clear fields based on mode
-                    if (mode === "virtual") {
-                        location = ''; // Clear location for virtual mode
-                    } else if (mode === "face-to-face") {
-                        account_id = ''; // Clear account for face-to-face mode
-                    } else if (mode === "public-course") {
-                        if ($('#inperson-training').is(':checked')) {
-                            account_id = ''; // In-person public course
-                            location = $('#location').val();
-                        } else {
-                            location = ''; // Online public course
-                        }
-                    }
+            //         // Clear fields based on mode
+            //         if (mode === "virtual") {
+            //             location = ''; // Clear location for virtual mode
+            //         } else if (mode === "face-to-face") {
+            //             account_id = ''; // Clear account for face-to-face mode
+            //         } else if (mode === "public-course") {
+            //             if ($('#inperson-training').is(':checked')) {
+            //                 account_id = ''; // In-person public course
+            //                 location = $('#location').val();
+            //             } else {
+            //                 location = ''; // Online public course
+            //             }
+            //         }
 
-                    let data = {
-                        course_id: course,
-                        platform: platform,
-                        location: location,
-                        facilitator_id: facilitator_id,
-                        company_id: company,
-                        assistant: assistant_id,
-                        account_id: account_id,
-                        mode: mode,
-                        from_date: from_date,
-                        to_date: to_date,
-                        from_time: from_time,
-                        to_time: to_time
-                    };
+            //         let data = {
+            //             course_id: course,
+            //             platform: platform,
+            //             location: location,
+            //             facilitator_id: facilitator_id,
+            //             company_id: company,
+            //             assistant: assistant_id,
+            //             account_id: account_id,
+            //             mode: mode,
+            //             from_date: from_date,
+            //             to_date: to_date,
+            //             from_time: from_time,
+            //             to_time: to_time
+            //         };
 
-                    // Submit the form using AJAX
-                    const url = window.location.href;
-                    const match = url.match(/\/edit_training\/(\d+)$/);
-                    const trainingId = match ? match[1] : '';
-                    console.log(data);
+            //         // Submit the form using AJAX
+            //         const url = window.location.href;
+            //         const match = url.match(/\/edit_training\/(\d+)$/);
+            //         const trainingId = match ? match[1] : '';
+            //         console.log(data);
 
-                    $.ajax({
-                        url: `/calendar/edit_training/${trainingId}`,
-                        type: 'PUT',
-                        data: JSON.stringify(data),
-                        contentType: 'application/json',
-                        headers: {
-                            'X-CSRF-TOKEN': csrfToken
-                        },
-                        success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Saved!',
-                                text: response.message,
-                            }).then(() => {
-                                window.location.href = '/calendar';
-                            });
-                        },
-                        error: function (xhr, status, error, response) {
-                            console.log('AJAX Error Details:');
-                            console.log('Status:', status);
-                            console.log('Error:', error);
-                            console.log('Response Text:', xhr.responseText);
-                            console.log('ReadyState:', xhr.readyState);
-                            console.log('Response Status:', xhr.status);
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'There was an error updating the training.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    });
-                }
-            });
+            //         $.ajax({
+            //             url: `/calendar/edit_training/${trainingId}`,
+            //             type: 'PUT',
+            //             data: JSON.stringify(data),
+            //             contentType: 'application/json',
+            //             headers: {
+            //                 'X-CSRF-TOKEN': csrfToken
+            //             },
+            //             success: function (response) {
+            //                 Swal.fire({
+            //                     icon: 'success',
+            //                     title: 'Saved!',
+            //                     text: response.message,
+            //                 }).then(() => {
+            //                     window.location.href = '/calendar';
+            //                 });
+            //             },
+            //             error: function (xhr, status, error, response) {
+            //                 console.log('AJAX Error Details:');
+            //                 console.log('Status:', status);
+            //                 console.log('Error:', error);
+            //                 console.log('Response Text:', xhr.responseText);
+            //                 console.log('ReadyState:', xhr.readyState);
+            //                 console.log('Response Status:', xhr.status);
+            //                 Swal.fire({
+            //                     title: 'Error!',
+            //                     text: 'There was an error updating the training.',
+            //                     icon: 'error',
+            //                     confirmButtonText: 'OK'
+            //                 });
+            //             }
+            //         });
+            //     }
+            // });
         });
 });
 // Add a company input field
