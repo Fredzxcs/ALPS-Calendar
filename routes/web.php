@@ -100,6 +100,8 @@ Route::prefix('access')->group(function (){
         ->name('edit_user');
 
     Route::post('/update_user/{id}', [ManageAccessController::class, 'update_user'])
+        ->middleware(['auth', 'user:admin']);
+    Route::get('/change_credentials/{id}', [ManageAccessController::class, 'change_credentials'])
         ->middleware(['auth', 'user:admin'])
         ->name('update_user');
 

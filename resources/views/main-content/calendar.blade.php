@@ -148,8 +148,8 @@
 
                         <!-- Actions -->
                         <div class="d-flex justify-content-end">
-                            <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="calendarFilterReset"
-                                data-kt-menu-dismiss="true">RESET</button>
+                            <!-- <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="calendarFilterReset"
+                                data-kt-menu-dismiss="true">RESET</button> -->
                             <button id="applyFilter" type="button" class="btn btn-sm btn-primary" id="calendarFilterApply"
                                 data-kt-menu-dismiss="true">APPLY</button>
                         </div>
@@ -253,12 +253,13 @@
                     <!-- Course -->
                     <div class="row mb-5 justify-content-between align-items-center text-center">
                         <h1 class="fs-1 fw-boldest text-primary" id="modal-course">Course</h1>
+                        <h1 class="fs-4 fw-boldest" id="modal-company" style="color: #7c0101;">Company</h1>
                         <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span>
                         <br>
                         from <span id="modal-time" class="fw-bold"></span></p>
                     </div>
                     <!-- Company -->
-                    <div class="row mb-5 justify-content-between align-items-center">
+                    <!-- <div class="row mb-5 justify-content-between align-items-center">
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
@@ -271,7 +272,7 @@
                                 <p class="lead fs-6" id="modal-company">PUPQC</p>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- Facilitator -->
                     <div class="row mb-5 justify-content-between align-items-center">
                         <div class="col-5">
@@ -510,6 +511,7 @@
             <script>
 
                let authenticated_user = {{ Auth::user()->id }};
+               let authenticated_usertype = "{{ Auth::user()->usertype }}";
 
             </script>
             <script src="{{ asset('js/calendar.js') }}"></script>

@@ -10,7 +10,7 @@ class ConfigureAccountController extends Controller
     public function showAccount()
     {
         // Retrieve all accounts from the database
-        $accounts = Account::all();
+        $accounts = Account::orderBy('account_email', 'asc')->get();
 
         // Pass accounts to the view
         return view('configuration.accounts', compact('accounts'));
@@ -35,29 +35,29 @@ class ConfigureAccountController extends Controller
         // Validate the incoming data
         $validated = $request->validate([
             'account_email' => 'required|unique:credentials|max:255',  // Fixed the validation rule
-            'account_password' => 'required|max:255', 
+            'account_password' => 'required|max:255',
         ]);
-    
+
         // Create and store the new account
         $account = new Account();  // Corrected the model instantiation
         $account->account_email = $validated['account_email'];  // Use 'account_email' and 'account_password'
         $account->account_password = $validated['account_password'];  // Hash the password
         $account->save();
-    
+
         // Respond with a success message
         return response()->json([
             'success' => true,
             'message' => 'Account added successfully!',
         ]);
     }
-    
+
 
     public function editAccount(Request $request, $id)
     {
         // Validate the incoming data
         $rules = [
             'account_email' => "required|unique:credentials,account_email,{$id}|max:255",
-            'account_password' => 'required|max:255', 
+            'account_password' => 'required|max:255',
         ];
 
 

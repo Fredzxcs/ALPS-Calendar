@@ -130,6 +130,7 @@ class ManageAccessController extends Controller
         return view('access.change_credentials', compact('user'));
     }
 
+
     public function update_credentials(Request $request, $id)
     {
         try {
@@ -177,7 +178,7 @@ class ManageAccessController extends Controller
             ], 500);
         }
     }
-    
+
         
     // public function edit_user($encryptedId)
     // {

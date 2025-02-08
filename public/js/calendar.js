@@ -179,11 +179,11 @@ document.addEventListener('DOMContentLoaded', function () {
             $('p[id="modal-date-unavailable"]').text(date_unavailable);
             $('p[id="modal-purpose"]').text(data.reason);
 
-            if(parseInt(data.user_id) !== authenticated_user)
-            {
-                $('.deleteBtnUnavailability').addClass('d-none');
+            if (data.user_id !== authenticated_user) {
+                if (!(authenticated_usertype == "admin")) {
+                    $('.deleteBtnUnavailability').addClass('d-none');
             }
-
+        }
             //Delete unavailability button
             document.querySelectorAll('.deleteBtnUnavailability').forEach(button => {
                 button.addEventListener('click', (event) => {
@@ -266,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-
     const clearCalendarEvents = (calendar) => {
         if (calendar) {
             calendar.removeAllEvents();
@@ -312,9 +311,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Clear all existing events
                     clearCalendarEvents(calendar);
 
+                    console.log(response);
+
                     // Add new events to the calendar
                     if (route == 'trainings') {
                         response.data.forEach(function (training) {
+
                             if (training.schedule) {
                                 var fromDateTime = `${training.schedule.from_date}T${training.schedule.from_time}`;
                                 var toDateTime = `${training.schedule.to_date}T${training.schedule.to_time}`;
@@ -325,8 +327,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                     assistant: training.assistant,
                                     modeType: training.mode,
                                     account: training.account,
-                                    title: training.course.course_name,
-                                    company: training.company ? training.company.company_name : 'N/A',
+                                    title: `${training.course.course_code} - ${training.company ? training.company.company_name : 'Public Course'} - ${training.facilitator ? training.facilitator.name.split(' ')[0] : 'No Facilitator Yet'}`,
+                                    course: training.course.course_name,
+                                    company: training.company ? training.company.company_name : 'No Company (Public Course)',
                                     start: fromDateTime,
                                     end: toDateTime,
                                     location: training.location,
@@ -420,6 +423,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     startDate: info.event.start || null,
                     endDate: info.event.end || null,
                     allDay: info.event.allDay || false,
+                    course: info.event.extendedProps.course,
                     modeType: info.event.extendedProps.modeType || 'N/A',
                     company: info.event.extendedProps.company || 'N/A',
                     facilitator: info.event.extendedProps.facilitator?.name || 'No Facilitator Yet',
@@ -462,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 $modalElement.find('#modal-in-person').text(inPersonText);
 
                 $modalElement.find('#modal-company').text(eventData.company);
-                $modalElement.find('#modal-course').text(eventData.eventName);
+                $modalElement.find('#modal-course').text(eventData.course);
                 $modalElement.find('#modal-facilitator').text(eventData.facilitator);
                 $modalElement.find('#modal-assistant').text(eventData.assistant);
 
@@ -477,7 +481,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 initPopovers(info.el, eventData);
             }
         });
-
         calendar.setOption('eventMouseLeave', function () {
             setTimeout(() => {
                 hidePopovers();
@@ -485,109 +488,146 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    const getHolidays = () => {
-        $.ajax({
-            url: '/calendar/api/get/holidays',
-            method: 'GET',
-            dataType: 'json',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            beforeSend: function () {
-                $('#calendar').addClass('blur-effect');
-                loaderWrapper.style.display = 'flex';
-            },
-            success: function (response) {
-                console.log(response);
+    // const getHolidays = () => {
+    //     $.ajax({
+    //         url: '/calendar/api/get/holidays',
+    //         method: 'GET',
+    //         dataType: 'json',
+    //         headers: {
+    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //         },
+    //         beforeSend: function () {
+    //             $('#calendar').addClass('blur-effect');
+    //             loaderWrapper.style.display = 'flex';
+    //         },
+    //         success: function (response) {
+    //             console.log(response);
 
-                if (response.response && response.response.holidays) {
-                    // Clear all existing background events
-                    calendar.getEvents().forEach(event => {
-                        if (event.extendedProps.isHoliday) {
-                            event.remove();
-                        }
-                    });
+    //             if (response.response && response.response.holidays) {
+    //                 // Clear all existing background events
+    //                 calendar.getEvents().forEach(event => {
+    //                     if (event.extendedProps.isHoliday) {
+    //                         event.remove();
+    //                     }
+    //                 });
 
-                    // Add holidays as background events
-                    response.response.holidays.forEach(function (holiday) {
-                        calendar.addEvent({
-                            title: holiday.name,
-                            start: holiday.date.iso,
-                            display: 'background',         // Keeps the event as a background highlight
-                            backgroundColor: '#FFCCCC',    // Light red background
-                            borderColor: '#FFCCCC',
-                            textColor: '#FF0000',          // Bright red text
-                            allDay: true,
-                            extendedProps: {
-                                isHoliday: true
-                            }
-                        });
-                    });
-                }
+    //                 // Add holidays as background events
+    //                 response.response.holidays.forEach(function (holiday) {
+    //                     calendar.addEvent({
+    //                         title: holiday.name,
+    //                         start: holiday.date.iso,
+    //                         display: 'background',         // Keeps the event as a background highlight
+    //                         backgroundColor: '#FFCCCC',    // Light red background
+    //                         borderColor: '#FFCCCC',
+    //                         textColor: '#FF0000',          // Bright red text
+    //                         allDay: true,
+    //                         extendedProps: {
+    //                             isHoliday: true
+    //                         }
+    //                     });
+    //                 });
+    //             }
 
-                // Rebind other event listeners if needed
-                bindEventListeners();
+    //             // Rebind other event listeners if needed
+    //             bindEventListeners();
 
-                loaderWrapper.classList.add('d-none');
-                $('#calendar').removeClass('blur-effect');
-            },
-            error: function (xhr, status, error) {
-                console.error('Error fetching holidays:', error);
-                loaderWrapper.classList.add('d-none');
-            },
-            complete: function () {
-                loaderWrapper.classList.add('d-none');
-                $('#calendar').removeClass('blur-effect');
-            },
-        });
-    };
+    //             loaderWrapper.classList.add('d-none');
+    //             $('#calendar').removeClass('blur-effect');
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error('Error fetching holidays:', error);
+    //             loaderWrapper.classList.add('d-none');
+    //         },
+    //         complete: function () {
+    //             loaderWrapper.classList.add('d-none');
+    //             $('#calendar').removeClass('blur-effect');
+    //         },
+    //     });
+    // };
 
-
-    // Initialize the calendar and its initial population
-    if (calendarEl) {
-        let initial = 'trainings';
-
-        hidePopovers();
-
-        calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay',
-            },
-            dayMaxEvents: 5,
-            height: 1500,
-            events: [],
-
-            eventDidMount: function(info) {
-                // Check if the event is a holiday (using extendedProps)
-                if (info.event.extendedProps.isHoliday) {
-                    // Directly modify the DOM element to make the text bright red
-                    info.el.style.color = '#FF0000';  // Bright red
-                    info.el.style.fontWeight = 'bold'; // Make it bold for better visibility
-                }
-            }
-        });
-
-        calendar.render();
-
-        // Load initial data
-        getPopulation(initial);
-        getHolidays();
-
-        // Bind filter change to update events
-        $('#applyFilter').click(function (e) {
-            e.preventDefault();
-
-            let filter = $('#filters').find('option:selected').val();
+        // Initialize the calendar and its initial population
+        if (calendarEl) {
+            let initial = 'trainings';
 
             hidePopovers();
 
-            getPopulation(filter);
-            getHolidays();
-        });
-    }
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                },
+                dayMaxEvents: 5,
+                height: 1500,
+                events: [],
+
+                eventDidMount: function(info) {
+                    // Check if the event is a holiday (using extendedProps)
+                    if (info.event.extendedProps.isHoliday) {
+                        // Directly modify the DOM element to make the text bright red
+                        info.el.style.color = '#FF0000';  // Bright red
+                        info.el.style.fontWeight = 'bold'; // Make it bold for better visibility
+                    }
+                },
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+
+                    if (popover) {
+                        try {
+                            popover.dispose();
+                        } catch (error) {
+                            console.error("Error disposing popover:", error);
+                        }
+                        popover = null;
+                        popoverState = false;
+                    }
+
+                    const $modalElement = $('#kt_modal_view_training');
+                    const eventData = info.event.extendedProps;
+
+                    $modalElement.find('#modal-title').text(info.event.title || 'No Title');
+                    $modalElement.find('#modal-company').text(eventData.company || 'N/A');
+                    $modalElement.find('#modal-facilitator').text(eventData.facilitator?.name || 'No Facilitator Yet');
+                    $modalElement.find('#modal-assistant').text(eventData.assistant || 'No Assistant Yet');
+
+                    const formattedStartDate = info.event.start ? moment(info.event.start).format('MMM DD, YYYY') : 'N/A';
+                    const formattedEndDate = info.event.end ? moment(info.event.end).format('MMM DD, YYYY') : 'N/A';
+                    $modalElement.find('#modal-date').text(`${formattedStartDate} to ${formattedEndDate}`);
+
+                    const formattedStartTime = info.event.start ? moment(info.event.start).format('h:mm A') : 'N/A';
+                    const formattedEndTime = info.event.end ? moment(info.event.end).format('h:mm A') : 'N/A';
+                    $modalElement.find('#modal-time').text(`${formattedStartTime} to ${formattedEndTime}`);
+
+                    const modal = new bootstrap.Modal(document.getElementById('kt_modal_view_training'));
+                    modal.show();
+                }
+            });
+
+            calendar.setOption('eventMouseLeave', function () {
+                setTimeout(() => {
+                    hidePopovers();
+                }, 4000); // Small delay before hiding popovers
+            });
+
+            calendar.render();
+
+            // Load initial data
+            getPopulation(initial);
+            // getHolidays();
+
+            // Bind filter change to update events
+            $('#applyFilter').click(function (e) {
+                e.preventDefault();
+
+                let filter = $('#filters').find('option:selected').val();
+
+                hidePopovers();
+
+                getPopulation(filter);
+                // getHolidays();
+            });
+        }
 });
 
 //Password reveal in view modal
