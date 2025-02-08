@@ -398,6 +398,117 @@ document.addEventListener('DOMContentLoaded', function () {
                 editTraining(company);
             }
         }
+        // step 4
+        function editTraining(companyId) {
+            // Confirmation before submission
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to edit this training.",
+                icon: 'warning',
+                buttonsStyling: false,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Edit Training',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-success",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let facilitator_id = $('#facilitator').find('option:selected').val();
+                    let assistant_id = '';
+
+                    $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
+                        const value = $(this).val().trim();
+                        if (value) {
+                            assistant_id += (assistant_id.length > 0 ? ', ' : '') + value;
+                        }
+                    });
+
+                    let from_time = $('#time-start').val();
+                    let to_time = $('#time-end').val();
+                    let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
+                    let platform = $('#platform').val();
+                    let account_id = $('#credentials').find('option:selected').val();
+                    let location = $('#location').val();
+                    let mode = $('input[name="mode"]:checked').val();
+
+                    if (mode === "virtual") {
+                        location = ''; // Clear location for virtual mode
+                    } else if (mode === "face-to-face") {
+                        account_id = ''; // Clear account for face-to-face mode
+                    } else if (mode === "public-course") {
+                        if ($('#inperson-training').is(':checked')) {
+                            account_id = ''; // In-person public course
+                            location = $('#location').val();
+                        } else {
+                            location = ''; // Online public course
+                        }
+                    }
+
+                    let data = {
+                        course_id: course,
+                        platform: platform,
+                        location: location,
+                        facilitator_id: facilitator_id,
+                        company_id: companyId, // Use the new company ID if created
+                        assistant: assistant_id,
+                        account_id: account_id,
+                        mode: mode,
+                        from_date: from_date,
+                        to_date: to_date,
+                        from_time: from_time,
+                        to_time: to_time
+                    };
+
+                    const url = window.location.href;
+                    const match = url.match(/\/edit_training\/(\d+)$/);
+                    const trainingId = match ? match[1] : '';
+
+                    $.ajax({
+                        url: `/calendar/edit_training/${trainingId}`,
+                        type: 'POST',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function (response) {
+                            if (response.message === '200') {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Training has been updated.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                }).then(() => {
+                                    window.location.href = '/calendar';
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: 'Wait!',
+                                    text: response.message,
+                                    icon: 'warning',
+                                    confirmButtonText: 'OK'
+                                }).then(() => {
+                                    location.reload();
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log('AJAX Error Details:', xhr.responseText);
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'There was an error updating the training.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    });
+                }
+            });
+        }
             // Confirmation before submission
             Swal.fire({
                 title: 'Are you sure?',
