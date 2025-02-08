@@ -136,7 +136,7 @@ class ManageAccessController extends Controller
             $validator = Validator::make($request->all(), [
                 'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($id)],
                 'color' => 'nullable|string',
-                'password' => ['null', 'min:8'], // Password is optional but must be confirmed
+                'password' => ['nullable', 'min:8'], // Password is optional but must be confirmed
             ]);
     
             if ($validator->fails()) {
