@@ -231,7 +231,9 @@
             <div class="modal-content">
                 <!--begin::Modal header-->
                 <div class="modal-header border-0 justify-content-between align-items-center">
-                    <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="modal-title">VIEW TRAINING</h1>
+                    <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;"
+                    {{-- id="modal-title" --}}
+                    >VIEW TRAINING</h1>
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -432,7 +434,9 @@
         <div class="modal-content">
             <!--begin::Modal header-->
             <div class="modal-header border-0 justify-content-between align-items-center">
-                <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="modal-title">VIEW UNAVAILABILITY</h1>
+                <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" 
+                {{-- id="modal-title" --}}
+                >VIEW UNAVAILABILITY</h1>
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
