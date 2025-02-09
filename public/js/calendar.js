@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const popoverHtml = `
-            <div class="fw-bolder mb-2">${data.eventName} - ${data.company || "Public Course"}</div>
+            <div class="fw-bolder mb-2">${data.eventName || "Public Course"}</div>
             <div class="fs-7 mb-2">${modeBadges.join(' ')}</div>
             <div class="fs-7"><span class="fw-bold">Start:</span> ${startDate}</div>
             <div class="fs-7 mb-2"><span class="fw-bold">End:</span> ${endDate}</div>
