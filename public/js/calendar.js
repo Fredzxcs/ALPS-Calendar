@@ -450,6 +450,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.log(accountEmail);
                 $modalElement.find('#modal-credentials').text(accountEmail || 'N/A');
 
+                const inPerson = $modalElement.find('#modal-in-person').text().trim().toLowerCase(); // Get in-person status
+                const accountPassword = eventData.account?.account_password || 'N/A';
+
+                // Ensure Hosting Account section is only shown for Virtual or Public (Not In-Person)
+                if (mode === "face-to-face" || (mode === "public-course" && inPerson === "yes")) {
+                    $modalElement.find('#hosting-account-row').addClass('d-none');
+                    $modalElement.find('#password-container').addClass('d-none');
+                } else {
+                    $modalElement.find('#hosting-account-row').removeClass('d-none');
+                    $modalElement.find('#modal-credentials').text(accountEmail);
+
+                    if (accountEmail !== "N/A" && accountPassword !== "N/A") {
+                        $modalElement.find('#password-container').removeClass('d-none');
+                        $modalElement.find('#modal-password').text(accountPassword);
+                    } else {
+                        $modalElement.find('#password-container').addClass('d-none');
+                    }
+                }
+
+
                 let inPersonText = mode === 'virtual' ? 'No' : 'Yes';
                 if (mode === 'public-course' && accountEmail !== 'N/A' || mode === "virtual") {
                     inPersonText = 'No';

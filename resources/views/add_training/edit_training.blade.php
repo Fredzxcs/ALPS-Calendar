@@ -316,6 +316,7 @@
         const fp = flatpickr("#date-range", {
             mode: "range",
             dateFormat: "m-d-Y",
+            minDate: "today",
             defaultDate: [
                 '{{ \Carbon\Carbon::parse($training->schedule->from_date)->format('m-d-Y') }}',
                 '{{ \Carbon\Carbon::parse($training->schedule->to_date)->format('m-d-Y') }}'
