@@ -357,7 +357,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                     backgroundColor: unavailability.user.color || '#FF5E5E',
                                     borderColor: unavailability.user.color || '#FF5E5E',
                                     extendedProps: {
+                                        eventType: 'unavailability',
                                         user: unavailability.user ? unavailability.user.name : 'Unknown User',
+                                        reason: unavailability.reason || 'Unavailable'
                                     },
                                 });
                             }
@@ -449,6 +451,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 const accountEmail = eventData.account.account_email;
                 console.log(accountEmail);
                 $modalElement.find('#modal-credentials').text(accountEmail || 'N/A');
+
+                const inPerson = $modalElement.find('#modal-in-person').text().trim().toLowerCase(); // Get in-person status
+                const accountPassword = eventData.account?.account_password || 'N/A';
+
+                // Ensure Hosting Account section is only shown for Virtual or Public (Not In-Person)
+                if (mode === "face-to-face" || (mode === "public-course" && inPerson === "yes")) {
+                    $modalElement.find('#hosting-account-row').addClass('d-none');
+                    $modalElement.find('#password-container').addClass('d-none');
+                } else {
+                    $modalElement.find('#hosting-account-row').removeClass('d-none');
+                    $modalElement.find('#modal-credentials').text(accountEmail);
+
+                    if (accountEmail !== "N/A" && accountPassword !== "N/A") {
+                        $modalElement.find('#password-container').removeClass('d-none');
+                        $modalElement.find('#modal-password').text(accountPassword);
+                    } else {
+                        $modalElement.find('#password-container').addClass('d-none');
+                    }
+                }
+
 
                 let inPersonText = mode === 'virtual' ? 'No' : 'Yes';
                 if (mode === 'public-course' && accountEmail !== 'N/A' || mode === "virtual") {
@@ -583,8 +605,51 @@ document.addEventListener('DOMContentLoaded', function () {
                         popoverState = false;
                     }
 
-                    const $modalElement = $('#kt_modal_view_training');
                     const eventData = info.event.extendedProps;
+
+
+                    // 1. Check for Holiday Event
+                    if (eventData.isHoliday) {
+
+                        const holidayDate = info.event.start ? moment(info.event.start).format('MMMM DD, YYYY') : 'N/A';
+
+                        Swal.fire({
+                            icon: 'info',
+                            title: info.event.title,
+                            html: `<strong>Date:</strong> ${holidayDate}`,
+                            confirmButtonText: 'Close',
+                            customClass: {
+                                confirmButton: "btn btn-light",
+                            }
+                        });
+                        return;
+                    }
+
+                    //  2. Check for Unavailability Event
+                    if (eventData.eventType === 'unavailability' || eventData.reason) {
+
+                        const $modalElement = $('#kt_modal_view_unavailability');
+
+                        $modalElement.find('#modal-title').text(info.event.title || 'Unavailability');
+                        $modalElement.find('#modal-user').text(eventData.user || 'Unknown User');
+
+
+                        const formattedStartDate = info.event.start ? moment(info.event.start).format('MMM DD, YYYY') : 'N/A';
+                        const formattedEndDate = info.event.end ? moment(info.event.end).format('MMM DD, YYYY') : 'N/A';
+
+                        const dateUnavailable = `${formattedStartDate} to ${formattedEndDate}`;
+
+                        $modalElement.find('#modal-date-unavailable').text(dateUnavailable);
+                        $modalElement.find('#modal-reason').text(eventData.reason || 'No reason provided');
+
+                        const modal = new bootstrap.Modal(document.getElementById('kt_modal_view_unavailability'));
+                        modal.show();
+
+                        return;
+                    }
+
+                    // 3. Default: Handle as Training Event
+                    const $modalElement = $('#kt_modal_view_training');
 
                     $modalElement.find('#modal-title').text(info.event.title || 'No Title');
                     $modalElement.find('#modal-company').text(eventData.company || 'N/A');

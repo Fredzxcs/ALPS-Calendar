@@ -231,6 +231,7 @@ class TrainingController extends Controller
 
             // Return success response
             return response()->json([
+                'code' => '200',
                 'message' => 'Training session and schedule updated successfully',
                 'trainingSession' => $trainingSession,
                 'schedule' => $schedule,
