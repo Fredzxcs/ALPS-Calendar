@@ -10,7 +10,7 @@ class ConfigureCoursesController extends Controller
     public function showCourse()
     {
         // Retrieve all courses from the database
-        $courses = Course::all();
+        $courses = Course::orderBy('course_name', 'asc')->get();
 
         // Pass courses to the view
         return view('configuration.courses', compact('courses'));
@@ -29,7 +29,7 @@ class ConfigureCoursesController extends Controller
             'course_code' => $course->course_code
         ]);
     }
-    
+
     public function addCourse(Request $request)
     {
         // Validate the incoming data
@@ -37,13 +37,13 @@ class ConfigureCoursesController extends Controller
             'course_name' => 'required|unique:course|max:255',
             'course_code' => 'nullable|unique:course|max:255', // Use correct table name
         ]);
-    
+
         // Create and store the new course
         $course = new Course();
         $course->course_name = $validated['course_name'];
         $course->course_code = $validated['course_code'] ?? null;
         $course->save();
-    
+
         // Respond with a success message
         return response()->json([
             'success' => true,
@@ -56,7 +56,7 @@ class ConfigureCoursesController extends Controller
         // Validate the incoming data
         $rules = [
             'course_name' => 'required|max:255',
-            'course_code' => "nullable|unique:course,course_code,{$id}|max:255", 
+            'course_code' => "nullable|unique:course,course_code,{$id}|max:255",
         ];
 
 
@@ -76,7 +76,7 @@ class ConfigureCoursesController extends Controller
             'message' => 'Course updated successfully!',
         ]);
     }
-    
+
     public function deleteCourse($id)
     {
         $course = Course::findOrFail($id);

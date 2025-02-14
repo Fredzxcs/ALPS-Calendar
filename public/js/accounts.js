@@ -1,25 +1,3 @@
-
-// Search Filter
-document.addEventListener('DOMContentLoaded', () => {
-    const searchInput = document.getElementById('searchInput');
-    const tableRows = document.querySelectorAll('#accounts_table tbody tr');
-
-    searchInput.addEventListener('keyup', () => {
-        const searchValue = searchInput.value.toLowerCase();
-
-        tableRows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(' ');
-
-            if (rowText.includes(searchValue)) {
-                row.style.display = ''; // Show row if it matches search
-            } else {
-                row.style.display = 'none'; // Hide row if it doesn't match search
-            }
-        });
-    });
-});
-
 //No matching Searches - in progress
 document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
@@ -361,36 +339,131 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
 });
 
 //Pagination
+// document.addEventListener("DOMContentLoaded", function () {
+//     const rowsPerPage = 5; // Number of rows per page
+//     const pagesPerBatch = 5; // Number of pages per batch
+//     const table = document.querySelector("#accounts_table tbody");
+//     const rows = Array.from(table.rows);
+//     const pagination = document.querySelector(".pagination");
+//     const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+//     let currentPage = 1; // Track the current page
+//     let currentBatch = 1; // Track the current batch
+
+//     function displayPage(page) {
+//         const start = (page - 1) * rowsPerPage;
+//         const end = start + rowsPerPage;
+
+//         // Show rows for the current page
+//         rows.forEach((row, index) => {
+//             row.style.display = index >= start && index < end ? "" : "none";
+//         });
+
+//         currentPage = page; // Update the current page
+//         updatePagination(); // Update pagination UI
+//     }
+
+//     function updatePagination() {
+//         pagination.innerHTML = ""; // Clear existing pagination
+
+//         const totalBatches = Math.ceil(totalPages / pagesPerBatch);
+//         const startPage = (currentBatch - 1) * pagesPerBatch + 1;
+//         const endPage = Math.min(startPage + pagesPerBatch - 1, totalPages);
+
+//         // Previous Batch Button
+//         const prevBatchButton = document.createElement("li");
+//         prevBatchButton.className = `page-item prev-batch ${currentBatch === 1 ? "disabled" : ""}`;
+//         prevBatchButton.innerHTML = `<a class="page-link" href="#">«</a>`;
+//         prevBatchButton.addEventListener("click", (e) => {
+//             e.preventDefault();
+//             if (currentBatch > 1) {
+//                 currentBatch--;
+//                 updatePagination();
+//                 displayPage((currentBatch - 1) * pagesPerBatch + 1);
+//             }
+//         });
+//         pagination.appendChild(prevBatchButton);
+
+//         // Page Number Buttons
+//         for (let i = startPage; i <= endPage; i++) {
+//             const li = document.createElement("li");
+//             li.className = `page-item ${i === currentPage ? "active" : ""}`;
+//             li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+//             li.addEventListener("click", (e) => {
+//                 e.preventDefault();
+//                 displayPage(i); // Navigate to selected page
+//             });
+//             pagination.appendChild(li);
+//         }
+
+//         // Next Batch Button
+//         const nextBatchButton = document.createElement("li");
+//         nextBatchButton.className = `page-item next-batch ${currentBatch === totalBatches ? "disabled" : ""}`;
+//         nextBatchButton.innerHTML = `<a class="page-link" href="#">»</a>`;
+//         nextBatchButton.addEventListener("click", (e) => {
+//             e.preventDefault();
+//             if (currentBatch < totalBatches) {
+//                 currentBatch++;
+//                 updatePagination();
+//                 displayPage((currentBatch - 1) * pagesPerBatch + 1);
+//             }
+//         });
+//         pagination.appendChild(nextBatchButton);
+//     }
+
+//     if (totalPages > 0) {
+//         updatePagination();
+//         displayPage(1); // Show the first page initially
+//     }
+// });
+
+// Pagination and Search Function 
 document.addEventListener("DOMContentLoaded", function () {
     const rowsPerPage = 5; // Number of rows per page
     const pagesPerBatch = 5; // Number of pages per batch
     const table = document.querySelector("#accounts_table tbody");
     const rows = Array.from(table.rows);
     const pagination = document.querySelector(".pagination");
-    const totalPages = Math.ceil(rows.length / rowsPerPage);
+    const searchInput = document.getElementById("searchInput"); // Search input
 
-    let currentPage = 1; // Track the current page
-    let currentBatch = 1; // Track the current batch
+    let filteredRows = [...rows]; // Tracks visible (filtered) rows
+    let currentPage = 1;
+    let currentBatch = 1;
+
+    function filterRows() {
+        const searchValue = searchInput.value.toLowerCase();
+        filteredRows = rows.filter(row => row.textContent.toLowerCase().includes(searchValue));
+
+        // Reset pagination to match new filtered results
+        currentPage = 1;
+        currentBatch = 1;
+        updatePagination();
+        displayPage(1);
+    }
 
     function displayPage(page) {
         const start = (page - 1) * rowsPerPage;
         const end = start + rowsPerPage;
 
-        // Show rows for the current page
-        rows.forEach((row, index) => {
-            row.style.display = index >= start && index < end ? "" : "none";
-        });
+        // Hide all rows first
+        rows.forEach(row => row.style.display = "none");
 
-        currentPage = page; // Update the current page
-        updatePagination(); // Update pagination UI
+        // Show only the rows for the selected page
+        filteredRows.slice(start, end).forEach(row => row.style.display = "");
+
+        currentPage = page;
+        updatePagination();
     }
 
     function updatePagination() {
-        pagination.innerHTML = ""; // Clear existing pagination
+        pagination.innerHTML = ""; // Clear pagination
 
+        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
         const totalBatches = Math.ceil(totalPages / pagesPerBatch);
         const startPage = (currentBatch - 1) * pagesPerBatch + 1;
         const endPage = Math.min(startPage + pagesPerBatch - 1, totalPages);
+
+        if (totalPages <= 1) return; // Hide pagination if only one page
 
         // Previous Batch Button
         const prevBatchButton = document.createElement("li");
@@ -413,7 +486,7 @@ document.addEventListener("DOMContentLoaded", function () {
             li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
             li.addEventListener("click", (e) => {
                 e.preventDefault();
-                displayPage(i); // Navigate to selected page
+                displayPage(i);
             });
             pagination.appendChild(li);
         }
@@ -433,10 +506,11 @@ document.addEventListener("DOMContentLoaded", function () {
         pagination.appendChild(nextBatchButton);
     }
 
-    if (totalPages > 0) {
-        updatePagination();
-        displayPage(1); // Show the first page initially
-    }
+    // Event Listener for Search
+    searchInput.addEventListener("keyup", filterRows);
+
+    // Initial Load
+    filterRows();
 });
 
 //Toggle password visibility
@@ -470,7 +544,6 @@ $(document).ready(function() {
     });
 });
 
-//Validation (Initial)
 // document.addEventListener('DOMContentLoaded', () => {
 //     //Validation for Add Account form
 //     document.getElementById('modal_add_account_form').addEventListener('submit', (event) => {

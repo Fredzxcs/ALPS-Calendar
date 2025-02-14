@@ -10,7 +10,7 @@ class ConfigureCompanyController extends Controller
     public function showCompany()
     {
         // Retriev list of companies
-        $company = Company::all();
+        $company = Company::orderBy('company_name', 'asc')->get();
 
         // Pass data to view (company.blade file)
         return view('configuration.companies', compact('company'));

@@ -257,13 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Check if file is uploaded (optional for updates)
-        if (idPictureInput.length > 0 && idPictureInput[0].files.length === 0 && !$('.image-input-wrapper').css('background-image').includes('url')) {
-            idPictureInput.addClass('border-danger');
-            isValid = false;
-        } else {
-            idPictureInput.removeClass('border-danger');
-        }
+
         
 
         if (!isValid) {
