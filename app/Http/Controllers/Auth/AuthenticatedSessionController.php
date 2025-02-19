@@ -7,6 +7,8 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log; // Import Log facade
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -22,25 +24,29 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
+
+
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
         $request->session()->regenerate();
 
-        //  REDIRECT ACCORDING TO USERTYPE
-        $redirectRoutes = [
-            'admin' =>  'calendar',                //  REDIRECT TO ADMIN LANDING PAGE
-            'coordinator' => 'calendar',   //  REDIRECT TO COORDINATOR LANDING PAGE
-            'facilitator' => 'calendar',               //  REDIRECT TO TRAINER LANDING PAGE
-        ];
+        // Get last visited page
+        $lastVisitedPage = Session::get('last_visited_page', route('calendar'));
 
-        $usertype = $request->user()->usertype;
+        // Log last visited page
+        Log::info('User Logged In', [
+            'user_id' => auth()->id(),
+            'email' => auth()->user()->email,
+            'last_visited_page' => $lastVisitedPage,
+            'timestamp' => now(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->header('User-Agent'),
+        ]);
 
-        if (array_key_exists($usertype, $redirectRoutes))
-        {
-            return redirect()->route($redirectRoutes[$usertype]);
-        }
+        return redirect()->intended($lastVisitedPage);
     }
+
 
     /**
      * Destroy an authenticated session.
@@ -50,9 +56,10 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
-        return redirect()->route('index');
+        $request->session()->forget('last_visited_page');
+
+        return redirect('/');
     }
 }
