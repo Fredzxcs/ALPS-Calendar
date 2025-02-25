@@ -11,6 +11,8 @@ use App\Models\Company;
 use App\Models\Account;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TrainingNotificationMail;
 
 class TrainingController extends Controller
 {
@@ -47,7 +49,7 @@ class TrainingController extends Controller
         $validator = Validator::make($request->all(), [
             'course_id' => ['required', 'integer'],
             'mode' => ['required', 'string', 'max:255'],
-            'facilitator_id' => ['nullable' , 'integer'],
+            'facilitator_id' => ['nullable', 'integer'], // Facilitator ID can be null
             'company_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:255'],
             'assistant' => ['nullable', 'string'],
@@ -70,8 +72,9 @@ class TrainingController extends Controller
         \DB::beginTransaction();
 
         try {
+
             // Create the Training session record
-            $trainingSession = Training::create([
+            $training = Training::create([
                 'course_id' => $request->course_id,
                 'mode' => $request->mode,
                 'facilitator_id' => $request->facilitator_id,
@@ -82,9 +85,10 @@ class TrainingController extends Controller
                 'account_id' => $request->account_id,
             ]);
 
+
             // Create the Schedule record
             $schedule = Schedule::create([
-                'training_id' => $trainingSession->id, // Assuming you have a foreign key in Schedule for Training
+                'training_id' => $training->id,
                 'from_date' => $request->from_date,
                 'to_date' => $request->to_date,
                 'from_time' => $request->from_time,
@@ -94,20 +98,51 @@ class TrainingController extends Controller
             // Commit the transaction
             \DB::commit();
 
+            // ✅ Check if facilitator_id exists before querying
+            if (!empty($request->facilitator_id)) {
+                $facilitator = User::find($request->facilitator_id);
+                if ($facilitator && !empty($facilitator->email)) {
+
+                    \Log::info('Email Data:', [
+                        'training' => $training ? $training->toArray() : 'NULL',
+                        'facilitator' => $facilitator ? $facilitator->toArray() : 'NULL',
+                    ]);
+
+                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                                ->find($training->id); // Replace $id with the actual training ID
+
+
+                    Mail::to($facilitator->email)->send(new TrainingNotificationMail($trainingInfo, $facilitator));
+                } else {
+                    \Log::warning('Facilitator email not found', ['facilitator' => $facilitator]);
+                }
+            }
+
             // Return success response
             return response()->json([
                 'message' => '200',
-                'trainingSession' => $trainingSession,
+                'training' => $training,
                 'schedule' => $schedule,
             ], 200);
 
         } catch (\Exception $e) {
             \DB::rollBack();
 
-            // Return error response
+            // ✅ Log full error details, including file and line number
+            \Log::error('Training Store Error', [
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'error_trace' => $e->getTraceAsString(),
+                'request_data' => $request->all(),
+            ]);
+
             return response()->json([
                 'message' => 'Error occurred during saving the session and schedule.',
-                'error' => $e->getMessage(),
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'request_data' => $request->all(),
             ], 500);
         }
     }
