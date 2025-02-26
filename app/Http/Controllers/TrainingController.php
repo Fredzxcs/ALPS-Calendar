@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TrainingNotificationMail;
+use App\Mail\TrainingReassignmentMail;
+
 
 class TrainingController extends Controller
 {
@@ -201,18 +203,16 @@ class TrainingController extends Controller
         return view('add_training.edit_training', compact('training', 'facilitators', 'courses', 'companies', 'accounts'));
     }
 
-
-
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
     {
-        // Validate the incoming request data
+        // Validate request
         $validator = Validator::make($request->all(), [
             'course_id' => ['required', 'integer'],
             'mode' => ['required', 'string', 'max:255'],
-            'facilitator' => ['nullable' , 'integer'],
+            'facilitator_id' => ['nullable', 'integer'],
             'company_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:255'],
             'assistant' => ['nullable', 'string'],
@@ -224,7 +224,6 @@ class TrainingController extends Controller
             'to_time' => ['required'],
         ]);
 
-        // Check if validation fails
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation failed',
@@ -235,10 +234,12 @@ class TrainingController extends Controller
         \DB::beginTransaction();
 
         try {
-            // Find the existing Training session record
+            // Find the training session
             $trainingSession = Training::findOrFail($id);
+            $previousFacilitator = User::find($trainingSession->facilitator_id);
+            $newFacilitator = User::find($request->facilitator_id);
 
-            // Update the Training session record
+            // Update training session
             $trainingSession->update([
                 'course_id' => $request->course_id,
                 'mode' => $request->mode,
@@ -250,10 +251,8 @@ class TrainingController extends Controller
                 'account_id' => $request->account_id,
             ]);
 
-            // Find the existing Schedule record associated with the training session
+            // Update schedule
             $schedule = Schedule::where('training_id', $trainingSession->id)->first();
-
-            // Update the Schedule record
             $schedule->update([
                 'from_date' => $request->from_date,
                 'to_date' => $request->to_date,
@@ -261,27 +260,37 @@ class TrainingController extends Controller
                 'to_time' => $request->to_time,
             ]);
 
-            // Commit the transaction
             \DB::commit();
 
-            // Return success response
+            // Send reassignment email to the previous facilitator
+            if ($previousFacilitator) {
+                Mail::to($previousFacilitator->email)
+                    ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, $newFacilitator));
+            }
+
+            // Send assignment email to the new facilitator (if assigned)
+            if ($newFacilitator) {
+                Mail::to($newFacilitator->email)
+                    ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+            }
+
             return response()->json([
-                'code' => '200',
-                'message' => 'Training session and schedule updated successfully',
+                'code' => 200,
+                'message' => 'Training session updated successfully and notification emails sent',
                 'trainingSession' => $trainingSession,
                 'schedule' => $schedule,
             ], 200);
 
         } catch (\Exception $e) {
             \DB::rollBack();
-
-            // Return error response
             return response()->json([
-                'message' => 'Error occurred during updating the session and schedule.',
+                'message' => 'Error occurred during updating the session.',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
+
+
 
 
     /**

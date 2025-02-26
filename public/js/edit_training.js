@@ -416,7 +416,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         // step 4
         function editTraining(companyId) {
-            // Confirmation before submission
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You are about to edit this training.",
@@ -467,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         platform: platform,
                         location: location,
                         facilitator_id: facilitator_id,
-                        company_id: companyId, // Use the new company ID if created
+                        company_id: companyId,
                         assistant: assistant_id,
                         account_id: account_id,
                         mode: mode,
@@ -483,6 +482,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     const match = url.match(/\/edit_training\/(\d+)$/);
                     const trainingId = match ? match[1] : '';
 
+                    // Show loading Swal before making the AJAX request
+                    Swal.fire({
+                        title: 'Updating Training...',
+                        text: 'Please wait while the training is being updated.',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
                     $.ajax({
                         url: `/calendar/edit_training/${trainingId}`,
                         type: 'PUT',
@@ -492,8 +502,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function (response) {
-
                             console.log(response);
+                            Swal.close();
 
                             if (response.code === '200') {
                                 Swal.fire({
@@ -519,6 +529,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         },
                         error: function (xhr, status, error) {
                             console.log('AJAX Error Details:', xhr.responseText);
+                            Swal.close();
                             Swal.fire({
                                 title: 'Error!',
                                 text: 'There was an error updating the training.',
@@ -530,6 +541,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
+
             // // Confirmation before submission
             // Swal.fire({
             //     title: 'Are you sure?',
