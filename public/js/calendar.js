@@ -587,9 +587,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 eventDidMount: function(info) {
                     // Check if the event is a holiday (using extendedProps)
                     if (info.event.extendedProps.isHoliday) {
-                        // Directly modify the DOM element to make the text bright red
                         info.el.style.color = '#FF0000';  // Bright red
-                        info.el.style.fontWeight = 'bold'; // Make it bold for better visibility
+                        info.el.style.fontWeight = 'bold';
+                    }
+
+                    const start = info.event.start;
+                    const end = info.event.end;
+
+                    if (!end || start.toDateString() === end.toDateString()) {
+                        const eventEl = info.el;
+
+                        // Add missing class to make it behave like a date range
+                        eventEl.classList.add('fc-h-event');
+
+                        // Remove the event dot (for consistency)
+                        const dot = eventEl.querySelector('.fc-daygrid-event-dot');
+                        if (dot) {
+                            dot.remove();
+                        }
+
+                        // Ensure full-width styling
+                        eventEl.style.width = '100%';
+
+                        // ✅ Apply the background color dynamically
+                        if (info.event.backgroundColor) {
+                            eventEl.style.backgroundColor = info.event.backgroundColor;
+                            // ✅ Set text color to white
+                            eventEl.style.color = '#FFFFFF';
+                        }
                     }
                 },
                 eventClick: function(info) {
