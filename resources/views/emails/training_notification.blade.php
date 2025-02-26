@@ -75,10 +75,23 @@
     <div class="content">
         <p>Hello <strong>{{ $facilitator->name }}</strong>,</p>
 
+        @isset($training->is_updated)
+
+            @if ($training->is_updated == 1)
+                <p style="font-size: 18px; font-weight: bold; color: #d9534f; background-color: #f8d7da; padding: 10px; border-radius: 5px; text-align: center;">
+                    ⚠️ Important Update: The training session details have been updated. Please review the changes.
+                </p>
+            @endif
+
+        @endisset
+
         <p>You have been assigned as a <strong>facilitator</strong> for the following training session:</p>
 
         <ul>
             <li><strong>Course:</strong> {{ $training->course->course_name ?? 'N/A' }}</li>
+            @isset($training->company)
+                <li><strong>Company:</strong> {{ $training->company->company_name ?? 'N/A' }}</li>
+            @endisset
             <li><strong>Date:</strong> {{ optional($training->schedule)->from_date ? \Carbon\Carbon::parse($training->schedule->from_date)->format('M d, Y') : 'N/A' }}
                 to {{ optional($training->schedule)->to_date ? \Carbon\Carbon::parse($training->schedule->to_date)->format('M d, Y') : 'N/A' }}
             </li>

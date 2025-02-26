@@ -113,6 +113,9 @@ class TrainingController extends Controller
                     $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
                                 ->find($training->id); // Replace $id with the actual training ID
 
+                    \Log::info('Training Data', [
+                        'data' => $trainingInfo ? $trainingInfo->toArray() : 'NULL',
+                    ]);
 
                     Mail::to($facilitator->email)->send(new TrainingNotificationMail($trainingInfo, $facilitator));
                 } else {
@@ -249,6 +252,7 @@ class TrainingController extends Controller
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
                 'account_id' => $request->account_id,
+                'is_updated' => true,
             ]);
 
             // Update schedule
@@ -262,20 +266,33 @@ class TrainingController extends Controller
 
             \DB::commit();
 
-            // Send reassignment email to the previous facilitator
-            if ($previousFacilitator) {
-                Mail::to($previousFacilitator->email)
-                    ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, $newFacilitator));
-            }
+            // === Email Notification Logic ===
+            if ($previousFacilitator && $newFacilitator) {
+                if ($previousFacilitator->id !== $newFacilitator->id) {
+                    // Send reassignment mail to previous facilitator
+                    Mail::to($previousFacilitator->email)
+                        ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, $newFacilitator));
 
-            // Send assignment email to the new facilitator (if assigned)
-            if ($newFacilitator) {
+                    // Send notification mail to new facilitator
+                    Mail::to($newFacilitator->email)
+                        ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+                }
+
+                // Send update notification to the current facilitator (even if unchanged)
                 Mail::to($newFacilitator->email)
                     ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+            } elseif (!$previousFacilitator && $newFacilitator) {
+                // No previous facilitator, just send notification
+                Mail::to($newFacilitator->email)
+                    ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+            } elseif ($previousFacilitator && !$newFacilitator) {
+                // Facilitator removed, notify previous facilitator
+                Mail::to($previousFacilitator->email)
+                    ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, null));
             }
 
             return response()->json([
-                'code' => 200,
+                'code' => '200',
                 'message' => 'Training session updated successfully and notification emails sent',
                 'trainingSession' => $trainingSession,
                 'schedule' => $schedule,
@@ -285,12 +302,14 @@ class TrainingController extends Controller
             \DB::rollBack();
             return response()->json([
                 'message' => 'Error occurred during updating the session.',
-                'error' => $e->getMessage(),
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'error_trace' => $e->getTraceAsString(),
+                'request_data' => $request->all(),
             ], 500);
         }
     }
-
-
 
 
     /**

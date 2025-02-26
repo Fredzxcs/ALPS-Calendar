@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('account_id')->nullable()->constrained('credentials')->onDelete('cascade');
             $table->string('mode')->nullable();
             $table->string('location')->nullable();
+            $table->boolean('is_updated')->default(false); // or false depending on the default behavior
             $table->timestamps();
         });
     }
