@@ -242,6 +242,9 @@ class TrainingController extends Controller
             $previousFacilitator = User::find($trainingSession->facilitator_id);
             $newFacilitator = User::find($request->facilitator_id);
 
+            // Check if the facilitator is changed
+            $facilitatorChanged = $previousFacilitator && $newFacilitator && $previousFacilitator->id !== $newFacilitator->id;
+
             // Update training session
             $trainingSession->update([
                 'course_id' => $request->course_id,
@@ -252,7 +255,7 @@ class TrainingController extends Controller
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
                 'account_id' => $request->account_id,
-                'is_updated' => true,
+                'is_updated' => !$facilitatorChanged, // Set to true only if facilitator is unchanged
             ]);
 
             // Update schedule
@@ -267,24 +270,20 @@ class TrainingController extends Controller
             \DB::commit();
 
             // === Email Notification Logic ===
-            if ($previousFacilitator && $newFacilitator) {
-                if ($previousFacilitator->id !== $newFacilitator->id) {
-                    // Send reassignment mail to previous facilitator
-                    Mail::to($previousFacilitator->email)
-                        ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, $newFacilitator));
+            if ($facilitatorChanged) {
+                // Facilitator changed
+                Mail::to($previousFacilitator->email)
+                    ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, $newFacilitator));
 
-                    // Send notification mail to new facilitator
-                    Mail::to($newFacilitator->email)
-                        ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
-                }
-
-                // Send update notification to the current facilitator (even if unchanged)
                 Mail::to($newFacilitator->email)
                     ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
-            } elseif (!$previousFacilitator && $newFacilitator) {
-                // No previous facilitator, just send notification
+            } elseif ($newFacilitator) {
+                // Facilitator unchanged, send update email
                 Mail::to($newFacilitator->email)
                     ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+
+                // Reset is_updated back to false after sending the email
+                $trainingSession->update(['is_updated' => false]);
             } elseif ($previousFacilitator && !$newFacilitator) {
                 // Facilitator removed, notify previous facilitator
                 Mail::to($previousFacilitator->email)
@@ -310,6 +309,7 @@ class TrainingController extends Controller
             ], 500);
         }
     }
+
 
 
     /**
