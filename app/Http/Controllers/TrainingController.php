@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TrainingNotificationMail;
 use App\Mail\TrainingReassignmentMail;
+use App\Mail\CancelledTrainingMail;
 
 
 class TrainingController extends Controller
@@ -321,6 +322,14 @@ class TrainingController extends Controller
 
         try {
             $trainingSession = Training::findOrFail($id);
+
+            if($trainingSession->facilitator_id)
+            {
+                $facilitator = User::findOrFail($trainingSession->facilitator_id);
+
+                Mail::to($facilitator->email)
+                    ->send(new CancelledTrainingMail($trainingSession, $facilitator));
+            }
 
             $schedule = Schedule::where('training_id', $trainingSession->id)->first();
 

@@ -79,6 +79,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
+
+                            // Show Swal loader
+                            Swal.fire({
+                                title: 'Deleting Training...',
+                                text: 'Please wait while we process your request.',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
                             $.ajax({
                                 url: '/calendar/delete_training/'+data.id,
                                 type: 'DELETE',
@@ -87,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 },
                                 success: function (response) {
                                     if (response) {
+                                        Swal.close(); // Close loader
                                         Swal.fire({
                                             title: 'Success!',
                                             text: 'The training has been deleted.',
@@ -98,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             }
                                         });
                                     } else {
+                                        Swal.close(); // Close loader
                                         Swal.fire({
                                             title: 'Wait!',
                                             text: response.message,
@@ -109,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     }
                                 },
                                 error: function (xhr, status, error) {
+                                    Swal.close(); // Close loader
                                     console.log('AJAX Error Details:', xhr.responseText);
                                     Swal.fire({
                                         title: 'Error!',
