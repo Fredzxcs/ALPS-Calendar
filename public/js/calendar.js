@@ -79,6 +79,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
+
+                            // Show Swal loader
+                            Swal.fire({
+                                title: 'Deleting Training...',
+                                text: 'Please wait while we process your request.',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            });
+
                             $.ajax({
                                 url: '/calendar/delete_training/'+data.id,
                                 type: 'DELETE',
@@ -87,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 },
                                 success: function (response) {
                                     if (response) {
+                                        Swal.close(); // Close loader
                                         Swal.fire({
                                             title: 'Success!',
                                             text: 'The training has been deleted.',
@@ -98,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             }
                                         });
                                     } else {
+                                        Swal.close(); // Close loader
                                         Swal.fire({
                                             title: 'Wait!',
                                             text: response.message,
@@ -109,6 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     }
                                 },
                                 error: function (xhr, status, error) {
+                                    Swal.close(); // Close loader
                                     console.log('AJAX Error Details:', xhr.responseText);
                                     Swal.fire({
                                         title: 'Error!',
@@ -587,9 +602,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 eventDidMount: function(info) {
                     // Check if the event is a holiday (using extendedProps)
                     if (info.event.extendedProps.isHoliday) {
-                        // Directly modify the DOM element to make the text bright red
                         info.el.style.color = '#FF0000';  // Bright red
-                        info.el.style.fontWeight = 'bold'; // Make it bold for better visibility
+                        info.el.style.fontWeight = 'bold';
+                    }
+
+                    const start = info.event.start;
+                    const end = info.event.end;
+
+                    if (!end || start.toDateString() === end.toDateString()) {
+                        const eventEl = info.el;
+
+                        // Add missing class to make it behave like a date range
+                        eventEl.classList.add('fc-h-event');
+
+                        // Remove the event dot (for consistency)
+                        const dot = eventEl.querySelector('.fc-daygrid-event-dot');
+                        if (dot) {
+                            dot.remove();
+                        }
+
+                        // Ensure full-width styling
+                        eventEl.style.width = '100%';
+
+                        // ✅ Apply the background color dynamically
+                        if (info.event.backgroundColor) {
+                            eventEl.style.backgroundColor = info.event.backgroundColor;
+                            // ✅ Set text color to white
+                            eventEl.style.color = '#FFFFFF';
+                        }
                     }
                 },
                 eventClick: function(info) {

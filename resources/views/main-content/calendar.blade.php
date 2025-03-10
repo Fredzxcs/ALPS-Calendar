@@ -4,9 +4,9 @@
 <style>
     /* Set fixed width and height for each day cell */
     .fc-daygrid-day {
-    height: 13rem;
-    max-height: 16rem;
-}
+        height: 13rem;
+        max-height: 16rem;
+    }
 </style>
 
     <div class="mt-4 d-flex flex-wrap gap-4 mt-20">
@@ -434,7 +434,7 @@
         <div class="modal-content">
             <!--begin::Modal header-->
             <div class="modal-header border-0 justify-content-between align-items-center">
-                <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" 
+                <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;"
                 {{-- id="modal-title" --}}
                 >VIEW UNAVAILABILITY</h1>
                 <!--begin::Close-->

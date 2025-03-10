@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\LandingpageController;     
+use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\ManageAccessController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TrainingController;
@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('login.login');
-})->name('index');
+})->middleware(['sesh'])->name('index');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'sesh'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -27,7 +27,7 @@ Route::middleware('auth')->group(function () {
 require __DIR__.'/auth.php';
 
 
-Route::prefix('calendar')->group(function () {
+Route::prefix('calendar')->middleware(['sesh'])->group(function () {
     Route::get('/', [TrainingController::class, 'index'])
         ->middleware(['auth', 'user:admin,coordinator,facilitator'])
         ->name('calendar');
@@ -79,7 +79,7 @@ Route::prefix('calendar')->group(function () {
 });
 
 // Manage Access
-Route::prefix('access')->group(function (){
+Route::prefix('access')->middleware(['sesh'])->group(function (){
     Route::get('/', [ManageAccessController::class, 'index'])
         ->middleware(['auth', 'user:admin'])
         ->name('manage_access');
@@ -123,7 +123,7 @@ Route::get('/access/archive', function () {
     return view('access.archived_accounts');})->name('archived_accounts');
 
 // config - courses
-Route::prefix('/config/courses')->group(function(){
+Route::prefix('/config/courses')->middleware(['sesh'])->group(function(){
 
     Route::get('/',[ConfigureCoursesController::class, 'showCourse'])
         ->middleware(['auth', 'user:admin,coordinator'])
@@ -147,7 +147,7 @@ Route::prefix('/config/courses')->group(function(){
 });
 
 // config - accounts
-Route::prefix('/config/accounts')->group(function () {
+Route::prefix('/config/accounts')->middleware(['sesh'])->group(function () {
     Route::get('/',[ConfigureAccountController::class, 'showAccount'])
         ->middleware(['auth', 'user:admin,coordinator'])
         ->name('config_accounts');
@@ -169,7 +169,7 @@ Route::prefix('/config/accounts')->group(function () {
 });
 
 // config - companies
-Route::prefix('/config/companies')->group(function () {
+Route::prefix('/config/companies')->middleware(['sesh'])->group(function () {
     Route::get('/',[ConfigureCompanyController::Class, 'showCompany'])
         ->middleware(['auth', 'user:admin,coordinator'])
         ->name('config_companies');
@@ -192,5 +192,5 @@ Route::prefix('/config/companies')->group(function () {
 
 // manage access - change credentials
 Route::get('/access/change_credentials', function () {
-    return view('access.change_credentials');})->name('change_credentials');
+    return view('access.change_credentials');})->middleware(['sesh'])->name('change_credentials');
 

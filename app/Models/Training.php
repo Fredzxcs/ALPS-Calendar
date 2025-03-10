@@ -22,6 +22,7 @@ class Training extends Model
         'mode',
         'location',
         'account_id',
+        'is_updated',
         // 'credentials_id', --if credentials object is done
     ];
 

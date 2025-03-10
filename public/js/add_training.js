@@ -368,12 +368,22 @@ $(document).ready(function (e) {
         formData.append('to_time', $('#time-end').val());
         formData.append('facilitator_id', $('#facilitator').find('option:selected').val());
 
-
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
         }
 
         console.log('sending request');
+
+        // Show Swal loader
+        Swal.fire({
+            title: 'Adding Training...',
+            text: 'Please wait while we process your request.',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
 
         $.ajax({
             url: '/calendar/add_training',
@@ -386,15 +396,17 @@ $(document).ready(function (e) {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (response) {
+                Swal.close(); // Close loader
+
                 if (response.message === '200') {
                     Swal.fire({
                         title: 'Success!',
                         text: 'Training has been added.',
                         icon: 'success',
                         confirmButtonText: 'OK',
-                        allowOutsideClick: false,    // Disable click outside the modal
-                        allowEscapeKey: false        // Disable closing with ESC key
-                    }).then((result) => {
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    }).then(() => {
                         window.location.href = '/calendar';
                     });
                 } else {
@@ -409,6 +421,8 @@ $(document).ready(function (e) {
                 }
             },
             error: function (xhr, status, error) {
+                Swal.close(); // Close loader
+
                 console.log('AJAX Error Details:', xhr.responseText);
                 Swal.fire({
                     title: 'Error!',
@@ -419,6 +433,7 @@ $(document).ready(function (e) {
             }
         });
     }
+
 
 });
 

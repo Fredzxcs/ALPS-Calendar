@@ -299,18 +299,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Step 1: Check if facilitator is provided
         if (!facilitator_id || facilitator_id === "") {
             // Skip checking availability and proceed
-
-            console.log('1');
-
             handleCompanyAndStoreTraining(company);
         } else {
             // Check facilitator availability
             checkAvailability(facilitator_id, from_date, to_date, function (isAvailable) {
                 if (isAvailable) {
-                    console.log('2');
                     handleCompanyAndStoreTraining(company);
                 } else {
-                    console.log('3');
                     Swal.fire({
                         title: 'Facilitator Unavailable',
                         text: 'The selected facilitator is unavailable on the selected date(s). Do you want to proceed anyway?',
@@ -381,7 +376,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (company === "other") {
-                console.log('5');
                 let companyData = new FormData();
                 companyData.append('company_name', $('#enter-company').val());
                 companyData.append('contact_person', '');
@@ -416,7 +410,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         // step 4
         function editTraining(companyId) {
-            // Confirmation before submission
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You are about to edit this training.",
@@ -467,7 +460,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         platform: platform,
                         location: location,
                         facilitator_id: facilitator_id,
-                        company_id: companyId, // Use the new company ID if created
+                        company_id: companyId,
                         assistant: assistant_id,
                         account_id: account_id,
                         mode: mode,
@@ -483,6 +476,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     const match = url.match(/\/edit_training\/(\d+)$/);
                     const trainingId = match ? match[1] : '';
 
+                    console.log(trainingId);
+
+                    // Show loading Swal before making the AJAX request
+                    Swal.fire({
+                        title: 'Updating Training...',
+                        text: 'Please wait while the training is being updated.',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
                     $.ajax({
                         url: `/calendar/edit_training/${trainingId}`,
                         type: 'PUT',
@@ -492,8 +498,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
                         success: function (response) {
-
                             console.log(response);
+                            Swal.close();
 
                             if (response.code === '200') {
                                 Swal.fire({
@@ -513,12 +519,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                     icon: 'warning',
                                     confirmButtonText: 'OK'
                                 }).then(() => {
-                                    window.location.reload();
+                                    window.location.href = '/calendar';
                                 });
                             }
                         },
                         error: function (xhr, status, error) {
                             console.log('AJAX Error Details:', xhr.responseText);
+                            Swal.close();
                             Swal.fire({
                                 title: 'Error!',
                                 text: 'There was an error updating the training.',
@@ -530,6 +537,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
+
             // // Confirmation before submission
             // Swal.fire({
             //     title: 'Are you sure?',

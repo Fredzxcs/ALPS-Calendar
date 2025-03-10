@@ -140,12 +140,12 @@ document.addEventListener('DOMContentLoaded', () => {
             usernameInput.classList.remove('border-danger');
         }
 
-        // Validate password 
+        // Validate password
         if (passwordInput.value.trim().length > 0 && passwordInput.value.trim().length < 8) {
             passwordInput.classList.add('border-danger');
             Swal.fire({
-                title: 'Warning!', 
-                text: 'Password must be at least 8 characters.', 
+                title: 'Warning!',
+                text: 'Password must be at least 8 characters.',
                 icon: 'warning',
             });
             return;
@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!colorInput.value) {
             colorInput.classList.add('border-danger');
             isValid = false;
-        } 
+        }
 
         if (!isValid) {
             Swal.fire({
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
                             let errorMessages = Object.values(errors).flat().join("\n");
-        
+
                             Swal.fire({
                                 title: 'Validation Error!',
                                 text: errorMessages,
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 });
-                
+
             }
         });
     });
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
 $('.togglePassword').on('click', function () {
     const input = $($(this).data('target'));
     const icons = $(this).find('i');
-    
+
     if (input.attr('type') === 'password') {
         input.attr('type', 'text');
         icons.first().addClass('d-none');

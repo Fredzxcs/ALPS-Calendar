@@ -11,6 +11,11 @@ use App\Models\Company;
 use App\Models\Account;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TrainingNotificationMail;
+use App\Mail\TrainingReassignmentMail;
+use App\Mail\CancelledTrainingMail;
+
 
 class TrainingController extends Controller
 {
@@ -47,7 +52,7 @@ class TrainingController extends Controller
         $validator = Validator::make($request->all(), [
             'course_id' => ['required', 'integer'],
             'mode' => ['required', 'string', 'max:255'],
-            'facilitator_id' => ['nullable' , 'integer'],
+            'facilitator_id' => ['nullable', 'integer'], // Facilitator ID can be null
             'company_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:255'],
             'assistant' => ['nullable', 'string'],
@@ -70,8 +75,9 @@ class TrainingController extends Controller
         \DB::beginTransaction();
 
         try {
+
             // Create the Training session record
-            $trainingSession = Training::create([
+            $training = Training::create([
                 'course_id' => $request->course_id,
                 'mode' => $request->mode,
                 'facilitator_id' => $request->facilitator_id,
@@ -82,9 +88,10 @@ class TrainingController extends Controller
                 'account_id' => $request->account_id,
             ]);
 
+
             // Create the Schedule record
             $schedule = Schedule::create([
-                'training_id' => $trainingSession->id, // Assuming you have a foreign key in Schedule for Training
+                'training_id' => $training->id,
                 'from_date' => $request->from_date,
                 'to_date' => $request->to_date,
                 'from_time' => $request->from_time,
@@ -94,20 +101,54 @@ class TrainingController extends Controller
             // Commit the transaction
             \DB::commit();
 
+            // ✅ Check if facilitator_id exists before querying
+            if (!empty($request->facilitator_id)) {
+                $facilitator = User::find($request->facilitator_id);
+                if ($facilitator && !empty($facilitator->email)) {
+
+                    \Log::info('Email Data:', [
+                        'training' => $training ? $training->toArray() : 'NULL',
+                        'facilitator' => $facilitator ? $facilitator->toArray() : 'NULL',
+                    ]);
+
+                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                                ->find($training->id); // Replace $id with the actual training ID
+
+                    \Log::info('Training Data', [
+                        'data' => $trainingInfo ? $trainingInfo->toArray() : 'NULL',
+                    ]);
+
+                    Mail::to($facilitator->email)->send(new TrainingNotificationMail($trainingInfo, $facilitator));
+                } else {
+                    \Log::warning('Facilitator email not found', ['facilitator' => $facilitator]);
+                }
+            }
+
             // Return success response
             return response()->json([
                 'message' => '200',
-                'trainingSession' => $trainingSession,
+                'training' => $training,
                 'schedule' => $schedule,
             ], 200);
 
         } catch (\Exception $e) {
             \DB::rollBack();
 
-            // Return error response
+            // ✅ Log full error details, including file and line number
+            \Log::error('Training Store Error', [
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'error_trace' => $e->getTraceAsString(),
+                'request_data' => $request->all(),
+            ]);
+
             return response()->json([
                 'message' => 'Error occurred during saving the session and schedule.',
-                'error' => $e->getMessage(),
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'request_data' => $request->all(),
             ], 500);
         }
     }
@@ -166,18 +207,16 @@ class TrainingController extends Controller
         return view('add_training.edit_training', compact('training', 'facilitators', 'courses', 'companies', 'accounts'));
     }
 
-
-
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
     {
-        // Validate the incoming request data
+        // Validate request
         $validator = Validator::make($request->all(), [
             'course_id' => ['required', 'integer'],
             'mode' => ['required', 'string', 'max:255'],
-            'facilitator' => ['nullable' , 'integer'],
+            'facilitator_id' => ['nullable', 'integer'],
             'company_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:255'],
             'assistant' => ['nullable', 'string'],
@@ -189,7 +228,6 @@ class TrainingController extends Controller
             'to_time' => ['required'],
         ]);
 
-        // Check if validation fails
         if ($validator->fails()) {
             return response()->json([
                 'message' => 'Validation failed',
@@ -200,10 +238,15 @@ class TrainingController extends Controller
         \DB::beginTransaction();
 
         try {
-            // Find the existing Training session record
+            // Find the training session
             $trainingSession = Training::findOrFail($id);
+            $previousFacilitator = User::find($trainingSession->facilitator_id);
+            $newFacilitator = User::find($request->facilitator_id);
 
-            // Update the Training session record
+            // Check if the facilitator is changed
+            $facilitatorChanged = $previousFacilitator && $newFacilitator && $previousFacilitator->id !== $newFacilitator->id;
+
+            // Update training session
             $trainingSession->update([
                 'course_id' => $request->course_id,
                 'mode' => $request->mode,
@@ -213,12 +256,11 @@ class TrainingController extends Controller
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
                 'account_id' => $request->account_id,
+                'is_updated' => !$facilitatorChanged, // Set to true only if facilitator is unchanged
             ]);
 
-            // Find the existing Schedule record associated with the training session
+            // Update schedule
             $schedule = Schedule::where('training_id', $trainingSession->id)->first();
-
-            // Update the Schedule record
             $schedule->update([
                 'from_date' => $request->from_date,
                 'to_date' => $request->to_date,
@@ -226,27 +268,49 @@ class TrainingController extends Controller
                 'to_time' => $request->to_time,
             ]);
 
-            // Commit the transaction
             \DB::commit();
 
-            // Return success response
+            // === Email Notification Logic ===
+            if ($facilitatorChanged) {
+                // Facilitator changed
+                Mail::to($previousFacilitator->email)
+                    ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, $newFacilitator));
+
+                Mail::to($newFacilitator->email)
+                    ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+            } elseif ($newFacilitator) {
+                // Facilitator unchanged, send update email
+                Mail::to($newFacilitator->email)
+                    ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+
+                // Reset is_updated back to false after sending the email
+                $trainingSession->update(['is_updated' => false]);
+            } elseif ($previousFacilitator && !$newFacilitator) {
+                // Facilitator removed, notify previous facilitator
+                Mail::to($previousFacilitator->email)
+                    ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, null));
+            }
+
             return response()->json([
                 'code' => '200',
-                'message' => 'Training session and schedule updated successfully',
+                'message' => 'Training session updated successfully and notification emails sent',
                 'trainingSession' => $trainingSession,
                 'schedule' => $schedule,
             ], 200);
 
         } catch (\Exception $e) {
             \DB::rollBack();
-
-            // Return error response
             return response()->json([
-                'message' => 'Error occurred during updating the session and schedule.',
-                'error' => $e->getMessage(),
+                'message' => 'Error occurred during updating the session.',
+                'error_message' => $e->getMessage(),
+                'error_file' => $e->getFile(),
+                'error_line' => $e->getLine(),
+                'error_trace' => $e->getTraceAsString(),
+                'request_data' => $request->all(),
             ], 500);
         }
     }
+
 
 
     /**
@@ -258,6 +322,14 @@ class TrainingController extends Controller
 
         try {
             $trainingSession = Training::findOrFail($id);
+
+            if($trainingSession->facilitator_id)
+            {
+                $facilitator = User::findOrFail($trainingSession->facilitator_id);
+
+                Mail::to($facilitator->email)
+                    ->send(new CancelledTrainingMail($trainingSession, $facilitator));
+            }
 
             $schedule = Schedule::where('training_id', $trainingSession->id)->first();
 
