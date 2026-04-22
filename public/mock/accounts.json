@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "account_email": "training-room-1@alps.local",
+    "account_password": "DemoPass#1"
+  },
+  {
+    "id": 2,
+    "account_email": "training-room-2@alps.local",
+    "account_password": "DemoPass#2"
+  },
+  {
+    "id": 3,
+    "account_email": "public-session@alps.local",
+    "account_password": "DemoPass#3"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "company_name": "Northwind Group",
+    "contact_person": "Nina Flores",
+    "contact_number": "09170001111",
+    "email": "nina.flores@northwind.local"
+  },
+  {
+    "id": 2,
+    "company_name": "Summit Dynamics",
+    "contact_person": "Carlo Mendoza",
+    "contact_number": "09170002222",
+    "email": "carlo.mendoza@summit.local"
+  },
+  {
+    "id": 3,
+    "company_name": "Blue Harbor Corp",
+    "contact_person": "Jessa Lim",
+    "contact_number": "09170003333",
+    "email": "jessa.lim@blueharbor.local"
+  }
+]

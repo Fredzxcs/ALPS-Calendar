@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "course_code": "ALP-101",
+    "course_name": "Facilitation Foundations"
+  },
+  {
+    "id": 2,
+    "course_code": "ALP-205",
+    "course_name": "Advanced Coaching Skills"
+  },
+  {
+    "id": 3,
+    "course_code": "ALP-310",
+    "course_name": "Public Speaking Mastery"
+  }
+]

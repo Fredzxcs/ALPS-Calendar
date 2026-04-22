@@ -12,3 +12,30 @@ php artisan serve           // Serve the application locally
 
 php artisan config:clear
 php artisan cache:clear
+
+
+* UI Demo Mode (No Login, No DB) *
+
+1) In .env, set these values:
+APP_DEMO=true
+SESSION_DRIVER=file
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+
+2) Install dependencies (one-time):
+composer install
+npm install
+
+3) Build frontend assets:
+npm run build
+
+4) Run app locally:
+php artisan key:generate
+php artisan serve
+
+5) Open in browser:
+http://127.0.0.1:8000/calendar
+
+Notes:
+- Demo mode bypasses login on key calendar/access flows.
+- Demo mode serves mock JSON from public/mock/ and does not require MySQL.

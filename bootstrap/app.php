@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'user'=> \App\Http\Middleware\userType::class,
             'admin'=> \App\Http\Middleware\registeradmin::class,
             'sesh'=> \App\Http\Middleware\TrackSession::class,
+            'demo_user'=> \App\Http\Middleware\DemoUser::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

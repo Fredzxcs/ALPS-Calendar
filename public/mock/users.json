@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "Ava Reyes",
+    "username": "ava.reyes",
+    "email": "ava.reyes@alps.local",
+    "contact_number": "09171234567",
+    "usertype": "admin",
+    "color": "#0d6efd",
+    "image": null
+  },
+  {
+    "id": 2,
+    "name": "Liam Cruz",
+    "username": "liam.cruz",
+    "email": "liam.cruz@alps.local",
+    "contact_number": "09181234567",
+    "usertype": "coordinator",
+    "color": "#20c997",
+    "image": null
+  },
+  {
+    "id": 3,
+    "name": "Mia Santos",
+    "username": "mia.santos",
+    "email": "mia.santos@alps.local",
+    "contact_number": "09191234567",
+    "usertype": "facilitator",
+    "color": "#dc3545",
+    "image": null
+  },
+  {
+    "id": 4,
+    "name": "Noah Tan",
+    "username": "noah.tan",
+    "email": "noah.tan@alps.local",
+    "contact_number": "09201234567",
+    "usertype": "facilitator",
+    "color": "#fd7e14",
+    "image": null
+  }
+]

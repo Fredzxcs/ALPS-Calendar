@@ -1,0 +1,97 @@
+[
+  {
+    "id": 101,
+    "mode": "virtual",
+    "assistant": "Chris Dela Cruz",
+    "location": "Zoom",
+    "facilitator_id": 3,
+    "company_id": 1,
+    "account_id": 1,
+    "course": {
+      "id": 1,
+      "course_code": "ALP-101",
+      "course_name": "Facilitation Foundations"
+    },
+    "company": {
+      "id": 1,
+      "company_name": "Northwind Group"
+    },
+    "facilitator": {
+      "id": 3,
+      "name": "Mia Santos",
+      "color": "#dc3545"
+    },
+    "account": {
+      "id": 1,
+      "account_email": "training-room-1@alps.local",
+      "account_password": "DemoPass#1"
+    },
+    "schedule": {
+      "from_date": "2026-04-24",
+      "to_date": "2026-04-24",
+      "from_time": "09:00:00",
+      "to_time": "12:00:00"
+    }
+  },
+  {
+    "id": 102,
+    "mode": "face-to-face",
+    "assistant": "Ella Lim",
+    "location": "Makati Training Hub",
+    "facilitator_id": 4,
+    "company_id": 2,
+    "account_id": null,
+    "course": {
+      "id": 2,
+      "course_code": "ALP-205",
+      "course_name": "Advanced Coaching Skills"
+    },
+    "company": {
+      "id": 2,
+      "company_name": "Summit Dynamics"
+    },
+    "facilitator": {
+      "id": 4,
+      "name": "Noah Tan",
+      "color": "#fd7e14"
+    },
+    "account": null,
+    "schedule": {
+      "from_date": "2026-04-25",
+      "to_date": "2026-04-26",
+      "from_time": "13:00:00",
+      "to_time": "17:00:00"
+    }
+  },
+  {
+    "id": 103,
+    "mode": "public-course",
+    "assistant": "Jamie Uy",
+    "location": "ALPS Main Office",
+    "facilitator_id": 3,
+    "company_id": null,
+    "account_id": 3,
+    "course": {
+      "id": 3,
+      "course_code": "ALP-310",
+      "course_name": "Public Speaking Mastery"
+    },
+    "company": null,
+    "facilitator": {
+      "id": 3,
+      "name": "Mia Santos",
+      "color": "#dc3545"
+    },
+    "account": {
+      "id": 3,
+      "account_email": "public-session@alps.local",
+      "account_password": "DemoPass#3"
+    },
+    "schedule": {
+      "from_date": "2026-04-28",
+      "to_date": "2026-04-28",
+      "from_time": "08:30:00",
+      "to_time": "11:30:00"
+    }
+  }
+]

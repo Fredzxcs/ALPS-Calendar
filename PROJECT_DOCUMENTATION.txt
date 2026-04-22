@@ -1,0 +1,326 @@
+ALPS CALENDAR - PROJECT DOCUMENTATION
+Last updated: 2026-04-22
+
+==================================================
+1) PROJECT OVERVIEW
+==================================================
+ALPS Calendar is a Laravel 11 web application for planning and managing training schedules.
+
+Core domains:
+- Training sessions (course, facilitator, company, schedule, mode/platform/location)
+- User unavailability tracking
+- User access management (admin-only)
+- Configuration catalogs (courses, companies, hosting accounts)
+
+Tech stack:
+- Backend: PHP 8.2+, Laravel 11
+- Frontend: Blade templates + Bootstrap/Metronic-style assets + jQuery scripts
+- Build tools: Vite (configured), npm
+- Calendar UI: FullCalendar
+- Database (original): MySQL
+
+==================================================
+2) HIGH-LEVEL ARCHITECTURE
+==================================================
+Backend folders:
+- app/Http/Controllers: request handling and business logic
+- app/Models: Eloquent models
+- app/Http/Middleware: auth/role/session behavior
+- routes: route definitions
+- database/migrations: schema definitions
+- database/seeders and factories: seed/test data generation
+
+Frontend folders:
+- resources/views: Blade templates
+- public/js: page-specific scripts (calendar, access, config, add/edit flows)
+- public/css/style.bundle.css: design system bundle
+
+Runtime/config folders:
+- config: framework and service configuration
+- bootstrap/app.php: app bootstrapping and middleware aliases
+- storage/logs: runtime logs
+
+==================================================
+3) MAIN FEATURES AND WHERE TO FIND THEM
+==================================================
+Calendar and training management:
+- Routes: routes/web.php under /calendar
+- Controller: app/Http/Controllers/TrainingController.php
+- Views: resources/views/main-content/calendar.blade.php, resources/views/add_training/*
+- Scripts: public/js/calendar.js, public/js/add_training.js, public/js/edit_training.js
+
+Unavailability:
+- Routes: routes/web.php under /calendar/add_unavailability and related APIs
+- Controller: app/Http/Controllers/UnavailabilityController.php
+- View: resources/views/unavailability/add_unavailability.blade.php
+- Script: public/js/add_unavailability.js, public/js/unavailability_calendar.js
+
+Access management:
+- Routes: routes/web.php under /access
+- Controller: app/Http/Controllers/ManageAccessController.php
+- Views: resources/views/access/*
+- Scripts: public/js/manage_access.js, public/js/add_user.js, public/js/edit_user.js, public/js/change_credentials.js
+
+Configuration pages:
+- Courses:
+  - Controller: app/Http/Controllers/ConfigureCoursesController.php
+  - View: resources/views/configuration/courses.blade.php
+  - Script: public/js/courses.js
+- Companies:
+  - Controller: app/Http/Controllers/ConfigureCompanyController.php
+  - View: resources/views/configuration/companies.blade.php
+  - Script: public/js/companies.js
+- Accounts (hosting credentials):
+  - Controller: app/Http/Controllers/ConfigureAccountController.php
+  - View: resources/views/configuration/accounts.blade.php
+  - Script: public/js/accounts.js
+
+Auth/profile:
+- routes/auth.php
+- app/Http/Controllers/Auth/*
+- resources/views/auth/*
+
+==================================================
+4) ROUTING MODES
+==================================================
+A) Normal mode (DB-backed)
+- Uses standard controllers and role middleware.
+- Entry/login behavior:
+  - GET / returns resources/views/login/login.blade.php
+  - Auth routes loaded from routes/auth.php
+
+B) Demo mode (no DB required)
+- Enabled with APP_DEMO=true in .env
+- routes/web.php short-circuits to DemoController routes and returns early.
+- Synthetic authenticated user injected by app/Http/Middleware/DemoUser.php
+- Uses mock JSON files in public/mock/
+
+Demo route groups available:
+- /calendar
+- /access
+- /config/courses
+- /config/companies
+- /config/accounts
+
+==================================================
+5) AUTHORIZATION AND MIDDLEWARE
+==================================================
+Middleware aliases are registered in bootstrap/app.php:
+- user => App\Http\Middleware\userType
+- admin => App\Http\Middleware\registeradmin
+- sesh => App\Http\Middleware\TrackSession
+- demo_user => App\Http\Middleware\DemoUser
+
+Behavior summary:
+- userType: role-based gate using usertype field; redirects unauthorized users
+- registeradmin: admin-only gate
+- TrackSession: tracks last visited non-AJAX page and redirects authenticated users from index to their previous page
+- DemoUser: injects a GenericUser for demo auth bypass
+
+==================================================
+6) DATABASE DESIGN (FROM MIGRATIONS)
+==================================================
+Original default connection:
+- config/database.php default is mysql
+- .env.example points to DB_CONNECTION=mysql, DB_DATABASE=alpstraining, host 127.0.0.1, port 3306
+
+Core tables:
+- users
+  - id, name, username, email, usertype, color, password, contact_number, image, remember_token, timestamps
+- course
+  - id, course_code, course_name, description, timestamps
+- company
+  - id, company_name, contact_person, contact_number, email, timestamps
+- credentials
+  - id, account_email, account_password, timestamps
+- training
+  - id, course_id, facilitator_id, company_id, assistant, platform, account_id, mode, location, is_updated, timestamps
+- schedule
+  - id, training_id, from_date, to_date, from_time, to_time, timestamps
+- unavailability
+  - id, user_id, reason, from_date, to_date, timestamps
+
+Laravel system/support tables:
+- password_reset_tokens
+- sessions
+- cache, cache_locks
+- jobs, job_batches, failed_jobs
+
+Important schema note:
+- There is an extra migration creating a companies table (plural) with only id and timestamps.
+- Main domain logic appears to use company (singular).
+- Verify before adding new company-related features to avoid table confusion.
+
+==================================================
+7) MODEL RELATIONSHIPS (KEY)
+==================================================
+Training model:
+- hasOne Schedule
+- belongsTo Course
+- belongsTo Company
+- belongsTo User as facilitator
+- belongsTo Account
+
+User model:
+- hasMany Unavailability
+- includes usertype role field used by middleware
+
+Table naming convention in this project is mixed:
+- Several domain tables are singular (training, schedule, course, company, unavailability)
+- users is plural
+- Keep this in mind when adding migrations/models.
+
+==================================================
+8) EMAIL AND NOTIFICATIONS
+==================================================
+TrainingController sends emails on:
+- New training assignment
+- Reassignment
+- Cancellation
+
+Mail classes:
+- app/Mail/TrainingNotificationMail.php
+- app/Mail/TrainingReassignmentMail.php
+- app/Mail/CancelledTrainingMail.php
+
+Email views:
+- resources/views/emails/*
+
+Configuration:
+- config/mail.php
+- .env mail variables
+
+Security recommendation:
+- Do not store real SMTP credentials in versioned files.
+- Rotate credentials if any sensitive values were committed.
+
+==================================================
+9) FRONTEND AND DESIGN SYSTEM NOTES
+==================================================
+UI composition:
+- Main layout: resources/views/global/layout.blade.php
+- Navbar: resources/views/global/navbar.blade.php
+- Uses Bootstrap + bundled Metronic/Keen-like utility classes
+- Main stylesheet: public/css/style.bundle.css
+
+Branding cues currently used:
+- Deep navy and maroon accents are applied in many views via inline styles/classes
+- Typography commonly uses Poppins and strong weight classes
+
+==================================================
+10) LOCAL SETUP (NORMAL DB MODE)
+==================================================
+Prerequisites:
+- PHP 8.2+
+- Composer
+- Node.js + npm
+- MySQL server
+
+Setup steps:
+1. Copy .env.example to .env
+2. composer install
+3. npm install
+4. Create MySQL database named alpstraining
+5. php artisan key:generate
+6. php artisan migrate
+7. npm run build
+8. php artisan serve
+
+Useful cleanup commands:
+- php artisan config:clear
+- php artisan cache:clear
+
+==================================================
+11) LOCAL SETUP (DEMO MODE, NO DB)
+==================================================
+In .env set:
+- APP_DEMO=true
+- SESSION_DRIVER=file
+- CACHE_STORE=file
+- QUEUE_CONNECTION=sync
+
+Then:
+1. composer install
+2. npm install
+3. npm run build
+4. php artisan key:generate
+5. php artisan serve
+
+Demo opens key flows without requiring MySQL.
+Mock data files are in public/mock/.
+
+==================================================
+12) COMMON DEVELOPMENT TASKS
+==================================================
+Add a new database field:
+1. Create migration adding the column
+2. Run php artisan migrate
+3. Update model fillable/casts
+4. Update controller validation and persistence logic
+5. Update form/view and JS payloads
+
+Add a new page/module:
+1. Add route in routes/web.php
+2. Add controller method
+3. Add blade view in resources/views
+4. Add/update JS in public/js if needed
+5. Add role middleware where required
+
+Add API endpoint for AJAX:
+1. Add route with proper middleware
+2. Return consistent JSON response format
+3. Include CSRF token in frontend requests
+4. Update client-side error handling
+
+==================================================
+13) TESTING, QA, AND DIAGNOSTICS
+==================================================
+Automated testing:
+- PHPUnit config exists (phpunit.xml)
+- tests/Feature and tests/Unit folders are present
+- Add or expand tests for critical flows as features evolve
+
+Log inspection:
+- storage/logs/laravel.log
+
+Clear log for clean debugging cycle (PowerShell):
+- Clear-Content storage/logs/laravel.log
+
+Check routes quickly:
+- php artisan route:list
+
+==================================================
+14) KNOWN QUIRKS / TECH DEBT TO WATCH
+==================================================
+- Mixed singular/plural table naming across domain tables.
+- Duplicate/legacy migration for companies (plural) may cause confusion.
+- Some route definitions have duplicate intent (review route naming and duplicates when refactoring).
+- Frontend relies heavily on page-specific scripts in public/js; maintain endpoint and payload compatibility carefully.
+- Demo mode route behavior is intentionally different from normal auth flow; test both modes after major changes.
+
+==================================================
+15) SUGGESTED ONBOARDING CHECKLIST FOR NEW DEV
+==================================================
+1. Run app in demo mode first and click through Calendar, Access, and Config pages.
+2. Run in normal DB mode and migrate schema.
+3. Inspect routes/web.php and the related controllers to understand flow.
+4. Review migration files before any schema changes.
+5. Confirm mail settings in local .env before testing notifications.
+6. Use route:list and laravel.log during debugging.
+
+==================================================
+16) QUICK REFERENCE PATHS
+==================================================
+- Entry routes: routes/web.php, routes/auth.php
+- Main calendar controller: app/Http/Controllers/TrainingController.php
+- Access controller: app/Http/Controllers/ManageAccessController.php
+- Config controllers: app/Http/Controllers/Configure*Controller.php
+- Demo controller: app/Http/Controllers/DemoController.php
+- Middleware aliases: bootstrap/app.php
+- Models: app/Models/*
+- Migrations: database/migrations/*
+- Views: resources/views/*
+- Frontend scripts: public/js/*
+- Logs: storage/logs/laravel.log
+
+End of document.

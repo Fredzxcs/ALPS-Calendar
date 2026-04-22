@@ -1,0 +1,26 @@
+[
+  {
+    "id": 501,
+    "user_id": 3,
+    "reason": "Client onsite workshop",
+    "from_date": "2026-04-23",
+    "to_date": "2026-04-23",
+    "user": {
+      "id": 3,
+      "name": "Mia Santos",
+      "color": "#dc3545"
+    }
+  },
+  {
+    "id": 502,
+    "user_id": 4,
+    "reason": "Annual leave",
+    "from_date": "2026-04-29",
+    "to_date": "2026-04-30",
+    "user": {
+      "id": 4,
+      "name": "Noah Tan",
+      "color": "#fd7e14"
+    }
+  }
+]
