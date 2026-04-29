@@ -50,7 +50,7 @@
                                 </div>
 
                                 <!-- Course -->
-                                <div class="d-flex align-items-center" style="width: 49%;">
+                                <div class="d-flex align-items-center alps-half-width">
                                     <div class="flex-grow-1">
                                         <label for="public-course-select" class="fw-bold mb-2 required">Course</label>
                                         <select id="public-course-select" class="form-select form-select-solid">

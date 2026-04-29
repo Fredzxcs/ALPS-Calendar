@@ -19,5 +19,68 @@
     "contact_person": "Jessa Lim",
     "contact_number": "09170003333",
     "email": "jessa.lim@blueharbor.local"
+  },
+  {
+    "id": 4,
+    "company_name": "EverPeak Ventures",
+    "contact_person": "Marvin Co",
+    "contact_number": "09170004444",
+    "email": "marvin.co@everpeak.local"
+  },
+  {
+    "id": 5,
+    "company_name": "Horizon Pulse Inc",
+    "contact_person": "Shane Dizon",
+    "contact_number": "09170005555",
+    "email": "shane.dizon@horizonpulse.local"
+  },
+  {
+    "id": 6,
+    "company_name": "Bridgeway Systems",
+    "contact_person": "Lara Cruz",
+    "contact_number": "09170006666",
+    "email": "lara.cruz@bridgeway.local"
+  },
+  {
+    "id": 7,
+    "company_name": "Vertex Learning Co",
+    "contact_person": "Anton Uy",
+    "contact_number": "09170007777",
+    "email": "anton.uy@vertexlearning.local"
+  },
+  {
+    "id": 8,
+    "company_name": "Pinecrest Holdings",
+    "contact_person": "Rhea Chan",
+    "contact_number": "09170008888",
+    "email": "rhea.chan@pinecrest.local"
+  },
+  {
+    "id": 9,
+    "company_name": "Atlas Retailers",
+    "contact_person": "Joey Natividad",
+    "contact_number": "09170009999",
+    "email": "joey.natividad@atlasretail.local"
+  },
+  {
+    "id": 10,
+    "company_name": "Helios Consulting",
+    "contact_person": "Dianne Yu",
+    "contact_number": "09171110000",
+    "email": "dianne.yu@helios.local"
+  },
+  {
+    "id": 11,
+    "company_name": "Seabright Ventures",
+    "contact_person": "Ian Ponce",
+    "contact_number": "09171111111",
+    "email": "ian.ponce@seabright.local"
+  },
+  {
+    "id": 12,
+    "company_name": "Crownstone Foods",
+    "contact_person": "Kaye Ramos",
+    "contact_number": "09171112222",
+    "email": "kaye.ramos@crownstone.local"
   }
 ]

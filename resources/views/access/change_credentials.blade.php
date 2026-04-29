@@ -4,8 +4,7 @@
     <div class="container mt-5">
         <div class="card shadow-sm  pt-0 pb-1 mt-20">
             <!-- Title -->
-            <div class="d-flex justify-content-center align-items-center mb-4 rounded-top bg-primary"
-                style="height: 80px;">
+            <div class="d-flex justify-content-center align-items-center mb-4 rounded-top bg-primary alps-fixed-titlebar">
                 <h2 class="text-white fw-boldest m-0 fs-1">CHANGE CREDENTIALS</h2>
             </div>
             <!--begin::Form-->

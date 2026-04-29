@@ -5,8 +5,7 @@
     <div class="container mt-5">
         <div class="card shadow-sm  pt-0 pb-1 mt-20">
             <!-- Title -->
-            <div class="d-flex justify-content-center align-items-center mb-4 rounded-top bg-primary"
-                style="height: 80px;">
+            <div class="d-flex justify-content-center align-items-center mb-4 rounded-top bg-primary alps-fixed-titlebar">
                 <h2 class="text-white fw-boldest m-0 fs-1">EDIT USER</h2>
             </div>
             <!--begin::Stepper-->
@@ -185,9 +184,9 @@
                                     <label for="edit_id_picture" class="form-label fw-bold">1x1 ID Picture</label>
                                     <div>
                                         <!--begin::Image input-->
-                                        <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url('assets/media/svg/avatars/blank.svg')">
+                                        <div class="image-input image-input-outline alps-avatar-blank-bg" data-kt-image-input="true">
                                             <!--begin::Preview existing avatar-->
-                                            <div class="image-input-wrapper w-125px h-125px" style="background-image: url(assets/media/avatars/300-1.jpg)"></div>
+                                            <div class="image-input-wrapper w-125px h-125px alps-avatar-default-bg"></div>
                                             <!--end::Preview existing avatar-->
                                             <!--begin::Label-->
                                             <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Select Image">

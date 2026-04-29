@@ -7,6 +7,84 @@ document.addEventListener('DOMContentLoaded', function () {
     var currentHoveredEvent = null; // Track the currently hovered event
     var calendar;
 
+    const clampColorChannel = (value) => Math.max(0, Math.min(255, Math.round(value)));
+
+    const parseHexColor = (hex) => {
+        if (!hex || typeof hex !== 'string') {
+            return null;
+        }
+
+        let normalized = hex.trim().replace('#', '');
+        if (normalized.length === 3) {
+            normalized = normalized.split('').map((char) => char + char).join('');
+        }
+
+        if (!/^[0-9a-fA-F]{6}$/.test(normalized)) {
+            return null;
+        }
+
+        return {
+            r: parseInt(normalized.slice(0, 2), 16),
+            g: parseInt(normalized.slice(2, 4), 16),
+            b: parseInt(normalized.slice(4, 6), 16),
+        };
+    };
+
+    const parseRgbColor = (rgbColor) => {
+        if (!rgbColor || typeof rgbColor !== 'string') {
+            return null;
+        }
+
+        const match = rgbColor.match(/rgba?\(([^)]+)\)/i);
+        if (!match || !match[1]) {
+            return null;
+        }
+
+        const channels = match[1].split(',').slice(0, 3).map((part) => Number(part.trim()));
+        if (channels.some((channel) => Number.isNaN(channel))) {
+            return null;
+        }
+
+        return {
+            r: clampColorChannel(channels[0]),
+            g: clampColorChannel(channels[1]),
+            b: clampColorChannel(channels[2]),
+        };
+    };
+
+    const parseColor = (color) => parseHexColor(color) || parseRgbColor(color);
+
+    const lightenColor = (color, amount) => ({
+        r: clampColorChannel(color.r + (255 - color.r) * amount),
+        g: clampColorChannel(color.g + (255 - color.g) * amount),
+        b: clampColorChannel(color.b + (255 - color.b) * amount),
+    });
+
+    const darkenColor = (color, amount) => ({
+        r: clampColorChannel(color.r * (1 - amount)),
+        g: clampColorChannel(color.g * (1 - amount)),
+        b: clampColorChannel(color.b * (1 - amount)),
+    });
+
+    const toRgbString = (color) => `rgb(${color.r}, ${color.g}, ${color.b})`;
+
+    const getAccessibleEventTextColor = (color) => {
+        const brightness = ((0.299 * color.r) + (0.587 * color.g) + (0.114 * color.b)) / 255;
+        return brightness > 0.62 ? '#1E4A8A' : '#FFFFFF';
+    };
+
+    const applyEventPalette = (eventEl, color) => {
+        const colorTop = lightenColor(color, 0.22);
+        const colorBottom = darkenColor(color, 0.12);
+        const textColor = getAccessibleEventTextColor(color);
+
+        eventEl.style.setProperty('--event-color-top', toRgbString(colorTop));
+        eventEl.style.setProperty('--event-color-bottom', toRgbString(colorBottom));
+        eventEl.style.setProperty('--event-text-color', textColor);
+        eventEl.style.setProperty('--event-glow-color', `rgba(${color.r}, ${color.g}, ${color.b}, 0.47)`);
+        eventEl.style.color = textColor;
+    };
+
     // Function to initialize popovers
     const initPopovers = (element, data) => {
         hidePopovers(); // Hide any active popovers
@@ -317,6 +395,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             beforeSend: function () {
                 $('#calendar').addClass('blur-effect');
+                loaderWrapper.classList.remove('d-none');
                 loaderWrapper.style.display = 'flex';
             },
             success: function (response) {
@@ -385,12 +464,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     bindEventListeners();
 
                     loaderWrapper.classList.add('d-none');
+                    loaderWrapper.style.display = '';
                     $('#calendar').removeClass('blur-effect');
                 } else {
                     clearCalendarEvents(calendar);
                     bindEventListeners();
                     console.error('Failed to load events:', response.message);
                     loaderWrapper.classList.add('d-none');
+                    loaderWrapper.style.display = '';
                 }
             },
             error: function (xhr, status, error) {
@@ -398,9 +479,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 bindEventListeners();
                 console.error('Error fetching events:', error);
                 loaderWrapper.classList.add('d-none');
+                loaderWrapper.style.display = '';
             },
             complete: function () {
                 loaderWrapper.classList.add('d-none');
+                loaderWrapper.style.display = '';
                 $('#calendar').removeClass('blur-effect');
             },
         });
@@ -604,14 +687,30 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (info.event.extendedProps.isHoliday) {
                         info.el.style.color = '#FF0000';  // Bright red
                         info.el.style.fontWeight = 'bold';
+                        return;
                     }
+
+                    const eventEl = info.el;
+                    const eventColor = parseColor(info.event.backgroundColor || info.event.borderColor || '#808080') || parseColor('#808080');
+                    eventEl.classList.add('alps-pop-event');
+                    applyEventPalette(eventEl, eventColor);
+
+                    eventEl.addEventListener('mousedown', function () {
+                        eventEl.classList.add('is-pressed');
+                    });
+
+                    eventEl.addEventListener('mouseup', function () {
+                        eventEl.classList.remove('is-pressed');
+                    });
+
+                    eventEl.addEventListener('mouseleave', function () {
+                        eventEl.classList.remove('is-pressed');
+                    });
 
                     const start = info.event.start;
                     const end = info.event.end;
 
                     if (!end || start.toDateString() === end.toDateString()) {
-                        const eventEl = info.el;
-
                         // Add missing class to make it behave like a date range
                         eventEl.classList.add('fc-h-event');
 
@@ -623,17 +722,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         // Ensure full-width styling
                         eventEl.style.width = '100%';
-
-                        // ✅ Apply the background color dynamically
-                        if (info.event.backgroundColor) {
-                            eventEl.style.backgroundColor = info.event.backgroundColor;
-                            // ✅ Set text color to white
-                            eventEl.style.color = '#FFFFFF';
-                        }
                     }
                 },
                 eventClick: function(info) {
                     info.jsEvent.preventDefault();
+                    info.el.classList.add('is-pressed');
+                    setTimeout(function () {
+                        info.el.classList.remove('is-pressed');
+                    }, 120);
 
                     if (popover) {
                         try {

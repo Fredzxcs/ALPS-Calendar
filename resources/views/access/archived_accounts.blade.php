@@ -5,22 +5,21 @@
     <div class="container mt-5">
         <!-- Title -->
         <div class="mb-4">
-            <h3 class="card-header fw-boldest fs-1 " style="color: #7c0101; ">ARCHIVED ACCOUNTS</h3>
+            <h3 class="card-header fw-boldest fs-1 alps-page-title">ARCHIVED ACCOUNTS</h3>
         </div>
 
         <!-- Top Actions -->
         <div class="d-flex justify-content-between align-items-center mb-8">
-            <div class="position-relative" style="max-width: 300px;">
+            <div class="position-relative alps-search-wrap">
                 <!-- Input Field -->
-                <input type="text" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
-                    placeholder="&#xF52A; Search..." style="font-family: 'Bootstrap-icons', sans-serif;">
+                <input type="text" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px alps-icon-input"
+                    placeholder="&#xF52A; Search...">
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
                <!-- FILTER Button with Menu -->
                 <div>
                     <!-- Filter Button -->
-                    <button class="btn rounded-3 fw-boldest d-flex align-items-center btn-hover-rise text-white"
-                        style="background-color: #052a43;"
+                    <button class="btn rounded-3 fw-boldest d-flex align-items-center btn-hover-rise text-white alps-filter-btn-sm"
                         data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
                         <i class="bi bi-funnel me-1 text-white"></i> FILTER
                     </button>
@@ -66,8 +65,8 @@
 
 
         <!-- Table -->
-        <div class="table-responsive" style="padding: 0; margin: 0;">
-            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" style="margin: auto;">
+        <div class="table-responsive alps-table-wrap">
+            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100">
                 <thead>
                     <tr class="fw-boldest text-gray-800 fs-5">
                         <th class="w-150px">PROFILE</th>
@@ -95,7 +94,7 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-center">
-                                <div class=" w-80px h-30px border border-2 border-dark" style="background-color: pink;"></div>
+                                <div class="alps-user-color-chip bg-danger"></div>
                             </div>
                         </td>
 
@@ -135,7 +134,7 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-center">
-                                <div class=" w-80px h-30px border border-2 border-dark" style="background-color: yellow;";></div>
+                                <div class="alps-user-color-chip bg-warning"></div>
                             </div>
                         </td>
                         <td>
@@ -174,7 +173,7 @@
                         </td>
                         <td>
                             <div class="d-flex justify-content-center">
-                                <div class=" w-80px h-30px border border-2 border-dark" style="background-color: gray;"></div>
+                                <div class="alps-user-color-chip bg-secondary"></div>
                             </div>
                         </td>
                         <td>

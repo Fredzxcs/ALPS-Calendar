@@ -5,17 +5,16 @@
     <div class="container mt-5">
         <!-- Title -->
         <div class="mb-4">
-            <h3 class="card-header fw-boldest fs-1 " style="color: #7c0101; ">LIST OF COURSES</h3>
+            <h3 class="card-header fw-boldest fs-1 alps-page-title">LIST OF COURSES</h3>
         </div>
 
         <!-- Top Actions -->
         <div class="d-flex justify-content-between align-items-center mb-8">
-            <div class="position-relative" style="max-width: 300px;">
+            <div class="position-relative alps-search-wrap">
                 <!-- Input Field -->
                 <input type="text" id="searchInput"
-                    class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
-                    placeholder="&#xF52A; Search..."
-                    style="font-family: 'Bootstrap-icons', sans-serif;">
+                    class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px alps-icon-input"
+                    placeholder="&#xF52A; Search...">
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
                 <!-- ADD USER Button -->
@@ -32,10 +31,10 @@
         </div>
 
         <!-- Table -->
-        <div class="table-responsive" style="padding: 0; margin: 0;">
-            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100"
+        <div class="table-responsive alps-table-wrap">
+            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100 alps-table-center"
                 id="courses_table"
-                style="margin: auto;">
+                >
                 <thead>
                     <tr class="fw-boldest text-gray-800 fs-5">
                         <th class="w-250px">COURSE NAME</th>
@@ -113,7 +112,7 @@
 
                     <!--begin::Modal header-->
                     <div class="modal-header">
-                        <h2 class="fw-boldest" data-kt-calendar="title" style="color: #7c0101;">ADD COURSE</h2>
+                        <h2 class="fw-boldest alps-modal-heading" data-kt-calendar="title">ADD COURSE</h2>
                         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                             <span class="svg-icon svg-icon-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -185,7 +184,7 @@
                     <input class="" type="hidden">
                     <!--begin::Modal header-->
                     <div class="modal-header">
-                        <h2 class="fw-boldest" data-kt-calendar="title" style="color: #7c0101;">EDIT COURSE</h2>
+                        <h2 class="fw-boldest alps-modal-heading" data-kt-calendar="title">EDIT COURSE</h2>
                         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                             <span class="svg-icon svg-icon-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">

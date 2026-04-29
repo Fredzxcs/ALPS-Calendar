@@ -5,15 +5,15 @@
     <div class="container mt-5">
         <!-- Title -->
         <div class="mb-4">
-            <h3 class="card-header fw-boldest fs-1 " style="color: #7c0101; ">MANAGE ACCESS</h3>
+            <h3 class="card-header fw-boldest fs-1 alps-page-title">MANAGE ACCESS</h3>
         </div>
 
         <!-- Top Actions -->
         <div class="d-flex justify-content-between align-items-center mb-8">
-            <div class="position-relative" style="max-width: 300px;">
+            <div class="position-relative alps-search-wrap">
                 <!-- Input Field -->
-                <input type="text" id="searchInput" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px"
-                    placeholder="&#xF52A; Search..." style="font-family: 'Bootstrap-icons', sans-serif;">
+                <input type="text" id="searchInput" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px alps-icon-input"
+                    placeholder="&#xF52A; Search...">
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
                 <!-- ADD USER Button -->
@@ -30,8 +30,7 @@
                 <!-- FILTER Button with Menu -->
                 <div>
                     <!-- Filter Button -->
-                    <button class="btn rounded-3 fw-boldest d-flex align-items-center btn-hover-rise text-white"
-                        style="background-color: #052a43;"
+                    <button class="btn rounded-3 fw-boldest d-flex align-items-center btn-hover-rise text-white alps-filter-btn-sm"
                         data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
                         <i class="bi bi-funnel me-1 text-white"></i> FILTER
                     </button>
@@ -76,8 +75,8 @@
 
 
         <!-- Table -->
-        <div class="table-responsive" style="padding: 0; margin: 0;">
-            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" id="access_table" style="margin: auto;">
+        <div class="table-responsive alps-table-wrap">
+            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" id="access_table">
                 <thead>
                     <tr class="fw-boldest text-gray-800 fs-5">
                         <th class="w-150px">PROFILE</th>
@@ -132,7 +131,7 @@
 
                                     @if ($user->color)
 
-                                    <div class=" w-80px h-30px border border-2 border-dark" style="background-color: {{ $user->color }};"></div>
+                                    <div class="alps-user-color-chip user-color-chip" data-color="{{ $user->color }}"></div>
 
                                     @else
 
@@ -202,7 +201,7 @@
                     <input class="event-id" type="hidden">
                     <!--begin::Modal header-->
                     <div class="modal-header">
-                        <h2 class="fw-boldest" data-kt-calendar="title" style="color: #7c0101;">VIEW USER</h2>
+                        <h2 class="fw-boldest alps-modal-heading" data-kt-calendar="title">VIEW USER</h2>
                         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                             <span class="svg-icon svg-icon-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -221,7 +220,7 @@
                             <div class="col-5">
                                 <div class="fv-row">
                                     <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-gear-wide-connected fs-3 me-5" style="color: #7c0101;"></i>Role
+                                        <i class="bi bi-gear-wide-connected fs-3 me-5 alps-icon-accent"></i>Role
                                     </label>
                                 </div>
                             </div>
@@ -240,7 +239,7 @@
                             <div class="col-5">
                                 <div class="fv-row">
                                     <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-person-fill fs-3 me-5" style="color: #7c0101;"></i>Full Name
+                                        <i class="bi bi-person-fill fs-3 me-5 alps-icon-accent"></i>Full Name
                                     </label>
                                 </div>
                             </div>
@@ -259,7 +258,7 @@
                             <div class="col-5">
                                 <div class="fv-row">
                                     <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-envelope-fill fs-3 me-5" style="color: #7c0101;"></i>Email Address
+                                        <i class="bi bi-envelope-fill fs-3 me-5 alps-icon-accent"></i>Email Address
                                     </label>
                                 </div>
                             </div>
@@ -278,7 +277,7 @@
                             <div class="col-5">
                                 <div class="fv-row">
                                     <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-telephone-fill fs-3 me-5" style="color: #7c0101;"></i>Contact Number
+                                        <i class="bi bi-telephone-fill fs-3 me-5 alps-icon-accent"></i>Contact Number
                                     </label>
                                 </div>
                             </div>
@@ -295,13 +294,13 @@
                         <!--begin::1x1 ID-->
                         <div class="form-group row m-b-10 mt-8 mb-8">
                             <label class="col-5 col-form-label fs-6 fw-bold text-md-right">
-                                <i class="bi bi-image-fill fs-3 me-5" style="color: #7c0101;"></i>1x1 ID Picture
+                                <i class="bi bi-image-fill fs-3 me-5 alps-icon-accent"></i>1x1 ID Picture
                             </label>
                             <div class="col-7 fv-row d-flex justify-content-end align-items-center">
                                 <!--begin::Image input-->
-                                <div class="image-input image-input-outline border border-2" data-kt-image-input="true" style="">
+                                <div class="image-input image-input-outline border border-2" data-kt-image-input="true">
                                     <!--begin::Preview existing avatar-->
-                                    <div class="image-input-wrapper w-125px h-125px" id="idpic" style="">
+                                    <div class="image-input-wrapper w-125px h-125px" id="idpic">
 
                                     </div>
                                     <!--end::Preview existing avatar-->
@@ -316,7 +315,7 @@
                             <div class="col-5">
                                 <div class="fv-row">
                                     <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-person-video3 fs-3 me-5" style="color: #7c0101;"></i>Assigned Username
+                                        <i class="bi bi-person-video3 fs-3 me-5 alps-icon-accent"></i>Assigned Username
                                     </label>
                                 </div>
                             </div>
@@ -335,7 +334,7 @@
                             <div class="col-5">
                                 <div class="fv-row">
                                     <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-shield-lock-fill fs-3 me-5" style="color: #7c0101;"></i>Assigned Password
+                                        <i class="bi bi-shield-lock-fill fs-3 me-5 alps-icon-accent"></i>Assigned Password
                                     </label>
                                 </div>
                             </div>
@@ -354,13 +353,13 @@
                             <div class="col-5">
                                 <div class="fv-row">
                                     <label class="fs-6 fw-bold mb-2">
-                                        <i class="bi bi-palette-fill fs-3 me-5" style="color: #7c0101;"></i>Assigned Color
+                                        <i class="bi bi-palette-fill fs-3 me-5 alps-icon-accent"></i>Assigned Color
                                     </label>
                                 </div>
                             </div>
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
-                                    <div id="color" class="w-80px h-30px border border-2 border-dark" style=""></div>
+                                    <div id="color" class="alps-user-color-chip"></div>
                                 </div>
                             </div>
                         </div>
@@ -398,6 +397,13 @@
 <!-- VIEW USER DATA  -->
 <script>
     $(document).ready(function (){
+
+        $('.user-color-chip').each(function() {
+            const swatchColor = $(this).data('color');
+            if (swatchColor) {
+                $(this).css('background-color', swatchColor);
+            }
+        });
 
         $('a[data-bs-target="#modal_view_user"]').click(function (e){
             let userId = $(this).closest('tr').attr('row-id');  // Get user ID

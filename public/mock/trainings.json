@@ -93,5 +93,164 @@
       "from_time": "08:30:00",
       "to_time": "11:30:00"
     }
+  },
+  {
+    "id": 104,
+    "mode": "virtual",
+    "assistant": "Paolo Yu",
+    "location": "Google Meet",
+    "facilitator_id": 6,
+    "company_id": 4,
+    "account_id": 4,
+    "course": {
+      "id": 4,
+      "course_code": "ALP-320",
+      "course_name": "Leadership Presence Essentials"
+    },
+    "company": {
+      "id": 4,
+      "company_name": "EverPeak Ventures"
+    },
+    "facilitator": {
+      "id": 6,
+      "name": "Ethan Ramos",
+      "color": "#198754"
+    },
+    "account": {
+      "id": 4,
+      "account_email": "room-4@alps.local",
+      "account_password": "DemoPass#4"
+    },
+    "schedule": {
+      "from_date": "2026-05-02",
+      "to_date": "2026-05-02",
+      "from_time": "10:00:00",
+      "to_time": "12:00:00"
+    }
+  },
+  {
+    "id": 105,
+    "mode": "face-to-face",
+    "assistant": "Mara Sy",
+    "location": "Ortigas Center",
+    "facilitator_id": 7,
+    "company_id": 5,
+    "account_id": null,
+    "course": {
+      "id": 5,
+      "course_code": "ALP-330",
+      "course_name": "Conflict Resolution in Teams"
+    },
+    "company": {
+      "id": 5,
+      "company_name": "Horizon Pulse Inc"
+    },
+    "facilitator": {
+      "id": 7,
+      "name": "Chloe Bautista",
+      "color": "#e83e8c"
+    },
+    "account": null,
+    "schedule": {
+      "from_date": "2026-05-03",
+      "to_date": "2026-05-03",
+      "from_time": "09:00:00",
+      "to_time": "16:00:00"
+    }
+  },
+  {
+    "id": 106,
+    "mode": "virtual",
+    "assistant": "Nico Flores",
+    "location": "Zoom",
+    "facilitator_id": 9,
+    "company_id": 6,
+    "account_id": 6,
+    "course": {
+      "id": 6,
+      "course_code": "ALP-340",
+      "course_name": "Client Communication Masterclass"
+    },
+    "company": {
+      "id": 6,
+      "company_name": "Bridgeway Systems"
+    },
+    "facilitator": {
+      "id": 9,
+      "name": "Zara Domingo",
+      "color": "#ffc107"
+    },
+    "account": {
+      "id": 6,
+      "account_email": "room-6@alps.local",
+      "account_password": "DemoPass#6"
+    },
+    "schedule": {
+      "from_date": "2026-05-04",
+      "to_date": "2026-05-04",
+      "from_time": "13:00:00",
+      "to_time": "15:30:00"
+    }
+  },
+  {
+    "id": 107,
+    "mode": "public-course",
+    "assistant": "Diana Lagman",
+    "location": "ALPS Main Office",
+    "facilitator_id": 10,
+    "company_id": null,
+    "account_id": 7,
+    "course": {
+      "id": 7,
+      "course_code": "ALP-350",
+      "course_name": "Project Kickoff Facilitation"
+    },
+    "company": null,
+    "facilitator": {
+      "id": 10,
+      "name": "Ian Mercado",
+      "color": "#6610f2"
+    },
+    "account": {
+      "id": 7,
+      "account_email": "room-7@alps.local",
+      "account_password": "DemoPass#7"
+    },
+    "schedule": {
+      "from_date": "2026-05-05",
+      "to_date": "2026-05-05",
+      "from_time": "08:00:00",
+      "to_time": "11:00:00"
+    }
+  },
+  {
+    "id": 108,
+    "mode": "face-to-face",
+    "assistant": "Roi Manalo",
+    "location": "BGC Learning Studio",
+    "facilitator_id": 12,
+    "company_id": 8,
+    "account_id": null,
+    "course": {
+      "id": 8,
+      "course_code": "ALP-360",
+      "course_name": "Needs Analysis Workshop"
+    },
+    "company": {
+      "id": 8,
+      "company_name": "Pinecrest Holdings"
+    },
+    "facilitator": {
+      "id": 12,
+      "name": "Ralph Sy",
+      "color": "#d63384"
+    },
+    "account": null,
+    "schedule": {
+      "from_date": "2026-05-06",
+      "to_date": "2026-05-07",
+      "from_time": "09:00:00",
+      "to_time": "17:00:00"
+    }
   }
 ]

@@ -13,5 +13,50 @@
     "id": 3,
     "course_code": "ALP-310",
     "course_name": "Public Speaking Mastery"
+  },
+  {
+    "id": 4,
+    "course_code": "ALP-320",
+    "course_name": "Leadership Presence Essentials"
+  },
+  {
+    "id": 5,
+    "course_code": "ALP-330",
+    "course_name": "Conflict Resolution in Teams"
+  },
+  {
+    "id": 6,
+    "course_code": "ALP-340",
+    "course_name": "Client Communication Masterclass"
+  },
+  {
+    "id": 7,
+    "course_code": "ALP-350",
+    "course_name": "Project Kickoff Facilitation"
+  },
+  {
+    "id": 8,
+    "course_code": "ALP-360",
+    "course_name": "Needs Analysis Workshop"
+  },
+  {
+    "id": 9,
+    "course_code": "ALP-370",
+    "course_name": "Storytelling for Trainers"
+  },
+  {
+    "id": 10,
+    "course_code": "ALP-380",
+    "course_name": "Virtual Classroom Delivery"
+  },
+  {
+    "id": 11,
+    "course_code": "ALP-390",
+    "course_name": "Learning Assessment Design"
+  },
+  {
+    "id": 12,
+    "course_code": "ALP-400",
+    "course_name": "Train the Trainer Capstone"
   }
 ]

@@ -1,129 +1,20 @@
 @extends('global.layout')
 
 @section('maincontent')
-<style>
-    /* Set fixed width and height for each day cell */
-    .fc-daygrid-day {
-        height: 13rem;
-        max-height: 16rem;
-    }
-</style>
-
-    <div class="mt-4 d-flex flex-wrap gap-4 mt-20">
-        {{-- <!-- Left Side: Search Course and Search Trainer -->
-    <div class="d-flex flex-column" style="flex: 1; max-width: 30%; gap: 20px;">
-        <!-- Search Course Card -->
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="mb-3 position-relative">
-                    <input type="text" class="form-control form-control-solid ps-5" placeholder="Search course" />
-                </div>
-                <button class="btn btn-sm mb-3 btn-hover-rise text-white" style="background-color: #7c0101;">+ Add Course</button>
-                <table class="table table-sm table-bordered table-hover align-middle">
-                    <thead>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="course1" />
-                            </td>
-                            <td class="py-1"><label for="course1" class="mb-0">Project Management</label></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="course2" />
-                            </td>
-                            <td class="py-1"><label for="course2" class="mb-0">Agile Scrum</label></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="course3" />
-                            </td>
-                            <td class="py-1"><label for="course3" class="mb-0">Excel</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="course4" />
-                            </td>
-                            <td class="py-1"><label for="course4" class="mb-0">Course 1</label></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="course5" />
-                            </td>
-                            <td class="py-1"><label for="course5" class="mb-0">Course 2</label></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="course6" />
-                            </td>
-                            <td class="py-1"><label for="course6" class="mb-0">Course 3</label></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <!-- Search Trainer Card -->
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="mb-3">
-                    <input type="text" class="form-control form-control-solid" placeholder="Search facilitator" />
-                </div>
-                <button class="btn btn-sm mb-3 btn-hover-rise text-white" style="background-color: #7c0101;;">+ Add
-                    Facilitator</button>
-                <table class="table table-sm table-bordered table-hover align-middle">
-                    <thead>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="trainer1" />
-                            </td>
-                            <td class="py-1"><label for="trainer1" class="mb-0">Rechelle Salas</label></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="trainer2" />
-                            </td>
-                            <td class="py-1"><label for="trainer2" class="mb-0">Kimberly Mae Kho</label></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="trainer3" />
-                            </td>
-                            <td class="py-1"><label for="trainer3" class="mb-0">Rafael Joar Parungo</label></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="trainer4" />
-                            </td>
-                            <td class="py-1"><label for="trainer4" class="mb-0">John Loyd Cabral</label></td>
-                        </tr>
-                        <tr>
-                            <td class="text-center py-1">
-                                <input type="checkbox" id="trainer5" />
-                            </td>
-                            <td class="py-1"><label for="trainer5" class="mb-0">Daniel Del Rosario</label></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div> --}}
+    <div class="alps-calendar-shell d-flex flex-wrap gap-4 mt-20">
         <!-- Right Side: Calendar -->
-        <div class="card shadow-sm" style="flex: 2;">
+        <div class="card shadow-sm alps-calendar-card">
             <div class="card-header d-flex justify-content-between align-items-center">
 
                 <!-- Filter Button -->
-                <button class="btn btn-lg rounded-3 fw-boldest d-flex align-items-center btn-hover-rise text-white"
-                    style="background-color: #052a43;"
-                    data-kt-menu-trigger="click" data-kt-menu-placement="bottom-start">
+                <div class="dropdown alps-calendar-filter-dropdown">
+                <button class="btn btn-lg fw-boldest d-flex align-items-center btn-hover-rise text-white alps-filter-btn dropdown-toggle"
+                    data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                     <i class="bi bi-funnel me-1 text-white"></i> FILTER
                 </button>
 
                 <!-- Filter Menu -->
-                <div class="menu menu-sub menu-sub-dropdown w-250px w-md-300px" data-kt-menu="true">
+                <div class="dropdown-menu menu menu-sub menu-sub-dropdown w-250px w-md-300px alps-calendar-filter-menu">
                     <!-- Menu Header -->
                     <div class="px-7 py-5">
                         <div class="fs-5 text-dark fw-bolder">Filter Options</div>
@@ -150,17 +41,17 @@
                         <div class="d-flex justify-content-end">
                             <!-- <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="calendarFilterReset"
                                 data-kt-menu-dismiss="true">RESET</button> -->
-                            <button id="applyFilter" type="button" class="btn btn-sm btn-primary" id="calendarFilterApply"
-                                data-kt-menu-dismiss="true">APPLY</button>
+                            <button id="applyFilter" type="button" class="btn btn-sm btn-primary" id="calendarFilterApply">APPLY</button>
                         </div>
                     </div>
+                </div>
                 </div>
                 <!-- End Filter Menu -->
 
 
 
                      <!--begin::Add Button-->
-                    <button type="button" class="btn btn-primary btn-lg rounded-3 fw-boldest btn-hover-rise text-white dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button type="button" class="btn btn-primary btn-lg fw-boldest btn-hover-rise text-white dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="p-5">ADD</span>
                     </button>
                     <!--end::Add Button-->
@@ -186,17 +77,17 @@
                     <!--end::Link item-->
                 </ul>
             </div>
-            <div class="card" style="height: auto;">
+            <div class="card alps-calendar-inner-card">
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-center">
                         <!-- Loader wrapper positioned above the calendar -->
-                        <div id="loader-wrapper" class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center mb-10" style="  display: none;">
-                            <div class="spinner-border" style="width: 5rem; height: 5rem;" role="status">
+                        <div id="loader-wrapper" class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center mb-10 alps-loader-wrapper">
+                            <div class="spinner-border alps-loader-spinner" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
                     </div>
-                    <div id="calendar" class="border border-3 border-gray-200 p-10" style="height: 100%; border-radius: 5px;">
+                    <div id="calendar" class="alps-calendar-root">
                         <!-- FullCalendar will be rendered here -->
                         <!-- Loader -->
                     </div>
@@ -232,7 +123,7 @@
                 <!--begin::Modal header-->
                 <div class="modal-header border-0 justify-content-between align-items-center">
 
-                    <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;" id="">VIEW TRAINING</h1>
+                    <h1 class="modal-title fw-boldest text-start alps-modal-title" id="">VIEW TRAINING</h1>
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -254,7 +145,7 @@
                     <!-- Course -->
                     <div class="row mb-5 justify-content-between align-items-center text-center">
                         <h1 class="fs-1 fw-boldest text-primary" id="modal-course">Course</h1>
-                        <h1 class="fs-4 fw-boldest" id="modal-company" style="color: #7c0101;">Company</h1>
+                        <h1 class="fs-4 fw-boldest" id="modal-company">Company</h1>
                         <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span>
                         <br>
                         from <span id="modal-time" class="fw-bold"></span></p>
@@ -264,7 +155,7 @@
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-building fs-3 me-5" style="color: #7c0101;"></i>Company
+                                    <i class="bi bi-building fs-3 me-5 alps-icon-accent"></i>Company
                                 </label>
                             </div>
                         </div>
@@ -279,7 +170,7 @@
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-person-workspace fs-3 me-5" style="color: #7c0101;"></i>Facilitator
+                                    <i class="bi bi-person-workspace fs-3 me-5 alps-icon-accent"></i>Facilitator
                                 </label>
                             </div>
                         </div>
@@ -294,7 +185,7 @@
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-person-plus fs-3 me-5" style="color: #7c0101;"></i>Assistant
+                                    <i class="bi bi-person-plus fs-3 me-5 alps-icon-accent"></i>Assistant
                                 </label>
                             </div>
                         </div>
@@ -309,7 +200,7 @@
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-calendar3 fs-3 me-5" style="color: #7c0101;"></i>Date
+                                    <i class="bi bi-calendar3 fs-3 me-5 alps-icon-accent"></i>Date
                                 </label>
                             </div>
                         </div>
@@ -324,7 +215,7 @@
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-clock-fill fs-3 me-5" style="color: #7c0101;"></i>Time
+                                    <i class="bi bi-clock-fill fs-3 me-5 alps-icon-accent"></i>Time
                                 </label>
                             </div>
                         </div>
@@ -339,7 +230,7 @@
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-chat-left-text-fill fs-3 me-5" style="color: #7c0101;"></i>Mode of Training
+                                    <i class="bi bi-chat-left-text-fill fs-3 me-5 alps-icon-accent"></i>Mode of Training
                                 </label>
                             </div>
                         </div>
@@ -354,7 +245,7 @@
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-easel-fill fs-3 me-5" style="color: #7c0101;"></i>Hosting Account
+                                    <i class="bi bi-easel-fill fs-3 me-5 alps-icon-accent"></i>Hosting Account
                                 </label>
                             </div>
                         </div>
@@ -363,12 +254,12 @@
                                 <p class="lead fs-6" id="modal-credentials">sample@gmail.com</p>
                             </div>
                             <div id="password-container" class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
-                                <p class="password-actual d-none" id="modal-password" style="cursor: pointer;"></p>
+                                <p class="lead fs-6 password-display alps-password-toggle">********</p>
+                                <p class="password-actual d-none alps-password-toggle" id="modal-password"></p>
                             </div>
                             <!-- <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6 password-display" style="cursor: pointer;" >********</p>
-                                <span class="password-actual d-none" id="modal-password" style="cursor: pointer;">password</span>
+                                <p class="lead fs-6 password-display alps-password-toggle">********</p>
+                                <span class="password-actual d-none alps-password-toggle" id="modal-password">password</span>
                             </div> -->
                         </div>
                     </div>
@@ -377,7 +268,7 @@
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-person-fill fs-3 me-5" style="color: #7c0101;"></i>In-person?
+                                    <i class="bi bi-person-fill fs-3 me-5 alps-icon-accent"></i>In-person?
                                 </label>
                             </div>
                         </div>
@@ -392,7 +283,7 @@
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-geo-alt-fill fs-3 me-5" style="color: #7c0101;"></i>Location
+                                    <i class="bi bi-geo-alt-fill fs-3 me-5 alps-icon-accent"></i>Location
                                 </label>
                             </div>
                         </div>
@@ -434,7 +325,7 @@
         <div class="modal-content">
             <!--begin::Modal header-->
             <div class="modal-header border-0 justify-content-between align-items-center">
-                <h1 class="modal-title fw-boldest text-start" style="color:#7c0101;"
+                <h1 class="modal-title fw-boldest text-start alps-modal-title"
                 {{-- id="modal-title" --}}
                 >VIEW UNAVAILABILITY</h1>
                 <!--begin::Close-->
@@ -467,7 +358,7 @@
                     <div class="col-5">
                         <div class="fv-row">
                             <label class="fs-6 fw-bold mb-2">
-                                <i class="bi bi-calendar-x-fill fs-3 me-5" style="color: #7c0101;"></i>Date Unavailable
+                                <i class="bi bi-calendar-x-fill fs-3 me-5 alps-icon-accent"></i>Date Unavailable
                             </label>
                         </div>
                     </div>
@@ -482,7 +373,7 @@
                     <div class="col-5">
                         <div class="fv-row">
                             <label class="fs-6 fw-bold mb-2">
-                                <i class="bi bi-patch-question-fill fs-3 me-5" style="color: #7c0101;"></i>Purpose
+                                <i class="bi bi-patch-question-fill fs-3 me-5 alps-icon-accent"></i>Purpose
                             </label>
                         </div>
                     </div>

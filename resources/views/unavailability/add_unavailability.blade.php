@@ -15,7 +15,7 @@
                 <div class="p-20 pt-10 pb-6 ">
 
                     <div class="text-center mb-10">
-                        <h3 class="text-center" style="color: #7c0101;">{{ $user->name }}</h3>
+                        <h3 class="text-center alps-page-title">{{ $user->name }}</h3>
 
                         @if ($user->usertype === "admin")
 

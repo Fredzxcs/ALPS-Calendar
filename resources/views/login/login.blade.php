@@ -15,19 +15,19 @@
     <!--begin::Global Stylesheets Bundle(used by all pages)-->
     <link href="{{ asset('plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/alps-modern.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
 </head>
-<div class="bg-image"
-    style="background-image: url('{{ asset('img/LoginBG.png') }}'); background-repeat: no-repeat; background-size: cover; background-position: center; height: 100vh; width: 100vw;">
-    <div class="d-flex justify-content-center align-items-center vh-100">
+<div class="bg-image alps-login-shell">
+    <div class="d-flex justify-content-center align-items-center vh-100 alps-login-stage">
 
         <!-- Logo -->
-        <div class="position-absolute text-center" style="top: 28%; transform: translateY(-50%);">
-            <img src="{{ asset('img/ALPs_Logo.png') }}" class="mb-10" alt="ALPs Logo" style="width: 150px; height: auto;">
+        <div class="position-absolute text-center alps-login-logo-wrap">
+            <img src="{{ asset('img/ALPs_Logo.png') }}" class="mb-10 alps-login-logo" alt="ALPs Logo">
         </div>
 
-        <div class="card shadow-sm mx-auto font-Poppins" style="width:35rem; background-color: #052a43; color: #ffffff; border-radius: 30px;">
-            <div class="text-center" style="background: none; border-bottom: none;">
+        <div class="card shadow-sm mx-auto font-Poppins alps-login-card">
+            <div class="text-center alps-login-card-header">
                 <h3 class="fs-1 fw-bold text-white mt-6 fw-boldest ">
                     ALPs Calendar
                 </h3>
@@ -69,7 +69,7 @@
                                 <i class="bi bi-eye fs-2 d-none"></i>
                             </span>
                             <!-- <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                            <a href="#" class="d-block mt-1 text-muted text-hover-primary" style="font-size: 0.9rem;">Forgot Password?</a> -->
+                            <a href="#" class="d-block mt-1 text-muted text-hover-primary alps-forgot-text">Forgot Password?</a> -->
                         </div>
                     </div>
 
@@ -77,7 +77,7 @@
                     <!-- Submit Button -->
                     <div class="d-flex justify-content-center">
                         <a href="/calendar">
-                          <button type="submit" class="btn btn-lg btn-hover-scale" style="background-color: #7c0101; color: #ffffff;">Login</button>
+                                                    <button type="submit" class="btn btn-lg btn-hover-scale btn-danger">Login</button>
                         </a>
                     </div>
                 </div>

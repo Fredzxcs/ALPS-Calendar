@@ -1,36 +1,16 @@
-<style>
-    .nav-link {
-        color: #052a43;
-    }
-
-    .nav-link:hover {
-        color: #7c0101 !important;
-    }
-
-    .nav-link:hover i {
-        color: #7c0101 !important;
-    }
-
-    .nav-link.active {
-        color: #7c0101 !important;
-    }
-
-</style>
-
-
-<nav class="navbar navbar-expand-lg bg-gray shadow-sm py-6">
+<nav class="navbar navbar-expand-lg shadow-sm py-6 alps-navbar">
     <div class="container-fluid">
         <!-- Brand Logo and Name -->
         <a class="navbar-brand d-flex align-items-center"  href="#">
             <img src="{{ asset('img/ALPs_Logo.png') }}" alt="ALPS Logo" class="me-2 w-50px">
-            <span class="fw-boldest fs-1" style="color: #052a43;">Advanced Learning Programs</span>
+            <span class="fw-boldest fs-1">Advanced Learning Programs</span>
         </a>
         <!-- Toggler for Mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"  style="color: #052a43;"></span>
+            <span class="navbar-toggler-icon"></span>
         </button>
         <!-- Navigation Buttons -->
-        <div class="collapse navbar-collapse justify-content-end hover-scale fs-3" style="color: #052a43;" id="navbarNav">
+        <div class="collapse navbar-collapse justify-content-end hover-scale fs-3" id="navbarNav">
             <ul class="navbar-nav ">
                 <!-- ACCESS Button -->
 
@@ -55,8 +35,7 @@
                 @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
                 <!-- CONFIGURATION Dropdown -->
                 <li class="nav-item dropdown me-5">
-                    <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle"
-                        style="cursor:pointer;"
+                    <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle alps-clickable"
                         id="configurationDropdown"
                         data-kt-menu-trigger="click"
                         data-kt-menu-placement="bottom-start">
@@ -98,12 +77,11 @@
 
                 <!-- SETTINGS -->
                 <li class="nav-item dropdown me-5">
-                    <a class="nav-link text-primary-hover fw-bold text-dark"
-                        style="cursor: pointer;"
+                    <a class="nav-link text-primary-hover fw-bold alps-clickable"
                         id="navbarDropdown"
                         data-kt-menu-trigger="click"
                         data-kt-menu-placement="bottom-start">
-                        <i class="fas fa-cog fs-1 text-dark"></i>
+                        <i class="fas fa-cog fs-1"></i>
                     </a>
                     <!--begin::Links-->
                     <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-150px py-4"
