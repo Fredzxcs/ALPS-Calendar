@@ -18,79 +18,63 @@
     <link href="{{ asset('css/alps-modern.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
 </head>
+<body class="alps-login-page">
+<img src="{{ asset('img/alps_border_tl.png') }}" class="alps-login-deco tl" alt="">
+<img src="{{ asset('img/alps_border_br.png') }}" class="alps-login-deco br" alt="">
 <div class="bg-image alps-login-shell">
     <div class="d-flex justify-content-center align-items-center vh-100 alps-login-stage">
 
-        <!-- Logo -->
-        <div class="position-absolute text-center alps-login-logo-wrap">
-            <img src="{{ asset('img/ALPs_Logo.png') }}" class="mb-10 alps-login-logo" alt="ALPs Logo">
-        </div>
+        <div class="position-relative">
 
-        <div class="card shadow-sm mx-auto font-Poppins alps-login-card">
-            <div class="text-center alps-login-card-header">
-                <h3 class="fs-1 fw-bold text-white mt-6 fw-boldest ">
-                    ALPs Calendar
-                </h3>
-                <p class="fs-6 fw-normal mb-1 text-white">
-                    It's Good to See You!
-                </p>
+            <!-- Logo (FULLY VISIBLE ABOVE CARD) -->
+            <div class="alps-login-logo-badge">
+                <img src="{{ asset('img/ALPs_Logo.png') }}" alt="ALPs Logo">
             </div>
 
-            <x-auth-session-status class="mb-4" :status="session('status')" />
+            <!-- Card -->
+            <div class="card alps-login-card text-center px-14 pb-10 pt-20">
 
-            <form method="POST" action="{{ route('loginPOST') }}">
-                @csrf
-                <div class="card-body">
+                <h1 class="alps-type-h1 alps-text-ink mt-12 mb-2">ALPs Calendar</h1>
+                <p class="alps-subtitle alps-text-muted mb-10">It's Good to See You!</p>
+
+                <form method="POST" action="{{ route('loginPOST') }}">
+                    @csrf
+
                     <!-- Username -->
-                    <div class="mb-3">
-                        <label for="username" class="form-label text-white required">Username</label>
-                        <input type="text" id="username" name="username" class="form-control"
-                            placeholder="Enter your username" required>
-                            <x-input-error :messages="$errors->get('username')" class="mt-2" />
-
+                    <div class="text-start mb-5">
+                        <label class="form-label alps-type-label required">Username</label>
+                        <input type="text" name="username" class="form-control"
+                            placeholder="Enter Username" required>
                     </div>
 
-
                     <!-- Password -->
-                    <div class="mb-3">
-                        <label for="password" class="form-label text-white required">Password</label>
+                    <div class="text-start mb-8">
+                        <label class="form-label alps-type-label required">Password</label>
                         <div class="position-relative">
-                            <input type="password" class="form-control"
-                                placeholder="Enter your password"
-                                id="password"
-                                name="password"
-                            />
-                            <!-- Visibility toggle -->
-                            <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2 togglePassword"
-                                data-kt-password-meter-control="visibility"
-                                data-target="#password"
-                                aria-label="Toggle Password Visibility">
-                                <i class="bi bi-eye-slash fs-2"></i>
-                                <i class="bi bi-eye fs-2 d-none"></i>
+                            <input type="password" name="password" id="password"
+                                class="form-control alps-type-input"
+                                placeholder="Enter Password" required>
+
+                            <span class="togglePassword position-absolute top-50 end-0 translate-middle-y me-3"
+                                data-target="#password">
+                                <i class="bi bi-eye-slash"></i>
+                                <i class="bi bi-eye d-none"></i>
                             </span>
-                            <!-- <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                            <a href="#" class="d-block mt-1 text-muted text-hover-primary alps-forgot-text">Forgot Password?</a> -->
                         </div>
                     </div>
 
+                    <button type="submit" class="btn btn-lg w-50 btn-primary btn-orange">
+                        LOGIN
+                    </button>
+                </form>
 
-                    <!-- Submit Button -->
-                    <div class="d-flex justify-content-center">
-                        <a href="/calendar">
-                                                    <button type="submit" class="btn btn-lg btn-hover-scale btn-danger">Login</button>
-                        </a>
-                    </div>
-                </div>
-
-            </form>
-
+            </div>
         </div>
     </div>
 </div>
 
-</html>
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{{ asset('js/alps-time-sky.js') }}"></script>
 <script>
     //Toggle password visibility
     $('.togglePassword').on('click', function () {
@@ -108,3 +92,5 @@
         }
     });
 </script>
+</body>
+</html>

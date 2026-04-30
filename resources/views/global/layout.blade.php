@@ -56,6 +56,7 @@
 <script src="{{ asset('js/scripts.bundle.js') }}"></script>
 <script src="{{ asset('plugins/bootstrap-sweetalert/sweetalert.min.js') }}"></script>
 <script src="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
+<script src="{{ asset('js/alps-time-sky.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @stack('scripts')
 

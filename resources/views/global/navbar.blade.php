@@ -1,8 +1,10 @@
-<nav class="navbar navbar-expand-lg shadow-sm py-6 alps-navbar">
-    <div class="container-fluid">
+<nav class="navbar navbar-expand-lg shadow-sm py-1 alps-navbar">
+    <div class="container-fluid px-3">
         <!-- Brand Logo and Name -->
         <a class="navbar-brand d-flex align-items-center"  href="#">
-            <img src="{{ asset('img/ALPs_Logo.png') }}" alt="ALPS Logo" class="me-2 w-50px">
+            <span class="alps-navbar-logo-badge me-3">
+                <img src="{{ asset('img/ALPs_Logo.png') }}" alt="ALPS Logo">
+            </span>
             <span class="fw-boldest fs-1">Advanced Learning Programs</span>
         </a>
         <!-- Toggler for Mobile -->
