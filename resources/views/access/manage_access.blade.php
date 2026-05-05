@@ -1,38 +1,27 @@
 @extends('global.layout')
 
 @section('maincontent')
-<div class="container mt-20 d-flex justify-content-center align-items-center bg-white shadow-sm rounded-3 p-5">
-    <div class="container mt-5">
+<div class="container mt-5 d-flex justify-content-center align-items-center">
+    <div class="container mt-5 alps-card">
         <!-- Title -->
         <div class="mb-4">
-            <h3 class="card-header fw-boldest fs-1 alps-page-title">MANAGE ACCESS</h3>
+            <h2 class="alps-type-h2">Manage Access</h2>
         </div>
 
         <!-- Top Actions -->
         <div class="d-flex justify-content-between align-items-center mb-8">
-            <div class="position-relative alps-search-wrap">
-                <!-- Input Field -->
-                <input type="text" id="searchInput" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px alps-icon-input"
-                    placeholder="&#xF52A; Search...">
-            </div>
-            <div class="d-flex align-items-center justify-content-end gap-2">
-                <!-- ADD USER Button -->
-                 <a href="{{ route('add_user') }}" class="btn btn-primary rounded-3 fw-boldest btn-hover-rise">
-                    <span class="svg-icon svg-icon-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                            <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
-                            <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="black" />
-                        </svg>
-                    </span>
-                    ADD USER
-                </a>
+            <div class="alps-search-filter-group">
+                <div class="position-relative alps-search-wrap">
+                    <!-- Input Field -->
+                    <input type="text" id="searchInput" class="form-control form-control-solid ps-5 fw-boldest rounded-3 w-300px alps-icon-input"
+                        placeholder="&#xF52A; Search...">
+                </div>
 
-                <!-- FILTER Button with Menu -->
-                <div>
-                    <!-- Filter Button -->
-                    <button class="btn rounded-3 fw-boldest d-flex align-items-center btn-hover-rise text-white alps-filter-btn-sm"
-                        data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
-                        <i class="bi bi-funnel me-1 text-white"></i> FILTER
+                <!-- FILTER Button with Menu (secondary orange) -->
+                <div class="position-relative">
+                    <button class="btn btn-secondary btn-orange rounded-3 fw-boldest d-flex align-items-center btn-hover-rise dropdown-toggle"
+                        data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-attach="parent" data-kt-menu-overflow="true">
+                        <i class="bi bi-funnel me-1"></i> FILTER
                     </button>
 
                     <!-- Filter Menu -->
@@ -61,22 +50,33 @@
                                 </div>
                             </form>
                             <div class="d-flex justify-content-end">
-                                <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="accessFilterReset"
+                                <button type="reset" class="btn btn-sm btn-secondary btn-blue me-2" id="accessFilterReset"
                                     data-kt-menu-dismiss="true">RESET</button>
-                                <!-- <button type="submit" class="btn btn-sm btn-primary" id="accessFilterApply"
-                                    data-kt-menu-dismiss="true">APPLY</button> -->
                             </div>
                         </div>
                     </div>
                     <!-- End Filter Menu -->
                 </div>
             </div>
+
+            <div>
+                <!-- ADD USER Button (primary orange) -->
+                 <a href="{{ route('add_user') }}" class="btn btn-primary btn-orange rounded-3 fw-boldest btn-hover-rise">
+                    <span class="svg-icon svg-icon-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
+                            <rect x="4.36396" y="11.364" width="16" height="2" rx="1" fill="black" />
+                        </svg>
+                    </span>
+                    ADD USER
+                </a>
+            </div>
         </div>
 
 
         <!-- Table -->
         <div class="table-responsive alps-table-wrap">
-            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" id="access_table">
+            <table class="table align-middle text-center gy-7 gs-7 w-100" id="access_table">
                 <thead>
                     <tr class="fw-boldest text-gray-800 fs-5">
                         <th class="w-150px">PROFILE</th>
@@ -142,34 +142,36 @@
                                 </div>
                             </td>
                             <td>
-                                <!--begin::Menu-->
-                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
-                                    data-kt-menu-trigger="click"
-                                    data-kt-menu-placement="bottom-start">
-                                    MENU
-                                </button>
-                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4"
-                                    data-kt-menu="true">
+                                <div class="position-relative d-inline-block">
+                                    <!--begin::Menu-->
+                                        <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                                            data-kt-menu-trigger="click"
+                                            data-kt-menu-placement="bottom-start" data-kt-menu-attach="parent" data-kt-menu-overflow="true">
+                                        MENU
+                                    </button>
+                                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-225px py-4"
+                                        data-kt-menu="true">
 
-                                    <div class="menu-item px-3">
-                                        <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_view_user">
-                                            <i class="bi bi-pencil-square text-primary me-2"></i> View & Edit Details
-                                        </a>
-                                    </div>
+                                        <div class="menu-item px-3">
+                                            <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_view_user">
+                                                <i class="bi bi-pencil-square text-primary me-2"></i> View & Edit Details
+                                            </a>
+                                        </div>
 
-                                    <div class="menu-item px-3">
-                                    <a href="{{ route('change_credential', [$user->id]) }}" id="edit-credential-btn" class="menu-link px-3">
-                                        <i class="bi bi-unlock-fill text-info me-2"></i> Change Credentials
-                                    </a>
-                                    </div>
+                                        <div class="menu-item px-3">
+                                            <a href="{{ route('change_credential', [$user->id]) }}" id="edit-credential-btn" class="menu-link px-3">
+                                                <i class="bi bi-unlock-fill text-info me-2"></i> Change Credentials
+                                            </a>
+                                        </div>
 
-                                    <div class="menu-item px-3">
-                                        <a class="menu-link px-3 deleteBtn" data-id="{{ $user->id }}">
-                                            <i class="bi bi-trash text-danger me-2"></i> Delete
-                                        </a>
+                                        <div class="menu-item px-3">
+                                            <a class="menu-link px-3 deleteBtn" data-id="{{ $user->id }}">
+                                                <i class="bi bi-trash text-danger me-2"></i> Delete
+                                            </a>
+                                        </div>
                                     </div>
+                                    <!--end::Menu-->
                                 </div>
-                                <!--end::Menu-->
                             </td>
                         </tr>
 
@@ -201,7 +203,9 @@
                     <input class="event-id" type="hidden">
                     <!--begin::Modal header-->
                     <div class="modal-header">
-                        <h2 class="fw-boldest alps-modal-heading" data-kt-calendar="title">VIEW USER</h2>
+                        <div class="d-flex flex-column">
+                            <h3 class="alps-type-h3 alps-modal-heading" data-kt-calendar="title">View User</h3>
+                        </div>
                         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                             <span class="svg-icon svg-icon-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -227,7 +231,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="role">
-                                        System Admin
+                                        Not ready
                                     </p>
                                 </div>
                             </div>
@@ -246,7 +250,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="fullname">
-                                        Kimberly Mae Maglaque Kho II
+                                        Not ready
                                     </p>
                                 </div>
                             </div>
@@ -265,7 +269,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="email">
-                                        kimlykho27@gmail.com
+                                        Not ready
                                     </p>
                                 </div>
                             </div>
@@ -284,7 +288,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="num">
-                                        09205119555
+                                        Not ready
                                     </p>
                                 </div>
                             </div>
@@ -301,7 +305,7 @@
                                 <div class="image-input image-input-outline border border-2" data-kt-image-input="true">
                                     <!--begin::Preview existing avatar-->
                                     <div class="image-input-wrapper w-125px h-125px" id="idpic">
-
+                                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted fs-8">No data yet</div>
                                     </div>
                                     <!--end::Preview existing avatar-->
                                 </div>
@@ -322,7 +326,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="username">
-                                        kim.admin
+                                        Not ready
                                     </p>
                                 </div>
                             </div>
@@ -341,7 +345,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="pass">
-                                        ********
+                                        Not ready
                                     </p>
                                 </div>
                             </div>
@@ -370,7 +374,7 @@
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <a href="#" id="edit-user-btn" class="btn btn-primary me-2">
+                        <a href="#" id="edit-user-btn" class="btn btn-primary btn-orange me-2">
                             <i class="bi bi-pencil-fill me-2"></i>EDIT
                         </a>
 
@@ -398,6 +402,26 @@
 <script>
     $(document).ready(function (){
 
+        const detailsFieldIds = ['role', 'fullname', 'email', 'num', 'username', 'pass'];
+
+        function setLoadingState() {
+            detailsFieldIds.forEach((id) => {
+                $('#' + id).html('<span class="placeholder col-8"></span>');
+            });
+
+            $('#idpic').html('<span class="placeholder w-125px h-125px rounded"></span>');
+            $('#color').css('background-color', 'transparent');
+        }
+
+        function setNotReadyState(message = 'Not Ready') {
+            detailsFieldIds.forEach((id) => {
+                $('#' + id).text('Not ready');
+            });
+
+            $('#idpic').html('<div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted fs-8">No data yet</div>');
+            $('#color').css('background-color', 'transparent');
+        }
+
         $('.user-color-chip').each(function() {
             const swatchColor = $(this).data('color');
             if (swatchColor) {
@@ -405,8 +429,14 @@
             }
         });
 
-        $('a[data-bs-target="#modal_view_user"]').click(function (e){
+        setNotReadyState();
+
+        // Use event delegation to work even after modal is moved to body
+        $(document).on('click', 'a[data-bs-target="#modal_view_user"]', function (e){
             let userId = $(this).closest('tr').attr('row-id');  // Get user ID
+            console.log('Fetching user:', userId);
+
+            setLoadingState();
 
             $.ajax({
                 url: `/access/api/get/user/${userId}`,
@@ -451,7 +481,8 @@
 
                 },
                 error: function(xhr) {
-                    console.error('Error:', xhr.responseJSON?.error || 'An error occurred');
+                    console.error('Error fetching user:', userId, xhr.responseJSON?.error || xhr.statusText || 'An error occurred');
+                    setNotReadyState('Unable to load');
                 }
             });
 

@@ -60,4 +60,20 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @stack('scripts')
 
+<script>
+    // Move modal elements to <body> to avoid stacking-context issues
+    (function(){
+        if (typeof jQuery !== 'undefined') {
+            jQuery(function($){
+                $('.modal').each(function(){
+                    var $m = $(this);
+                    if (!$m.parent().is('body')) {
+                        $m.appendTo('body');
+                    }
+                });
+            });
+        }
+    })();
+</script>
+
 </html>

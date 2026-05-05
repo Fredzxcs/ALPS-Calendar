@@ -1,11 +1,11 @@
 @extends('global.layout')
 
 @section('maincontent')
-<div class="container mt-20 d-flex justify-content-center align-items-center bg-white shadow-sm rounded-3 p-5">
-    <div class="container mt-5">
+<div class="container mt-5 d-flex justify-content-center align-items-center ">
+    <div class="container mt-5 alps-card">
         <!-- Title -->
         <div class="mb-4">
-            <h3 class="card-header fw-boldest fs-1 alps-page-title">LIST OF COMPANIES</h3>
+            <h2 class="alps-type-h2">List Of Companies</h2>
         </div>
 
         <!-- Top Actions -->
@@ -19,7 +19,7 @@
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
                 <!-- ADD USER Button -->
-                 <a class="btn btn-primary rounded-3 fw-boldest btn-hover-rise" data-bs-toggle="modal" data-bs-target="#modal_add_company">
+                 <a class="btn btn-primary btn-orange rounded-3 fw-boldest btn-hover-rise" data-bs-toggle="modal" data-bs-target="#modal_add_company">
                     <span class="svg-icon svg-icon-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
@@ -34,15 +34,13 @@
 
         <!-- Table -->
         <div class="table-responsive alps-table-wrap">
-            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100" 
-            id="companies_table" 
-            >
+            <table class="table align-middle text-center gy-7 gs-7 w-100" id="companies_table">
                 <thead>
                     <tr class="fw-boldest text-gray-800 fs-5">
-                        <th class="w-250px">COMPANY NAME</th>
+                        <th class="w-200px">COMPANY NAME</th>
                         <th class="w-150px">CONTACT PERSON</th>
                         <th class="w-100px">CONTACT NUMBER</th>
-                        <th class="w-100px">EMAIL</th>
+                        <th class="w-150px">EMAIL</th>
                         <th class="w-100px">ACTIONS</th>
                     </tr>
                 </thead>
@@ -56,38 +54,42 @@
                     @foreach($company as $company)
                     <!-- Row -->
                     <tr id="company-row-{{ $company->id }}">
-                        <td>{{ $company->company_name }}</td>
+                        <td class="d-flex align-items-center text-start">{{ $company->company_name }}</td>
                         <td>{{ $company->contact_person }}</td>
                         <td>{{ $company->contact_number }}</td>
                         <td>{{ $company->email}}</td>
                         <td>
-                            <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle" 
-                                data-kt-menu-trigger="click"
-                                data-kt-menu-placement="bottom-start">
-                                MENU
-                            </button>
+                            <div class="position-relative d-inline-block">
+                                <!--begin::Menu-->
+                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                                    data-kt-menu-trigger="click"
+                                    data-kt-menu-placement="bottom-start"
+                                    data-kt-menu-attach="parent"
+                                    data-kt-menu-overflow="true">
+                                    MENU
+                                </button>
 
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4" 
-                                data-kt-menu="true">
+                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-225px py-4"
+                                    data-kt-menu="true">
 
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 editCompanyBtn" 
-                                        data-id="{{ $company->id }}"
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#modal_edit_company">
-                                        <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
-                                    </a>
+                                    <div class="menu-item px-3">
+                                        <a class="menu-link px-3 editCompanyBtn"
+                                            data-id="{{ $company->id }}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_edit_company">
+                                            <i class="bi bi-pencil-square text-primary me-2"></i> View & Edit Details
+                                        </a>
+                                    </div>
+
+                                    <div class="menu-item px-3">
+                                        <a class="menu-link px-3 deleteBtn"
+                                            data-id="{{ $company->id }}">
+                                            <i class="bi bi-trash text-danger me-2"></i> Delete
+                                        </a>
+                                    </div>
                                 </div>
-
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn"
-                                        data-id="{{ $company->id }}">
-                                        <i class="bi bi-trash text-danger me-2"></i> Delete
-                                    </a>
-                                </div>
+                                <!--end::Menu-->
                             </div>
-                            <!--end::Menu-->
                         </td>
                     </tr>
                     @endforeach
@@ -115,7 +117,7 @@
                     <input class="" type="hidden">
                     <!--begin::Modal header-->
                     <div class="modal-header">
-                        <h2 class="fw-boldest alps-modal-heading" data-kt-calendar="title">ADD COMPANY</h2>
+                        <h3 class="alps-type-h3 alps-modal-heading" data-kt-calendar="title">Add Company</h3>
                         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                             <span class="svg-icon svg-icon-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -161,12 +163,12 @@
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
                         <button type="submit" 
-                            class="btn btn-success me-2 addBtn" 
+                            class="btn btn-primary btn-orange me-2 addBtn" 
                             id="add_company_submit">
                             SAVE
                         </button>
                         <button type="reset" 
-                            class="btn btn-light" 
+                            class="btn btn-tertiary btn-blue" 
                             data-bs-dismiss="modal">
                             CANCEL
                         </button>
@@ -191,7 +193,7 @@
                     <input class="" type="hidden">
                     <!--begin::Modal header-->
                     <div class="modal-header">
-                        <h2 class="fw-boldest alps-modal-heading" data-kt-calendar="title">EDIT COMPANY</h2>
+                        <h3 class="alps-type-h3 alps-modal-heading" data-kt-calendar="title">Edit Company</h3>
                         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                             <span class="svg-icon svg-icon-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -234,10 +236,10 @@
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" class="btn btn-success me-2 addBtn" id="edit_company_submit">
+                        <button type="submit" class="btn btn-primary btn-orange me-2 addBtn" id="edit_company_submit">
                             SAVE
                         </button>
-                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CANCEL</button>
+                        <button type="reset" class="btn btn-tertiary btn-blue" data-bs-dismiss="modal">CANCEL</button>
                         <!--end::Button-->
                     </div>
                     <!--end::Modal footer-->

@@ -155,8 +155,12 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmButtonText: 'Yes, Add Course',
             cancelButtonText: 'Cancel',
             customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: 'btn btn-secondary'
+                popup: 'alps-swal-glass',
+                confirmButton: "btn btn-primary btn-green",
+                cancelButton: 'btn btn-tertiary btn-blue'
+            },
+            didOpen: (modal) => {
+                modal.classList.add('alps-swal-glass');
             }
         }).then((result) => {
             if (result.isConfirmed) {
@@ -273,8 +277,12 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmButtonText: 'Yes, Edit Course',
             cancelButtonText: 'Cancel',
             customClass: {
-                confirmButton: "btn btn-success",
-                cancelButton: 'btn btn-secondary'
+                popup: 'alps-swal-glass',
+                confirmButton: "btn btn-primary btn-blue",
+                cancelButton: 'btn btn-tertiary btn-blue'
+            },
+            didOpen: (modal) => {
+                modal.classList.add('alps-swal-glass');
             }
         }).then((result) => {
             if (result.isConfirmed) {
@@ -352,8 +360,12 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
             confirmButtonText: 'Yes, Delete',
             cancelButtonText: 'Cancel',
             customClass: {
-                confirmButton: "btn btn-danger",
-                cancelButton: 'btn btn-secondary'
+                popup: 'alps-swal-glass',
+                confirmButton: "btn btn-primary btn-red",
+                cancelButton: 'btn btn-tertiary btn-blue'
+            },
+            didOpen: (modal) => {
+                modal.classList.add('alps-swal-glass');
             }
         }).then((result) => {
             if (result.isConfirmed) {

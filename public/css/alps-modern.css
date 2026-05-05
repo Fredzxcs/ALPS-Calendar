@@ -65,7 +65,7 @@
     --alps-typo-body-large-weight: 500;
     --alps-typo-body-large-lh: 1.4;
     
-         --alps-glass-bg: rgba(255, 255, 255, 0.82);
+         --alps-glass-bg: rgba(255, 255, 255, 0.60);
          --alps-glass-border: rgba(255, 255, 255, 0.58);
     --alps-typo-body-lh: 1.4;
     --alps-typo-body-letter-spacing: 0em;
@@ -527,10 +527,33 @@ b,
     -webkit-backdrop-filter: none;
 }
 
-.card:hover {
-    box-shadow: var(--alps-shadow-mid);
-}
+ /* Reusable glassmorphism card used across pages (scalable) */
+ .alps-card {
+     width: min(3500px, calc(100% - 2rem));
+     padding: 48px 32px !important;
+     border-radius: 20px !important;
+     position: relative;
+     z-index: 20;
+     background: var(--alps-glass-bg);
+     backdrop-filter: blur(10px);
+     -webkit-backdrop-filter: blur(10px);
+     border: 1px solid var(--alps-glass-border);
+     box-shadow: var(--alps-shadow-mid);
+     color: var(--alps-ink);
+     gap: 0.5rem;
+     display: flex;
+     flex-direction: column;
+ }
 
+ /* Search and filter group container */
+ .alps-search-filter-group {
+     display: inline-flex;
+     align-items: center;
+     gap: 1rem;
+     background: rgba(255, 255, 255, 0.8);
+     border-radius: 999px;
+     padding: 8px 16px 8px 24px;
+ }
 @keyframes alpsDropdownFadeSlideUp {
     from {
         opacity: 0;
@@ -555,18 +578,66 @@ b,
 }
 
 .table {
-    background: rgba(255, 255, 255, 0.72);
+    background: transparent;
     color: var(--alps-ink);
+    table-layout: fixed;
+    width: 100%;
 }
 
 .table thead th {
-    background: rgba(255, 255, 255, 0.62);
+    background: transparent;
     color: var(--alps-ink);
     border-bottom: 1px solid rgba(15, 39, 71, 0.12);
+    padding-left: 1.5rem !important;
 }
 
 .table tbody td {
-    border-color: rgba(15, 39, 71, 0.08);
+    padding: 0.8rem 1.5rem 0.8rem 1.5rem !important;
+    border-color: transparent;
+    background: transparent;
+}
+
+.table tbody tr {
+    background: transparent;
+    border-bottom: 1px solid #FFFFFF;
+    position: relative;
+    overflow: hidden;
+    min-height: 60px;
+}
+
+.table tbody td.d-flex {
+    padding-top: 1.5rem !important;
+    height: 100%;
+    background: transparent;
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* Hover sweep using pseudo-element for smooth, reliable rendering */
+.table tbody tr::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.98) 15%, rgba(255,255,255,0.98) 85%, transparent 100%);
+    transform: translateX(-110%);
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.table tbody tr:hover::before {
+    transform: translateX(0%);
+}
+
+/* Ensure row cells paint above the sweep */
+.table tbody tr > th,
+.table tbody tr > td {
+    position: relative;
+    z-index: 1;
 }
 
 .btn {
@@ -744,27 +815,90 @@ b,
     box-shadow: var(--alps-btn-primary-shadow);
 }
 
+@keyframes alpsBtnSecondaryBorderShift {
+    0% {
+        border-color: var(--alps-btn-accent-start);
+    }
+    50% {
+        border-color: var(--alps-btn-accent-end);
+    }
+    100% {
+        border-color: var(--alps-btn-accent-start);
+    }
+}
+
 .btn-secondary {
     border-radius: var(--alps-btn-pill-radius) !important;
-    background: transparent;
+    background: #FAFCFE !important;
     color: var(--alps-btn-text) !important;
-    border-color: var(--alps-btn-outline-border) !important;
+    border: 3px solid var(--alps-btn-accent-start) !important;
     box-shadow: none;
+    animation: alpsBtnSecondaryBorderShift 6s ease-in-out infinite;
 }
 
 .btn-secondary:hover,
 .btn-secondary:focus-visible,
 .btn-secondary.active,
 .btn-secondary.is-selected {
-    background: var(--alps-btn-outline-hover-bg) !important;
-    border-color: var(--alps-btn-outline-hover-border) !important;
+    background: #FAFCFE !important;
+    border-color: var(--alps-btn-accent-end) !important;
     color: var(--alps-btn-text) !important;
-    box-shadow: none;
+    animation: alpsBtnGlowBlue 3s ease-in-out infinite;
 }
 
 .btn-secondary:active {
-    background: var(--alps-btn-outline-active-bg) !important;
-    border-color: var(--alps-btn-outline-hover-border) !important;
+    background: #FAFCFE !important;
+    border-color: var(--alps-btn-accent-start) !important;
+    animation: alpsBtnGlowBlue 3s ease-in-out infinite;
+}
+
+/* Override Bootstrap defaults to prevent darkening on ALL states */
+.btn-secondary:not(:disabled):not(.disabled):active,
+.btn-secondary.show,
+.btn-secondary.active,
+.btn-secondary.is-selected,
+.btn-secondary:not(:disabled):not(.disabled):hover,
+.btn-secondary:focus-visible {
+    background: #FAFCFE !important;
+    box-shadow: none !important;
+}
+
+/* Orange secondary button glow */
+.btn-secondary.btn-orange:hover,
+.btn-secondary.btn-orange:focus-visible,
+.btn-secondary.btn-orange.active,
+.btn-secondary.btn-orange.is-selected,
+.btn-secondary.btn-orange:active {
+    background: #FAFCFE !important;
+    animation: alpsBtnGlowOrange 3s ease-in-out infinite;
+}
+
+/* Blue secondary button glow */
+.btn-secondary.btn-blue:hover,
+.btn-secondary.btn-blue:focus-visible,
+.btn-secondary.btn-blue.active,
+.btn-secondary.btn-blue.is-selected,
+.btn-secondary.btn-blue:active {
+    background: #FAFCFE !important;
+    animation: alpsBtnGlowBlue 3s ease-in-out infinite;
+}
+
+/* Red secondary button glow */
+.btn-secondary.btn-red:hover,
+.btn-secondary.btn-red:focus-visible,
+.btn-secondary.btn-red.active,
+.btn-secondary.btn-red.is-selected,
+.btn-secondary.btn-red:active {
+    background: #FAFCFE !important;
+}
+
+/* Green secondary button glow */
+.btn-secondary.btn-green:hover,
+.btn-secondary.btn-green:focus-visible,
+.btn-secondary.btn-green.active,
+.btn-secondary.btn-green.is-selected,
+.btn-secondary.btn-green:active {
+    background: #FAFCFE !important;
 }
 
 .btn-tertiary,
@@ -930,6 +1064,50 @@ b,
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: var(--alps-shadow-soft);
+}
+
+/* Unavailability event diagonal stripe pattern using a positioned overlay for robust rendering */
+.alps-pop-event.unavailability-event {
+    position: relative;
+    overflow: hidden;
+    /* keep existing visual palette via CSS vars applied by JS */
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(var(--event-overlay-rgb), 0.45);
+}
+
+.alps-pop-event.unavailability-event::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    /* repeating diagonal stripes: stripe thickness 8px, gap 8px => 16px pattern */
+    background: repeating-linear-gradient(135deg,
+        rgba(var(--event-overlay-rgb), var(--event-overlay-alpha)) 0px,
+        rgba(var(--event-overlay-rgb), var(--event-overlay-alpha)) 8px,
+        transparent 8px,
+        transparent 16px
+    );
+    mix-blend-mode: normal;
+    opacity: 1;
+}
+
+/* Ensure event content (text) sits above the stripe overlay */
+.alps-pop-event.unavailability-event > * {
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 576px) {
+    .alps-pop-event.unavailability-event::after {
+        background: repeating-linear-gradient(135deg,
+            rgba(var(--event-overlay-rgb), var(--event-overlay-alpha)) 0px,
+            rgba(var(--event-overlay-rgb), var(--event-overlay-alpha)) 6px,
+            transparent 6px,
+            transparent 12px
+        );
+    }
 }
 
 #calendar.blur-effect {
@@ -1099,6 +1277,75 @@ b,
     margin: auto;
 }
 
+.alps-config-table {
+    width: 100%;
+    table-layout: auto;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.alps-config-table thead th,
+.alps-config-table tbody td {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    vertical-align: middle;
+}
+
+.alps-config-table thead th:first-child,
+.alps-config-table tbody td:first-child {
+    text-align: left;
+    white-space: normal;
+}
+
+.alps-config-table thead th:last-child,
+.alps-config-table tbody td:last-child {
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Pagination: fully rounded white container holding numbers and arrows */
+.pagination {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    background: rgba(255,255,255,0.8) !important;
+    padding: 6px;
+    border-radius: 999px !important;
+    box-shadow: 0 8px 22px rgba(17,24,39,0.06);
+    border: 1px solid rgba(255,255,255,0.9) !important;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.pagination .page-link {
+    background: transparent !important;
+    color: var(--alps-ink) !important;
+    border: none !important;
+    min-width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    padding: 0 0.6rem;
+    margin: 0;
+    transition: transform 180ms var(--alps-btn-transition), box-shadow 180ms var(--alps-btn-transition);
+}
+
+.pagination .page-link:hover,
+.pagination .page-link:focus {
+    box-shadow: 0 10px 24px rgba(17,24,39,0.08);
+    transform: translateY(-2px);
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(160deg, var(--alps-btn-accent-start), var(--alps-btn-accent-end)) !important;
+    color: #ffffff !important;
+    box-shadow: var(--alps-btn-primary-shadow) !important;
+}
+
+
 .alps-filter-btn-sm {
     background: linear-gradient(160deg, #2f63ae 0%, var(--alps-navy) 62%, #173B6D 100%) !important;
     border-color: rgba(255, 255, 255, 0.28) !important;
@@ -1110,7 +1357,7 @@ b,
 }
 
 .alps-modal-heading {
-    color: var(--alps-maroon) !important;
+    color: var(--alps-btn-text) !important;
 }
 
 .alps-user-color-chip {
@@ -1493,11 +1740,41 @@ body.alps-login-page .alps-login-shell {
 
 /* Keep Bootstrap modal above backdrop and above page stacking contexts */
 .modal-backdrop.show {
-    z-index: 1050 !important;
+    z-index: 20050 !important;
 }
 
 .modal {
-    z-index: 1055 !important;
+    z-index: 20055 !important;
+}
+
+.tooltip {
+    z-index: 20060 !important;
+}
+
+.modal-content {
+    background: rgba(255, 255, 255, 0.84) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--alps-btn-text) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.swal2-container {
+    z-index: 20070 !important;
+}
+
+.swal2-popup.alps-swal-glass {
+    background: rgba(255, 255, 255, 0.84) !important;
+    border: 1px solid var(--alps-glass-border) !important;
+    box-shadow: 0 16px 40px rgba(16, 24, 40, 0.18) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--alps-btn-text) !important;
+}
+
+.swal2-popup.alps-swal-glass .swal2-title,
+.swal2-popup.alps-swal-glass .swal2-html-container {
+    color: var(--alps-btn-text) !important;
 }
 
 .alps-login-card-header {
@@ -1535,4 +1812,11 @@ body.alps-login-page .alps-login-shell {
         min-height: 8.5rem;
         height: 9.5rem;
     }
+}
+.table tbody tr:nth-child(even) {
+    background: transparent !important;
+}
+
+.table tbody tr:nth-child(odd) {
+    background: transparent !important;
 }

@@ -82,7 +82,85 @@ document.addEventListener('DOMContentLoaded', function () {
         eventEl.style.setProperty('--event-color-bottom', toRgbString(colorBottom));
         eventEl.style.setProperty('--event-text-color', textColor);
         eventEl.style.setProperty('--event-glow-color', `rgba(${color.r}, ${color.g}, ${color.b}, 0.47)`);
+        // Base RGB for use in CSS backgrounds
+        eventEl.style.setProperty('--event-base-rgb', `${color.r}, ${color.g}, ${color.b}`);
+
+        // Choose an overlay color slightly darker by default
+        let overlayColorObj = darkenColor(color, 0.14);
+        // If base color is very dark, use a slightly lighter overlay instead
+        const baseBrightness = ((0.299 * color.r) + (0.587 * color.g) + (0.114 * color.b)) / 255;
+        if (baseBrightness < 0.18) {
+            overlayColorObj = lightenColor(color, 0.14);
+        }
+        eventEl.style.setProperty('--event-overlay-rgb', `${overlayColorObj.r}, ${overlayColorObj.g}, ${overlayColorObj.b}`);
+        eventEl.style.setProperty('--event-overlay-alpha', '0.28');
         eventEl.style.color = textColor;
+    };
+
+    const addTrainingEvents = (trainings) => {
+        trainings.forEach(function (training) {
+            if (training.schedule) {
+                const fromDateTime = `${training.schedule.from_date}T${training.schedule.from_time}`;
+                const toDateTime = `${training.schedule.to_date}T${training.schedule.to_time}`;
+
+                calendar.addEvent({
+                    id: training.id,
+                    facilitator: training.facilitator || 'N/A',
+                    assistant: training.assistant,
+                    modeType: training.mode,
+                    account: training.account,
+                    title: `${training.course.course_code} - ${training.company ? training.company.company_name : 'Public Course'} - ${training.facilitator ? training.facilitator.name.split(' ')[0] : 'No Facilitator Yet'}`,
+                    course: training.course.course_name,
+                    company: training.company ? training.company.company_name : 'No Company (Public Course)',
+                    start: fromDateTime,
+                    end: toDateTime,
+                    location: training.location,
+                    allDay: false,
+                    backgroundColor: training.facilitator ? training.facilitator.color : '#808080',
+                });
+            }
+        });
+    };
+
+    const addUnavailabilityEvents = (unavailabilities) => {
+        unavailabilities.forEach(function (unavailability) {
+            if (unavailability.from_date && unavailability.to_date) {
+                // FullCalendar treats all-day events differently: use date-only strings
+                // and make `end` exclusive by adding one day so the range includes the
+                // provided `to_date`.
+                const startDate = moment(unavailability.from_date).format('YYYY-MM-DD');
+                const endDateExclusive = moment(unavailability.to_date).add(1, 'day').format('YYYY-MM-DD');
+
+                calendar.addEvent({
+                    id: unavailability.id,
+                    user_id: unavailability.user.id,
+                    title: unavailability.reason || 'Unavailable',
+                    start: startDate,
+                    end: endDateExclusive,
+                    allDay: true,
+                    backgroundColor: unavailability.user.color || '#FF5E5E',
+                    borderColor: unavailability.user.color || '#FF5E5E',
+                    classNames: ['unavailability-event'],
+                    extendedProps: {
+                        eventType: 'unavailability',
+                        user: unavailability.user ? unavailability.user.name : 'Unknown User',
+                        reason: unavailability.reason || 'Unavailable'
+                    },
+                });
+            }
+        });
+    };
+
+    const showCalendarLoader = () => {
+        $('#calendar').addClass('blur-effect');
+        loaderWrapper.classList.remove('d-none');
+        loaderWrapper.style.display = 'flex';
+    };
+
+    const hideCalendarLoader = () => {
+        loaderWrapper.classList.add('d-none');
+        loaderWrapper.style.display = '';
+        $('#calendar').removeClass('blur-effect');
     };
 
     // Function to initialize popovers
@@ -117,7 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="fs-7 mb-2"><span class="fw-bold">End:</span> ${endDate}</div>
             <div class="fs-7"><span class="fw-bold">Facilitator:</span> ${(data.facilitator || data.facilitator.name) || 'No Facilitator Yet'}</div>
             <div class="fs-7 mb-4"><span class="fw-bold">Assistant:</span> ${data.assistant}</div>
-            <a id="kt_calendar_event_view" type="button" class="btn btn-sm btn-light-primary mt-2" data-event-id="${data.id}" data-bs-dismiss="modal">
+            <a id="kt_calendar_event_view" type="button" class="btn btn-sm btn-primary btn-blue mt-2" data-event-id="${data.id}" data-bs-dismiss="modal">
                 VIEW MORE
             </a>
         `;
@@ -238,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="fs-7"><span class="fw-bold">Start:</span> ${moment(data.startDate).format('MMM DD, YYYY')}</div>
             <div class="fs-7 mb-2"><span class="fw-bold">End:</span> ${moment(data.endDate).format('MMM DD, YYYY')}</div>
             <div class="fs-7"><span class="fw-bold">Reason:</span> ${data.reason || 'No reason provided'}</div>
-            <a id="kt_calendar_unavailability_view" type="button" class="btn btn-sm btn-light-danger mt-2" data-event-id="${data.id}">
+            <a id="kt_calendar_unavailability_view" type="button" class="btn btn-sm btn-primary btn-blue mt-2" data-event-id="${data.id}">
                 VIEW MORE
             </a>
         `;
@@ -377,6 +455,63 @@ document.addEventListener('DOMContentLoaded', function () {
     //ON CHANGE, destroy calendar and set as training or unavailability
 
     const getPopulation = (route) => {
+        const fetchEvents = (backendRequestRoute) => $.ajax({
+            url: backendRequestRoute,
+            method: 'GET',
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+        });
+
+        clearCalendarEvents(calendar);
+        showCalendarLoader();
+
+        if (route === 'all') {
+            let completedRequests = 0;
+
+            const finishLoading = () => {
+                completedRequests += 1;
+
+                if (completedRequests === 2) {
+                    bindEventListeners();
+                    hideCalendarLoader();
+                }
+            };
+
+            fetchEvents('/calendar/api/get/training')
+                .done(function (response) {
+                    console.log(response);
+
+                    if (response.success) {
+                        addTrainingEvents(response.data);
+                    } else {
+                        console.error('Failed to load trainings:', response.message);
+                    }
+                })
+                .fail(function (xhr, status, error) {
+                    console.error('Error fetching trainings:', error);
+                })
+                .always(finishLoading);
+
+            fetchEvents('/calendar/api/get/unavailability')
+                .done(function (response) {
+                    console.log(response);
+
+                    if (response.success) {
+                        addUnavailabilityEvents(response.data);
+                    } else {
+                        console.error('Failed to load unavailabilities:', response.message);
+                    }
+                })
+                .fail(function (xhr, status, error) {
+                    console.error('Error fetching unavailabilities:', error);
+                })
+                .always(finishLoading);
+
+            return;
+        }
+
         let backend_request_route;
 
         if (route == 'trainings') {
@@ -385,108 +520,28 @@ document.addEventListener('DOMContentLoaded', function () {
             backend_request_route = '/calendar/api/get/unavailability';
         }
 
-        // Fetch events dynamically using jQuery AJAX
-        $.ajax({
-            url: backend_request_route,
-            method: 'GET',
-            dataType: 'json',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            beforeSend: function () {
-                $('#calendar').addClass('blur-effect');
-                loaderWrapper.classList.remove('d-none');
-                loaderWrapper.style.display = 'flex';
-            },
-            success: function (response) {
+        fetchEvents(backend_request_route)
+            .done(function (response) {
                 console.log(response);
 
                 if (response.success) {
-                    // Clear all existing events
-                    clearCalendarEvents(calendar);
-
-                    console.log(response);
-
-                    // Add new events to the calendar
                     if (route == 'trainings') {
-                        response.data.forEach(function (training) {
-
-                            if (training.schedule) {
-                                var fromDateTime = `${training.schedule.from_date}T${training.schedule.from_time}`;
-                                var toDateTime = `${training.schedule.to_date}T${training.schedule.to_time}`;
-
-                                calendar.addEvent({
-                                    id: training.id,
-                                    facilitator: training.facilitator || 'N/A',
-                                    assistant: training.assistant,
-                                    modeType: training.mode,
-                                    account: training.account,
-                                    title: `${training.course.course_code} - ${training.company ? training.company.company_name : 'Public Course'} - ${training.facilitator ? training.facilitator.name.split(' ')[0] : 'No Facilitator Yet'}`,
-                                    course: training.course.course_name,
-                                    company: training.company ? training.company.company_name : 'No Company (Public Course)',
-                                    start: fromDateTime,
-                                    end: toDateTime,
-                                    location: training.location,
-                                    allDay: false,
-                                    backgroundColor: training.facilitator ? training.facilitator.color : '#808080',
-                                });
-                            }
-                        });
+                        addTrainingEvents(response.data);
                     } else if (route == 'unavailability') {
-                        response.data.forEach(function (unavailability) {
-                            if (unavailability.from_date && unavailability.to_date) {
-                                // var fromDateTime = `${unavailability.from_date}`;
-                                // var toDateTime = `${unavailability.to_date}`;
-
-                                var fromDateTime = moment(unavailability.from_date).toISOString();
-                                var toDateTime = moment(unavailability.to_date).add(1, 'days').toISOString();
-
-                                calendar.addEvent({
-                                    id: unavailability.id,
-                                    user_id: unavailability.user.id,
-                                    title: unavailability.reason || 'Unavailable',
-                                    start: moment(unavailability.from_date).startOf('day').toISOString(), // Start at 00:00 on the start date
-                                    end: moment(unavailability.to_date).endOf('day').toISOString(),       // End at 23:59 on the end date
-                                    allDay: false,  // Disable all-day behavior
-                                    backgroundColor: unavailability.user.color || '#FF5E5E',
-                                    borderColor: unavailability.user.color || '#FF5E5E',
-                                    extendedProps: {
-                                        eventType: 'unavailability',
-                                        user: unavailability.user ? unavailability.user.name : 'Unknown User',
-                                        reason: unavailability.reason || 'Unavailable'
-                                    },
-                                });
-                            }
-                        });
+                        addUnavailabilityEvents(response.data);
                     }
 
-                    // Rebind event listeners for popovers
                     bindEventListeners();
-
-                    loaderWrapper.classList.add('d-none');
-                    loaderWrapper.style.display = '';
-                    $('#calendar').removeClass('blur-effect');
                 } else {
-                    clearCalendarEvents(calendar);
-                    bindEventListeners();
                     console.error('Failed to load events:', response.message);
-                    loaderWrapper.classList.add('d-none');
-                    loaderWrapper.style.display = '';
                 }
-            },
-            error: function (xhr, status, error) {
-                clearCalendarEvents(calendar);
-                bindEventListeners();
+            })
+            .fail(function (xhr, status, error) {
                 console.error('Error fetching events:', error);
-                loaderWrapper.classList.add('d-none');
-                loaderWrapper.style.display = '';
-            },
-            complete: function () {
-                loaderWrapper.classList.add('d-none');
-                loaderWrapper.style.display = '';
-                $('#calendar').removeClass('blur-effect');
-            },
-        });
+            })
+            .always(function () {
+                hideCalendarLoader();
+            });
     };
 
     // Function to bind event listeners to FullCalendar events
@@ -667,7 +722,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Initialize the calendar and its initial population
         if (calendarEl) {
-            let initial = 'trainings';
+            let initial = 'all';
 
             hidePopovers();
 
@@ -695,6 +750,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     eventEl.classList.add('alps-pop-event');
                     applyEventPalette(eventEl, eventColor);
 
+                    // Remove FullCalendar's default day-grid dot so training events
+                    // keep a consistent card-like appearance across view switches.
+                    const dot = eventEl.querySelector('.fc-daygrid-event-dot');
+                    if (dot) {
+                        dot.remove();
+                    }
+
                     eventEl.addEventListener('mousedown', function () {
                         eventEl.classList.add('is-pressed');
                     });
@@ -713,12 +775,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!end || start.toDateString() === end.toDateString()) {
                         // Add missing class to make it behave like a date range
                         eventEl.classList.add('fc-h-event');
-
-                        // Remove the event dot (for consistency)
-                        const dot = eventEl.querySelector('.fc-daygrid-event-dot');
-                        if (dot) {
-                            dot.remove();
-                        }
 
                         // Ensure full-width styling
                         eventEl.style.width = '100%';

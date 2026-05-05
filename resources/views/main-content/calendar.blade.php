@@ -1,16 +1,16 @@
 @extends('global.layout')
 
 @section('maincontent')
-    <div class="alps-calendar-shell d-flex flex-wrap gap-4 mt-20">
+    <div class="alps-calendar-shell d-flex flex-wrap justify-content-center gap-4 mt-20">
         <!-- Right Side: Calendar -->
-        <div class="card shadow-sm alps-calendar-card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="shadow-sm alps-card">
+            <div class="d-flex justify-content-between align-items-center">
 
                 <!-- Filter Button -->
                 <div class="dropdown alps-calendar-filter-dropdown">
-                <button class="btn btn-lg fw-boldest d-flex align-items-center btn-hover-rise text-white alps-filter-btn dropdown-toggle"
+                <button class="btn btn-secondary btn-orange rounded-3 fw-boldest d-flex align-items-center btn-hover-rise dropdown-toggle"
                     data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                    <i class="bi bi-funnel me-1 text-white"></i> FILTER
+                    <i class="bi bi-funnel me-1"></i> FILTER
                 </button>
 
                 <!-- Filter Menu -->
@@ -31,7 +31,8 @@
                                 <label class="form-label fw-bold">Show in Calendar:</label>
                                 <select id="filters" class="form-select form-select-solid" data-placeholder="Select option"
                                     data-allow-clear="true" id="calendarFilterSelect">
-                                    <option value="trainings" selected>Trainings</option>
+                                    <option value="all" selected>Show All</option>
+                                    <option value="trainings">Trainings</option>
                                     <option value="unavailability">Unavailability</option>
                                 </select>
                             </div>
@@ -41,7 +42,7 @@
                         <div class="d-flex justify-content-end">
                             <!-- <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="calendarFilterReset"
                                 data-kt-menu-dismiss="true">RESET</button> -->
-                            <button id="applyFilter" type="button" class="btn btn-sm btn-primary" id="calendarFilterApply">APPLY</button>
+                            <button id="applyFilter" type="button" class="btn btn-sm btn-secondary btn-blue" id="calendarFilterApply">APPLY</button>
                         </div>
                     </div>
                 </div>
@@ -51,8 +52,8 @@
 
 
                      <!--begin::Add Button-->
-                    <button type="button" class="btn btn-primary btn-lg fw-boldest btn-hover-rise text-white dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                        <span class="p-5">ADD</span>
+                    <button type="button" class="btn btn-primary btn-orange rounded-3 fw-boldest btn-hover-rise w-125px dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span >ADD</span>
                     </button>
                     <!--end::Add Button-->
 
@@ -78,7 +79,7 @@
                 </ul>
             </div>
             <div class="card alps-calendar-inner-card">
-                <div class="card-body">
+                <div>
                     <div class="d-flex align-items-center justify-content-center">
                         <!-- Loader wrapper positioned above the calendar -->
                         <div id="loader-wrapper" class="position-absolute top-0 start-0 end-0 bottom-0 d-flex justify-content-center align-items-center mb-10 alps-loader-wrapper">
@@ -121,9 +122,9 @@
             <!--begin::Modal content-->
             <div class="modal-content">
                 <!--begin::Modal header-->
-                <div class="modal-header border-0 justify-content-between align-items-center">
+                <div class="modal-header">
 
-                    <h1 class="modal-title fw-boldest text-start alps-modal-title" id="">VIEW TRAINING</h1>
+                    <h3 class="alps-type-h3 alps-modal-heading" id="">View Training</h3>
                     <!--begin::Close-->
                     <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                         <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -137,7 +138,6 @@
                     </div>
                     <!--end::Close-->
                 </div>
-                <hr class="my-2 opacity-10 mb-3 mt-1">
                 <!--end::Modal header-->
                 <!--begin::Modal body-->
                 <div class="modal-body py-10 px-lg-17">
@@ -300,18 +300,18 @@
 
                     @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
                     <!-- Delete Button (Left) -->
-                    <button type="button" class="btn btn-danger deleteBtn me-auto">
+                    <button type="button" class="btn btn-secondary btn-red deleteBtn me-auto">
                         <i class="bi bi-trash me-2"></i>DELETE
                     </button>
                     @endif
 
                     <!-- Edit and Close Buttons (Right) -->
                     @if (Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator']))
-                        <a href="#" id="edit-training-link" data-base-url="{{ url('calendar/edit_training') }}/" class="btn btn-primary me-2">
+                        <a href="#" id="edit-training-link" data-base-url="{{ url('calendar/edit_training') }}/" class="btn btn-primary btn-orange me-2">
                             <i class="bi bi-pencil-fill me-2"></i>EDIT
                         </a>
                     @endif
-                    <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+                    <button type="reset" class="btn btn-tertiary" data-bs-dismiss="modal">CLOSE</button>
                 </div>
             </div>
         </div>
@@ -324,10 +324,8 @@
         <!--begin::Modal content-->
         <div class="modal-content">
             <!--begin::Modal header-->
-            <div class="modal-header border-0 justify-content-between align-items-center">
-                <h1 class="modal-title fw-boldest text-start alps-modal-title"
-                {{-- id="modal-title" --}}
-                >VIEW UNAVAILABILITY</h1>
+            <div class="modal-header">
+                <h3 class="alps-type-h3 alps-modal-heading" id="modal-title">View Unavailability</h3>
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -387,11 +385,11 @@
             <!-- Modal Footer -->
             <div class="modal-footer w-100">
                 <!-- Delete Button (Left) -->
-                <button type="button" class="btn btn-danger deleteBtnUnavailability me-auto">
+                <button type="button" class="btn btn-secondary btn-red deleteBtnUnavailability me-auto">
                     <i class="bi bi-trash me-2"></i>DELETE
                 </button>
                 <!-- Close Buttons (Right) -->
-                <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CLOSE</button>
+                <button type="reset" class="btn btn-tertiary" data-bs-dismiss="modal">CLOSE</button>
             </div>
 
         </div>

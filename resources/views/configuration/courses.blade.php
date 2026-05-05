@@ -1,11 +1,11 @@
 @extends('global.layout')
 
 @section('maincontent')
-<div class="container mt-20 d-flex justify-content-center align-items-center bg-white shadow-sm rounded-3 p-5">
-    <div class="container mt-5">
+<div class="container mt-5 d-flex justify-content-center align-items-center">
+    <div class="container mt-5 alps-card">
         <!-- Title -->
         <div class="mb-4">
-            <h3 class="card-header fw-boldest fs-1 alps-page-title">LIST OF COURSES</h3>
+            <h2 class="alps-type-h2">List of Courses</h2>
         </div>
 
         <!-- Top Actions -->
@@ -18,7 +18,7 @@
             </div>
             <div class="d-flex align-items-center justify-content-end gap-2">
                 <!-- ADD USER Button -->
-                 <a class="btn btn-primary rounded-3 fw-boldest btn-hover-rise" data-bs-toggle="modal" data-bs-target="#modal_add_course">
+                 <a class="btn btn-primary btn-orange rounded-3 fw-boldest btn-hover-rise" data-bs-toggle="modal" data-bs-target="#modal_add_course">
                     <span class="svg-icon svg-icon-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
@@ -32,9 +32,7 @@
 
         <!-- Table -->
         <div class="table-responsive alps-table-wrap">
-            <table class="table table-striped align-middle text-center gy-7 gs-7 w-100 alps-table-center"
-                id="courses_table"
-                >
+            <table class="table align-middle text-center gy-7 gs-7" id="courses_table">
                 <thead>
                     <tr class="fw-boldest text-gray-800 fs-5">
                         <th class="w-250px">COURSE NAME</th>
@@ -50,36 +48,40 @@
                     @else
                     <!-- Row -->
                     @foreach($courses as $course)
-                    <tr id ="course-row-{{ $course->id }}">
-                        <td>{{ $course->course_name}}</td>
-                        <td>{{ $course->course_code }}</td>
-                        <td>
-                            <!--begin::Menu-->
-                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
-                                data-kt-menu-trigger="click"
-                                data-kt-menu-placement="bottom-start">
-                                MENU
-                            </button>
-                            <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4"
-                                data-kt-menu="true">
+                    <tr id="course-row-{{ $course->id }}">
+                        <td class="d-flex align-items-center text-start">{{ $course->course_name }}</td>
+                        <td >{{ $course->course_code }}</td>
+                        <td >
+                            <div class="position-relative d-inline-block">
+                                <!--begin::Menu-->
+                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                                    data-kt-menu-trigger="click"
+                                    data-kt-menu-placement="bottom-start"
+                                    data-kt-menu-attach="parent"
+                                    data-kt-menu-overflow="true">
+                                    MENU
+                                </button>
+                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-225px py-4"
+                                    data-kt-menu="true">
 
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 editCourseBtn"
-                                        data-id="{{ $course->id }}"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modal_edit_course">
-                                        <i class="bi bi-pencil-square text-primary me-2"></i>View & Edit Details
-                                    </a>
-                                </div>
+                                    <div class="menu-item px-3">
+                                        <a class="menu-link px-3 editCourseBtn"
+                                            data-id="{{ $course->id }}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#modal_edit_course">
+                                            <i class="bi bi-pencil-square text-primary me-2"></i> View & Edit Details
+                                        </a>
+                                    </div>
 
-                                <div class="menu-item px-3">
-                                    <a class="menu-link px-3 deleteBtn"
-                                        data-id="{{ $course->id }}">
-                                        <i class="bi bi-trash text-danger me-2"></i> Delete
-                                    </a>
+                                    <div class="menu-item px-3">
+                                        <a class="menu-link px-3 deleteBtn"
+                                            data-id="{{ $course->id }}">
+                                            <i class="bi bi-trash text-danger me-2"></i> Delete
+                                        </a>
+                                    </div>
                                 </div>
+                                <!--end::Menu-->
                             </div>
-                            <!--end::Menu-->
                         </td>
                     </tr>
                     @endforeach
@@ -112,7 +114,7 @@
 
                     <!--begin::Modal header-->
                     <div class="modal-header">
-                        <h2 class="fw-boldest alps-modal-heading" data-kt-calendar="title">ADD COURSE</h2>
+                        <h3 class="alps-type-h3 alps-modal-heading" data-kt-calendar="title">Add Course</h3>
                         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                             <span class="svg-icon svg-icon-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -154,12 +156,12 @@
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
                         <button type="submit"
-                            class="btn btn-success me-2 addBtn"
+                            class="btn btn-primary btn-orange me-2 addBtn"
                             id="add_course_submit">
                             SAVE
                         </button>
                         <button type="reset"
-                            class="btn btn-light"
+                            class="btn btn-tertiary btn-blue"
                             data-bs-dismiss="modal">
                             CANCEL
                         </button>
@@ -184,7 +186,7 @@
                     <input class="" type="hidden">
                     <!--begin::Modal header-->
                     <div class="modal-header">
-                        <h2 class="fw-boldest alps-modal-heading" data-kt-calendar="title">EDIT COURSE</h2>
+                        <h3 class="alps-type-h3 alps-modal-heading" data-kt-calendar="title">Edit Course</h3>
                         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                             <span class="svg-icon svg-icon-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -211,10 +213,10 @@
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <button type="submit" class="btn btn-success me-2 editBtn" id="edit_course_submit">
+                        <button type="submit" class="btn btn-primary btn-orange me-2 editBtn" id="edit_course_submit">
                             SAVE
                         </button>
-                        <button type="reset" class="btn btn-light" data-bs-dismiss="modal">CANCEL</button>
+                        <button type="reset" class="btn btn-tertiary btn-blue" data-bs-dismiss="modal">CANCEL</button>
                         <!--end::Button-->
                     </div>
                     <!--end::Modal footer-->

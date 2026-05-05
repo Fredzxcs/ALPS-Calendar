@@ -122,8 +122,9 @@ document.querySelectorAll('.deleteBtn').forEach(button => {
             confirmButtonText: 'Yes, Delete',
             cancelButtonText: 'Cancel',
             customClass: {
-                confirmButton: "btn btn-danger",
-                cancelButton: 'btn btn-secondary'
+                popup: 'alps-swal-glass',
+                confirmButton: "btn btn-primary btn-red",
+                cancelButton: 'btn btn-tertiary'
             }
         }).then((result) => {
             if (result.isConfirmed) {
