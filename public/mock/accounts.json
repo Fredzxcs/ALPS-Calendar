@@ -13,5 +13,10 @@
     "id": 3,
     "account_email": "public-session@alps.local",
     "account_password": "DemoPass#3"
+  },
+  {
+    "id": 4,
+    "account_email": "james.esteban08@gmail.com",
+    "account_password": "1234"
   }
 ]

@@ -1,4 +1,6 @@
 var csrfToken = $('meta[name="csrf-token"]').attr('content');
+// Global assistants list so it is accessible across handlers
+window.assistantsList = window.assistantsList || [];
 
 document.addEventListener("DOMContentLoaded", function () {
     const modeRadios = document.querySelectorAll('input[name="mode"]');
@@ -75,6 +77,39 @@ const fp = flatpickr("#date-range", {
 
 
 $(document).ready(function (e) {
+    // Use global assistants list
+    // window.assistantsList is used to store added assistant IDs
+
+    function renderAssistants() {
+        const container = $('#assistant_list_container');
+        container.empty();
+        window.assistantsList.forEach(function (id) {
+            const option = $(`#assistant_select option[value='${id}']`);
+            const name = option.length ? option.text() : id;
+            const chip = $(`<span class="badge bg-light-primary me-2 mb-2" data-id="${id}">${name} <a href="#" class="text-danger ms-2 remove-assistant" data-id="${id}">&times;</a></span>`);
+            container.append(chip);
+        });
+        $('#assistant_list').val(window.assistantsList.join(', '));
+    }
+
+    // Add assistant button handler
+    $(document).on('click', '#assistant_add_btn', function (ev) {
+        ev.preventDefault();
+        const val = $('#assistant_select').val();
+        if (!val) return;
+        if (window.assistantsList.indexOf(val) !== -1) return; // already added
+        window.assistantsList.push(val);
+        renderAssistants();
+    });
+
+    // Remove assistant handler
+    $(document).on('click', '.remove-assistant', function (ev) {
+        ev.preventDefault();
+        const id = $(this).data('id').toString();
+        window.assistantsList = window.assistantsList.filter(i => i.toString() !== id);
+        renderAssistants();
+    });
+
     $('#add_training_submit').click(function (e) {
         e.preventDefault();
 
@@ -180,13 +215,8 @@ $(document).ready(function (e) {
         // let mode = $('input[name="mode"]:checked').val();
         let facilitator_id = $('#facilitator').find('option:selected').val(); // Get facilitator ID
 
-        let assistant_id = '';
-        $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
-            const value = $(this).val().trim();
-            if (value) {
-                assistant_id += (assistant_id.length > 0 ? ', ' : '') + value;
-            }
-        });
+        // assistant list stored in hidden input by renderAssistants
+        let assistant_id = $('#assistant_list').val() || '';
 
         let from_date = startDateFormatted;
         let to_date = endDateFormatted;
@@ -241,9 +271,15 @@ $(document).ready(function (e) {
 
         function clearFields(mode) {
             // Clear all input fields, dropdowns, and date pickers
-            $('#credentials, #company, #course, #public-course-select, #platform, #location, #facilitator, #assistant, #date-range, #time-start, #time-end')
+            $('#credentials, #company, #course, #public-course-select, #platform, #location, #facilitator, #assistant_select, #date-range, #time-start, #time-end')
                 .val('')
                 .trigger('change');
+
+            // Clear assistants list UI and state
+            window.assistantsList = [];
+            $('#assistant_list_container').empty();
+            $('#assistant_list').val('');
+            $('#assistant_select').val('').trigger('change');
 
             // Clear datepicker selections if used
             $('#date-range').datepicker('clearDates');
@@ -359,7 +395,7 @@ $(document).ready(function (e) {
         formData.append('platform', $('#platform').val());
         formData.append('location', $('#location').val());
         formData.append('company_id', companyId);
-        formData.append('assistant', $('div[data-repeater-list="asst_repeat"] .assistant').map(function () { return $(this).val().trim(); }).get().join(', '));
+        formData.append('assistant', $('#assistant_list').val() || '');
         formData.append('account_id', $('#credentials').find('option:selected').val());
         formData.append('mode', $('input[name="mode"]:checked').val());
         formData.append('from_date', startDateFormatted);
@@ -398,7 +434,8 @@ $(document).ready(function (e) {
             success: function (response) {
                 Swal.close(); // Close loader
 
-                if (response.message === '200') {
+                // Consider success when controller returns a training object or explicit success flag
+                if ((response && response.training && response.training.id) || response.success === true) {
                     Swal.fire({
                         title: 'Success!',
                         text: 'Training has been added.',
@@ -410,13 +447,14 @@ $(document).ready(function (e) {
                         window.location.href = '/calendar';
                     });
                 } else {
+                    // Fallback: show message from server if present
                     Swal.fire({
-                        title: 'Wait!',
-                        text: response.message,
+                        title: 'Notice',
+                        text: response && response.message ? response.message : 'Unexpected response from server',
                         icon: 'warning',
                         confirmButtonText: 'OK'
                     }).then(() => {
-                        location.reload();
+                        window.location.href = '/calendar';
                     });
                 }
             },

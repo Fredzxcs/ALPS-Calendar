@@ -14,6 +14,29 @@
                 <!-- Form -->
                 <div class="p-20 pt-10 pb-6 ">
                     <form>
+                        @php
+                            $currentUser = auth()->user();
+                            $googleConnected = ($currentUser instanceof \App\Models\User && !empty($currentUser->google_refresh_token)) || session('google_connected', false);
+                        @endphp
+
+                        <div class="alert {{ $googleConnected ? 'alert-success' : 'alert-warning' }} d-flex align-items-center justify-content-between mb-6">
+                            <div>
+                                <div class="fw-bold mb-1">Google Calendar</div>
+                                <div class="fs-7">
+                                    {{ $googleConnected ? 'This account is connected and can sync training events.' : 'Connect your Google account to sync trainings and send invites.' }}
+                                </div>
+                            </div>
+                            <div class="ms-3">
+                                @if ($googleConnected)
+                                    <span class="badge badge-light-success">Connected</span>
+                                @else
+                                    <a href="{{ route('google.redirect', ['from' => 'add_training']) }}" class="btn btn-sm btn-primary fw-boldest">
+                                        + Connect Google Calendar
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+
                         <!-- Mode of Training -->
                         <div class="mb-4">
                             <label class="fw-bold mb-2 required">Mode of Training</label>
@@ -161,38 +184,19 @@
 
                         <!-- Assistant -->
                         <div class="col-md-6">
-                            <!-- Repeater -->
-                            <div id="asst_repeat">
-                                <div class="form-group">
-                                    <!-- Label for the Assistant field -->
-                                    <label class="form-label">Assistant:</label>
-
-                                    <!-- Repeater List -->
-                                    <div data-repeater-list="asst_repeat">
-                                        <div data-repeater-item>
-                                            <div class="form-group row align-items-center">
-                                                <div class="col-md-9">
-                                                    <input type="text" class="form-control form-control-solid mb-3 assistant" id="assistant" placeholder="Enter Assistant's Name" />
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <a href="javascript:;" data-repeater-delete class="btn btn-lg btn-light-danger mb-3">
-                                                        <i class="la la-trash-o"></i> DELETE
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Add Button -->
-                                <div class="form-group mt-3">
-                                    <a href="javascript:;" data-repeater-create class="btn btn-light-primary btn-lg">
-                                        <i class="la la-plus"></i> ADD
-                                    </a>
-                                </div>
+                            <label for="assistant_select" class="form-label">Assistant</label>
+                            <div class="d-flex gap-2">
+                                <select id="assistant_select" class="form-select form-select-solid">
+                                    <option value="" selected disabled>Select Assistant</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                                <button type="button" id="assistant_add_btn" class="btn btn-light-primary">Add</button>
                             </div>
-                            <!-- End Repeater -->
-
+                            <div id="assistant_list_container" class="mt-3"></div>
+                            <input type="hidden" id="assistant_list" value="">
+                            <div class="form-text">Select one assistant and click Add to include multiple assistants.</div>
                         </div>
                     </div>
 
