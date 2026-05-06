@@ -16,52 +16,7 @@
   },
   {
     "id": 4,
-<<<<<<< HEAD
-    "account_email": "room-4@alps.local",
-    "account_password": "DemoPass#4"
-  },
-  {
-    "id": 5,
-    "account_email": "room-5@alps.local",
-    "account_password": "DemoPass#5"
-  },
-  {
-    "id": 6,
-    "account_email": "room-6@alps.local",
-    "account_password": "DemoPass#6"
-  },
-  {
-    "id": 7,
-    "account_email": "room-7@alps.local",
-    "account_password": "DemoPass#7"
-  },
-  {
-    "id": 8,
-    "account_email": "room-8@alps.local",
-    "account_password": "DemoPass#8"
-  },
-  {
-    "id": 9,
-    "account_email": "room-9@alps.local",
-    "account_password": "DemoPass#9"
-  },
-  {
-    "id": 10,
-    "account_email": "room-10@alps.local",
-    "account_password": "DemoPass#10"
-  },
-  {
-    "id": 11,
-    "account_email": "room-11@alps.local",
-    "account_password": "DemoPass#11"
-  },
-  {
-    "id": 12,
-    "account_email": "room-12@alps.local",
-    "account_password": "DemoPass#12"
-=======
     "account_email": "james.esteban08@gmail.com",
     "account_password": "1234"
->>>>>>> e131a209748300c298864871526c83f5b08126d8
   }
 ]
