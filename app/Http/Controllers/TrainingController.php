@@ -63,6 +63,7 @@ class TrainingController extends Controller
             'to_date' => ['required', 'date'],
             'from_time' => ['required'],
             'platform' => ['nullable'],
+            'conference_link' => ['nullable', 'url'],
             'to_time' => ['required'],
         ]);
 
@@ -85,6 +86,7 @@ class TrainingController extends Controller
                 'facilitator_id' => $request->facilitator_id,
                 'location' => $request->location,
                 'platform' => $request->platform,
+                'conference_link' => $request->conference_link,
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
                 'account_id' => $request->account_id,
@@ -130,6 +132,19 @@ class TrainingController extends Controller
                         }
                     }
 
+                    // Include assistants (comma-separated IDs)
+                    if (!empty($request->assistant)) {
+                        $assistantIds = array_filter(array_map('trim', explode(',', $request->assistant)));
+                        foreach ($assistantIds as $aid) {
+                            if (is_numeric($aid)) {
+                                $aUser = User::find((int) $aid);
+                                if ($aUser && !empty($aUser->email)) {
+                                    $attendees[] = $aUser->email;
+                                }
+                            }
+                        }
+                    }
+
                     // Insert event on connected user's primary calendar and send invites
                     $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
                                 ->find($training->id);
@@ -159,6 +174,19 @@ class TrainingController extends Controller
                     ]);
 
                     Mail::to($facilitator->email)->send(new TrainingNotificationMail($trainingInfo, $facilitator));
+                
+                    // Notify assistants by email as well
+                    if (!empty($request->assistant)) {
+                        $assistantIds = array_filter(array_map('trim', explode(',', $request->assistant)));
+                        foreach ($assistantIds as $aid) {
+                            if (is_numeric($aid)) {
+                                $aUser = User::find((int) $aid);
+                                if ($aUser && !empty($aUser->email)) {
+                                    Mail::to($aUser->email)->send(new TrainingNotificationMail($trainingInfo, $aUser));
+                                }
+                            }
+                        }
+                    }
                 } else {
                     \Log::warning('Facilitator email not found', ['facilitator' => $facilitator]);
                 }
@@ -265,6 +293,7 @@ class TrainingController extends Controller
             'to_date' => ['required', 'date'],
             'from_time' => ['required'],
             'platform' => ['nullable'],
+            'conference_link' => ['nullable', 'url'],
             'to_time' => ['required'],
         ]);
 
@@ -293,6 +322,7 @@ class TrainingController extends Controller
                 'facilitator_id' => $request->facilitator_id,
                 'location' => $request->location,
                 'platform' => $request->platform,
+                'conference_link' => $request->conference_link,
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
                 'account_id' => $request->account_id,
@@ -398,3 +428,5 @@ class TrainingController extends Controller
     }
 
 }
+
+

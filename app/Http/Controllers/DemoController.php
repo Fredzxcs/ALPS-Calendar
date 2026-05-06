@@ -247,6 +247,7 @@ class DemoController extends Controller
                 'facilitator_id' => $facilitatorId,
                 'location' => $request->location,
                 'platform' => $request->platform,
+                'conference_link' => $request->conference_link,
                 'company_id' => $companyId,
                 'assistant' => $request->assistant,
                 'account_id' => $accountId,
@@ -288,6 +289,19 @@ class DemoController extends Controller
                         $fac = User::find($facilitatorId);
                         if ($fac && !empty($fac->email)) {
                             $attendees[] = $fac->email;
+                        }
+                    }
+
+                    // Include assistants (comma-separated IDs) if any
+                    if (!empty($training->assistant)) {
+                        $assistantIds = array_filter(array_map('trim', explode(',', $training->assistant)));
+                        foreach ($assistantIds as $aid) {
+                            if (is_numeric($aid)) {
+                                $aUser = User::find((int) $aid);
+                                if ($aUser && !empty($aUser->email)) {
+                                    $attendees[] = $aUser->email;
+                                }
+                            }
                         }
                     }
 
@@ -781,3 +795,4 @@ class DemoController extends Controller
         ]);
     }
 }
+

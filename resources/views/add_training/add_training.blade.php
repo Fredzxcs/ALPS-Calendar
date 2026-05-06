@@ -98,8 +98,24 @@
 
                             <div class="col-md-6">
                                 <label for="platform" class="fw-bold mb-2">Platform</label>
-                                <input type="text" name="platform" id="platform" class="form-control form-control-solid"
-                                    placeholder="Enter Platform (e.g. Zoom)">
+                                <select id="platform" class="form-select form-select-solid">
+                                    <option value="" selected disabled>Select Platform</option>
+                                    <option value="Zoom">Zoom</option>
+                                    <option value="Google Meet">Google Meet</option>
+                                    <option value="MS Teams">MS Teams</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <input type="text" name="platform_other" id="platform_other" class="form-control form-control-solid d-none mt-2"
+                                    placeholder="Enter platform name">
+                            </div>
+                        </div>
+
+                        <!-- Conference Call Link -->
+                        <div class="row mb-4">
+                            <div class="col-md-12">
+                                <label for="conference_link" class="fw-bold mb-2">Conference Call Link</label>
+                                <input type="url" name="conference_link" id="conference_link" class="form-control form-control-solid"
+                                    placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)">
                             </div>
                         </div>
                         <!-- Location: Face-to-Face and In-Person -->
@@ -215,9 +231,9 @@
     </div>
 @endsection
 @push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="{{ asset('js/add_training.js') }}"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
 
 

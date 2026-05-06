@@ -77,37 +77,72 @@ const fp = flatpickr("#date-range", {
 
 
 $(document).ready(function (e) {
-    // Use global assistants list
-    // window.assistantsList is used to store added assistant IDs
-
-    function renderAssistants() {
-        const container = $('#assistant_list_container');
-        container.empty();
-        window.assistantsList.forEach(function (id) {
-            const option = $(`#assistant_select option[value='${id}']`);
-            const name = option.length ? option.text() : id;
-            const chip = $(`<span class="badge bg-light-primary me-2 mb-2" data-id="${id}">${name} <a href="#" class="text-danger ms-2 remove-assistant" data-id="${id}">&times;</a></span>`);
-            container.append(chip);
+    // Stacked assistant selects: add a new select field above existing ones and keep hidden input synced
+    function updateAssistantHidden() {
+        const vals = [];
+        const mainVal = $('#assistant_select').val();
+        if (mainVal) vals.push(mainVal);
+        $('.assistant_item').each(function () {
+            const v = $(this).val();
+            if (v) vals.push(v);
         });
-        $('#assistant_list').val(window.assistantsList.join(', '));
+        $('#assistant_list').val(vals.join(', '));
     }
 
-    // Add assistant button handler
-    $(document).on('click', '#assistant_add_btn', function (ev) {
-        ev.preventDefault();
-        const val = $('#assistant_select').val();
-        if (!val) return;
-        if (window.assistantsList.indexOf(val) !== -1) return; // already added
-        window.assistantsList.push(val);
-        renderAssistants();
+    // Platform dropdown: show/hide "Other" text input
+    $(document).on('change', '#platform', function () {
+        const selectedVal = $(this).val();
+        if (selectedVal === 'other') {
+            $('#platform_other').removeClass('d-none');
+        } else {
+            $('#platform_other').addClass('d-none').val('');
+        }
     });
 
-    // Remove assistant handler
-    $(document).on('click', '.remove-assistant', function (ev) {
+    // Add assistant button handler: clone a select and prepend it into the container
+    $(document).on('click', '#assistant_add_btn', function (ev) {
         ev.preventDefault();
-        const id = $(this).data('id').toString();
-        window.assistantsList = window.assistantsList.filter(i => i.toString() !== id);
-        renderAssistants();
+        console.log('Add assistant button clicked');
+        const val = $('#assistant_select').val();
+        console.log('Selected assistant value:', val);
+        if (!val) {
+            console.log('No value selected, returning');
+            return;
+        }
+        console.log('Value is not empty, proceeding...');
+
+        // Do not add duplicates - check only the stacked fields, not the main select
+        const existing = [];
+        $('.assistant_item').each(function () { existing.push($(this).val()); });
+        console.log('Existing stacked assistants:', existing);
+        if (existing.includes(val)) {
+            console.log('Assistant already in stacked fields, returning');
+            return;
+        }
+
+        // Create cloned select
+        const clone = $('#assistant_select').clone();
+        clone.removeAttr('id');
+        clone.addClass('assistant_item form-select form-select-solid mb-2');
+        clone.val(val);
+        console.log('Clone created and value set to:', clone.val());
+
+        const removeBtn = $(`<button type="button" class="btn btn-light-danger ms-2 remove-assistant-field">Remove</button>`);
+        const wrapper = $('<div class="d-flex align-items-center mb-2"></div>');
+        wrapper.append(clone).append(removeBtn);
+
+        $('#assistant_list_container').prepend(wrapper);
+        console.log('Prepended to container');
+        $('#assistant_select').val('').trigger('change');
+        updateAssistantHidden();
+        console.log('Updated hidden input, hidden value is:', $('#assistant_list').val());
+    });
+
+    // Remove assistant stacked field
+    $(document).on('click', '.remove-assistant-field', function (ev) {
+        ev.preventDefault();
+        $(this).closest('div.d-flex').remove();
+        updateAssistantHidden();
     });
 
     $('#add_training_submit').click(function (e) {
@@ -271,9 +306,12 @@ $(document).ready(function (e) {
 
         function clearFields(mode) {
             // Clear all input fields, dropdowns, and date pickers
-            $('#credentials, #company, #course, #public-course-select, #platform, #location, #facilitator, #assistant_select, #date-range, #time-start, #time-end')
+            $('#credentials, #company, #course, #public-course-select, #platform, #location, #facilitator, #assistant_select, #date-range, #time-start, #time-end, #platform_other, #conference_link')
                 .val('')
                 .trigger('change');
+
+            // Hide platform_other input
+            $('#platform_other').addClass('d-none');
 
             // Clear assistants list UI and state
             window.assistantsList = [];
@@ -390,9 +428,16 @@ $(document).ready(function (e) {
 
     // Step 4: Function to create the training session
     function createTraining(companyId) {
+        // Get platform: if "other" is selected, use the custom text; otherwise use the dropdown value
+        let platformValue = $('#platform').val();
+        if (platformValue === 'other') {
+            platformValue = $('#platform_other').val();
+        }
+
         let formData = new FormData();
         formData.append('course_id', $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val());
-        formData.append('platform', $('#platform').val());
+        formData.append('platform', platformValue);
+        formData.append('conference_link', $('#conference_link').val());
         formData.append('location', $('#location').val());
         formData.append('company_id', companyId);
         formData.append('assistant', $('#assistant_list').val() || '');
