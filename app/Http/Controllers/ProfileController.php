@@ -50,6 +50,14 @@ class ProfileController extends Controller
 
         Auth::logout();
 
+        $request->session()->forget([
+            'google_connected',
+            'google_refresh_token',
+            'google_access_token',
+            'google_token_expires_at',
+            'oauth_previous_route',
+        ]);
+
         $user->delete();
 
         $request->session()->invalidate();

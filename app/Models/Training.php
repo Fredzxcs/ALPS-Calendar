@@ -19,6 +19,7 @@ class Training extends Model
         'company_id',
         'assistant',
         'platform',
+        'conference_link',
         'mode',
         'location',
         'account_id',
@@ -52,3 +53,4 @@ class Training extends Model
     }
 
 }
+

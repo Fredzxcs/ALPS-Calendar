@@ -5,8 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use App\Models\Account;
+use App\Models\Company;
+use App\Models\Course;
+use App\Models\Training;
+use App\Models\Schedule;
+use App\Models\User;
+use App\Services\GoogleCalendarService;
+use Illuminate\Support\Facades\Log;
 
 class DemoController extends Controller
 {
@@ -38,6 +48,155 @@ class DemoController extends Controller
         return collect($this->fixtures('users.json'))->firstWhere('id', $id);
     }
 
+    private function syncCourseFromFixture(?int $requestedId): ?int
+    {
+        if (!$requestedId) {
+            return null;
+        }
+
+        $fixture = collect($this->fixtures('courses.json'))->firstWhere('id', $requestedId);
+
+        if (!$fixture) {
+            return Course::whereKey($requestedId)->exists() ? $requestedId : (int) (Course::query()->value('id') ?? 0);
+        }
+
+        DB::table('course')->updateOrInsert(
+            ['id' => $requestedId],
+            [
+                'course_code' => $fixture['course_code'] ?? null,
+                'course_name' => $fixture['course_name'] ?? ('Course ' . $requestedId),
+                'description' => $fixture['description'] ?? null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        return $requestedId;
+    }
+
+    private function syncCompanyFromFixture(?int $requestedId): ?int
+    {
+        if (!$requestedId) {
+            return null;
+        }
+
+        $fixture = collect($this->fixtures('companies.json'))->firstWhere('id', $requestedId);
+
+        if (!$fixture) {
+            return Company::whereKey($requestedId)->exists() ? $requestedId : (int) (Company::query()->value('id') ?? 0);
+        }
+
+        DB::table('company')->updateOrInsert(
+            ['id' => $requestedId],
+            [
+                'company_name' => $fixture['company_name'] ?? ('Company ' . $requestedId),
+                'contact_person' => $fixture['contact_person'] ?? null,
+                'contact_number' => $fixture['contact_number'] ?? null,
+                'email' => $fixture['email'] ?? null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        return $requestedId;
+    }
+
+    private function syncUserFromFixture(?int $requestedId): ?int
+    {
+        if (!$requestedId) {
+            return null;
+        }
+
+        $fixture = collect($this->fixtures('users.json'))->firstWhere('id', $requestedId);
+
+        if (!$fixture) {
+            return User::whereKey($requestedId)->exists() ? $requestedId : (int) (User::query()->value('id') ?? 0);
+        }
+
+        DB::table('users')->updateOrInsert(
+            ['id' => $requestedId],
+            [
+                'name' => $fixture['name'] ?? ('User ' . $requestedId),
+                'username' => $fixture['username'] ?? ('user' . $requestedId),
+                'email' => $fixture['email'] ?? ('user' . $requestedId . '@example.com'),
+                'usertype' => $fixture['usertype'] ?? 'facilitator',
+                'color' => $fixture['color'] ?? '#808080',
+                'contact_number' => $fixture['contact_number'] ?? null,
+                'image' => $fixture['image'] ?? null,
+                'password' => Hash::make('password123'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        return $requestedId;
+    }
+
+    private function syncAccountFromFixture(?int $requestedId): ?int
+    {
+        if (!$requestedId) {
+            return null;
+        }
+
+        $fixture = collect($this->fixtures('accounts.json'))->firstWhere('id', $requestedId);
+
+        if (!$fixture) {
+            return Account::whereKey($requestedId)->exists() ? $requestedId : (int) (Account::query()->value('id') ?? 0);
+        }
+
+        DB::table('credentials')->updateOrInsert(
+            ['id' => $requestedId],
+            [
+                'account_email' => $fixture['account_email'] ?? ('account' . $requestedId . '@example.com'),
+                'account_password' => $fixture['account_password'] ?? 'password123',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        return $requestedId;
+    }
+
+    private function resolveCourseId(?int $requestedId): int
+    {
+        if ($requestedId && Course::whereKey($requestedId)->exists()) {
+            return $requestedId;
+        }
+
+        return (int) (Course::query()->value('id') ?? Course::query()->create([
+            'course_code' => 'DEMO-001',
+            'course_name' => 'Demo Course',
+            'description' => 'Auto-created demo course',
+        ])->id);
+    }
+
+    private function resolveNullableUserId(?int $requestedId): ?int
+    {
+        if ($requestedId && User::whereKey($requestedId)->exists()) {
+            return $requestedId;
+        }
+
+        return User::query()->value('id');
+    }
+
+    private function resolveNullableCompanyId(?int $requestedId): ?int
+    {
+        if ($requestedId && Company::whereKey($requestedId)->exists()) {
+            return $requestedId;
+        }
+
+        return Company::query()->value('id');
+    }
+
+    private function resolveNullableAccountId(?int $requestedId): ?int
+    {
+        if ($requestedId && Account::whereKey($requestedId)->exists()) {
+            return $requestedId;
+        }
+
+        return Account::query()->value('id');
+    }
+
     public function home()
     {
         return view('login.login');
@@ -60,31 +219,194 @@ class DemoController extends Controller
 
     public function storeTraining(Request $request): JsonResponse
     {
-        return response()->json([
-            'message' => '200',
-            'training' => [
-                'id' => 9001,
-                'course_id' => (int) $request->input('course_id', 1),
-                'mode' => (string) $request->input('mode', 'virtual'),
-                'facilitator_id' => $request->input('facilitator_id'),
-                'company_id' => $request->input('company_id'),
-                'account_id' => $request->input('account_id'),
-            ],
-            'schedule' => [
-                'from_date' => (string) $request->input('from_date', now()->toDateString()),
-                'to_date' => (string) $request->input('to_date', now()->toDateString()),
-                'from_time' => (string) $request->input('from_time', '09:00:00'),
-                'to_time' => (string) $request->input('to_time', '11:00:00'),
-            ],
-            'demo' => true,
-        ], 200);
+        DB::beginTransaction();
+
+        try {
+            $courseId = $this->syncCourseFromFixture($request->integer('course_id'));
+            $facilitatorId = $this->syncUserFromFixture($request->integer('facilitator_id'));
+            $companyId = $this->syncCompanyFromFixture($request->integer('company_id'));
+            $accountId = $this->syncAccountFromFixture($request->integer('account_id'));
+
+            if (!$courseId) {
+                $courseId = $this->resolveCourseId($request->integer('course_id'));
+            }
+            if (!$facilitatorId) {
+                $facilitatorId = $this->resolveNullableUserId($request->integer('facilitator_id'));
+            }
+            if (!$companyId) {
+                $companyId = $this->resolveNullableCompanyId($request->integer('company_id'));
+            }
+            if (!$accountId) {
+                $accountId = $this->resolveNullableAccountId($request->integer('account_id'));
+            }
+
+            // Create the Training record
+            $training = Training::create([
+                'course_id' => $courseId,
+                'mode' => $request->mode,
+                'facilitator_id' => $facilitatorId,
+                'location' => $request->location,
+                'platform' => $request->platform,
+                'conference_link' => $request->conference_link,
+                'company_id' => $companyId,
+                'assistant' => $request->assistant,
+                'account_id' => $accountId,
+            ]);
+
+            // Create the Schedule record
+            $schedule = Schedule::create([
+                'training_id' => $training->id,
+                'from_date' => $request->from_date,
+                'to_date' => $request->to_date,
+                'from_time' => $request->from_time,
+                'to_time' => $request->to_time,
+            ]);
+
+            DB::commit();
+
+            // Create Google Calendar event if Google is connected in demo session
+            try {
+                $googleRefreshToken = null;
+                $googleAccessToken = null;
+                $hasGoogleConnection = false;
+                
+                // Check if Google is connected via session (demo mode)
+                if (session('google_connected') && session('google_refresh_token')) {
+                    $hasGoogleConnection = true;
+                    $googleRefreshToken = session('google_refresh_token');
+                    $googleAccessToken = session('google_access_token');
+                } elseif (session('google_connected') && session('google_access_token')) {
+                    $hasGoogleConnection = true;
+                    $googleAccessToken = session('google_access_token');
+                }
+                
+                if ($hasGoogleConnection) {
+                    $googleService = new GoogleCalendarService();
+
+                    // Build attendees list: include facilitator if available and has email
+                    $attendees = [];
+                    if (!empty($facilitatorId)) {
+                        $fac = User::find($facilitatorId);
+                        if ($fac && !empty($fac->email)) {
+                            $attendees[] = $fac->email;
+                        }
+                    }
+
+                    // Include assistants (comma-separated IDs) if any
+                    if (!empty($training->assistant)) {
+                        $assistantIds = array_filter(array_map('trim', explode(',', $training->assistant)));
+                        foreach ($assistantIds as $aid) {
+                            if (is_numeric($aid)) {
+                                $aUser = User::find((int) $aid);
+                                if ($aUser && !empty($aUser->email)) {
+                                    $attendees[] = $aUser->email;
+                                }
+                            }
+                        }
+                    }
+
+                    // Fetch the full training with relationships
+                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                                ->find($training->id);
+
+                    // Create event with refresh token (demo mode passes token from session)
+                    // Create a demo user object for GoogleCalendarService
+                    $demoUser = (object) ['id' => 0, 'email' => 'demo@example.com'];
+                    $createdEvent = $googleService->createEvent($demoUser, $trainingInfo, $schedule, $attendees, $googleRefreshToken, $googleAccessToken);
+
+                    if ($createdEvent === false) {
+                        Log::warning('Google Calendar sync did not create an event in demo mode', [
+                            'training_id' => $training->id,
+                            'has_refresh_token' => !empty($googleRefreshToken),
+                            'has_access_token' => !empty($googleAccessToken),
+                        ]);
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::error('Google Calendar sync failed in demo mode: ' . $e->getMessage());
+            }
+
+            return response()->json([
+                'message' => 'Training created successfully',
+                'training' => [
+                    'id' => $training->id,
+                    'course_id' => (int) $training->course_id,
+                    'mode' => (string) $training->mode,
+                    'facilitator_id' => $training->facilitator_id,
+                    'company_id' => $training->company_id,
+                    'account_id' => $training->account_id,
+                ],
+                'schedule' => [
+                    'from_date' => (string) $schedule->from_date,
+                    'to_date' => (string) $schedule->to_date,
+                    'from_time' => (string) $schedule->from_time,
+                    'to_time' => (string) $schedule->to_time,
+                ],
+                'demo' => true,
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Training creation failed in demo mode: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Training creation failed',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function getTraining(): JsonResponse
     {
+        // Fetch trainings from database
+        $trainings = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+            ->get()
+            ->map(function ($training) {
+                return [
+                    'id' => $training->id,
+                    'course_id' => $training->course_id,
+                    'mode' => $training->mode,
+                    'platform' => $training->platform,
+                    'location' => $training->location,
+                    'assistant' => $training->assistant,
+                    'facilitator_id' => $training->facilitator_id,
+                    'company_id' => $training->company_id,
+                    'account_id' => $training->account_id,
+                    'course' => $training->course ? [
+                        'id' => $training->course->id,
+                        'course_code' => $training->course->course_code,
+                        'course_name' => $training->course->course_name,
+                        'description' => $training->course->description,
+                    ] : null,
+                    'facilitator' => $training->facilitator ? [
+                        'id' => $training->facilitator->id,
+                        'name' => $training->facilitator->name,
+                        'email' => $training->facilitator->email,
+                        'color' => $training->facilitator->color,
+                        'image' => $training->facilitator->image,
+                    ] : null,
+                    'company' => $training->company ? [
+                        'id' => $training->company->id,
+                        'company_name' => $training->company->company_name,
+                        'contact_person' => $training->company->contact_person,
+                        'contact_number' => $training->company->contact_number,
+                        'email' => $training->company->email,
+                    ] : null,
+                    'account' => $training->account ? [
+                        'id' => $training->account->id,
+                        'account_email' => $training->account->account_email,
+                    ] : null,
+                    'schedule' => $training->schedule ? [
+                        'from_date' => (string) $training->schedule->from_date,
+                        'to_date' => (string) $training->schedule->to_date,
+                        'from_time' => (string) $training->schedule->from_time,
+                        'to_time' => (string) $training->schedule->to_time,
+                    ] : null,
+                ];
+            })
+            ->toArray();
+
         return response()->json([
             'success' => true,
-            'data' => $this->fixtures('trainings.json'),
+            'data' => $trainings,
         ], 200);
     }
 
@@ -473,3 +795,4 @@ class DemoController extends Controller
         ]);
     }
 }
+

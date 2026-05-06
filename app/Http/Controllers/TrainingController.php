@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\TrainingNotificationMail;
 use App\Mail\TrainingReassignmentMail;
 use App\Mail\CancelledTrainingMail;
+use App\Services\GoogleCalendarService;
+use Illuminate\Support\Facades\Auth;
 
 
 class TrainingController extends Controller
@@ -61,6 +63,7 @@ class TrainingController extends Controller
             'to_date' => ['required', 'date'],
             'from_time' => ['required'],
             'platform' => ['nullable'],
+            'conference_link' => ['nullable', 'url'],
             'to_time' => ['required'],
         ]);
 
@@ -83,6 +86,7 @@ class TrainingController extends Controller
                 'facilitator_id' => $request->facilitator_id,
                 'location' => $request->location,
                 'platform' => $request->platform,
+                'conference_link' => $request->conference_link,
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
                 'account_id' => $request->account_id,
@@ -100,6 +104,57 @@ class TrainingController extends Controller
 
             // Commit the transaction
             \DB::commit();
+
+            // Create Google Calendar event if the current user has connected Google
+            try {
+                $currentUser = Auth::user();
+                $isDemo = filter_var(env('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN);
+                $googleRefreshToken = null;
+                
+                // Check if user has Google connection (either from model or session in demo mode)
+                $hasGoogleConnection = false;
+                if ($currentUser && isset($currentUser->google_refresh_token) && !empty($currentUser->google_refresh_token)) {
+                    $hasGoogleConnection = true;
+                } else if ($isDemo && session('google_connected') && session('google_refresh_token')) {
+                    $hasGoogleConnection = true;
+                    $googleRefreshToken = session('google_refresh_token');
+                }
+                
+                if ($hasGoogleConnection) {
+                    $googleService = new GoogleCalendarService();
+
+                    // Build attendees list: include facilitator if available and has email
+                    $attendees = [];
+                    if (!empty($request->facilitator_id)) {
+                        $fac = User::find($request->facilitator_id);
+                        if ($fac && !empty($fac->email)) {
+                            $attendees[] = $fac->email;
+                        }
+                    }
+
+                    // Include assistants (comma-separated IDs)
+                    if (!empty($request->assistant)) {
+                        $assistantIds = array_filter(array_map('trim', explode(',', $request->assistant)));
+                        foreach ($assistantIds as $aid) {
+                            if (is_numeric($aid)) {
+                                $aUser = User::find((int) $aid);
+                                if ($aUser && !empty($aUser->email)) {
+                                    $attendees[] = $aUser->email;
+                                }
+                            }
+                        }
+                    }
+
+                    // Insert event on connected user's primary calendar and send invites
+                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                                ->find($training->id);
+
+                    // Use schedule created earlier (pass refresh token for demo mode)
+                    $googleService->createEvent($currentUser, $trainingInfo, $schedule, $attendees, $googleRefreshToken);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Google Calendar sync failed: ' . $e->getMessage());
+            }
 
             // ✅ Check if facilitator_id exists before querying
             if (!empty($request->facilitator_id)) {
@@ -119,6 +174,19 @@ class TrainingController extends Controller
                     ]);
 
                     Mail::to($facilitator->email)->send(new TrainingNotificationMail($trainingInfo, $facilitator));
+                
+                    // Notify assistants by email as well
+                    if (!empty($request->assistant)) {
+                        $assistantIds = array_filter(array_map('trim', explode(',', $request->assistant)));
+                        foreach ($assistantIds as $aid) {
+                            if (is_numeric($aid)) {
+                                $aUser = User::find((int) $aid);
+                                if ($aUser && !empty($aUser->email)) {
+                                    Mail::to($aUser->email)->send(new TrainingNotificationMail($trainingInfo, $aUser));
+                                }
+                            }
+                        }
+                    }
                 } else {
                     \Log::warning('Facilitator email not found', ['facilitator' => $facilitator]);
                 }
@@ -225,6 +293,7 @@ class TrainingController extends Controller
             'to_date' => ['required', 'date'],
             'from_time' => ['required'],
             'platform' => ['nullable'],
+            'conference_link' => ['nullable', 'url'],
             'to_time' => ['required'],
         ]);
 
@@ -253,6 +322,7 @@ class TrainingController extends Controller
                 'facilitator_id' => $request->facilitator_id,
                 'location' => $request->location,
                 'platform' => $request->platform,
+                'conference_link' => $request->conference_link,
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
                 'account_id' => $request->account_id,
@@ -358,3 +428,5 @@ class TrainingController extends Controller
     }
 
 }
+
+

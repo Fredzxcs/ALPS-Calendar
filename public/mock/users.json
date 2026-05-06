@@ -41,16 +41,26 @@
   },
   {
     "id": 5,
+<<<<<<< HEAD
     "name": "Sofia Villanueva",
     "username": "sofia.villanueva",
     "email": "sofia.villanueva@alps.local",
     "contact_number": "09211234567",
     "usertype": "coordinator",
     "color": "#6f42c1",
+=======
+    "name": "James Esteban",
+    "username": "james.esteban",
+    "email": "james.esteban08@gmail.com",
+    "contact_number": "09123456789",
+    "usertype": "facilitator",
+    "color": "#fd7e14",
+>>>>>>> e131a209748300c298864871526c83f5b08126d8
     "image": null
   },
   {
     "id": 6,
+<<<<<<< HEAD
     "name": "Ethan Ramos",
     "username": "ethan.ramos",
     "email": "ethan.ramos@alps.local",
@@ -297,6 +307,15 @@
     "contact_number": "09461234567",
     "usertype": "admin",
     "color": "#212529",
+=======
+    "name": "Luigi Lagman",
+    "username": "lui.lagman",
+    "email": "26.llagman@gmail.com",
+    "contact_number": "09123456789",
+    "usertype": "facilitator",
+    "color": "#fd7e18",
+>>>>>>> e131a209748300c298864871526c83f5b08126d8
     "image": null
   }
+  
 ]

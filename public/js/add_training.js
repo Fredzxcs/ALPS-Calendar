@@ -1,4 +1,6 @@
 var csrfToken = $('meta[name="csrf-token"]').attr('content');
+// Global assistants list so it is accessible across handlers
+window.assistantsList = window.assistantsList || [];
 
 document.addEventListener("DOMContentLoaded", function () {
     const modeRadios = document.querySelectorAll('input[name="mode"]');
@@ -75,6 +77,74 @@ const fp = flatpickr("#date-range", {
 
 
 $(document).ready(function (e) {
+    // Stacked assistant selects: add a new select field above existing ones and keep hidden input synced
+    function updateAssistantHidden() {
+        const vals = [];
+        const mainVal = $('#assistant_select').val();
+        if (mainVal) vals.push(mainVal);
+        $('.assistant_item').each(function () {
+            const v = $(this).val();
+            if (v) vals.push(v);
+        });
+        $('#assistant_list').val(vals.join(', '));
+    }
+
+    // Platform dropdown: show/hide "Other" text input
+    $(document).on('change', '#platform', function () {
+        const selectedVal = $(this).val();
+        if (selectedVal === 'other') {
+            $('#platform_other').removeClass('d-none');
+        } else {
+            $('#platform_other').addClass('d-none').val('');
+        }
+    });
+
+    // Add assistant button handler: clone a select and prepend it into the container
+    $(document).on('click', '#assistant_add_btn', function (ev) {
+        ev.preventDefault();
+        console.log('Add assistant button clicked');
+        const val = $('#assistant_select').val();
+        console.log('Selected assistant value:', val);
+        if (!val) {
+            console.log('No value selected, returning');
+            return;
+        }
+        console.log('Value is not empty, proceeding...');
+
+        // Do not add duplicates - check only the stacked fields, not the main select
+        const existing = [];
+        $('.assistant_item').each(function () { existing.push($(this).val()); });
+        console.log('Existing stacked assistants:', existing);
+        if (existing.includes(val)) {
+            console.log('Assistant already in stacked fields, returning');
+            return;
+        }
+
+        // Create cloned select
+        const clone = $('#assistant_select').clone();
+        clone.removeAttr('id');
+        clone.addClass('assistant_item form-select form-select-solid mb-2');
+        clone.val(val);
+        console.log('Clone created and value set to:', clone.val());
+
+        const removeBtn = $(`<button type="button" class="btn btn-light-danger ms-2 remove-assistant-field">Remove</button>`);
+        const wrapper = $('<div class="d-flex align-items-center mb-2"></div>');
+        wrapper.append(clone).append(removeBtn);
+
+        $('#assistant_list_container').prepend(wrapper);
+        console.log('Prepended to container');
+        $('#assistant_select').val('').trigger('change');
+        updateAssistantHidden();
+        console.log('Updated hidden input, hidden value is:', $('#assistant_list').val());
+    });
+
+    // Remove assistant stacked field
+    $(document).on('click', '.remove-assistant-field', function (ev) {
+        ev.preventDefault();
+        $(this).closest('div.d-flex').remove();
+        updateAssistantHidden();
+    });
+
     $('#add_training_submit').click(function (e) {
         e.preventDefault();
 
@@ -180,13 +250,8 @@ $(document).ready(function (e) {
         // let mode = $('input[name="mode"]:checked').val();
         let facilitator_id = $('#facilitator').find('option:selected').val(); // Get facilitator ID
 
-        let assistant_id = '';
-        $('div[data-repeater-list="asst_repeat"] .assistant').each(function () {
-            const value = $(this).val().trim();
-            if (value) {
-                assistant_id += (assistant_id.length > 0 ? ', ' : '') + value;
-            }
-        });
+        // assistant list stored in hidden input by renderAssistants
+        let assistant_id = $('#assistant_list').val() || '';
 
         let from_date = startDateFormatted;
         let to_date = endDateFormatted;
@@ -241,9 +306,18 @@ $(document).ready(function (e) {
 
         function clearFields(mode) {
             // Clear all input fields, dropdowns, and date pickers
-            $('#credentials, #company, #course, #public-course-select, #platform, #location, #facilitator, #assistant, #date-range, #time-start, #time-end')
+            $('#credentials, #company, #course, #public-course-select, #platform, #location, #facilitator, #assistant_select, #date-range, #time-start, #time-end, #platform_other, #conference_link')
                 .val('')
                 .trigger('change');
+
+            // Hide platform_other input
+            $('#platform_other').addClass('d-none');
+
+            // Clear assistants list UI and state
+            window.assistantsList = [];
+            $('#assistant_list_container').empty();
+            $('#assistant_list').val('');
+            $('#assistant_select').val('').trigger('change');
 
             // Clear datepicker selections if used
             $('#date-range').datepicker('clearDates');
@@ -354,12 +428,19 @@ $(document).ready(function (e) {
 
     // Step 4: Function to create the training session
     function createTraining(companyId) {
+        // Get platform: if "other" is selected, use the custom text; otherwise use the dropdown value
+        let platformValue = $('#platform').val();
+        if (platformValue === 'other') {
+            platformValue = $('#platform_other').val();
+        }
+
         let formData = new FormData();
         formData.append('course_id', $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val());
-        formData.append('platform', $('#platform').val());
+        formData.append('platform', platformValue);
+        formData.append('conference_link', $('#conference_link').val());
         formData.append('location', $('#location').val());
         formData.append('company_id', companyId);
-        formData.append('assistant', $('div[data-repeater-list="asst_repeat"] .assistant').map(function () { return $(this).val().trim(); }).get().join(', '));
+        formData.append('assistant', $('#assistant_list').val() || '');
         formData.append('account_id', $('#credentials').find('option:selected').val());
         formData.append('mode', $('input[name="mode"]:checked').val());
         formData.append('from_date', startDateFormatted);
@@ -398,7 +479,8 @@ $(document).ready(function (e) {
             success: function (response) {
                 Swal.close(); // Close loader
 
-                if (response.message === '200') {
+                // Consider success when controller returns a training object or explicit success flag
+                if ((response && response.training && response.training.id) || response.success === true) {
                     Swal.fire({
                         title: 'Success!',
                         text: 'Training has been added.',
@@ -410,13 +492,14 @@ $(document).ready(function (e) {
                         window.location.href = '/calendar';
                     });
                 } else {
+                    // Fallback: show message from server if present
                     Swal.fire({
-                        title: 'Wait!',
-                        text: response.message,
+                        title: 'Notice',
+                        text: response && response.message ? response.message : 'Unexpected response from server',
                         icon: 'warning',
                         confirmButtonText: 'OK'
                     }).then(() => {
-                        location.reload();
+                        window.location.href = '/calendar';
                     });
                 }
             },

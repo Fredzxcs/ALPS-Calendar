@@ -5,6 +5,7 @@ use App\Http\Controllers\LandingpageController;
 use App\Http\Controllers\ManageAccessController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TrainingController;
+use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\ConfigureCoursesController;
 use App\Http\Controllers\ConfigureCompanyController;
 use App\Http\Controllers\ConfigureAccountController;
@@ -34,6 +35,9 @@ if (filter_var(env('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN)) {
             Route::post('/api/check-unavailability/{id}', [DemoController::class, 'checkUnavailability'])->name('check_unavailability');
             Route::delete('/delete_unavailability/{id}', [DemoController::class, 'deleteUnavailability'])->name('unavailability.destroy');
         });
+
+        Route::get('/google/redirect', [GoogleController::class, 'redirect'])->name('google.redirect');
+        Route::get('/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
 
         Route::prefix('access')->group(function () {
             Route::get('/', [DemoController::class, 'manageAccess'])->name('manage_access');
@@ -105,6 +109,11 @@ Route::middleware(['auth', 'sesh'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::middleware(['auth','sesh'])->group(function () {
+    Route::get('/google/redirect', [GoogleController::class, 'redirect'])->name('google.redirect');
+    Route::get('/google/callback', [GoogleController::class, 'callback'])->name('google.callback');
+});
 
 
 Route::prefix('calendar')->middleware(['sesh'])->group(function () {

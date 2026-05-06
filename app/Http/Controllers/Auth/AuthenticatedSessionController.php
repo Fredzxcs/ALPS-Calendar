@@ -55,6 +55,14 @@ class AuthenticatedSessionController extends Controller
     {
         Auth::guard('web')->logout();
 
+        $request->session()->forget([
+            'google_connected',
+            'google_refresh_token',
+            'google_access_token',
+            'google_token_expires_at',
+            'oauth_previous_route',
+        ]);
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

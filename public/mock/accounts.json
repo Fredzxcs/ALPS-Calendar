@@ -16,6 +16,7 @@
   },
   {
     "id": 4,
+<<<<<<< HEAD
     "account_email": "room-4@alps.local",
     "account_password": "DemoPass#4"
   },
@@ -58,5 +59,9 @@
     "id": 12,
     "account_email": "room-12@alps.local",
     "account_password": "DemoPass#12"
+=======
+    "account_email": "james.esteban08@gmail.com",
+    "account_password": "1234"
+>>>>>>> e131a209748300c298864871526c83f5b08126d8
   }
 ]
