@@ -52,18 +52,30 @@ class TrainingController extends Controller
     {
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
-            'course_id' => ['required', 'integer'],
+            'course_id' => ['required', 'integer', 'exists:course,id'],
             'mode' => ['required', 'string', 'max:255'],
-            'facilitator_id' => ['nullable', 'integer'], // Facilitator ID can be null
-            'company_id' => ['nullable', 'integer'],
+            'facilitator_id' => ['nullable', 'integer', 'exists:users,id'], // Facilitator ID can be null
+            'company_id' => ['nullable', 'integer', 'exists:company,id'],
             'location' => ['nullable', 'string', 'max:255'],
             'assistant' => ['nullable', 'string'],
-            'account_id' => ['nullable', 'integer'],
+            'account_id' => ['nullable', 'integer', 'exists:credentials,id'],
             'from_date' => ['required', 'date'],
             'to_date' => ['required', 'date'],
             'from_time' => ['required'],
             'platform' => ['nullable'],
             'conference_link' => ['nullable', 'url'],
+            'need_transportation' => ['nullable'],
+            'outbound_pickup_time' => ['nullable'],
+            'outbound_contact_number' => ['nullable', 'string', 'max:255'],
+            'outbound_pickup_location' => ['nullable', 'string', 'max:255'],
+            'outbound_dropoff_location' => ['nullable', 'string', 'max:255'],
+            'return_trip_needed' => ['nullable'],
+            'return_pickup_time' => ['nullable'],
+            'return_contact_number' => ['nullable', 'string', 'max:255'],
+            'return_pickup_location' => ['nullable', 'string', 'max:255'],
+            'return_dropoff_location' => ['nullable', 'string', 'max:255'],
+            'notify_coordinator' => ['nullable'],
+            'coordinator_to_notify' => ['nullable', 'integer', 'exists:users,id'],
             'to_time' => ['required'],
         ]);
 
@@ -72,6 +84,31 @@ class TrainingController extends Controller
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Additional explicit existence checks to avoid DB FK exceptions
+        $missing = [];
+        if (!Course::find($request->course_id)) {
+            $missing['course_id'] = ['Selected course does not exist in the database.'];
+        }
+        if ($request->filled('company_id') && !Company::find($request->company_id)) {
+            $missing['company_id'] = ['Selected company does not exist in the database.'];
+        }
+        if ($request->filled('facilitator_id') && !User::find($request->facilitator_id)) {
+            $missing['facilitator_id'] = ['Selected facilitator does not exist in the database.'];
+        }
+        if ($request->filled('account_id') && !Account::find($request->account_id)) {
+            $missing['account_id'] = ['Selected account/account credentials do not exist.'];
+        }
+        if ($request->filled('coordinator_to_notify') && !User::find($request->coordinator_to_notify)) {
+            $missing['coordinator_to_notify'] = ['Selected coordinator does not exist in the database.'];
+        }
+
+        if (!empty($missing)) {
+            return response()->json([
+                'message' => 'Validation failed',
+                'errors' => $missing,
             ], 422);
         }
 
@@ -90,6 +127,18 @@ class TrainingController extends Controller
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
                 'account_id' => $request->account_id,
+                'need_transportation' => $request->boolean('need_transportation'),
+                'outbound_pickup_time' => $request->outbound_pickup_time,
+                'outbound_contact_number' => $request->outbound_contact_number,
+                'outbound_pickup_location' => $request->outbound_pickup_location,
+                'outbound_dropoff_location' => $request->outbound_dropoff_location,
+                'return_trip_needed' => $request->boolean('return_trip_needed'),
+                'return_pickup_time' => $request->return_pickup_time,
+                'return_contact_number' => $request->return_contact_number,
+                'return_pickup_location' => $request->return_pickup_location,
+                'return_dropoff_location' => $request->return_dropoff_location,
+                'notify_coordinator' => $request->boolean('notify_coordinator'),
+                'coordinator_to_notify' => $request->coordinator_to_notify,
             ]);
 
 
@@ -210,6 +259,24 @@ class TrainingController extends Controller
                 'error_trace' => $e->getTraceAsString(),
                 'request_data' => $request->all(),
             ]);
+            // If this is a DB QueryException, surface a clearer message for FK violations
+            if ($e instanceof \Illuminate\Database\QueryException) {
+                $sqlState = $e->errorInfo[0] ?? null;
+                $driverCode = $e->errorInfo[1] ?? null;
+                $message = $e->getMessage();
+                if (strpos($message, 'FOREIGN KEY constraint failed') !== false || $sqlState === '23000') {
+                    return response()->json([
+                        'message' => 'Training creation failed due to invalid foreign key reference.',
+                        'error' => $message,
+                        'request_data' => $request->all(),
+                    ], 422);
+                }
+                return response()->json([
+                    'message' => 'Database query error during training creation.',
+                    'error' => $message,
+                    'request_data' => $request->all(),
+                ], 500);
+            }
 
             return response()->json([
                 'message' => 'Error occurred during saving the session and schedule.',

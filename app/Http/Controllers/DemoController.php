@@ -240,6 +240,90 @@ class DemoController extends Controller
                 $accountId = $this->resolveNullableAccountId($request->integer('account_id'));
             }
 
+            // Ensure requested IDs exist - create demo records if needed
+            $reqCourse = $request->integer('course_id');
+            if ($reqCourse && !Course::whereKey($reqCourse)->exists()) {
+                DB::table('course')->updateOrInsert(['id' => $reqCourse], [
+                    'course_code' => 'DEMO-' . $reqCourse,
+                    'course_name' => 'Demo Course ' . $reqCourse,
+                    'description' => 'Auto-created',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                $courseId = $reqCourse;
+            }
+
+            $reqFacilitator = $request->integer('facilitator_id');
+            if ($reqFacilitator && !User::whereKey($reqFacilitator)->exists()) {
+                DB::table('users')->updateOrInsert(['id' => $reqFacilitator], [
+                    'name' => 'Demo Facilitator ' . $reqFacilitator,
+                    'email' => 'facilitator' . $reqFacilitator . '@example.com',
+                    'username' => 'facilitator' . $reqFacilitator,
+                    'password' => Hash::make('password123'),
+                    'usertype' => 'facilitator',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                $facilitatorId = $reqFacilitator;
+            }
+
+            $reqCompany = $request->integer('company_id');
+            if ($reqCompany && !Company::whereKey($reqCompany)->exists()) {
+                DB::table('company')->updateOrInsert(['id' => $reqCompany], [
+                    'company_name' => 'Demo Company ' . $reqCompany,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                $companyId = $reqCompany;
+            }
+
+            // Ensure coordinator_to_notify user exists if specified (for driver arrangement)
+            $reqCoordinatorNotify = $request->integer('coordinator_to_notify');
+            if ($reqCoordinatorNotify && !User::whereKey($reqCoordinatorNotify)->exists()) {
+                DB::table('users')->updateOrInsert(['id' => $reqCoordinatorNotify], [
+                    'name' => 'Demo Coordinator ' . $reqCoordinatorNotify,
+                    'email' => 'coordinator' . $reqCoordinatorNotify . '@example.com',
+                    'username' => 'coordinator' . $reqCoordinatorNotify,
+                    'password' => Hash::make('password123'),
+                    'usertype' => 'coordinator',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+
+            // Ensure assistant user IDs exist if specified (comma-separated)
+            $assistantStr = $request->string('assistant', '');
+            if (!empty($assistantStr)) {
+                $assistantIds = array_filter(array_map('trim', explode(',', $assistantStr)));
+                foreach ($assistantIds as $assistantId) {
+                    if (is_numeric($assistantId)) {
+                        $numId = (int) $assistantId;
+                        if (!User::whereKey($numId)->exists()) {
+                            DB::table('users')->updateOrInsert(['id' => $numId], [
+                                'name' => 'Demo Assistant ' . $numId,
+                                'email' => 'assistant' . $numId . '@example.com',
+                                'username' => 'assistant' . $numId,
+                                'password' => Hash::make('password123'),
+                                'usertype' => 'facilitator',
+                                'created_at' => now(),
+                                'updated_at' => now()
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            $reqAccount = $request->integer('account_id');
+            if ($reqAccount && !Account::whereKey($reqAccount)->exists()) {
+                DB::table('credentials')->updateOrInsert(['id' => $reqAccount], [
+                    'account_email' => 'account' . $reqAccount . '@example.com',
+                    'account_password' => 'password123',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                $accountId = $reqAccount;
+            }
+
             // Create the Training record
             $training = Training::create([
                 'course_id' => $courseId,
@@ -251,6 +335,18 @@ class DemoController extends Controller
                 'company_id' => $companyId,
                 'assistant' => $request->assistant,
                 'account_id' => $accountId,
+                'need_transportation' => $request->boolean('need_transportation'),
+                'outbound_pickup_time' => $request->outbound_pickup_time,
+                'outbound_contact_number' => $request->outbound_contact_number,
+                'outbound_pickup_location' => $request->outbound_pickup_location,
+                'outbound_dropoff_location' => $request->outbound_dropoff_location,
+                'return_trip_needed' => $request->boolean('return_trip_needed'),
+                'return_pickup_time' => $request->return_pickup_time,
+                'return_contact_number' => $request->return_contact_number,
+                'return_pickup_location' => $request->return_pickup_location,
+                'return_dropoff_location' => $request->return_dropoff_location,
+                'notify_coordinator' => $request->boolean('notify_coordinator'),
+                'coordinator_to_notify' => $request->coordinator_to_notify,
             ]);
 
             // Create the Schedule record
@@ -344,6 +440,21 @@ class DemoController extends Controller
                 ],
                 'demo' => true,
             ], 200);
+        } catch (\Illuminate\Database\QueryException $e) {
+            DB::rollBack();
+            if (strpos($e->getMessage(), 'FOREIGN KEY') !== false) {
+                Log::error('Foreign key constraint violation in demo mode: ' . $e->getMessage());
+                return response()->json([
+                    'message' => 'Foreign key constraint violation',
+                    'error' => $e->getMessage(),
+                    'code' => $e->getCode(),
+                ], 422);
+            }
+            Log::error('Database query failed in demo mode: ' . $e->getMessage());
+            return response()->json([
+                'message' => 'Training creation failed',
+                'error' => $e->getMessage(),
+            ], 500);
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Training creation failed in demo mode: ' . $e->getMessage());

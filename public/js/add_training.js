@@ -145,49 +145,68 @@ $(document).ready(function (e) {
         updateAssistantHidden();
     });
 
-    $('#add_training_submit').click(function (e) {
-        e.preventDefault();
+    let trainingWizardStep = 1;
 
-        // Identify selected mode of training
-        let mode = $('input[name="mode"]:checked').val();
+    function showTrainingStep(step) {
+        trainingWizardStep = step;
+        if (step === 1) {
+            $('#training-step-1').removeClass('d-none');
+            $('#training-step-2').addClass('d-none');
+            $('#add_training_back').addClass('d-none');
+            $('#add_training_submit').text('CONTINUE');
+        } else {
+            $('#training-step-1').addClass('d-none');
+            $('#training-step-2').removeClass('d-none');
+            $('#add_training_back').removeClass('d-none');
+            $('#add_training_submit').text('SAVE');
+        }
+    }
+
+    function toggleDriverArrangementFields() {
+        const needsTransportation = $('#need_transportation_yes').is(':checked');
+        if (needsTransportation) {
+            $('#driver-arrangement-fields').removeClass('d-none');
+        } else {
+            $('#driver-arrangement-fields').addClass('d-none');
+            $('#return_trip_needed').prop('checked', false);
+            $('#return-trip-fields').addClass('d-none');
+            $('#coordinator_to_notify').val('');
+            $('#coordinator-to-notify-container').addClass('d-none');
+        }
+    }
+
+    function validateStep1() {
         let isValid = true;
+        let mode = $('input[name="mode"]:checked').val();
 
-        // Validation Logic
-        let requiredFields = [
-            'input[name="mode"]:checked',   // Mode of Training (Radio)
-            '#credentials',                 // Account (Dropdown)
-            '#company',                     // Company (Dropdown)
-            '#course',                      // Course (Dropdown)
-            '#date-range',                  // Date Range (Input)
-            '#time-start',                  // Time Start (Input)
-            '#time-end',                     // Time End (Input)
-            '#facilitator',                 // Facilitator
-            '#location'                     // Location
+        const requiredFields = [
+            'input[name="mode"]:checked',
+            '#credentials',
+            '#company',
+            '#course',
+            '#date-range',
+            '#time-start',
+            '#time-end',
+            '#facilitator',
+            '#location'
         ];
 
-        //  Add mode-specific required fields
         if (mode === 'virtual') {
-            requiredFields.push('#credentials'); // Virtual-specific
+            requiredFields.push('#credentials');
         } else if (mode === 'face-to-face') {
-            requiredFields.push('#location');                 // Face-to-Face-specific
+            requiredFields.push('#location');
         } else if (mode === 'public-course') {
-            requiredFields.push('#public-course-select');     // Public Course-specific
+            requiredFields.push('#public-course-select');
         }
-
 
         requiredFields.forEach(function (selector) {
             let element = $(selector);
-
-            // skip hidden fields on other mode of training
             if (element.length && !element.is(':visible')) {
                 return;
             }
-
-            //  Skip facilitator from general validation
             if (selector === '#facilitator') {
                 return;
             }
-
             if (selector === 'input[name="mode"]:checked') {
                 if ($('input[name="mode"]:checked').length === 0) {
                     $('input[name="mode"]').closest('.form-group').addClass('border-danger');
@@ -195,15 +214,15 @@ $(document).ready(function (e) {
                 } else {
                     $('input[name="mode"]').closest('.form-group').removeClass('border-danger');
                 }
-            } else if (element.is('select')) { // Handle dropdown validation
+            } else if (element.is('select')) {
                 if (element.val() === '' || element.val() === null) {
                     element.addClass('border-danger');
                     isValid = false;
                 } else {
                     element.removeClass('border-danger');
                 }
-            } else { // Handle input fields
-                if (element.val().trim() === '') {
+            } else {
+                if ((element.val() || '').trim() === '') {
                     element.addClass('border-danger');
                     isValid = false;
                 } else {
@@ -211,11 +230,10 @@ $(document).ready(function (e) {
                 }
             }
         });
+
         let facilitator = $('#facilitator').find('option:selected').val();
         let facilitatorText = $('#facilitator').find('option:selected').text().trim();
-
         if ($('#facilitator').is(':visible')) {
-            // Check if the selection is invalid
             if (
                 facilitatorText === 'Select Facilitator' ||
                 (facilitator === '' && facilitatorText !== 'No Facilitator Yet') ||
@@ -223,19 +241,108 @@ $(document).ready(function (e) {
             ) {
                 $('#facilitator').addClass('border-danger');
                 isValid = false;
-            }
-            //  Allow "No Facilitator Yet"
-            else if (facilitatorText === 'No Facilitator Yet') {
-                $('#facilitator').removeClass('border-danger');
-            }
-            //  Valid facilitator selected
-            else {
+            } else {
                 $('#facilitator').removeClass('border-danger');
             }
         }
 
+        return isValid;
+    }
 
-        if (!isValid) {
+    function validateStep2() {
+        let isValid = true;
+        const needsTransportation = $('#need_transportation_yes').is(':checked');
+
+        if (!needsTransportation) {
+            return true;
+        }
+
+        const requiredFields = [
+            '#outbound_pickup_time',
+            '#outbound_contact_number',
+            '#outbound_pickup_location',
+            '#outbound_dropoff_location'
+        ];
+
+        requiredFields.forEach(function (selector) {
+            const element = $(selector);
+            if ((element.val() || '').trim() === '') {
+                element.addClass('border-danger');
+                isValid = false;
+            } else {
+                element.removeClass('border-danger');
+            }
+        });
+
+        if ($('#return_trip_needed').is(':checked')) {
+            ['#return_pickup_time', '#return_contact_number', '#return_pickup_location', '#return_dropoff_location'].forEach(function (selector) {
+                const element = $(selector);
+                if ((element.val() || '').trim() === '') {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            });
+        }
+
+        if ($('#notify_coordinator').is(':checked')) {
+            const coordinator = $('#coordinator_to_notify').val();
+            if (!coordinator) {
+                $('#coordinator_to_notify').addClass('border-danger');
+                isValid = false;
+            } else {
+                $('#coordinator_to_notify').removeClass('border-danger');
+            }
+        }
+
+        return isValid;
+    }
+
+    $(document).on('change', 'input[name="need_transportation"]', toggleDriverArrangementFields);
+    $(document).on('change', '#return_trip_needed', function () {
+        if ($(this).is(':checked')) {
+            $('#return-trip-fields').removeClass('d-none');
+        } else {
+            $('#return-trip-fields').addClass('d-none');
+        }
+    });
+    $(document).on('change', '#notify_coordinator', function () {
+        if ($(this).is(':checked')) {
+            $('#coordinator-to-notify-container').removeClass('d-none');
+        } else {
+            $('#coordinator-to-notify-container').addClass('d-none');
+            $('#coordinator_to_notify').val('');
+        }
+    });
+
+    $(document).on('click', '#add_training_back', function (ev) {
+        ev.preventDefault();
+        showTrainingStep(1);
+    });
+
+    showTrainingStep(1);
+    toggleDriverArrangementFields();
+
+    $('#add_training_submit').click(function (e) {
+        e.preventDefault();
+
+        if (trainingWizardStep === 1) {
+            if (!validateStep1()) {
+                Swal.fire({
+                    title: 'Missing Fields!',
+                    text: 'Please fill in all required training details first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            showTrainingStep(2);
+            return;
+        }
+
+        if (!validateStep1() || !validateStep2()) {
             Swal.fire({
                 title: 'Missing Fields!',
                 text: 'Please fill in all required fields.',
@@ -310,14 +417,23 @@ $(document).ready(function (e) {
                 .val('')
                 .trigger('change');
 
+            $('#need_transportation_no').prop('checked', true);
+            $('#need_transportation_yes').prop('checked', false);
+            $('#return_trip_needed').prop('checked', false);
+            $('#notify_coordinator').prop('checked', false);
+            $('#outbound_pickup_time, #outbound_contact_number, #outbound_pickup_location, #outbound_dropoff_location, #return_pickup_time, #return_contact_number, #return_pickup_location, #return_dropoff_location, #coordinator_to_notify').val('');
+
             // Hide platform_other input
             $('#platform_other').addClass('d-none');
+            $('#driver-arrangement-fields, #return-trip-fields, #coordinator-to-notify-container').addClass('d-none');
 
             // Clear assistants list UI and state
             window.assistantsList = [];
             $('#assistant_list_container').empty();
             $('#assistant_list').val('');
             $('#assistant_select').val('').trigger('change');
+
+            showTrainingStep(1);
 
             // Clear datepicker selections if used
             $('#date-range').datepicker('clearDates');
@@ -448,6 +564,18 @@ $(document).ready(function (e) {
         formData.append('from_time', $('#time-start').val());
         formData.append('to_time', $('#time-end').val());
         formData.append('facilitator_id', $('#facilitator').find('option:selected').val());
+        formData.append('need_transportation', $('#need_transportation_yes').is(':checked') ? 'yes' : 'no');
+        formData.append('outbound_pickup_time', $('#outbound_pickup_time').val());
+        formData.append('outbound_contact_number', $('#outbound_contact_number').val());
+        formData.append('outbound_pickup_location', $('#outbound_pickup_location').val());
+        formData.append('outbound_dropoff_location', $('#outbound_dropoff_location').val());
+        formData.append('return_trip_needed', $('#return_trip_needed').is(':checked') ? '1' : '0');
+        formData.append('return_pickup_time', $('#return_pickup_time').val());
+        formData.append('return_contact_number', $('#return_contact_number').val());
+        formData.append('return_pickup_location', $('#return_pickup_location').val());
+        formData.append('return_dropoff_location', $('#return_dropoff_location').val());
+        formData.append('notify_coordinator', $('#notify_coordinator').is(':checked') ? '1' : '0');
+        formData.append('coordinator_to_notify', $('#coordinator_to_notify').val() || '');
 
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);

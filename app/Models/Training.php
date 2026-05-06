@@ -23,6 +23,18 @@ class Training extends Model
         'mode',
         'location',
         'account_id',
+        'need_transportation',
+        'outbound_pickup_time',
+        'outbound_contact_number',
+        'outbound_pickup_location',
+        'outbound_dropoff_location',
+        'return_trip_needed',
+        'return_pickup_time',
+        'return_contact_number',
+        'return_pickup_location',
+        'return_dropoff_location',
+        'notify_coordinator',
+        'coordinator_to_notify',
         'is_updated',
         // 'credentials_id', --if credentials object is done
     ];
