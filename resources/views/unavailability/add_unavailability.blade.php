@@ -3,19 +3,17 @@
 
 
 @section('maincontent')
-    <div class="d-flex justify-content-center align-items-center mt-20 ">
+    <div class="d-flex justify-content-center align-items-center mt-20">
         <div class="container mt-5 ">
-            <!-- Card -->
-            <div class="card shadow-sm rounded-3">
-                <!-- Title -->
-                <div class="d-flex justify-content-center align-items-center mb-0 bg-primary rounded-top h-80px" >
+            <div class="shadow-sm border-0">
+                <div class="alps-header-add rounded-top d-flex justify-content-center align-items-center py-4">
                     <h2 class="text-white fw-boldest m-0 fs-1">ADD UNAVAILABILITY</h2>
                 </div>
-                <!-- Form -->
-                <div class="p-20 pt-10 pb-6 ">
+
+                <div class="alps-card-glass-body p-20 pt-10 pb-6">
 
                     <div class="text-center mb-10">
-                        <h3 class="text-center alps-page-title">{{ $user->name }}</h3>
+                        <h3 class="text-center alps-type-h3">{{ $user->name }}</h3>
 
                         @if ($user->usertype === "admin")
 
@@ -33,7 +31,7 @@
 
                     </div>
 
-                    <form id="add_unavailability_form">
+                    <form id="add_unavailability_form" class="form">
                     <!--Select Date-->
                     <div class="row mb-4">
                         <div class="col-md-4">
@@ -57,9 +55,9 @@
                     <!-- Buttons -->
                     <div class="d-flex justify-content-center gap-5 ">
                         <a href="{{ route('calendar') }}">
-                            <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
+                            <button type="button" class="btn btn-tertiary fw-boldest">CANCEL</button>
                         </a>
-                        <button type="submit" id="add_unavailability_submit" class="btn btn-success fw-boldest">SAVE</button>
+                        <button type="submit" id="add_unavailability_submit" class="btn btn-primary btn-green fw-boldest">SAVE</button>
                     </div>
                     </form>
                 </div>
