@@ -4,7 +4,7 @@
 <div class="container mt-5 d-flex justify-content-center align-items-center">
     <div class="container mt-5 alps-card">
         <!-- Title -->
-        <div class="mb-4">
+        <div class="mt- mb-4">
             <h2 class="alps-type-h2">Manage Access</h2>
         </div>
 
@@ -19,8 +19,8 @@
 
                 <!-- FILTER Button with Menu (secondary orange) -->
                 <div class="position-relative">
-                    <button class="btn btn-secondary btn-orange rounded-3 fw-boldest d-flex align-items-center btn-hover-rise dropdown-toggle"
-                        data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end" data-kt-menu-attach="parent" data-kt-menu-overflow="true">
+                    <button class="btn btn-secondary btn-orange rounded-3 fw-boldest d-flex align-items-center btn-hover-rise"
+                        data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
                         <i class="bi bi-funnel me-1"></i> FILTER
                     </button>
 
@@ -50,7 +50,7 @@
                                 </div>
                             </form>
                             <div class="d-flex justify-content-end">
-                                <button type="reset" class="btn btn-sm btn-secondary btn-blue me-2" id="accessFilterReset"
+                                <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2" id="accessFilterReset"
                                     data-kt-menu-dismiss="true">RESET</button>
                             </div>
                         </div>
@@ -142,36 +142,34 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="position-relative d-inline-block">
-                                    <!--begin::Menu-->
-                                        <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
-                                            data-kt-menu-trigger="click"
-                                            data-kt-menu-placement="bottom-start" data-kt-menu-attach="parent" data-kt-menu-overflow="true">
-                                        MENU
-                                    </button>
-                                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-225px py-4"
-                                        data-kt-menu="true">
+                                <!--begin::Menu-->
+                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                                    data-kt-menu-trigger="click"
+                                    data-kt-menu-placement="bottom-start">
+                                    MENU
+                                </button>
+                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4"
+                                    data-kt-menu="true">
 
-                                        <div class="menu-item px-3">
-                                            <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_view_user">
-                                                <i class="bi bi-pencil-square text-primary me-2"></i> View & Edit Details
-                                            </a>
-                                        </div>
-
-                                        <div class="menu-item px-3">
-                                            <a href="{{ route('change_credential', [$user->id]) }}" id="edit-credential-btn" class="menu-link px-3">
-                                                <i class="bi bi-unlock-fill text-info me-2"></i> Change Credentials
-                                            </a>
-                                        </div>
-
-                                        <div class="menu-item px-3">
-                                            <a class="menu-link px-3 deleteBtn" data-id="{{ $user->id }}">
-                                                <i class="bi bi-trash text-danger me-2"></i> Delete
-                                            </a>
-                                        </div>
+                                    <div class="menu-item px-3">
+                                        <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_view_user">
+                                            <i class="bi bi-pencil-square text-primary me-2"></i> View & Edit Details
+                                        </a>
                                     </div>
-                                    <!--end::Menu-->
+
+                                    <div class="menu-item px-3">
+                                    <a href="{{ route('change_credential', [$user->id]) }}" id="edit-credential-btn" class="menu-link px-3">
+                                        <i class="bi bi-unlock-fill text-info me-2"></i> Change Credentials
+                                    </a>
+                                    </div>
+
+                                    <div class="menu-item px-3">
+                                        <a class="menu-link px-3 deleteBtn" data-id="{{ $user->id }}">
+                                            <i class="bi bi-trash text-danger me-2"></i> Delete
+                                        </a>
+                                    </div>
                                 </div>
+                                <!--end::Menu-->
                             </td>
                         </tr>
 
@@ -203,9 +201,7 @@
                     <input class="event-id" type="hidden">
                     <!--begin::Modal header-->
                     <div class="modal-header">
-                        <div class="d-flex flex-column">
-                            <h3 class="alps-type-h3 alps-modal-heading" data-kt-calendar="title">View User</h3>
-                        </div>
+                        <h2 class="fw-boldest alps-modal-heading" data-kt-calendar="title">VIEW USER</h2>
                         <div class="btn btn-sm btn-icon btn-active-color-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                             <span class="svg-icon svg-icon-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -231,7 +227,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="role">
-                                        Not ready
+                                        System Admin
                                     </p>
                                 </div>
                             </div>
@@ -250,7 +246,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="fullname">
-                                        Not ready
+                                        Kimberly Mae Maglaque Kho II
                                     </p>
                                 </div>
                             </div>
@@ -269,7 +265,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="email">
-                                        Not ready
+                                        kimlykho27@gmail.com
                                     </p>
                                 </div>
                             </div>
@@ -288,7 +284,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="num">
-                                        Not ready
+                                        09205119555
                                     </p>
                                 </div>
                             </div>
@@ -305,7 +301,7 @@
                                 <div class="image-input image-input-outline border border-2" data-kt-image-input="true">
                                     <!--begin::Preview existing avatar-->
                                     <div class="image-input-wrapper w-125px h-125px" id="idpic">
-                                        <div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted fs-8">No data yet</div>
+
                                     </div>
                                     <!--end::Preview existing avatar-->
                                 </div>
@@ -326,7 +322,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="username">
-                                        Not ready
+                                        kim.admin
                                     </p>
                                 </div>
                             </div>
@@ -345,7 +341,7 @@
                             <div class="col-7">
                                 <div class="fv-row d-flex justify-content-end align-items-center">
                                     <p class="lead fs-6 mb-0" id="pass">
-                                        Not ready
+                                        ********
                                     </p>
                                 </div>
                             </div>
@@ -374,7 +370,7 @@
                     <!--begin::Modal footer-->
                     <div class="modal-footer justify-content-end">
                         <!--begin::Button-->
-                        <a href="#" id="edit-user-btn" class="btn btn-primary btn-orange me-2">
+                        <a href="#" id="edit-user-btn" class="btn btn-primary me-2">
                             <i class="bi bi-pencil-fill me-2"></i>EDIT
                         </a>
 
@@ -402,26 +398,6 @@
 <script>
     $(document).ready(function (){
 
-        const detailsFieldIds = ['role', 'fullname', 'email', 'num', 'username', 'pass'];
-
-        function setLoadingState() {
-            detailsFieldIds.forEach((id) => {
-                $('#' + id).html('<span class="placeholder col-8"></span>');
-            });
-
-            $('#idpic').html('<span class="placeholder w-125px h-125px rounded"></span>');
-            $('#color').css('background-color', 'transparent');
-        }
-
-        function setNotReadyState(message = 'Not Ready') {
-            detailsFieldIds.forEach((id) => {
-                $('#' + id).text('Not ready');
-            });
-
-            $('#idpic').html('<div class="w-100 h-100 d-flex align-items-center justify-content-center text-muted fs-8">No data yet</div>');
-            $('#color').css('background-color', 'transparent');
-        }
-
         $('.user-color-chip').each(function() {
             const swatchColor = $(this).data('color');
             if (swatchColor) {
@@ -429,14 +405,8 @@
             }
         });
 
-        setNotReadyState();
-
-        // Use event delegation to work even after modal is moved to body
-        $(document).on('click', 'a[data-bs-target="#modal_view_user"]', function (e){
+        $('a[data-bs-target="#modal_view_user"]').click(function (e){
             let userId = $(this).closest('tr').attr('row-id');  // Get user ID
-            console.log('Fetching user:', userId);
-
-            setLoadingState();
 
             $.ajax({
                 url: `/access/api/get/user/${userId}`,
@@ -481,8 +451,7 @@
 
                 },
                 error: function(xhr) {
-                    console.error('Error fetching user:', userId, xhr.responseJSON?.error || xhr.statusText || 'An error occurred');
-                    setNotReadyState('Unable to load');
+                    console.error('Error:', xhr.responseJSON?.error || 'An error occurred');
                 }
             });
 
