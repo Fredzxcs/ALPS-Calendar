@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\TrainingNotificationMail;
+use App\Mail\DriverNotificationMail;
 use App\Mail\TrainingReassignmentMail;
 use App\Mail\CancelledTrainingMail;
 use App\Services\GoogleCalendarService;
@@ -222,7 +223,14 @@ class TrainingController extends Controller
                         'data' => $trainingInfo ? $trainingInfo->toArray() : 'NULL',
                     ]);
 
-                    Mail::to($facilitator->email)->send(new TrainingNotificationMail($trainingInfo, $facilitator));
+                    try {
+                        Mail::to($facilitator->email)->send(new TrainingNotificationMail($trainingInfo, $facilitator));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send facilitator notification', [
+                            'to' => $facilitator->email,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
                 
                     // Notify assistants by email as well
                     if (!empty($request->assistant)) {
@@ -231,10 +239,33 @@ class TrainingController extends Controller
                             if (is_numeric($aid)) {
                                 $aUser = User::find((int) $aid);
                                 if ($aUser && !empty($aUser->email)) {
-                                    Mail::to($aUser->email)->send(new TrainingNotificationMail($trainingInfo, $aUser));
+                                    try {
+                                        Mail::to($aUser->email)->send(new TrainingNotificationMail($trainingInfo, $aUser));
+                                    } catch (\Exception $e) {
+                                        Log::error('Failed to send assistant notification', [
+                                            'to' => $aUser->email,
+                                            'assistant_id' => $aUser->id ?? null,
+                                            'exception' => $e->getMessage(),
+                                        ]);
+                                    }
                                 }
                             }
                         }
+                    }
+                    // Notify coordinator about driver arrangement if requested
+                    if ($request->boolean('notify_coordinator') && !empty($request->coordinator_to_notify)) {
+                        $coord = User::find($request->coordinator_to_notify);
+                            if ($coord && !empty($coord->email)) {
+                                try {
+                                    Mail::to($coord->email)->send(new DriverNotificationMail($trainingInfo, $coord));
+                                } catch (\Exception $e) {
+                                    Log::error('Failed to send coordinator driver notification', [
+                                        'to' => $coord->email,
+                                        'coordinator_id' => $coord->id ?? null,
+                                        'exception' => $e->getMessage(),
+                                    ]);
+                                }
+                            }
                     }
                 } else {
                     \Log::warning('Facilitator email not found', ['facilitator' => $facilitator]);
@@ -410,22 +441,58 @@ class TrainingController extends Controller
             // === Email Notification Logic ===
             if ($facilitatorChanged) {
                 // Facilitator changed
-                Mail::to($previousFacilitator->email)
-                    ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, $newFacilitator));
+                if ($previousFacilitator && !empty($previousFacilitator->email)) {
+                    try {
+                        Mail::to($previousFacilitator->email)
+                            ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, $newFacilitator));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send reassignment mail to previous facilitator', [
+                            'to' => $previousFacilitator->email ?? null,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
+                }
 
-                Mail::to($newFacilitator->email)
-                    ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+                if ($newFacilitator && !empty($newFacilitator->email)) {
+                    try {
+                        Mail::to($newFacilitator->email)
+                            ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send notification mail to new facilitator', [
+                            'to' => $newFacilitator->email ?? null,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
+                }
             } elseif ($newFacilitator) {
                 // Facilitator unchanged, send update email
-                Mail::to($newFacilitator->email)
-                    ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+                if (!empty($newFacilitator->email)) {
+                    try {
+                        Mail::to($newFacilitator->email)
+                            ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send update mail to facilitator', [
+                            'to' => $newFacilitator->email ?? null,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
+                }
 
                 // Reset is_updated back to false after sending the email
                 $trainingSession->update(['is_updated' => false]);
             } elseif ($previousFacilitator && !$newFacilitator) {
                 // Facilitator removed, notify previous facilitator
-                Mail::to($previousFacilitator->email)
-                    ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, null));
+                if ($previousFacilitator && !empty($previousFacilitator->email)) {
+                    try {
+                        Mail::to($previousFacilitator->email)
+                            ->send(new TrainingReassignmentMail($trainingSession, $previousFacilitator, null));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send reassignment mail (facilitator removed)', [
+                            'to' => $previousFacilitator->email ?? null,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
+                }
             }
 
             return response()->json([
@@ -464,8 +531,17 @@ class TrainingController extends Controller
             {
                 $facilitator = User::findOrFail($trainingSession->facilitator_id);
 
-                Mail::to($facilitator->email)
-                    ->send(new CancelledTrainingMail($trainingSession, $facilitator));
+                if ($this->shouldSendMailTo($facilitator->email)) {
+                    try {
+                        Mail::to($facilitator->email)
+                            ->send(new CancelledTrainingMail($trainingSession, $facilitator));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send cancellation mail to facilitator', [
+                            'to' => $facilitator->email ?? null,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
+                }
             }
 
             $schedule = Schedule::where('training_id', $trainingSession->id)->first();

@@ -17,6 +17,8 @@ use App\Models\Schedule;
 use App\Models\User;
 use App\Services\GoogleCalendarService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DriverNotificationMail;
 
 class DemoController extends Controller
 {
@@ -420,6 +422,24 @@ class DemoController extends Controller
                 }
             } catch (\Exception $e) {
                 Log::error('Google Calendar sync failed in demo mode: ' . $e->getMessage());
+            }
+
+            // Notify coordinator about driver arrangement if requested (demo mode)
+            if ($request->boolean('notify_coordinator') && !empty($request->coordinator_to_notify)) {
+                $coord = User::find($request->coordinator_to_notify);
+                if ($coord && !empty($coord->email)) {
+                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                                ->find($training->id);
+                    try {
+                        Mail::to($coord->email)->send(new DriverNotificationMail($trainingInfo, $coord));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send coordinator driver notification (demo)', [
+                            'to' => $coord->email,
+                            'coordinator_id' => $coord->id ?? null,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
+                }
             }
 
             return response()->json([
