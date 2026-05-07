@@ -195,6 +195,36 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Platform -->
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-display fs-3 me-5 alps-icon-accent"></i>Platform
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-platform">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Conference Link -->
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-link-45deg fs-3 me-5 alps-icon-accent"></i>Conference Link
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6 text-break" id="modal-conference-link">N/A</p>
+                            </div>
+                        </div>
+                    </div>
                     <!-- Date -->
                     <!-- <div class="row mb-5 justify-content-between align-items-center">
                         <div class="col-5">
@@ -275,6 +305,175 @@
                         <div class="col-7">
                             <div class="fv-row d-flex justify-content-end align-items-center">
                                 <p class="lead fs-6" id="modal-in-person">Yes</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Driver Arrangement -->
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-truck fs-3 me-5 alps-icon-accent"></i>Transportation Needed
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-transportation-needed">No</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-clock-fill fs-3 me-5 alps-icon-accent"></i>Outbound Pickup Time
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-outbound-pickup-time">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-telephone-fill fs-3 me-5 alps-icon-accent"></i>Outbound Contact Number
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-outbound-contact-number">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-geo-alt-fill fs-3 me-5 alps-icon-accent"></i>Outbound Pickup Location
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-outbound-pickup-location">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-geo fs-3 me-5 alps-icon-accent"></i>Outbound Dropoff Location
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-outbound-dropoff-location">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-arrow-repeat fs-3 me-5 alps-icon-accent"></i>Return Trip Needed
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-return-trip-needed">No</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-clock-history fs-3 me-5 alps-icon-accent"></i>Return Pickup Time
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-return-pickup-time">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-telephone fs-3 me-5 alps-icon-accent"></i>Return Contact Number
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-return-contact-number">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-pin-map-fill fs-3 me-5 alps-icon-accent"></i>Return Pickup Location
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-return-pickup-location">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-geo-alt fs-3 me-5 alps-icon-accent"></i>Return Dropoff Location
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-return-dropoff-location">N/A</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-bell-fill fs-3 me-5 alps-icon-accent"></i>Notify Coordinator
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-notify-coordinator">No</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-5 justify-content-between align-items-center">
+                        <div class="col-5">
+                            <div class="fv-row">
+                                <label class="fs-6 fw-bold mb-2">
+                                    <i class="bi bi-person-badge-fill fs-3 me-5 alps-icon-accent"></i>Coordinator to Notify
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-7">
+                            <div class="fv-row d-flex justify-content-end align-items-center">
+                                <p class="lead fs-6" id="modal-coordinator-to-notify">N/A</p>
                             </div>
                         </div>
                     </div>

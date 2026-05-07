@@ -10,6 +10,40 @@ document.addEventListener("DOMContentLoaded", function () {
     const inpersonCheckbox = document.getElementById("inperson-training");
     const companyCourseContainer = document.getElementById("company-course-container");
     const publicCourseContainer = document.getElementById("public-course-container");
+    const conferenceLinkContainer = document.getElementById("conference-link-container");
+    const conferenceLinkRequired = document.getElementById("conference-link-required");
+    const conferenceLinkInput = document.getElementById("conference_link");
+
+    // Update conference link visibility and requirement based on mode and in-person status
+    function updateConferenceLinkState() {
+        const selectedMode = document.querySelector('input[name="mode"]:checked')?.id;
+        
+        if (selectedMode === "face-to-face") {
+            // Hide for Face-to-Face
+            conferenceLinkContainer.classList.add("d-none");
+            conferenceLinkRequired.classList.add("d-none");
+            conferenceLinkInput.removeAttribute("required");
+        } else if (selectedMode === "virtual") {
+            // Show for Virtual, not required
+            conferenceLinkContainer.classList.remove("d-none");
+            conferenceLinkRequired.classList.add("d-none");
+            conferenceLinkInput.removeAttribute("required");
+        } else if (selectedMode === "public-course") {
+            // For Public Course, show/hide based on in-person checkbox
+            const isInPerson = inpersonCheckbox.checked;
+            if (isInPerson) {
+                // In-person training is checked, hide conference link
+                conferenceLinkContainer.classList.add("d-none");
+                conferenceLinkRequired.classList.add("d-none");
+                conferenceLinkInput.removeAttribute("required");
+            } else {
+                // In-person training is unchecked, show conference link (not required, no asterisk)
+                conferenceLinkContainer.classList.remove("d-none");
+                conferenceLinkRequired.classList.add("d-none");
+                conferenceLinkInput.removeAttribute("required");
+            }
+        }
+    }
 
     // Mode of Training Logic
     modeRadios.forEach(radio => {
@@ -33,11 +67,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 companyCourseContainer.classList.add("d-none");
                 locationContainer.classList.add("d-none");
             }
+            updateConferenceLinkState();
         });
     });
 
     // In-person Checkbox Logic
     inpersonCheckbox.addEventListener("change", function () {
+        const selectedMode = document.querySelector('input[name="mode"]:checked')?.id;
+        
         if (inpersonCheckbox.checked) {
             credentialsContainer.classList.add("d-none");
             locationContainer.classList.remove("d-none");
@@ -45,7 +82,15 @@ document.addEventListener("DOMContentLoaded", function () {
             credentialsContainer.classList.remove("d-none");
             locationContainer.classList.add("d-none");
         }
+        
+        // Update conference link when in-person status changes
+        if (selectedMode === "public-course") {
+            updateConferenceLinkState();
+        }
     });
+
+    // Initialize conference link state
+    updateConferenceLinkState();
 });
 
 function formatDate(date) {

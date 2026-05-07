@@ -45,6 +45,29 @@ class DemoController extends Controller
         return collect($this->fixtures($file))->map(fn (array $row) => (object) $row);
     }
 
+    private function resolveAssistantNames(?string $assistantValue): string
+    {
+        if (trim((string) $assistantValue) === '') {
+            return '';
+        }
+
+        $assistantIds = array_filter(array_map('trim', explode(',', (string) $assistantValue)));
+        $names = [];
+
+        foreach ($assistantIds as $assistantId) {
+            if (!is_numeric($assistantId)) {
+                continue;
+            }
+
+            $user = User::find((int) $assistantId);
+            if ($user && !empty($user->name)) {
+                $names[] = $user->name;
+            }
+        }
+
+        return implode(', ', $names);
+    }
+
     private function findUser(int $id): ?array
     {
         return collect($this->fixtures('users.json'))->firstWhere('id', $id);
@@ -496,11 +519,25 @@ class DemoController extends Controller
                     'course_id' => $training->course_id,
                     'mode' => $training->mode,
                     'platform' => $training->platform,
+                    'conference_link' => $training->conference_link,
                     'location' => $training->location,
                     'assistant' => $training->assistant,
+                    'assistant_names' => $this->resolveAssistantNames($training->assistant ?? ''),
                     'facilitator_id' => $training->facilitator_id,
                     'company_id' => $training->company_id,
                     'account_id' => $training->account_id,
+                    'need_transportation' => $training->need_transportation,
+                    'outbound_pickup_time' => $training->outbound_pickup_time,
+                    'outbound_contact_number' => $training->outbound_contact_number,
+                    'outbound_pickup_location' => $training->outbound_pickup_location,
+                    'outbound_dropoff_location' => $training->outbound_dropoff_location,
+                    'return_trip_needed' => $training->return_trip_needed,
+                    'return_pickup_time' => $training->return_pickup_time,
+                    'return_contact_number' => $training->return_contact_number,
+                    'return_pickup_location' => $training->return_pickup_location,
+                    'return_dropoff_location' => $training->return_dropoff_location,
+                    'notify_coordinator' => $training->notify_coordinator,
+                    'coordinator_to_notify' => $training->coordinator_to_notify,
                     'course' => $training->course ? [
                         'id' => $training->course->id,
                         'course_code' => $training->course->course_code,

@@ -112,9 +112,9 @@
                         </div>
 
                         <!-- Conference Call Link -->
-                        <div class="row mb-4">
+                        <div class="row mb-4" id="conference-link-container">
                             <div class="col-md-12">
-                                <label for="conference_link" class="fw-bold mb-2">Conference Call Link</label>
+                                <label for="conference_link" class="fw-bold mb-2"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="text-danger d-none"> *</span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="form-control form-control-solid"
                                     placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)">
                             </div>

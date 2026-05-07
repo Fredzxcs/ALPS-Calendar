@@ -22,6 +22,29 @@ use Illuminate\Support\Facades\Auth;
 
 class TrainingController extends Controller
 {
+    private function resolveAssistantNames(?string $assistantValue): string
+    {
+        if (trim((string) $assistantValue) === '') {
+            return '';
+        }
+
+        $assistantIds = array_filter(array_map('trim', explode(',', (string) $assistantValue)));
+        $names = [];
+
+        foreach ($assistantIds as $assistantId) {
+            if (!is_numeric($assistantId)) {
+                continue;
+            }
+
+            $user = User::find((int) $assistantId);
+            if ($user && !empty($user->name)) {
+                $names[] = $user->name;
+            }
+        }
+
+        return implode(', ', $names);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -322,7 +345,10 @@ class TrainingController extends Controller
     public function getTraining(Request $request)
     {
         // Include the newly added relationships: course and company
-        $trainings = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])->get();
+        $trainings = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])->get()->map(function ($training) {
+            $training->assistant_names = $this->resolveAssistantNames($training->assistant ?? '');
+            return $training;
+        });
 
         if ($trainings->isNotEmpty()) {
             return response()->json([
