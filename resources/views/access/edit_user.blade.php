@@ -1,15 +1,14 @@
 @extends('global.layout')
 @section('maincontent')
 <!--FOR EDIT USER, SAME LANG SA ADD BUT WALA YUNG STEP 3 AND YUNG CURRENT VALUES NAKALAGAY SA FIELDS-->
-<div class="d-flex justify-content-center align-items-center">
+    <div class="d-flex justify-content-center align-items-center mt-20">
     <div class="container mt-5">
-        <div class="card shadow-sm  pt-0 pb-1 mt-20">
-            <!-- Title -->
-            <div class="d-flex justify-content-center align-items-center mb-4 rounded-top bg-primary alps-fixed-titlebar">
-                <h2 class="text-white fw-boldest m-0 fs-1">EDIT USER</h2>
+        <div class="shadow-sm border-0">
+            <div class="alps-header-edit rounded-top d-flex justify-content-center align-items-center py-4">
+                <h2 class="text-white fw-boldest m-0 fs-1">Edit User</h2>
             </div>
             <!--begin::Stepper-->
-            <div class="stepper stepper-pills" id="kt_stepper_example_basic">
+            <div class="stepper stepper-pills alps-card-glass-body p-md-10" id="kt_stepper_example_basic">
                 <!--begin::Nav-->
                 <div class="stepper-nav flex-center flex-wrap mb-10">
                     <!--begin::Step 1-->
@@ -88,7 +87,7 @@
                             <input type="hidden" id="userId" value="{{ $user->id ?? '' }}"> 
                             <!--begin::Option-->
                             <input type="radio" class="btn-check" name="radio_buttons_2" value="admin" checked="checked"  id="kt_radio_buttons_2_option_0"/>
-                            <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-5" for="kt_radio_buttons_2_option_0">
+                            <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex justify-content-start mb-5 role-option-label" for="kt_radio_buttons_2_option_0">
                                 <!--begin::Svg Icon | path: icons/duotune/coding/cod001.svg-->
                                 <span class="svg-icon svg-icon-4x me-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
@@ -105,7 +104,7 @@
                             <!--end::Option-->
                             <!--begin::Option-->
                             <input type="radio" class="btn-check" name="radio_buttons_2" value="coordinator"  id="kt_radio_buttons_2_option_1"/>
-                            <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center mb-5" for="kt_radio_buttons_2_option_1">
+                            <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex justify-content-start mb-5 role-option-label" for="kt_radio_buttons_2_option_1">
                                 <!--begin::Svg Icon | path: icons/duotune/coding/cod001.svg-->
                                 <span class="svg-icon svg-icon-4x me-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-briefcase-fill" viewBox="0 0 16 16">
@@ -124,7 +123,7 @@
 
                             <!--begin::Option-->
                             <input type="radio" class="btn-check" name="radio_buttons_2" value="facilitator" id="kt_radio_buttons_2_option_2"/>
-                            <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex align-items-center" for="kt_radio_buttons_2_option_2">
+                            <label class="btn btn-outline btn-outline-dashed btn-outline-default p-7 d-flex justify-content-start role-option-label" for="kt_radio_buttons_2_option_2">
                                 <!--begin::Svg Icon | path: icons/duotune/communication/com003.svg-->
                                 <span class="svg-icon svg-icon-4x me-4">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16">

@@ -142,34 +142,39 @@
                                 </div>
                             </td>
                             <td>
-                                <!--begin::Menu-->
-                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
-                                    data-kt-menu-trigger="click"
-                                    data-kt-menu-placement="bottom-start">
-                                    MENU
-                                </button>
-                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-7 w-200px py-4"
-                                    data-kt-menu="true">
+                                <div class="position-relative d-inline-block">
+                                    <!--begin::Menu-->
+                                    <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                                        data-kt-menu-trigger="click"
+                                        data-kt-menu-placement="right-start">
+                                        MENU
+                                    </button>
 
-                                    <div class="menu-item px-3">
-                                        <a class="menu-link px-3" data-bs-toggle="modal" data-bs-target="#modal_view_user">
-                                            <i class="bi bi-pencil-square text-primary me-2"></i> View & Edit Details
-                                        </a>
-                                    </div>
+                                    <div class="menu menu-sub menu-sub-dropdown alps-action-menu" data-kt-menu="true">
 
-                                    <div class="menu-item px-3">
-                                    <a href="{{ route('change_credential', [$user->id]) }}" id="edit-credential-btn" class="menu-link px-3">
-                                        <i class="bi bi-unlock-fill text-info me-2"></i> Change Credentials
-                                    </a>
-                                    </div>
+                                        <div class="menu-item px-0">
+                                            <a class="menu-link px-4 py-3 alps-action-link" data-bs-toggle="modal" data-bs-target="#modal_view_user">
+                                                <i class="bi bi-pencil-square text-primary me-3 fs-5"></i>
+                                                <span class="alps-action-text">View & Edit Details</span>
+                                            </a>
+                                        </div>
 
-                                    <div class="menu-item px-3">
-                                        <a class="menu-link px-3 deleteBtn" data-id="{{ $user->id }}">
-                                            <i class="bi bi-trash text-danger me-2"></i> Delete
-                                        </a>
+                                        <div class="menu-item px-0">
+                                            <a href="{{ route('change_credential', [$user->id]) }}" id="edit-credential-btn" class="menu-link px-4 py-3 alps-action-link">
+                                                <i class="bi bi-lock-fill me-3 fs-5" style="color: #804AC0;"></i>
+                                                <span class="alps-action-text">Change Credentials</span>
+                                            </a>
+                                        </div>
+
+                                        <div class="menu-item px-0">
+                                            <a class="menu-link px-4 py-3 alps-action-link deleteBtn" data-id="{{ $user->id }}">
+                                                <i class="bi bi-trash text-danger me-3 fs-5"></i>
+                                                <span class="alps-action-text">Delete</span>
+                                            </a>
+                                        </div>
                                     </div>
+                                    <!--end::Menu-->
                                 </div>
-                                <!--end::Menu-->
                             </td>
                         </tr>
 

@@ -1,14 +1,13 @@
 @extends('global.layout')
 @section('maincontent')
-<div class="d-flex justify-content-center align-items-center">
+    <div class="d-flex justify-content-center align-items-center mt-20">
     <div class="container mt-5">
-        <div class="card shadow-sm  pt-0 pb-1 mt-20">
-            <!-- Title -->
-            <div class="d-flex justify-content-center align-items-center mb-4 rounded-top bg-primary alps-fixed-titlebar">
-                <h2 class="text-white fw-boldest m-0 fs-1">CHANGE CREDENTIALS</h2>
+        <div class="shadow-sm border-0">
+            <div class="alps-header-edit rounded-top d-flex justify-content-center align-items-center py-4">
+                <h2 class="text-white fw-boldest m-0 fs-1">Change Credentials</h2>
             </div>
             <!--begin::Form-->
-            <form class="form mx-auto w-75 px-5" novalidate="novalidate" id="change_credentials_form">
+            <form class="form mx-auto w-75 px-5 alps-card-glass-body p-10" novalidate="novalidate" id="change_credentials_form">
                 @csrf
                 <!--begin::Group-->
                 <div class="mb-5 my-10">

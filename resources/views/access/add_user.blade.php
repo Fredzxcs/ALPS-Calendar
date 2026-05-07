@@ -329,7 +329,7 @@
 
                             <!--begin::Wrapper-->
                             <div>
-                                <button type="button" class="btn btn-success" id="add_user_submit" data-kt-stepper-action="submit">
+                                <button type="button" class="btn btn-primary btn-green" id="add_user_submit" data-kt-stepper-action="submit">
                                     <span class="indicator-label">
                                         SAVE
                                     </span>
