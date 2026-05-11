@@ -849,11 +849,23 @@ class DemoController extends Controller
 
     public function deleteTraining(int $id): JsonResponse
     {
-        return response()->json([
-            'success' => true,
-            'message' => 'Training deleted successfully (demo mode)',
-            'id' => $id,
-        ]);
+        try {
+            $trainingController = new TrainingController();
+            return $trainingController->destroy((string) $id);
+        } catch (\Exception $e) {
+            \Log::error('TrainingController::destroy() threw exception', [
+                'id' => $id,
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting training: ' . $e->getMessage(),
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function addUnavailabilityForm(): View

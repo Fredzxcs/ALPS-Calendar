@@ -22,6 +22,21 @@ use Illuminate\Support\Facades\Auth;
 
 class TrainingController extends Controller
 {
+    private function shouldSendMailTo(?string $email): bool
+    {
+        if (empty($email)) {
+            return false;
+        }
+
+        // Avoid sending in local/demo-style placeholder accounts.
+        $normalized = strtolower(trim($email));
+        if (str_contains($normalized, '@example.com') || str_contains($normalized, '@alps.local')) {
+            return false;
+        }
+
+        return true;
+    }
+
     private function resolveAssistantNames(?string $assistantValue): string
     {
         if (trim((string) $assistantValue) === '') {

@@ -236,7 +236,21 @@ document.addEventListener('DOMContentLoaded', function () {
         //Delete training button
         document.querySelectorAll('.deleteBtn').forEach(button => {
             button.addEventListener('click', (event) => {
-                // event.preventDefault(); // Prevent default action (e.g., form submission)
+                event.preventDefault();
+                event.stopPropagation();
+
+                // Avoid keeping focus inside hidden modal/popover ancestors.
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    document.activeElement.blur();
+                }
+
+                const modalElement = document.getElementById('kt_modal_view_training');
+                if (modalElement && modalElement.classList.contains('show')) {
+                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                    if (modalInstance) {
+                        modalInstance.hide();
+                    }
+                }
 
                 Swal.fire({
                     title: 'Are you sure?',
