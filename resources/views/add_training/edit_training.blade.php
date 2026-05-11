@@ -12,7 +12,30 @@
                 <!-- Form -->
                 <div class="p-20 pt-10 pb-6 ">
                     <form>
-                        @csrf
+                        @php
+                            $currentUser = auth()->user();
+                            $googleConnected = ($currentUser instanceof \App\Models\User && !empty($currentUser->google_refresh_token)) || session('google_connected', false);
+                        @endphp
+
+                        <div class="alert {{ $googleConnected ? 'alert-success' : 'alert-warning' }} d-flex align-items-center justify-content-between mb-6">
+                            <div>
+                                <div class="fw-bold mb-1">Google Calendar</div>
+                                <div class="fs-7">
+                                    {{ $googleConnected ? 'This account is connected and can sync training events.' : 'Connect your Google account to sync trainings and send invites.' }}
+                                </div>
+                            </div>
+                            <div class="ms-3">
+                                @if ($googleConnected)
+                                    <span class="badge badge-light-success">Connected</span>
+                                @else
+                                    <a href="{{ route('google.redirect', ['from' => 'edit_training']) }}" class="btn btn-sm btn-primary fw-boldest">
+                                        + Connect Google Calendar
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div id="training-step-1">
                         <!-- Mode of Training -->
                         <div class="mb-4">
                             <label class="fw-bold mb-2 required">Mode of Training</label>
@@ -91,7 +114,22 @@
 
                             <div class="col-md-6" id="platform-container">
                                 <label for="platform" class="fw-bold mb-2">Platform</label>
-                                <input type="text" value="{{ $training->platform }}" name="platform" id="platform" class="form-control form-control-solid" placeholder="Enter Platform (e.g. Zoom)">
+                                <select id="platform" class="form-select form-select-solid">
+                                    <option value="" selected disabled>Select Platform</option>
+                                    <option value="Zoom" {{ $training->platform === 'Zoom' ? 'selected' : '' }}>Zoom</option>
+                                    <option value="Google Meet" {{ $training->platform === 'Google Meet' ? 'selected' : '' }}>Google Meet</option>
+                                    <option value="MS Teams" {{ $training->platform === 'MS Teams' ? 'selected' : '' }}>MS Teams</option>
+                                    <option value="other" {{ !in_array($training->platform, ['Zoom', 'Google Meet', 'MS Teams']) && !empty($training->platform) ? 'selected' : '' }}>Other</option>
+                                </select>
+                                <input type="text" name="platform_other" id="platform_other" class="form-control form-control-solid {{ !in_array($training->platform, ['Zoom', 'Google Meet', 'MS Teams']) && !empty($training->platform) ? '' : 'd-none' }} mt-2" placeholder="Enter platform name" value="{{ !in_array($training->platform, ['Zoom', 'Google Meet', 'MS Teams']) ? $training->platform : '' }}">
+                            </div>
+                        </div>
+
+                        <!-- Conference Call Link -->
+                        <div class="row mb-4" id="conference-link-container">
+                            <div class="col-md-12">
+                                <label for="conference_link" class="fw-bold mb-2"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="text-danger d-none"> *</span></label>
+                                <input type="url" name="conference_link" id="conference_link" class="form-control form-control-solid" placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)" value="{{ $training->conference_link }}">
                             </div>
                         </div>
 
@@ -100,7 +138,6 @@
                             <label for="location" class="fw-bold mb-2 required">Location </label>
                             <input value="{{ $training->location }}" type="text" id="location" class="form-control form-control-solid" placeholder="Enter Location">
                         </div>
-                    </form>
                     <div class="row mb-4" id="company-course-container">
                         <!-- Company -->
                         {{-- need form repeater --}}
@@ -205,7 +242,8 @@
                                         <div data-repeater-item>
                                             <div class="form-group row align-items-center">
                                                 <div class="col-md-9">
-                                                    <input type="text" value="{{ $training->assistant }}" class="form-control form-control-solid mb-3 assistant" id="assistant" placeholder="Enter Assistant's Name" />
+                                                    <input type="text" value="{{ $training->assistant_names ?? $training->assistant }}" data-assistant-raw="{{ $training->assistant }}" class="form-control form-control-solid mb-3 assistant" id="assistant" placeholder="Enter Assistant's Name" />
+                                                    <input type="hidden" id="assistant_raw" value="{{ $training->assistant }}" />
                                                 </div>
                                                 <div class="col-md-3">
                                                     <a href="javascript:;" data-repeater-delete class="btn btn-sm btn-light-danger mb-3">
@@ -226,13 +264,110 @@
                             <!-- End Repeater -->
                         </div>
                     </div>
+                    </div>
+
+                    <div id="training-step-2" class="d-none">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <div>
+                                <div class="fw-bold fs-4">Driver Arrangement</div>
+                                <div class="text-muted fs-7">Configure transportation only if needed.</div>
+                            </div>
+                            <span class="badge badge-light-primary">Step 2</span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="fw-bold mb-2 required">Do you need a transportation?</label>
+                            <div class="d-flex flex-column gap-2">
+                                <label class="form-check form-check-custom form-check-solid">
+                                    <input class="form-check-input" type="radio" name="need_transportation" id="need_transportation_yes" value="yes" {{ $training->need_transportation ? 'checked' : '' }}>
+                                    <span class="form-check-label">Yes. I need a driver</span>
+                                </label>
+                                <label class="form-check form-check-custom form-check-solid">
+                                    <input class="form-check-input" type="radio" name="need_transportation" id="need_transportation_no" value="no" {{ !$training->need_transportation ? 'checked' : '' }}>
+                                    <span class="form-check-label">No transportation needed</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="driver-arrangement-fields" class="{{ $training->need_transportation ? '' : 'd-none' }}">
+                            <div class="mb-5">
+                                <div class="fw-bold mb-3">Outbound Trip</div>
+                                <div class="row g-4">
+                                    <div class="col-md-3">
+                                        <label for="outbound_pickup_time" class="fw-bold mb-2 required">Pickup Time</label>
+                                        <input type="time" id="outbound_pickup_time" class="form-control form-control-solid" value="{{ $training->outbound_pickup_time }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="outbound_contact_number" class="fw-bold mb-2 required">Contact Number</label>
+                                        <input type="text" id="outbound_contact_number" class="form-control form-control-solid" placeholder="Contact number" value="{{ $training->outbound_contact_number }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="outbound_pickup_location" class="fw-bold mb-2 required">Pickup Location</label>
+                                        <input type="text" id="outbound_pickup_location" class="form-control form-control-solid" placeholder="Pickup location" value="{{ $training->outbound_pickup_location }}">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="outbound_dropoff_location" class="fw-bold mb-2 required">Drop-off Location</label>
+                                        <input type="text" id="outbound_dropoff_location" class="form-control form-control-solid" placeholder="Drop-off location" value="{{ $training->outbound_dropoff_location }}">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                <label class="form-check form-check-custom form-check-solid mb-3">
+                                    <input class="form-check-input" type="checkbox" id="return_trip_needed" value="1" {{ $training->return_trip_needed ? 'checked' : '' }}>
+                                    <span class="form-check-label fw-bold">Return trip needed</span>
+                                </label>
+
+                                <div id="return-trip-fields" class="{{ $training->return_trip_needed ? '' : 'd-none' }}">
+                                    <div class="fw-bold mb-3">Return Trip</div>
+                                    <div class="row g-4">
+                                        <div class="col-md-3">
+                                            <label for="return_pickup_time" class="fw-bold mb-2 required">Return Time</label>
+                                            <input type="time" id="return_pickup_time" class="form-control form-control-solid" value="{{ $training->return_pickup_time }}">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="return_contact_number" class="fw-bold mb-2 required">Contact Number</label>
+                                            <input type="text" id="return_contact_number" class="form-control form-control-solid" placeholder="Contact number" value="{{ $training->return_contact_number }}">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="return_pickup_location" class="fw-bold mb-2 required">Pickup Location</label>
+                                            <input type="text" id="return_pickup_location" class="form-control form-control-solid" placeholder="Pickup location" value="{{ $training->return_pickup_location }}">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="return_dropoff_location" class="fw-bold mb-2 required">Drop-off Location</label>
+                                            <input type="text" id="return_dropoff_location" class="form-control form-control-solid" placeholder="Drop-off location" value="{{ $training->return_dropoff_location }}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                <div class="fw-bold mb-3">Notify Heads</div>
+                                <label class="form-check form-check-custom form-check-solid mb-4">
+                                    <input class="form-check-input" type="checkbox" id="notify_coordinator" value="1" {{ $training->notify_coordinator ? 'checked' : '' }}>
+                                    <span class="form-check-label fw-bold">Notify Coordinator</span>
+                                </label>
+
+                                <div id="coordinator-to-notify-container" class="{{ $training->notify_coordinator ? '' : 'd-none' }}">
+                                    <label for="coordinator_to_notify" class="fw-bold mb-2 required">Select coordinator to notify the driver</label>
+                                    <select id="coordinator_to_notify" class="form-select form-select-solid">
+                                        <option value="" disabled {{ !$training->coordinator_to_notify ? 'selected' : '' }}>Select Coordinator</option>
+                                        @foreach ($facilitators as $user)
+                                            <option value="{{ $user->id }}" {{ $training->coordinator_to_notify == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Buttons -->
                     <div class="d-flex justify-content-center gap-5 ">
-                        <a href="#">
-                            <button type="button" id="cancel_training_button" class="btn btn-light fw-boldest">CANCEL</button>
+                        <a href="{{ route('calendar') }}">
+                            <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
                         </a>
-                        <button type="button" id="edit_training_submit" class="btn btn-success fw-boldest">SAVE</button>
+                        <button type="button" id="edit_training_back" class="btn btn-light-primary fw-boldest d-none">BACK</button>
+                        <button type="button" id="edit_training_submit" class="btn btn-success fw-boldest">CONTINUE</button>
                     </div>
                     </form>
                 </div>
@@ -242,72 +377,145 @@
 @endsection
 
 @push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
     <script>
         const modeRadios = document.querySelectorAll('input[name="mode"]');
-        const companyContainer = document.getElementById("company-container");
         const credentialsContainer = document.getElementById("credentials-container");
         const locationContainer = document.getElementById("location-container");
-        const inpersonCheckbox = document.getElementById("inperson-training");
         const companyCourseContainer = document.getElementById("company-course-container");
         const publicCourseContainer = document.getElementById("public-course-container");
+        const trainingStep1 = document.getElementById("training-step-1");
+        const trainingStep2 = document.getElementById("training-step-2");
+        const backBtn = document.getElementById("edit_training_back");
+        const submitBtn = document.getElementById("edit_training_submit");
+        const platformSelect = document.getElementById("platform");
+        const platformOtherInput = document.getElementById("platform_other");
+        const needTransportationYes = document.getElementById("need_transportation_yes");
+        const needTransportationNo = document.getElementById("need_transportation_no");
+        const driverArrangementFields = document.getElementById("driver-arrangement-fields");
+        const returnTripCheckbox = document.getElementById("return_trip_needed");
+        const returnTripFields = document.getElementById("return-trip-fields");
+        const notifyCoordinatorCheckbox = document.getElementById("notify_coordinator");
+        const coordinatorToNotifyContainer = document.getElementById("coordinator-to-notify-container");
 
         $('#asst_repeat').repeater({
             initEmpty: false,
-
             defaultValues: {
                 'text-input': 'foo'
             },
-
             show: function () {
                 $(this).slideDown();
             },
-
             hide: function (deleteElement) {
                 $(this).slideUp(deleteElement);
             }
         });
 
-            $(document).ready(function (){
+        // Platform dropdown logic
+        platformSelect.addEventListener('change', function() {
+            if (this.value === 'other') {
+                platformOtherInput.classList.remove('d-none');
+            } else {
+                platformOtherInput.classList.add('d-none');
+            }
+        });
 
-                // if (inpersonCheckbox.checked) {
-                //     credentialsContainer.classList.add("d-none");
-                //     locationContainer.classList.remove("d-none");
-                // } else {
-                //     credentialsContainer.classList.remove("d-none");
-                //     locationContainer.classList.add("d-none");
-                // }
+        // Transportation needed logic
+        needTransportationYes.addEventListener('change', function() {
+            if (this.checked) {
+                driverArrangementFields.classList.remove('d-none');
+            }
+        });
 
-                //Initally check and display the correct fields
-                if ("{{ $training->mode }}" === "virtual") {
-                    // Virtual: Show Email/Password, hide others
-                    credentialsContainer.classList.remove("d-none");
-                    locationContainer.classList.add("d-none");
-                    publicCourseContainer.classList.add("d-none");
-                    companyCourseContainer.classList.remove("d-none");
-                } else if ("{{ $training->mode }}" === "face-to-face") {
-                    // Face-to-Face: Show Location, hide Email/Password
-                    credentialsContainer.classList.add("d-none");
-                    locationContainer.classList.remove("d-none");
-                    publicCourseContainer.classList.add("d-none");
-                    companyCourseContainer.classList.remove("d-none");
-                } else if ("{{ $training->mode }}" === "public-course") {
-                    // Public Course: Show Public Course layout, hide Company/Course
-                    credentialsContainer.classList.remove("d-none");
-                    publicCourseContainer.classList.remove("d-none");
-                    companyCourseContainer.classList.add("d-none");
-                    locationContainer.classList.add("d-none");
+        needTransportationNo.addEventListener('change', function() {
+            if (this.checked) {
+                driverArrangementFields.classList.add('d-none');
+            }
+        });
+
+        // Return trip logic
+        returnTripCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                returnTripFields.classList.remove('d-none');
+            } else {
+                returnTripFields.classList.add('d-none');
+            }
+        });
+
+        // Notify coordinator logic
+        notifyCoordinatorCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                coordinatorToNotifyContainer.classList.remove('d-none');
+            } else {
+                coordinatorToNotifyContainer.classList.add('d-none');
+            }
+        });
+
+        // Step navigation
+        submitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (trainingStep1.classList.contains('d-none')) {
+                // On step 2, save the training
+                // NOTE: AJAX submission is handled by edit_training.js, not form.submit()
+                // Trigger custom event for edit_training.js to detect step 2 submission
+                const event = new CustomEvent('submitStep2', { detail: { isStep2: true } });
+                submitBtn.dispatchEvent(event);
+            } else {
+                // On step 1, go to step 2
+                trainingStep1.classList.add('d-none');
+                trainingStep2.classList.remove('d-none');
+                backBtn.classList.remove('d-none');
+                submitBtn.textContent = 'SAVE';
+            }
+        });
+
+        backBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            trainingStep2.classList.add('d-none');
+            trainingStep1.classList.remove('d-none');
+            backBtn.classList.add('d-none');
+            submitBtn.textContent = 'CONTINUE';
+        });
+
+        $(document).ready(function () {
+            // Initially check and display the correct fields
+            function updateModeDisplay(mode) {
+                if (mode === 'virtual') {
+                    credentialsContainer.classList.remove('d-none');
+                    locationContainer.classList.add('d-none');
+                    publicCourseContainer.classList.add('d-none');
+                    companyCourseContainer.classList.remove('d-none');
+                } else if (mode === 'face-to-face') {
+                    credentialsContainer.classList.add('d-none');
+                    locationContainer.classList.remove('d-none');
+                    publicCourseContainer.classList.add('d-none');
+                    companyCourseContainer.classList.remove('d-none');
+                } else if (mode === 'public-course') {
+                    credentialsContainer.classList.remove('d-none');
+                    publicCourseContainer.classList.remove('d-none');
+                    companyCourseContainer.classList.add('d-none');
+                    locationContainer.classList.add('d-none');
                 }
+            }
 
+            // initial display
+            updateModeDisplay("{{ $training->mode }}");
+
+            // listen for changes to mode radios to update UI live
+            document.querySelectorAll('input[name="mode"]').forEach(function(radio) {
+                radio.addEventListener('change', function() {
+                    updateModeDisplay(this.value);
+                });
             });
+        });
 
         function formatDate(date) {
-            const day = date.getDate().toString().padStart(2, '0'); // Add leading zero for day
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month, adjust by +1 (months are 0-based)
-            const year = date.getFullYear(); // Get full year
-
-            return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `${year}-${month}-${day}`;
         }
 
         let startDateFormatted;
@@ -335,7 +543,6 @@
 
         startDateFormatted = startDateFormatted || '{{ \Carbon\Carbon::parse($training->schedule->from_date)->format('Y-m-d') }}';
         endDateFormatted = endDateFormatted || '{{ \Carbon\Carbon::parse($training->schedule->to_date)->format('Y-m-d') }}';
-
     </script>
     <script src="{{ asset('js/edit_training.js') }}"></script>
 @endpush

@@ -18,6 +18,7 @@ use App\Models\User;
 use App\Services\GoogleCalendarService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\TrainingController;
 use App\Mail\DriverNotificationMail;
 
 class DemoController extends Controller
@@ -510,7 +511,114 @@ class DemoController extends Controller
 
     public function getTraining(): JsonResponse
     {
-        // Fetch trainings from database
+        // In demo mode, fetch from database (includes newly created events)
+        // but supplement with fixtures if DB is empty
+        if ($this->isEnabled()) {
+            $trainings = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                ->get();
+
+            // If no trainings in DB, use fixtures
+            if ($trainings->isEmpty()) {
+                $fixtures = $this->fixtures('trainings.json');
+                $trainings = collect($fixtures)->map(function ($t) {
+                    return (object) [
+                        'id' => $t['id'] ?? null,
+                        'course_id' => $t['course']['id'] ?? null,
+                        'mode' => $t['mode'] ?? 'virtual',
+                        'platform' => $t['platform'] ?? ($t['location'] ?? null),
+                        'conference_link' => $t['conference_link'] ?? null,
+                        'location' => $t['location'] ?? null,
+                        'assistant' => $t['assistant'] ?? null,
+                        'facilitator_id' => $t['facilitator_id'] ?? null,
+                        'company_id' => $t['company']['id'] ?? null,
+                        'account_id' => $t['account']['id'] ?? null,
+                        'need_transportation' => $t['need_transportation'] ?? false,
+                        'outbound_pickup_time' => $t['outbound_pickup_time'] ?? null,
+                        'outbound_contact_number' => $t['outbound_contact_number'] ?? null,
+                        'outbound_pickup_location' => $t['outbound_pickup_location'] ?? null,
+                        'outbound_dropoff_location' => $t['outbound_dropoff_location'] ?? null,
+                        'return_trip_needed' => $t['return_trip_needed'] ?? false,
+                        'return_pickup_time' => $t['return_pickup_time'] ?? null,
+                        'return_contact_number' => $t['return_contact_number'] ?? null,
+                        'return_pickup_location' => $t['return_pickup_location'] ?? null,
+                        'return_dropoff_location' => $t['return_dropoff_location'] ?? null,
+                        'notify_coordinator' => $t['notify_coordinator'] ?? false,
+                        'coordinator_to_notify' => $t['coordinator_to_notify'] ?? null,
+                        'course' => $t['course'] ?? null,
+                        'facilitator' => $t['facilitator'] ?? null,
+                        'company' => $t['company'] ?? null,
+                        'account' => $t['account'] ?? null,
+                        'schedule' => $t['schedule'] ?? null,
+                    ];
+                });
+            }
+
+            // Format response
+            $formattedTrainings = $trainings->map(function ($training) {
+                return [
+                    'id' => $training->id ?? null,
+                    'course_id' => $training->course_id ?? ($training->course['id'] ?? null),
+                    'mode' => $training->mode ?? 'virtual',
+                    'platform' => $training->platform ?? null,
+                    'conference_link' => $training->conference_link ?? null,
+                    'location' => $training->location ?? null,
+                    'assistant' => $training->assistant ?? null,
+                    'assistant_names' => $this->resolveAssistantNames($training->assistant ?? ''),
+                    'facilitator_id' => $training->facilitator_id ?? null,
+                    'company_id' => $training->company_id ?? null,
+                    'account_id' => $training->account_id ?? null,
+                    'need_transportation' => $training->need_transportation ?? false,
+                    'outbound_pickup_time' => $training->outbound_pickup_time ?? null,
+                    'outbound_contact_number' => $training->outbound_contact_number ?? null,
+                    'outbound_pickup_location' => $training->outbound_pickup_location ?? null,
+                    'outbound_dropoff_location' => $training->outbound_dropoff_location ?? null,
+                    'return_trip_needed' => $training->return_trip_needed ?? false,
+                    'return_pickup_time' => $training->return_pickup_time ?? null,
+                    'return_contact_number' => $training->return_contact_number ?? null,
+                    'return_pickup_location' => $training->return_pickup_location ?? null,
+                    'return_dropoff_location' => $training->return_dropoff_location ?? null,
+                    'notify_coordinator' => $training->notify_coordinator ?? false,
+                    'coordinator_to_notify' => $training->coordinator_to_notify ?? null,
+                    'course' => is_object($training->course) ? [
+                        'id' => $training->course->id,
+                        'course_code' => $training->course->course_code,
+                        'course_name' => $training->course->course_name,
+                        'description' => $training->course->description ?? null,
+                    ] : ($training->course ?? null),
+                    'facilitator' => is_object($training->facilitator) ? [
+                        'id' => $training->facilitator->id,
+                        'name' => $training->facilitator->name,
+                        'email' => $training->facilitator->email,
+                        'color' => $training->facilitator->color,
+                        'image' => $training->facilitator->image ?? null,
+                    ] : ($training->facilitator ?? null),
+                    'company' => is_object($training->company) ? [
+                        'id' => $training->company->id,
+                        'company_name' => $training->company->company_name,
+                        'contact_person' => $training->company->contact_person ?? null,
+                        'contact_number' => $training->company->contact_number ?? null,
+                        'email' => $training->company->email ?? null,
+                    ] : ($training->company ?? null),
+                    'account' => is_object($training->account) ? [
+                        'id' => $training->account->id,
+                        'account_email' => $training->account->account_email,
+                    ] : ($training->account ?? null),
+                    'schedule' => is_object($training->schedule) ? [
+                        'from_date' => (string) $training->schedule->from_date,
+                        'to_date' => (string) $training->schedule->to_date,
+                        'from_time' => (string) $training->schedule->from_time,
+                        'to_time' => (string) $training->schedule->to_time,
+                    ] : ($training->schedule ?? null),
+                ];
+            })->toArray();
+
+            return response()->json([
+                'success' => true,
+                'data' => $formattedTrainings,
+            ], 200);
+        }
+
+        // Fetch trainings from database when not in demo mode
         $trainings = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
             ->get()
             ->map(function ($training) {
@@ -580,8 +688,72 @@ class DemoController extends Controller
 
     public function editTraining(int $id): View
     {
-        $training = collect($this->fixtures('trainings.json'))->firstWhere('id', $id);
-        $training = $training ?: collect($this->fixtures('trainings.json'))->first();
+        $trainingRecord = null;
+
+        if ($this->isEnabled()) {
+            $trainingRecord = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])->find($id);
+        }
+
+        $training = null;
+
+        if ($trainingRecord) {
+            $training = [
+                'id' => $trainingRecord->id,
+                'mode' => $trainingRecord->mode,
+                'platform' => $trainingRecord->platform,
+                'conference_link' => $trainingRecord->conference_link,
+                'location' => $trainingRecord->location,
+                'assistant' => $trainingRecord->assistant,
+                'need_transportation' => $trainingRecord->need_transportation,
+                'outbound_pickup_time' => $trainingRecord->outbound_pickup_time,
+                'outbound_contact_number' => $trainingRecord->outbound_contact_number,
+                'outbound_pickup_location' => $trainingRecord->outbound_pickup_location,
+                'outbound_dropoff_location' => $trainingRecord->outbound_dropoff_location,
+                'return_trip_needed' => $trainingRecord->return_trip_needed,
+                'return_pickup_time' => $trainingRecord->return_pickup_time,
+                'return_contact_number' => $trainingRecord->return_contact_number,
+                'return_pickup_location' => $trainingRecord->return_pickup_location,
+                'return_dropoff_location' => $trainingRecord->return_dropoff_location,
+                'notify_coordinator' => $trainingRecord->notify_coordinator,
+                'coordinator_to_notify' => $trainingRecord->coordinator_to_notify,
+                'course' => $trainingRecord->course ? [
+                    'id' => $trainingRecord->course->id,
+                    'course_code' => $trainingRecord->course->course_code,
+                    'course_name' => $trainingRecord->course->course_name,
+                    'description' => $trainingRecord->course->description,
+                ] : null,
+                'company' => $trainingRecord->company ? [
+                    'id' => $trainingRecord->company->id,
+                    'company_name' => $trainingRecord->company->company_name,
+                    'contact_person' => $trainingRecord->company->contact_person,
+                    'contact_number' => $trainingRecord->company->contact_number,
+                    'email' => $trainingRecord->company->email,
+                ] : null,
+                'account' => $trainingRecord->account ? [
+                    'id' => $trainingRecord->account->id,
+                    'account_email' => $trainingRecord->account->account_email,
+                    'account_password' => $trainingRecord->account->account_password ?? null,
+                ] : null,
+                'facilitator' => $trainingRecord->facilitator ? [
+                    'id' => $trainingRecord->facilitator->id,
+                    'name' => $trainingRecord->facilitator->name,
+                    'email' => $trainingRecord->facilitator->email,
+                    'color' => $trainingRecord->facilitator->color,
+                    'image' => $trainingRecord->facilitator->image ?? null,
+                ] : null,
+                'schedule' => $trainingRecord->schedule ? [
+                    'from_date' => (string) $trainingRecord->schedule->from_date,
+                    'to_date' => (string) $trainingRecord->schedule->to_date,
+                    'from_time' => (string) $trainingRecord->schedule->from_time,
+                    'to_time' => (string) $trainingRecord->schedule->to_time,
+                ] : [],
+            ];
+        } else {
+            $fixture = collect($this->fixtures('trainings.json'))->firstWhere('id', $id)
+                ?: collect($this->fixtures('trainings.json'))->first();
+
+            $training = $fixture ?: [];
+        }
 
         $schedule = $training['schedule'] ?? [];
 
@@ -589,8 +761,22 @@ class DemoController extends Controller
             'id' => $training['id'] ?? $id,
             'mode' => $training['mode'] ?? 'virtual',
             'platform' => $training['platform'] ?? '',
+            'conference_link' => $training['conference_link'] ?? '',
             'location' => $training['location'] ?? '',
             'assistant' => $training['assistant'] ?? '',
+            'assistant_names' => $this->resolveAssistantNames($training['assistant'] ?? ''),
+            'need_transportation' => $training['need_transportation'] ?? false,
+            'outbound_pickup_time' => $training['outbound_pickup_time'] ?? '',
+            'outbound_contact_number' => $training['outbound_contact_number'] ?? '',
+            'outbound_pickup_location' => $training['outbound_pickup_location'] ?? '',
+            'outbound_dropoff_location' => $training['outbound_dropoff_location'] ?? '',
+            'return_trip_needed' => $training['return_trip_needed'] ?? false,
+            'return_pickup_time' => $training['return_pickup_time'] ?? '',
+            'return_contact_number' => $training['return_contact_number'] ?? '',
+            'return_pickup_location' => $training['return_pickup_location'] ?? '',
+            'return_dropoff_location' => $training['return_dropoff_location'] ?? '',
+            'notify_coordinator' => $training['notify_coordinator'] ?? false,
+            'coordinator_to_notify' => $training['coordinator_to_notify'] ?? null,
             'start_date' => $schedule['from_date'] ?? now()->toDateString(),
             'end_date' => $schedule['to_date'] ?? now()->toDateString(),
             'course' => $training['course'] ?? null,
@@ -616,13 +802,49 @@ class DemoController extends Controller
 
     public function updateTraining(int $id): JsonResponse
     {
-        return response()->json([
-            'code' => '200',
-            'message' => 'Training session updated successfully (demo mode)',
-            'trainingSession' => ['id' => $id],
-            'schedule' => ['training_id' => $id],
-            'demo' => true,
-        ], 200);
+        // Diagnostic logging to help debug session/auth issues on save
+        try {
+            
+            \Log::info('Demo updateTraining called', [
+                'id' => $id,
+                'auth_check' => Auth::check(),
+                'auth_user_id' => Auth::id(),
+                'session_id' => session()->getId(),
+                'session_data_sample' => array_slice(session()->all(), 0, 10),
+                'headers' => [
+                    'host' => request()->header('host'),
+                    'referer' => request()->header('referer'),
+                    'user-agent' => request()->header('user-agent'),
+                ],
+                'method' => request()->method(),
+                'content_type' => request()->header('content-type'),
+                'input' => request()->all(),
+            ]);
+        } catch (\Exception $e) {
+            // Logging must not break the response
+            \Log::error('Failed to collect diagnostic info in updateTraining: ' . $e->getMessage());
+        }
+
+        // Delegate to the real TrainingController update method
+        try {
+            $trainingController = new TrainingController();
+            $response = $trainingController->update(request(), $id);
+            \Log::info('TrainingController::update() returned successfully');
+            return $response;
+        } catch (\Exception $e) {
+            \Log::error('TrainingController::update() threw exception', [
+                'error' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            
+            // Return error response instead of hanging
+            return response()->json([
+                'code' => '500',
+                'message' => 'Error updating training: ' . $e->getMessage(),
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function deleteTraining(int $id): JsonResponse

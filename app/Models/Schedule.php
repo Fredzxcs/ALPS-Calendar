@@ -15,7 +15,8 @@ class Schedule extends Model
         'from_date',
         'to_date',
         'from_time',
-        'to_time'
+        'to_time',
+        'google_event_id'
 
     ];
 

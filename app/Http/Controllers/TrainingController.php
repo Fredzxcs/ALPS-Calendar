@@ -183,14 +183,16 @@ class TrainingController extends Controller
                 $currentUser = Auth::user();
                 $isDemo = filter_var(env('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN);
                 $googleRefreshToken = null;
+                $googleAccessToken = null;
                 
                 // Check if user has Google connection (either from model or session in demo mode)
                 $hasGoogleConnection = false;
                 if ($currentUser && isset($currentUser->google_refresh_token) && !empty($currentUser->google_refresh_token)) {
                     $hasGoogleConnection = true;
-                } else if ($isDemo && session('google_connected') && session('google_refresh_token')) {
+                } else if ($isDemo && session('google_connected') && (session('google_refresh_token') || session('google_access_token'))) {
                     $hasGoogleConnection = true;
                     $googleRefreshToken = session('google_refresh_token');
+                    $googleAccessToken = session('google_access_token');
                 }
                 
                 if ($hasGoogleConnection) {
@@ -222,8 +224,13 @@ class TrainingController extends Controller
                     $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
                                 ->find($training->id);
 
-                    // Use schedule created earlier (pass refresh token for demo mode)
-                    $googleService->createEvent($currentUser, $trainingInfo, $schedule, $attendees, $googleRefreshToken);
+                    // Use schedule created earlier (pass refresh token/access token for demo mode)
+                    $createdEventId = $googleService->createEvent($currentUser ?? (object)[], $trainingInfo, $schedule, $attendees, $googleRefreshToken, $googleAccessToken);
+
+                    if ($createdEventId) {
+                        $schedule->google_event_id = $createdEventId;
+                        $schedule->save();
+                    }
                 }
             } catch (\Exception $e) {
                 \Log::error('Google Calendar sync failed: ' . $e->getMessage());
@@ -404,7 +411,7 @@ class TrainingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validate request
+        // Validate request - include driver/transportation and notifier fields
         $validator = Validator::make($request->all(), [
             'course_id' => ['required', 'integer'],
             'mode' => ['required', 'string', 'max:255'],
@@ -419,6 +426,18 @@ class TrainingController extends Controller
             'platform' => ['nullable'],
             'conference_link' => ['nullable', 'url'],
             'to_time' => ['required'],
+            'need_transportation' => ['nullable'],
+            'outbound_pickup_time' => ['nullable'],
+            'outbound_contact_number' => ['nullable','string','max:255'],
+            'outbound_pickup_location' => ['nullable','string','max:255'],
+            'outbound_dropoff_location' => ['nullable','string','max:255'],
+            'return_trip_needed' => ['nullable'],
+            'return_pickup_time' => ['nullable'],
+            'return_contact_number' => ['nullable','string','max:255'],
+            'return_pickup_location' => ['nullable','string','max:255'],
+            'return_dropoff_location' => ['nullable','string','max:255'],
+            'notify_coordinator' => ['nullable'],
+            'coordinator_to_notify' => ['nullable','integer'],
         ]);
 
         if ($validator->fails()) {
@@ -439,7 +458,7 @@ class TrainingController extends Controller
             // Check if the facilitator is changed
             $facilitatorChanged = $previousFacilitator && $newFacilitator && $previousFacilitator->id !== $newFacilitator->id;
 
-            // Update training session
+            // Update training session with new fields
             $trainingSession->update([
                 'course_id' => $request->course_id,
                 'mode' => $request->mode,
@@ -450,7 +469,19 @@ class TrainingController extends Controller
                 'company_id' => $request->company_id,
                 'assistant' => $request->assistant,
                 'account_id' => $request->account_id,
-                'is_updated' => !$facilitatorChanged, // Set to true only if facilitator is unchanged
+                'need_transportation' => $request->boolean('need_transportation'),
+                'outbound_pickup_time' => $request->outbound_pickup_time,
+                'outbound_contact_number' => $request->outbound_contact_number,
+                'outbound_pickup_location' => $request->outbound_pickup_location,
+                'outbound_dropoff_location' => $request->outbound_dropoff_location,
+                'return_trip_needed' => $request->boolean('return_trip_needed'),
+                'return_pickup_time' => $request->return_pickup_time,
+                'return_contact_number' => $request->return_contact_number,
+                'return_pickup_location' => $request->return_pickup_location,
+                'return_dropoff_location' => $request->return_dropoff_location,
+                'notify_coordinator' => $request->boolean('notify_coordinator'),
+                'coordinator_to_notify' => $request->coordinator_to_notify,
+                'is_updated' => !$facilitatorChanged,
             ]);
 
             // Update schedule
@@ -463,6 +494,64 @@ class TrainingController extends Controller
             ]);
 
             \DB::commit();
+
+            // === Google Calendar sync: update existing event if present, otherwise create ===
+            try {
+                $currentUser = Auth::user();
+                $isDemo = filter_var(env('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN);
+                $googleRefreshToken = null;
+                $googleAccessToken = null;
+
+                // Determine token for real user or demo session
+                $hasGoogleConnection = false;
+                if ($currentUser && !empty($currentUser->google_refresh_token)) {
+                    $hasGoogleConnection = true;
+                } else if ($isDemo && session('google_connected')) {
+                    $hasGoogleConnection = true;
+                    $googleRefreshToken = session('google_refresh_token');
+                    $googleAccessToken = session('google_access_token');
+                }
+
+                if ($hasGoogleConnection) {
+                    $googleService = new GoogleCalendarService();
+
+                    // Build attendees list
+                    $attendees = [];
+                    if (!empty($trainingSession->facilitator_id)) {
+                        $fac = User::find($trainingSession->facilitator_id);
+                        if ($fac && !empty($fac->email)) $attendees[] = $fac->email;
+                    }
+                    if (!empty($trainingSession->assistant)) {
+                        $assistantIds = array_filter(array_map('trim', explode(',', $trainingSession->assistant)));
+                        foreach ($assistantIds as $aid) {
+                            if (is_numeric($aid)) {
+                                $aUser = User::find((int) $aid);
+                                if ($aUser && !empty($aUser->email)) $attendees[] = $aUser->email;
+                            }
+                        }
+                    }
+
+                    // Refresh training with relations
+                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                                    ->find($trainingSession->id);
+
+                    if (!empty($schedule->google_event_id)) {
+                        $updatedEventId = $googleService->updateEvent($currentUser ?? (object)[], $schedule->google_event_id, $trainingInfo, $schedule, $attendees, $googleRefreshToken, $googleAccessToken);
+                        if ($updatedEventId) {
+                            $schedule->google_event_id = $updatedEventId;
+                            $schedule->save();
+                        }
+                    } else {
+                        $createdEventId = $googleService->createEvent($currentUser ?? (object)[], $trainingInfo, $schedule, $attendees, $googleRefreshToken, $googleAccessToken);
+                        if ($createdEventId) {
+                            $schedule->google_event_id = $createdEventId;
+                            $schedule->save();
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::error('Google Calendar sync failed during update: ' . $e->getMessage());
+            }
 
             // === Email Notification Logic ===
             if ($facilitatorChanged) {

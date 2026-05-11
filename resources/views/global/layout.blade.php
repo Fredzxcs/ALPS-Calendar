@@ -13,7 +13,6 @@
     <!--end::Fonts-->
     <!--begin::Page Vendor Stylesheets(used by this page)-->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-    <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('plugins/custom/datatables/datatables.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -50,12 +49,12 @@
 
 </body>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="assets/js/plugins/formrepeater.bundle.js"></script>
+<script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 <script src="{{ asset('plugins/global/plugins.bundle.js') }}"></script>
 <script src="{{ asset('js/scripts.bundle.js') }}"></script>
 <script src="{{ asset('plugins/bootstrap-sweetalert/sweetalert.min.js') }}"></script>
-<script src="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
+<script src="{{ asset('plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
 <script src="{{ asset('js/alps-time-sky.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @stack('scripts')

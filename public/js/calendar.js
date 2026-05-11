@@ -113,6 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     extendedProps: {
                         facilitator: training.facilitator || 'N/A',
                         assistant: training.assistant_names || training.assistant || 'No Assistant Yet',
+                        assistant_names: training.assistant_names || training.assistant || 'No Assistant Yet',
                         modeType: training.mode,
                         account: training.account,
                         course: training.course?.course_name || 'N/A',
@@ -210,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="fs-7"><span class="fw-bold">Start:</span> ${startDate}</div>
             <div class="fs-7 mb-2"><span class="fw-bold">End:</span> ${endDate}</div>
             <div class="fs-7"><span class="fw-bold">Facilitator:</span> ${(data.facilitator || data.facilitator.name) || 'No Facilitator Yet'}</div>
-            <div class="fs-7 mb-4"><span class="fw-bold">Assistant:</span> ${data.assistant}</div>
+                <div class="fs-7 mb-4"><span class="fw-bold">Assistant:</span> ${data.assistant_names || data.assistant || 'No Assistant Yet'}</div>
             <a id="kt_calendar_event_view" type="button" class="btn btn-sm btn-primary btn-blue mt-2" data-event-id="${data.id}" data-bs-dismiss="modal">
                 VIEW MORE
             </a>
@@ -673,7 +674,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 $modalElement.find('#modal-company').text(eventData.company);
                 $modalElement.find('#modal-course').text(eventData.course);
                 $modalElement.find('#modal-facilitator').text(eventData.facilitator);
-                $modalElement.find('#modal-assistant').text(eventData.assistant);
+                $modalElement.find('#modal-assistant').text(eventData.assistant_names || eventData.assistant || 'No Assistant Yet');
                 $modalElement.find('#modal-platform').text(eventData.platform);
                 $modalElement.find('#modal-conference-link').text(eventData.conference_link);
                 $modalElement.find('#modal-transportation-needed').text(eventData.need_transportation ? 'Yes' : 'No');
@@ -890,7 +891,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     $modalElement.find('#modal-title').text(info.event.title || 'No Title');
                     $modalElement.find('#modal-company').text(eventData.company || 'N/A');
                     $modalElement.find('#modal-facilitator').text(eventData.facilitator?.name || 'No Facilitator Yet');
-                    $modalElement.find('#modal-assistant').text(eventData.assistant || 'No Assistant Yet');
+                    $modalElement.find('#modal-assistant').text(eventData.assistant_names || eventData.assistant || 'No Assistant Yet');
 
                     const formattedStartDate = info.event.start ? moment(info.event.start).format('MMM DD, YYYY') : 'N/A';
                     const formattedEndDate = info.event.end ? moment(info.event.end).format('MMM DD, YYYY') : 'N/A';
