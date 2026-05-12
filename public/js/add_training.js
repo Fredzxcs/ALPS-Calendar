@@ -120,16 +120,50 @@ const fp = flatpickr("#date-range", {
     }
 });
 
+let trainingStepper = null;
+
+// Global variable to track current step
+let trainingWizardStep = 1;
 
 $(document).ready(function (e) {
+    const stepperElement = document.querySelector('#kt_stepper_example_basic');
+    if (stepperElement) {
+        trainingStepper = new KTStepper(stepperElement);
+        console.log('KTStepper initialized:', trainingStepper);
+
+        // Let KTStepper handle next button natively - just validate
+        trainingStepper.on('kt.stepper.next', function (stepper) {
+            console.log('kt.stepper.next event triggered, current step:', stepper.getCurrentStepIndex());
+            
+            if (stepper.getCurrentStepIndex() === 1 && !validateStep1()) {
+                Swal.fire({
+                    title: 'Missing Fields!',
+                    text: 'Please fill in all required training details first.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+                return false; // Prevent step change
+            }
+        });
+
+        trainingStepper.on('kt.stepper.previous', function (stepper) {
+            console.log('kt.stepper.previous event triggered');
+        });
+
+        trainingStepper.on('kt.stepper.changed', function (stepper) {
+            trainingWizardStep = stepper.getCurrentStepIndex();
+            console.log('Step changed to:', trainingWizardStep);
+        });
+    } else {
+        console.error('Stepper element not found!');
+    }
+
     // Stacked assistant selects: add a new select field above existing ones and keep hidden input synced
     function updateAssistantHidden() {
         const vals = [];
-        const mainVal = $('#assistant_select').val();
-        if (mainVal) vals.push(mainVal);
-        $('.assistant_item').each(function () {
-            const v = $(this).val();
-            if (v) vals.push(v);
+        $('#assistant_list_container .assistant-item').each(function () {
+            const id = $(this).data('id');
+            if (id) vals.push(id);
         });
         $('#assistant_list').val(vals.join(', '));
     }
@@ -144,49 +178,50 @@ $(document).ready(function (e) {
         }
     });
 
-    // Add assistant button handler: clone a select and prepend it into the container
+    // Add assistant button handler: create pill and add to container
     $(document).on('click', '#assistant_add_btn', function (ev) {
         ev.preventDefault();
-        console.log('Add assistant button clicked');
+        console.log('=== ADD ASSISTANT BUTTON CLICKED ===');
         const val = $('#assistant_select').val();
-        console.log('Selected assistant value:', val);
+        const selectedText = $('#assistant_select option:selected').text();
+        console.log('Selected value:', val, 'Selected text:', selectedText);
+        
         if (!val) {
             console.log('No value selected, returning');
             return;
         }
-        console.log('Value is not empty, proceeding...');
 
-        // Do not add duplicates - check only the stacked fields, not the main select
+        // Check for duplicates
         const existing = [];
-        $('.assistant_item').each(function () { existing.push($(this).val()); });
-        console.log('Existing stacked assistants:', existing);
+        $('#assistant_list_container .assistant-item').each(function () { 
+            existing.push($(this).data('id')); 
+        });
+        console.log('Existing assistants:', existing);
         if (existing.includes(val)) {
-            console.log('Assistant already in stacked fields, returning');
+            console.log('Assistant already added, skipping');
             return;
         }
 
-        // Create cloned select
-        const clone = $('#assistant_select').clone();
-        clone.removeAttr('id');
-        clone.addClass('assistant_item form-select form-select-solid mb-2');
-        clone.val(val);
-        console.log('Clone created and value set to:', clone.val());
-
-        const removeBtn = $(`<button type="button" class="btn btn-light-danger ms-2 remove-assistant-field">Remove</button>`);
-        const wrapper = $('<div class="d-flex align-items-center mb-2"></div>');
-        wrapper.append(clone).append(removeBtn);
-
-        $('#assistant_list_container').prepend(wrapper);
-        console.log('Prepended to container');
+        // Create pill
+        console.log('Creating pill for:', selectedText, 'with id:', val);
+        const pill = $(`<div class="assistant-item" data-id="${val}" style="background: #dbeafe; border: 1px solid #bfdbfe; color: #1e40af; padding: 0.5rem 0.75rem; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500; white-space: nowrap;">
+            <span>${selectedText}</span>
+            <button type="button" class="remove-assistant" data-id="${val}" style="background: transparent; border: none; color: #1e40af; cursor: pointer; font-size: 1.1rem; font-weight: bold; padding: 0; display: flex; align-items: center; justify-content: center; width: 1.1rem; height: 1.1rem; margin-left: 0.25rem; line-height: 1;">×</button>
+        </div>`);
+        
+        console.log('Pill HTML:', pill.html());
+        $('#assistant_list_container').append(pill);
+        console.log('Container html after append:', $('#assistant_list_container').html());
+        
         $('#assistant_select').val('').trigger('change');
         updateAssistantHidden();
-        console.log('Updated hidden input, hidden value is:', $('#assistant_list').val());
+        console.log('Assistant list value:', $('#assistant_list').val());
     });
 
     // Remove assistant stacked field
-    $(document).on('click', '.remove-assistant-field', function (ev) {
+    $(document).on('click', '.remove-assistant', function (ev) {
         ev.preventDefault();
-        $(this).closest('div.d-flex').remove();
+        $(this).closest('.assistant-item').remove();
         updateAssistantHidden();
     });
 
@@ -194,16 +229,68 @@ $(document).ready(function (e) {
 
     function showTrainingStep(step) {
         trainingWizardStep = step;
-        if (step === 1) {
-            $('#training-step-1').removeClass('d-none');
-            $('#training-step-2').addClass('d-none');
-            $('#add_training_back').addClass('d-none');
-            $('#add_training_submit').text('CONTINUE');
+        if (trainingStepper) {
+            trainingStepper.goTo(step);
+        }
+    }
+
+    function handleTrainingSubmit(e) {
+        e.preventDefault();
+
+        const currentStep = trainingStepper ? trainingStepper.getCurrentStepIndex() : trainingWizardStep;
+
+        if (currentStep === 1) {
+            return;
+        }
+
+        if (!validateStep1() || !validateStep2()) {
+            Swal.fire({
+                title: 'Missing Fields!',
+                text: 'Please fill in all required fields.',
+                icon: 'warning',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
+        // Form Data Collection
+        let facilitator_id = $('#facilitator').find('option:selected').val();
+        let assistant_id = $('#assistant_list').val() || '';
+        let from_date = startDateFormatted;
+        let to_date = endDateFormatted;
+        let from_time = $('#time-start').val();
+        let to_time = $('#time-end').val();
+        let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
+        let platform = $('#platform').val();
+        let account_id = $('#credentials').find('option:selected').val();
+        let location = $('#location').val();
+        let company = $('#company').find('option:selected').val();
+
+        if (!facilitator_id || facilitator_id === "") {
+            handleCompanyAndStoreTraining(company);
         } else {
-            $('#training-step-1').addClass('d-none');
-            $('#training-step-2').removeClass('d-none');
-            $('#add_training_back').removeClass('d-none');
-            $('#add_training_submit').text('SAVE');
+            checkAvailability(facilitator_id, from_date, to_date, function (isAvailable) {
+                if (isAvailable) {
+                    handleCompanyAndStoreTraining(company);
+                } else {
+                    Swal.fire({
+                        title: 'Facilitator Unavailable',
+                        text: 'The selected facilitator is unavailable on the selected date(s). Do you want to proceed anyway?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Proceed',
+                        cancelButtonText: 'Cancel',
+                        customClass: {
+                            confirmButton: "btn btn-success",
+                            cancelButton: 'btn btn-secondary'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            handleCompanyAndStoreTraining(company);
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -363,93 +450,33 @@ $(document).ready(function (e) {
 
     $(document).on('click', '#add_training_back', function (ev) {
         ev.preventDefault();
-        showTrainingStep(1);
+        if (trainingStepper) {
+            trainingStepper.goPrevious();
+        }
     });
 
-    showTrainingStep(1);
     toggleDriverArrangementFields();
 
-    $('#add_training_submit').click(function (e) {
-        e.preventDefault();
-
-        if (trainingWizardStep === 1) {
-            if (!validateStep1()) {
-                Swal.fire({
-                    title: 'Missing Fields!',
-                    text: 'Please fill in all required training details first.',
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            showTrainingStep(2);
+    $(document).on('click', '[data-kt-stepper-action="next"]', function (ev) {
+        ev.preventDefault();
+        if (!trainingStepper) {
             return;
         }
 
-        if (!validateStep1() || !validateStep2()) {
+        if (trainingStepper.getCurrentStepIndex() === 1 && !validateStep1()) {
             Swal.fire({
                 title: 'Missing Fields!',
-                text: 'Please fill in all required fields.',
+                text: 'Please fill in all required training details first.',
                 icon: 'warning',
                 confirmButtonText: 'OK'
             });
-            return; // Stop submission if validation fails
+            return;
         }
 
-
-        // Form Data Collection
-        // let mode = $('input[name="mode"]:checked').val();
-        let facilitator_id = $('#facilitator').find('option:selected').val(); // Get facilitator ID
-
-        // assistant list stored in hidden input by renderAssistants
-        let assistant_id = $('#assistant_list').val() || '';
-
-        let from_date = startDateFormatted;
-        let to_date = endDateFormatted;
-        let from_time = $('#time-start').val();
-        let to_time = $('#time-end').val();
-        let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
-        let platform = $('#platform').val();
-        let account_id = $('#credentials').find('option:selected').val();
-        let location = $('#location').val();
-        let company = $('#company').find('option:selected').val();
-
-        // Step 1: Check if facilitator is provided
-        if (!facilitator_id || facilitator_id === "") {
-            // Skip checking availability and proceed
-
-            console.log('1');
-
-            handleCompanyAndStoreTraining(company);
-        } else {
-            // Check facilitator availability
-            checkAvailability(facilitator_id, from_date, to_date, function (isAvailable) {
-                if (isAvailable) {
-                    console.log('2');
-                    handleCompanyAndStoreTraining(company);
-                } else {
-                    console.log('3');
-                    Swal.fire({
-                        title: 'Facilitator Unavailable',
-                        text: 'The selected facilitator is unavailable on the selected date(s). Do you want to proceed anyway?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Proceed',
-                        cancelButtonText: 'Cancel',
-                        customClass: {
-                            confirmButton: "btn btn-success",
-                            cancelButton: 'btn btn-secondary'
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            handleCompanyAndStoreTraining(company);
-                        }
-                    });
-                }
-            });
-        }
+        trainingStepper.goNext();
     });
+
+    $(document).on('click', '#add_training_submit', handleTrainingSubmit);
     $(document).ready(function () {
         $('input[name="mode"]').change(function () {
             const mode = $(this).val();
@@ -478,7 +505,9 @@ $(document).ready(function (e) {
             $('#assistant_list').val('');
             $('#assistant_select').val('').trigger('change');
 
-            showTrainingStep(1);
+            if (trainingStepper) {
+                trainingStepper.goFirst();
+            }
 
             // Clear datepicker selections if used
             $('#date-range').datepicker('clearDates');

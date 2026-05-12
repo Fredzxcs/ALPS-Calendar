@@ -23,6 +23,25 @@
     <link href="{{ asset('css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('css/alps-modern.css') }}" rel="stylesheet" type="text/css" />
     <!--end::Global Stylesheets Bundle-->
+    <style>
+        html,
+        body {
+            background: #f7f7f4 !important;
+        }
+
+        body::before,
+        body::after {
+            content: none !important;
+            display: none !important;
+            animation: none !important;
+            filter: none !important;
+            opacity: 0 !important;
+        }
+
+        main {
+            background: transparent !important;
+        }
+    </style>
 {{--
     <style>
         body {

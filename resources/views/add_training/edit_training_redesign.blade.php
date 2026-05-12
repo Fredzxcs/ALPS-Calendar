@@ -24,7 +24,7 @@
 
             <!-- Form Content -->
             <div class="training-form-content">
-                <form id="training-form">
+                <form>
                     @php
                         $currentUser = auth()->user();
                         $googleConnected = ($currentUser instanceof \App\Models\User && !empty($currentUser->google_refresh_token)) || session('google_connected', false);
@@ -41,7 +41,7 @@
                         <!-- Mode of Training -->
                         <div class="training-form-row full">
                             <div class="training-form-group">
-                                <label>Mode of Training <span class="required"></span></label>
+                                <label>Mode of Training <span class="required">*</span></label>
                                 <div class="training-radio-group">
                                     <div class="training-radio">
                                         <input type="radio" id="virtual" value="virtual" name="mode" 
@@ -65,7 +65,7 @@
                         <!-- Account and Platform -->
                         <div class="training-form-row" id="credentials-container">
                             <div class="training-form-group">
-                                <label for="credentials">Account <span class="required"></span></label>
+                                <label for="credentials">Account <span class="required">*</span></label>
                                 <select id="credentials" class="training-select">
                                     <option value="" disabled>Select Host Email Account</option>
                                     @foreach ($accounts as $account)
@@ -97,7 +97,7 @@
                         <!-- Conference Call Link -->
                         <div class="training-form-row full" id="conference-link-container">
                             <div class="training-form-group">
-                                <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none"></span></label>
+                                <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none">*</span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="training-input"
                                     placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)"
                                     value="{{ $training->conference_link ?? '' }}">
@@ -107,7 +107,7 @@
                         <!-- Location: Face-to-Face -->
                         <div class="training-form-row full" id="location-container">
                             <div class="training-form-group">
-                                <label for="location">Location <span class="required"></span></label>
+                                <label for="location">Location <span class="required">*</span></label>
                                 <input type="text" id="location" class="training-input"
                                     placeholder="Enter Location"
                                     value="{{ $training->location ?? '' }}">
@@ -117,7 +117,7 @@
                         <!-- Company and Course -->
                         <div class="training-form-row" id="company-course-container">
                             <div class="training-form-group">
-                                <label for="company">Company <span class="required"></span></label>
+                                <label for="company">Company <span class="required">*</span></label>
                                 <select id="company" class="training-select">
                                     <option value="" disabled>Select Company</option>
                                     @foreach ($companies as $company)
@@ -135,7 +135,7 @@
                             </div>
 
                             <div class="training-form-group">
-                                <label for="course">Course <span class="required"></span></label>
+                                <label for="course">Course <span class="required">*</span></label>
                                 <select id="course" class="training-select">
                                     <option value="" disabled>Select Course</option>
                                     @foreach ($courses as $course)
@@ -151,17 +151,17 @@
                         <!-- Date and Time -->
                         <div class="training-form-row triple">
                             <div class="training-form-group">
-                                <label for="date-range">Date Range <span class="required"></span></label>
+                                <label for="date-range">Date Range <span class="required">*</span></label>
                                 <input type="text" id="date-range" class="training-input" placeholder="Select Date" readonly
                                     value="{{ $training->from_date && $training->to_date ? date('m-d-Y', strtotime($training->from_date)) . ' to ' . date('m-d-Y', strtotime($training->to_date)) : '' }}">
                             </div>
                             <div class="training-form-group">
-                                <label for="time-start">Time Start <span class="required"></span></label>
+                                <label for="time-start">Time Start <span class="required">*</span></label>
                                 <input type="time" id="time-start" class="training-input"
                                     value="{{ $training->from_time ?? '' }}">
                             </div>
                             <div class="training-form-group">
-                                <label for="time-end">Time End <span class="required"></span></label>
+                                <label for="time-end">Time End <span class="required">*</span></label>
                                 <input type="time" id="time-end" class="training-input"
                                     value="{{ $training->to_time ?? '' }}">
                             </div>
@@ -208,9 +208,10 @@
                                 <div id="assistant_list_container" style="margin-top: 0.75rem;">
                                     @if($training->assistants)
                                         @foreach($training->assistants as $assistant)
-                                            <div class="assistant-item" data-id="{{ $assistant->id }}">
-                                                <span>{{ $assistant->name }}</span>
-                                                <button type="button" class="remove-assistant" data-id="{{ $assistant->id }}">×</button>
+                                            <div class="d-flex align-items-center mb-2">
+                                                <span style="padding: 0.5rem 1rem; background: #dbeafe; border-radius: 0.5rem; font-size: 0.9rem; flex: 1;">
+                                                    {{ $assistant->name }} <span class="remove-assistant-badge" style="cursor: pointer; margin-left: 0.5rem;">✕</span>
+                                                </span>
                                             </div>
                                         @endforeach
                                     @endif
@@ -238,11 +239,9 @@
 
                     <!-- Buttons -->
                     <div class="training-button-group">
-                        <div class="training-button-group-left">
-                            <a href="{{ route('calendar') }}" class="training-btn training-btn-secondary">CANCEL</a>
-                            <button type="submit" id="add_training_back" class="training-btn training-btn-secondary-blue d-none">BACK</button>
-                        </div>
-                        <button type="submit" id="add_training_submit" class="training-btn training-btn-primary">CONTINUE</button>
+                        <a href="{{ route('calendar') }}" class="training-btn training-btn-secondary">CANCEL</a>
+                        <button type="button" id="add_training_back" class="training-btn training-btn-secondary-blue d-none">BACK</button>
+                        <button type="button" id="add_training_submit" class="training-btn training-btn-primary">CONTINUE</button>
                     </div>
                 </form>
             </div>

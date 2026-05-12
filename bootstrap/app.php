@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'user'=> \App\Http\Middleware\userType::class,
-            'admin'=> \App\Http\Middleware\registeradmin::class,
+            'admin'=> \App\Http\Middleware\RegisterAdmin::class,
             'sesh'=> \App\Http\Middleware\TrackSession::class,
             'demo_user'=> \App\Http\Middleware\DemoUser::class,
         ]);

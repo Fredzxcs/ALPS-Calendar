@@ -1,0 +1,93 @@
+<!-- 
+DEMO ROUTES FOR REDESIGNED TRAINING COMPONENTS
+================================================
+
+Add these routes to routes/web.php to test the redesigned UI components side-by-side with the original versions.
+This allows safe testing before full deployment.
+
+LOCATION: Add inside the main middleware group (after the existing training routes)
+-->
+
+<!-- Add these routes inside your middleware group in routes/web.php -->
+
+/**
+ * ============= REDESIGNED UI DEMO ROUTES =============
+ * These routes allow testing the new Figma-based UI design
+ * without affecting the current production routes
+ * 
+ * Demo URLs (once routes are added):
+ * - http://localhost:8000/calendar/add_training_demo
+ * - http://localhost:8000/calendar/edit_training_demo/1
+ * - http://localhost:8000/calendar/add_unavailability_demo
+ */
+
+// DEMO: Add Training (Redesigned)
+Route::get('/add_training_demo', function () {
+    return view('add_training.add_training_redesign', [
+        'companies' => App\Models\Company::all(),
+        'courses' => App\Models\Course::all(),
+        'accounts' => App\Models\Account::all(),
+        'users' => App\Models\User::all(),
+    ]);
+})->middleware('auth')->name('add_training.demo');
+
+// DEMO: Edit Training (Redesigned)
+Route::get('/edit_training_demo/{id}', function ($id) {
+    $training = App\Models\Training::find($id) ?? new App\Models\Training();
+    return view('add_training.edit_training_redesign', [
+        'training' => $training,
+        'companies' => App\Models\Company::all(),
+        'courses' => App\Models\Course::all(),
+        'accounts' => App\Models\Account::all(),
+        'users' => App\Models\User::all(),
+    ]);
+})->middleware('auth')->name('edit_training.demo');
+
+// DEMO: Add Unavailability (Redesigned)
+Route::get('/add_unavailability_demo', function () {
+    return view('unavailability.add_unavailability_redesign', [
+        'user' => auth()->user(),
+    ]);
+})->middleware('auth')->name('add_unavailability.demo');
+
+/**
+ * DEPLOYMENT OPTIONS
+ * ==================
+ * 
+ * Once you've tested and validated the redesigned UI:
+ * 
+ * OPTION 1: Direct Replacement (Simplest)
+ * --------
+ * Replace the original blade files with the redesigned versions:
+ * - rename add_training_redesign.blade.php → add_training.blade.php
+ * - rename edit_training_redesign.blade.php → edit_training.blade.php
+ * - rename add_unavailability_redesign.blade.php → add_unavailability.blade.php
+ * Then remove the demo routes above.
+ * 
+ * OPTION 2: Conditional Routing (Safest)
+ * --------
+ * In your controller methods, check for a query parameter:
+ * 
+ * public function addTraining() {
+ *     if (request('ui') === 'redesign') {
+ *         return view('add_training.add_training_redesign', [...]);
+ *     }
+ *     return view('add_training.add_training', [...]);
+ * }
+ * 
+ * URLs would be:
+ * - /calendar/add_training (original)
+ * - /calendar/add_training?ui=redesign (new design)
+ * 
+ * OPTION 3: Feature Flags (Most Advanced)
+ * --------
+ * Use Laravel feature flags to control rollout:
+ * 
+ * if (app('feature-flags')->isEnabled('training-redesign-ui')) {
+ *     return view('add_training.add_training_redesign', [...]);
+ * }
+ * 
+ * This allows gradual rollout to specific user groups.
+ * 
+ * ===============================================
+ */

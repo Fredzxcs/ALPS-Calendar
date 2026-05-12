@@ -3,60 +3,39 @@
 <link rel="stylesheet" href="{{ asset('css/training-ui-redesign.css') }}">
 
 @section('maincontent')
-    <div class="d-flex justify-content-center align-items-center mt-20">
-        <div class="container mt-5">
-            <div class="shadow-sm border-0">
-                <div class="alps-header-add rounded-top d-flex justify-content-center align-items-center py-4">
-                    <h2 class="text-white fw-boldest m-0 fs-1">Add Training</h2>
+    <div class="training-page-wrapper">
+        <div class="training-card-container">
+            <!-- Header -->
+            <div class="training-header training-header-add">
+                Add Training
+            </div>
+
+            <!-- Step Indicators -->
+            <div class="training-step-indicators">
+                <div class="training-step active" id="step-1-indicator">
+                    <div class="training-step-badge">1</div>
+                    <span>Step 1<br><small style="font-size: 0.8rem;">Training Details</small></span>
                 </div>
-                <!--begin::Stepper-->
-                <div class="stepper stepper-pills alps-card-glass-body p-md-10" id="kt_stepper_example_basic">
-                    <!--begin::Nav-->
-                    <div class="stepper-nav flex-center flex-wrap mb-10">
-                        <div class="stepper-item mx-8 my-4 current" data-kt-stepper-element="nav">
-                            <div class="stepper-wrapper d-flex align-items-center">
-                                <div class="stepper-icon w-40px h-40px">
-                                    <i class="stepper-check fas fa-check"></i>
-                                    <span class="stepper-number">1</span>
-                                </div>
-                                <div class="stepper-label">
-                                    <h3 class="stepper-title">Step 1</h3>
-                                    <div class="stepper-desc">Training Details</div>
-                                </div>
-                            </div>
-                            <div class="stepper-line h-40px"></div>
-                        </div>
+                <div class="training-step" id="step-2-indicator">
+                    <div class="training-step-badge">2</div>
+                    <span>Step 2<br><small style="font-size: 0.8rem;">Driver Arrangement</small></span>
+                </div>
+            </div>
 
-                        <div class="stepper-item mx-8 my-4" data-kt-stepper-element="nav">
-                            <div class="stepper-wrapper d-flex align-items-center">
-                                <div class="stepper-icon w-40px h-40px">
-                                    <i class="stepper-check fas fa-check"></i>
-                                    <span class="stepper-number">2</span>
-                                </div>
-                                <div class="stepper-label">
-                                    <h3 class="stepper-title">Step 2</h3>
-                                    <div class="stepper-desc">Driver Arrangement</div>
-                                </div>
-                            </div>
-                            <div class="stepper-line h-40px"></div>
-                        </div>
-                    </div>
-                    <!--end::Nav-->
-
-                    <!--begin::Form-->
-                    <form class="form mx-auto w-75 px-5" novalidate="novalidate" id="training-form">
+            <!-- Form Content -->
+            <div class="training-form-content">
+                <form>
                     @php
                         $currentUser = auth()->user();
                         $googleConnected = ($currentUser instanceof \App\Models\User && !empty($currentUser->google_refresh_token)) || session('google_connected', false);
                     @endphp
 
-                    <div class="mb-5">
                     <!-- STEP 1: Training Details -->
-                    <div class="flex-column current" data-kt-stepper-element="content" id="training-step-1">
+                    <div id="training-step-1">
                         <!-- Mode of Training -->
                         <div class="training-form-row full">
                             <div class="training-form-group">
-                                <label>Mode of Training <span class="required"></span></label>
+                                <label>Mode of Training <span class="required">*</span></label>
                                 <div class="training-radio-group">
                                     <div class="training-radio">
                                         <input type="radio" id="virtual" value="virtual" name="mode" checked>
@@ -83,7 +62,7 @@
                                         <label for="inperson-training">In-person training?</label>
                                     </div>
                                     <div style="flex: 1;">
-                                        <label for="public-course-select">Course <span class="required"></span></label>
+                                        <label for="public-course-select">Course <span class="required">*</span></label>
                                         <select id="public-course-select" class="training-select" style="width: 100%; margin-top: 0.5rem;">
                                             <option value="" disabled selected>Select Course</option>
                                             @foreach ($courses as $course)
@@ -100,7 +79,7 @@
                         <!-- Account and Platform -->
                         <div class="training-form-row" id="credentials-container">
                             <div class="training-form-group">
-                                <label for="credentials">Account <span class="required"></span></label>
+                                <label for="credentials">Account <span class="required">*</span></label>
                                 <select id="credentials" class="training-select">
                                     <option value="" disabled selected>Select Host Email Account</option>
                                     @foreach ($accounts as $account)
@@ -128,7 +107,7 @@
                         <!-- Conference Call Link -->
                         <div class="training-form-row full" id="conference-link-container">
                             <div class="training-form-group">
-                                        <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none"></span></label>
+                                <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none">*</span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="training-input"
                                     placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)">
                             </div>
@@ -137,7 +116,7 @@
                         <!-- Location: Face-to-Face -->
                         <div class="training-form-row full d-none" id="location-container">
                             <div class="training-form-group">
-                                <label for="location">Location <span class="required"></span></label>
+                                <label for="location">Location <span class="required">*</span></label>
                                 <input type="text" id="location" class="training-input"
                                     placeholder="Enter Location">
                             </div>
@@ -146,7 +125,7 @@
                         <!-- Company and Course -->
                         <div class="training-form-row" id="company-course-container">
                             <div class="training-form-group">
-                                <label for="company">Company <span class="required"></span></label>
+                                <label for="company">Company <span class="required">*</span></label>
                                 <select id="company" class="training-select">
                                     <option value="" disabled selected>Select Company</option>
                                     @foreach ($companies as $company)
@@ -160,7 +139,7 @@
                             </div>
 
                             <div class="training-form-group">
-                                <label for="course">Course <span class="required"></span></label>
+                                <label for="course">Course <span class="required">*</span></label>
                                 <select id="course" class="training-select">
                                     <option value="" disabled selected>Select Course</option>
                                     @foreach ($courses as $course)
@@ -175,15 +154,15 @@
                         <!-- Date and Time -->
                         <div class="training-form-row triple">
                             <div class="training-form-group">
-                                <label for="date-range">Date Range <span class="required"></span></label>
+                                <label for="date-range">Date Range <span class="required">*</span></label>
                                 <input type="text" id="date-range" class="training-input" placeholder="Select Date" readonly>
                             </div>
                             <div class="training-form-group">
-                                <label for="time-start">Time Start <span class="required"></span></label>
+                                <label for="time-start">Time Start <span class="required">*</span></label>
                                 <input type="time" id="time-start" class="training-input">
                             </div>
                             <div class="training-form-group">
-                                <label for="time-end">Time End <span class="required"></span></label>
+                                <label for="time-end">Time End <span class="required">*</span></label>
                                 <input type="time" id="time-end" class="training-input">
                             </div>
                         </div>
@@ -192,12 +171,12 @@
                         <div class="google-calendar-card">
                             <h3>Connect Account for Google Calendar Invites</h3>
                             <p>The connected account will be listed as the event organizer and used to send invites.</p>
-                                @if ($googleConnected)
+                            @if ($googleConnected)
                                 <div style="background: #d1fae5; color: #047857; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.9rem; font-weight: 600;">
                                     ✓ Connected - Ensure you are using your work profile.
                                 </div>
-                                @else
-                                <a id="google_signin_btn" href="{{ route('google.redirect', ['from' => 'add_training']) }}" class="google-calendar-button">
+                            @else
+                                <a href="{{ route('google.redirect', ['from' => 'add_training']) }}" class="google-calendar-button">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -206,7 +185,7 @@
                                     </svg>
                                     SIGN IN WITH GOOGLE
                                 </a>
-                                @endif
+                            @endif
                         </div>
 
                         <!-- Facilitator and Assistant -->
@@ -233,7 +212,7 @@
                                     </select>
                                     <button type="button" id="assistant_add_btn" class="training-btn training-btn-secondary-blue">ADD</button>
                                 </div>
-                                <div id="assistant_list_container" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; min-height: 0;"></div>
+                                <div id="assistant_list_container" style="margin-top: 0.75rem;"></div>
                                 <input type="hidden" id="assistant_list" value="">
                                 <div class="training-helper-text">Select one assistant and click Add to include multiple assistants.</div>
                             </div>
@@ -241,7 +220,7 @@
                     </div>
 
                     <!-- STEP 2: Driver Arrangement -->
-                    <div class="flex-column" data-kt-stepper-element="content" id="training-step-2">
+                    <div id="training-step-2" class="d-none">
                         <div style="margin-bottom: 1.5rem;">
                             <div class="training-section-heading">Driver Arrangement</div>
                             <div class="training-section-subheading">Configure transportation only if needed.</div>
@@ -345,28 +324,12 @@
                     </div>
 
                     <!-- Buttons -->
-                    <div class="d-flex flex-stack mt-5">
-                        <div class="me-2 d-flex gap-2">
-                            <a href="{{ route('calendar') }}" class="btn btn-light btn-active-light-primary">CANCEL</a>
-                            <button type="button" class="btn btn-light btn-active-light-primary" id="add_training_back" data-kt-stepper-action="previous">BACK</button>
-                        </div>
-                        <div>
-                            <button type="button" class="btn btn-primary btn-green" id="add_training_submit" data-kt-stepper-action="submit">
-                                <span class="indicator-label">SAVE</span>
-                                <span class="indicator-progress">
-                                    Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
-                                </span>
-                            </button>
-                            <button type="button" class="btn btn-primary" data-kt-stepper-action="next">
-                                CONTINUE
-                            </button>
-                        </div>
+                    <div class="training-button-group">
+                        <a href="{{ route('calendar') }}" class="training-btn training-btn-secondary">CANCEL</a>
+                        <button type="button" id="add_training_back" class="training-btn training-btn-secondary-blue d-none">BACK</button>
+                        <button type="button" id="add_training_submit" class="training-btn training-btn-primary">CONTINUE</button>
                     </div>
-                    </div>
-                    </form>
-                    <!--end::Form-->
-                </div>
-                <!--end::Stepper-->
+                </form>
             </div>
         </div>
     </div>

@@ -107,13 +107,13 @@ Demo route groups available:
 ==================================================
 Middleware aliases are registered in bootstrap/app.php:
 - user => App\Http\Middleware\userType
-- admin => App\Http\Middleware\registeradmin
+- admin => App\Http\Middleware\RegisterAdmin
 - sesh => App\Http\Middleware\TrackSession
 - demo_user => App\Http\Middleware\DemoUser
 
 Behavior summary:
 - userType: role-based gate using usertype field; redirects unauthorized users
-- registeradmin: admin-only gate
+- RegisterAdmin: admin-only gate
 - TrackSession: tracks last visited non-AJAX page and redirects authenticated users from index to their previous page
 - DemoUser: injects a GenericUser for demo auth bypass
 

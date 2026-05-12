@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class registerAdmin
+class RegisterAdmin
 {
     /**
      * Handle an incoming request.
