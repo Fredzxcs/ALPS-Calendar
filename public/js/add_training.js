@@ -104,6 +104,32 @@ function formatDate(date) {
 let startDateFormatted = '';
 let endDateFormatted = '';
 
+function syncDateRangeStateFromInput(datePickerInstance) {
+    if (datePickerInstance && Array.isArray(datePickerInstance.selectedDates) && datePickerInstance.selectedDates.length >= 2) {
+        startDateFormatted = formatDate(datePickerInstance.selectedDates[0]);
+        endDateFormatted = formatDate(datePickerInstance.selectedDates[1]);
+        return;
+    }
+
+    const rawValue = ($('#date-range').val() || '').trim();
+    if (!rawValue) {
+        return;
+    }
+
+    const parts = rawValue.split(' to ');
+    if (parts.length !== 2) {
+        return;
+    }
+
+    const startDate = flatpickr.parseDate(parts[0].trim(), 'm-d-Y');
+    const endDate = flatpickr.parseDate(parts[1].trim(), 'm-d-Y');
+
+    if (startDate && endDate) {
+        startDateFormatted = formatDate(startDate);
+        endDateFormatted = formatDate(endDate);
+    }
+}
+
 const fp = flatpickr("#date-range", {
     mode: "range",
     dateFormat: "m-d-Y",
@@ -119,6 +145,8 @@ const fp = flatpickr("#date-range", {
         }
     }
 });
+
+syncDateRangeStateFromInput(fp);
 
 let trainingStepper = null;
 
@@ -624,6 +652,8 @@ $(document).ready(function (e) {
             platformValue = $('#platform_other').val();
         }
 
+        syncDateRangeStateFromInput(fp);
+
         let formData = new FormData();
         formData.append('course_id', $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val());
         formData.append('platform', platformValue);
@@ -651,6 +681,11 @@ $(document).ready(function (e) {
         formData.append('notify_coordinator', $('#notify_coordinator').is(':checked') ? '1' : '0');
         formData.append('coordinator_to_notify', $('#coordinator_to_notify').val() || '');
 
+        const isEditMode = Boolean(window.isEditMode && window.trainingId);
+        if (isEditMode) {
+            formData.append('_method', 'PUT');
+        }
+
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
         }
@@ -659,7 +694,7 @@ $(document).ready(function (e) {
 
         // Show Swal loader
         Swal.fire({
-            title: 'Adding Training...',
+            title: isEditMode ? 'Updating Training...' : 'Adding Training...',
             text: 'Please wait while we process your request.',
             allowOutsideClick: false,
             allowEscapeKey: false,
@@ -669,7 +704,7 @@ $(document).ready(function (e) {
         });
 
         $.ajax({
-            url: '/calendar/add_training',
+            url: isEditMode ? `/calendar/edit_training/${window.trainingId}` : '/calendar/add_training',
             type: 'POST',
             data: formData,
             processData: false,
@@ -685,7 +720,7 @@ $(document).ready(function (e) {
                 if ((response && response.training && response.training.id) || response.success === true) {
                     Swal.fire({
                         title: 'Success!',
-                        text: 'Training has been added.',
+                        text: isEditMode ? 'Training has been updated.' : 'Training has been added.',
                         icon: 'success',
                         confirmButtonText: 'OK',
                         allowOutsideClick: false,

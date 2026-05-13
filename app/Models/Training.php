@@ -64,5 +64,45 @@ class Training extends Model
         return $this->belongsTo(Account::class);
     }
 
+    /**
+     * Get assistants as a collection of User models.
+     * The 'assistant' column stores comma-separated user IDs.
+     */
+    public function getAssistantsAttribute()
+    {
+        if (empty($this->attributes['assistant'] ?? null)) {
+            return collect();
+        }
+
+        $assistantIds = array_filter(
+            array_map('trim', explode(',', $this->attributes['assistant']))
+        );
+
+        if (empty($assistantIds)) {
+            return collect();
+        }
+
+        return User::whereIn('id', $assistantIds)->get();
+    }
+
+    /**
+     * Get the company name, either from the custom field or the related company.
+     */
+    public function getCompanyNameAttribute()
+    {
+        // If company_name is explicitly set (for "other" companies), return it
+        if (!empty($this->attributes['company_name'] ?? null)) {
+            return $this->attributes['company_name'];
+        }
+
+        // Otherwise, try to get it from the related company
+        if ($this->company) {
+            return $this->company->company_name;
+        }
+
+        return null;
+    }
+
+
 }
 

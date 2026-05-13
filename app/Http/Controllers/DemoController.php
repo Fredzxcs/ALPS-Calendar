@@ -697,6 +697,26 @@ class DemoController extends Controller
         $training = null;
 
         if ($trainingRecord) {
+            $assistantTokens = array_values(array_filter(array_map('trim', explode(',', (string) ($trainingRecord->assistant ?? '')))));
+            $assistantUsers = collect();
+
+            if (!empty($assistantTokens)) {
+                $numericAssistantIds = array_values(array_filter($assistantTokens, 'is_numeric'));
+
+                if (!empty($numericAssistantIds)) {
+                    $assistantUsers = User::whereIn('id', $numericAssistantIds)->get();
+                }
+
+                if ($assistantUsers->isEmpty()) {
+                    $assistantUsers = $this->fixtureCollection('users.json')->filter(function ($user) use ($assistantTokens) {
+                        $assistantName = strtolower(trim((string) ($user->name ?? '')));
+                        return in_array($assistantName, array_map('strtolower', $assistantTokens), true);
+                    })->values();
+                }
+            }
+
+            $needsTransportation = $trainingRecord->need_transportation;
+
             $training = [
                 'id' => $trainingRecord->id,
                 'mode' => $trainingRecord->mode,
@@ -734,6 +754,13 @@ class DemoController extends Controller
                     'account_email' => $trainingRecord->account->account_email,
                     'account_password' => $trainingRecord->account->account_password ?? null,
                 ] : null,
+                'assistants' => $assistantUsers->map(function ($assistant) {
+                    return [
+                        'id' => $assistant->id,
+                        'name' => $assistant->name,
+                        'email' => $assistant->email ?? null,
+                    ];
+                })->values()->all(),
                 'facilitator' => $trainingRecord->facilitator ? [
                     'id' => $trainingRecord->facilitator->id,
                     'name' => $trainingRecord->facilitator->name,
@@ -756,6 +783,11 @@ class DemoController extends Controller
         }
 
         $schedule = $training['schedule'] ?? [];
+        $courseId = $trainingRecord ? $trainingRecord->course_id : ($training['course']['id'] ?? null);
+        $companyId = $trainingRecord ? $trainingRecord->company_id : ($training['company']['id'] ?? null);
+        $accountId = $trainingRecord ? $trainingRecord->account_id : ($training['account']['id'] ?? null);
+        $facilitatorId = $trainingRecord ? $trainingRecord->facilitator_id : ($training['facilitator']['id'] ?? null);
+        $needTransportationValue = $trainingRecord ? $trainingRecord->need_transportation : ($training['need_transportation'] ?? false);
 
         $normalizedTraining = [
             'id' => $training['id'] ?? $id,
@@ -765,7 +797,12 @@ class DemoController extends Controller
             'location' => $training['location'] ?? '',
             'assistant' => $training['assistant'] ?? '',
             'assistant_names' => $this->resolveAssistantNames($training['assistant'] ?? ''),
-            'need_transportation' => $training['need_transportation'] ?? false,
+            'assistants' => $training['assistants'] ?? [],
+            'course_id' => $courseId,
+            'company_id' => $companyId,
+            'account_id' => $accountId,
+            'facilitator_id' => $facilitatorId,
+            'need_transportation' => filter_var($needTransportationValue, FILTER_VALIDATE_BOOLEAN) ? 'yes' : 'no',
             'outbound_pickup_time' => $training['outbound_pickup_time'] ?? '',
             'outbound_contact_number' => $training['outbound_contact_number'] ?? '',
             'outbound_pickup_location' => $training['outbound_pickup_location'] ?? '',
@@ -777,6 +814,10 @@ class DemoController extends Controller
             'return_dropoff_location' => $training['return_dropoff_location'] ?? '',
             'notify_coordinator' => $training['notify_coordinator'] ?? false,
             'coordinator_to_notify' => $training['coordinator_to_notify'] ?? null,
+            'from_date' => $schedule['from_date'] ?? now()->toDateString(),
+            'to_date' => $schedule['to_date'] ?? now()->toDateString(),
+            'from_time' => $schedule['from_time'] ?? '09:00:00',
+            'to_time' => $schedule['to_time'] ?? '10:00:00',
             'start_date' => $schedule['from_date'] ?? now()->toDateString(),
             'end_date' => $schedule['to_date'] ?? now()->toDateString(),
             'course' => $training['course'] ?? null,
