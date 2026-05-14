@@ -500,7 +500,17 @@ class TrainingController extends Controller
             ]);
 
             // Update schedule
-            $schedule = Schedule::where('training_id', $trainingSession->id)->first();
+            // Prefer the schedule row that already has a google_event_id (if any),
+            // otherwise fall back to the most-recent schedule record for this training.
+            $schedule = Schedule::where('training_id', $trainingSession->id)->whereNotNull('google_event_id')->first();
+            if (!$schedule) {
+                $schedule = Schedule::where('training_id', $trainingSession->id)->orderBy('id', 'desc')->first();
+            }
+            // If we still don't have a schedule record, throw to keep behavior consistent
+            if (!$schedule) {
+                throw new \Exception('Schedule record not found for training ID ' . $trainingSession->id);
+            }
+
             $schedule->update([
                 'from_date' => $request->from_date,
                 'to_date' => $request->to_date,
@@ -557,10 +567,21 @@ class TrainingController extends Controller
                             $schedule->save();
                         }
                     } else {
-                        $createdEventId = $googleService->createEvent($currentUser ?? (object)[], $trainingInfo, $schedule, $attendees, $googleRefreshToken, $googleAccessToken);
-                        if ($createdEventId) {
-                            $schedule->google_event_id = $createdEventId;
-                            $schedule->save();
+                        // Try to find an existing event in the user's calendar that matches this training
+                        $foundEventId = $googleService->findEventId($currentUser ?? (object)[], $trainingInfo, $schedule, $googleRefreshToken, $googleAccessToken);
+                        if (!empty($foundEventId)) {
+                            // Use found event id to update instead of creating a duplicate
+                            $updatedEventId = $googleService->updateEvent($currentUser ?? (object)[], $foundEventId, $trainingInfo, $schedule, $attendees, $googleRefreshToken, $googleAccessToken);
+                            if ($updatedEventId) {
+                                $schedule->google_event_id = $updatedEventId;
+                                $schedule->save();
+                            }
+                        } else {
+                            $createdEventId = $googleService->createEvent($currentUser ?? (object)[], $trainingInfo, $schedule, $attendees, $googleRefreshToken, $googleAccessToken);
+                            if ($createdEventId) {
+                                $schedule->google_event_id = $createdEventId;
+                                $schedule->save();
+                            }
                         }
                     }
                 }
