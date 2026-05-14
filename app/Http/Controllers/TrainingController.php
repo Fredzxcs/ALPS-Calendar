@@ -646,6 +646,26 @@ class TrainingController extends Controller
                 }
             }
 
+            // Notify coordinator about driver arrangement on update if configured
+            try {
+                if ($trainingSession->notify_coordinator && !empty($trainingSession->coordinator_to_notify)) {
+                    $coord = User::find($trainingSession->coordinator_to_notify);
+                    if ($coord && !empty($coord->email)) {
+                        try {
+                            Mail::to($coord->email)->send(new DriverNotificationMail($trainingSession, $coord));
+                        } catch (\Exception $e) {
+                            Log::error('Failed to send coordinator driver notification (on update)', [
+                                'to' => $coord->email,
+                                'coordinator_id' => $coord->id ?? null,
+                                'exception' => $e->getMessage(),
+                            ]);
+                        }
+                    }
+                }
+            } catch (\Exception $e) {
+                Log::error('Error during coordinator notification (on update): ' . $e->getMessage());
+            }
+
             return response()->json([
                 'code' => '200',
                 'message' => 'Training session updated successfully and notification emails sent',
