@@ -183,9 +183,35 @@ class GoogleCalendarService
         $account = $training->account?->account_email ?? 'N/A';
         $assistantNames = $this->resolveAssistantNames($training->assistant ?? '');
         $driverNeeded = $training->need_transportation ? 'Yes' : 'No';
+        // Normalize platform: treat null/empty/'null' as empty
+        $platform = null;
+        if (isset($training->platform)) {
+            $plat = trim((string) $training->platform);
+            if ($plat !== '' && strtolower($plat) !== 'null') {
+                $platform = $training->platform;
+            }
+        }
         $returnTripNeeded = $training->return_trip_needed ? 'Yes' : 'No';
         $notifyCoordinator = $training->notify_coordinator ? 'Yes' : 'No';
-        $coordinator = $training->coordinator?->name ?? (isset($training->coordinator_to_notify) ? 'User ID ' . $training->coordinator_to_notify : 'N/A');
+
+        // Resolve coordinator name: prefer related model, otherwise try to look up by coordinator_to_notify id
+        $coordinator = null;
+        if (!empty($training->coordinator?->name)) {
+            $coordinator = $training->coordinator->name;
+        } elseif (!empty($training->coordinator_to_notify)) {
+            // Attempt to resolve user id to name
+            $coordId = $training->coordinator_to_notify;
+            if (is_numeric($coordId)) {
+                $coordUser = User::find((int) $coordId);
+                if ($coordUser) {
+                    $coordinator = $coordUser->name;
+                } else {
+                    $coordinator = 'User ID ' . $coordId;
+                }
+            } else {
+                $coordinator = (string) $coordId;
+            }
+        }
 
         $lines = [];
 
@@ -195,7 +221,7 @@ class GoogleCalendarService
         if ($facilitator !== 'N/A') $lines[] = 'Facilitator: ' . $facilitator;
         if ($assistantNames !== '') $lines[] = 'Assistants: ' . $assistantNames;
         if (!empty($training->location)) $lines[] = 'Location: ' . $training->location;
-        if (!empty($training->platform)) $lines[] = 'Platform: ' . $training->platform;
+        if (!empty($platform)) $lines[] = 'Platform: ' . $platform;
         if (!empty($training->conference_link)) $lines[] = 'Conference Link: ' . $training->conference_link;
         if ($account !== 'N/A') $lines[] = 'Account: ' . $account;
         if (!empty($schedule->from_date) && !empty($schedule->from_time) && !empty($schedule->to_date) && !empty($schedule->to_time)) {
@@ -222,7 +248,7 @@ class GoogleCalendarService
         }
 
         if ($notifyCoordinator === 'Yes') $lines[] = 'Notify Coordinator: Yes';
-        if ($coordinator !== 'N/A') $lines[] = 'Coordinator to Notify: ' . $coordinator;
+        if (!empty($coordinator)) $lines[] = 'Coordinator to Notify: ' . $coordinator;
 
         return implode("\n", $lines);
     }
