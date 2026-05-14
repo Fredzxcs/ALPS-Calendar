@@ -97,21 +97,8 @@
                             </div>
                         </div>
 
-                        <!-- Account and Platform -->
-                        <div class="training-form-row" id="credentials-container">
-                            <div class="training-form-group">
-                                <label for="credentials">Account <span class="required"></span></label>
-                                <select id="credentials" class="training-select">
-                                    <option value="" disabled selected>Select Host Email Account</option>
-                                    <?php $__currentLoopData = $accounts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($account->id); ?>">
-                                            <?php echo e($account->account_email); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-
+                        <!-- Platform -->
+                        <div class="training-form-row" id="platform-container">
                             <div class="training-form-group">
                                 <label for="platform">Platform</label>
                                 <select id="platform" class="training-select">
@@ -132,6 +119,22 @@
                                         <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none"></span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="training-input"
                                     placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)">
+                            </div>
+                        </div>
+
+                        <!-- Account -->
+                        <div class="training-form-row full d-none" id="credentials-container">
+                            <div class="training-form-group">
+                                <label for="credentials">Account</label>
+                                <select id="credentials" class="training-select">
+                                    <option value="" disabled selected>Select Host Email Account</option>
+                                    <?php $__currentLoopData = $accounts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($account->id); ?>">
+                                            <?php echo e($account->account_email); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
                             </div>
                         </div>
 

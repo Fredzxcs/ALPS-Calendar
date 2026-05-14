@@ -1,6 +1,10 @@
 <p>Hello <?php echo e($coordinator->name ?? 'Coordinator'); ?>,</p>
 
+<?php if(!empty($isUpdate)): ?>
+<p><strong>Update:</strong> The following training's driver arrangement has been edited, and this is a separate update notification.</p>
+<?php else: ?>
 <p>You have been assigned as the coordinator for the following training's driver arrangement:</p>
+<?php endif; ?>
 
 <ul>
     <li><strong>Course:</strong> <?php echo e($training->course->course_name ?? 'N/A'); ?></li>
@@ -110,7 +114,7 @@
 </ul>
 
 <p>
-    Please make the necessary arrangements. This notification is for the event titled:
+    Please make the necessary arrangements for:
     <strong><?php echo e($training->course->course_name ?? 'Training'); ?></strong>.
 </p>
 

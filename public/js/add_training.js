@@ -2,10 +2,20 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
 // Global assistants list so it is accessible across handlers
 window.assistantsList = window.assistantsList || [];
 
+function updateAccountFieldState() {
+    const selectedPlatform = ($('#platform').val() || '').trim();
+    const credentialsContainer = $('#credentials-container');
+
+    if (selectedPlatform === 'Zoom') {
+        credentialsContainer.removeClass('d-none');
+    } else {
+        credentialsContainer.addClass('d-none');
+        $('#credentials').val('');
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const modeRadios = document.querySelectorAll('input[name="mode"]');
-    const companyContainer = document.getElementById("company-container");
-    const credentialsContainer = document.getElementById("credentials-container");
     const locationContainer = document.getElementById("location-container");
     const inpersonCheckbox = document.getElementById("inperson-training");
     const companyCourseContainer = document.getElementById("company-course-container");
@@ -43,6 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 conferenceLinkInput.removeAttribute("required");
             }
         }
+        updateAccountFieldState();
     }
 
     // Disable driver arrangement for unsupported modes (Virtual OR Public Course without in-person)
@@ -74,25 +85,23 @@ document.addEventListener("DOMContentLoaded", function () {
         radio.addEventListener("change", function () {
             if (radio.id === "virtual") {
                 // Virtual: Show Email/Password, hide others
-                credentialsContainer.classList.remove("d-none");
                 locationContainer.classList.add("d-none");
                 publicCourseContainer.classList.add("d-none");
                 companyCourseContainer.classList.remove("d-none");
             } else if (radio.id === "face-to-face") {
                 // Face-to-Face: Show Location, hide Email/Password
-                credentialsContainer.classList.add("d-none");
                 locationContainer.classList.remove("d-none");
                 publicCourseContainer.classList.add("d-none");
                 companyCourseContainer.classList.remove("d-none");
             } else if (radio.id === "public-course") {
                 // Public Course: Show Public Course layout, hide Company/Course
-                credentialsContainer.classList.remove("d-none");
                 publicCourseContainer.classList.remove("d-none");
                 companyCourseContainer.classList.add("d-none");
                 locationContainer.classList.add("d-none");
             }
             updateConferenceLinkState();
             updateDriverArrangementSupport();
+            updateAccountFieldState();
         });
     });
 
@@ -101,10 +110,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const selectedMode = document.querySelector('input[name="mode"]:checked')?.id;
         
         if (inpersonCheckbox.checked) {
-            credentialsContainer.classList.add("d-none");
             locationContainer.classList.remove("d-none");
         } else {
-            credentialsContainer.classList.remove("d-none");
             locationContainer.classList.add("d-none");
         }
         
@@ -113,11 +120,13 @@ document.addEventListener("DOMContentLoaded", function () {
             updateConferenceLinkState();
             updateDriverArrangementSupport();
         }
+        updateAccountFieldState();
     });
 
     // Initialize conference link state
     updateConferenceLinkState();
     updateDriverArrangementSupport();
+    updateAccountFieldState();
 });
 
 function formatDate(date) {
@@ -237,6 +246,7 @@ $(document).ready(function (e) {
         } else {
             $('#platform_other').addClass('d-none').val('');
         }
+        updateAccountFieldState();
     });
 
     // Add assistant button handler: create pill and add to container
@@ -323,7 +333,7 @@ $(document).ready(function (e) {
         let to_time = $('#time-end').val();
         let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
         let platform = $('#platform').val();
-        let account_id = $('#credentials').find('option:selected').val();
+        let account_id = $('#credentials-container').is(':visible') ? ($('#credentials').find('option:selected').val() || '') : '';
         let location = $('#location').val();
         let company = $('#company').find('option:selected').val();
 
@@ -374,7 +384,6 @@ $(document).ready(function (e) {
 
         const requiredFields = [
             'input[name="mode"]:checked',
-            '#credentials',
             '#company',
             '#course',
             '#date-range',
@@ -385,7 +394,6 @@ $(document).ready(function (e) {
         ];
 
         if (mode === 'virtual') {
-            requiredFields.push('#credentials');
         } else if (mode === 'face-to-face') {
             requiredFields.push('#location');
         } else if (mode === 'public-course') {

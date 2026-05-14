@@ -114,20 +114,8 @@
                             </div>
                         </div>
 
-                        <!-- Account and Platform -->
-                        <div class="training-form-row {{ $t_mode == 'public-course' ? 'd-none' : '' }}" id="credentials-container">
-                            <div class="training-form-group">
-                                <label for="credentials">Account <span class="required"></span></label>
-                                <select id="credentials" class="training-select">
-                                    <option value="" disabled>Select Host Email Account</option>
-                                    @foreach ($accounts as $account)
-                                        <option value="{{ $account->id }}" {{ $t_account_id == $account->id ? 'selected' : '' }}>
-                                            {{ $account->account_email }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
+                        <!-- Platform -->
+                        <div class="training-form-row" id="platform-container">
                             <div class="training-form-group">
                                 <label for="platform">Platform</label>
                                 <select id="platform" class="training-select">
@@ -148,6 +136,21 @@
                                         <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none"></span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="training-input"
                                     placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)" value="{{ $t_conference_link ?? '' }}">
+                            </div>
+                        </div>
+
+                        <!-- Account -->
+                        <div class="training-form-row full d-none" id="credentials-container">
+                            <div class="training-form-group">
+                                <label for="credentials">Account</label>
+                                <select id="credentials" class="training-select">
+                                    <option value="" disabled>Select Host Email Account</option>
+                                    @foreach ($accounts as $account)
+                                        <option value="{{ $account->id }}" {{ $t_account_id == $account->id ? 'selected' : '' }}>
+                                            {{ $account->account_email }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 

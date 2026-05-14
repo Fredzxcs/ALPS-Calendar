@@ -652,7 +652,7 @@ class TrainingController extends Controller
                     $coord = User::find($trainingSession->coordinator_to_notify);
                     if ($coord && !empty($coord->email)) {
                         try {
-                            Mail::to($coord->email)->send(new DriverNotificationMail($trainingSession, $coord));
+                            Mail::to($coord->email)->send(new DriverNotificationMail($trainingSession, $coord, true));
                         } catch (\Exception $e) {
                             Log::error('Failed to send coordinator driver notification (on update)', [
                                 'to' => $coord->email,
