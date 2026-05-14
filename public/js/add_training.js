@@ -130,10 +130,10 @@ function syncDateRangeStateFromInput(datePickerInstance) {
     }
 }
 
-const fp = flatpickr("#date-range", {
+const isEditMode = Boolean(window.isEditMode && window.trainingId);
+const dateRangeOptions = {
     mode: "range",
     dateFormat: "m-d-Y",
-    minDate: "today",
     onChange: function (selectedDates) {
         if (selectedDates.length >= 2) {
             const initialStartDate = selectedDates[0];
@@ -144,7 +144,13 @@ const fp = flatpickr("#date-range", {
             console.log("End Date:", endDateFormatted);
         }
     }
-});
+};
+
+if (!isEditMode) {
+    dateRangeOptions.minDate = "today";
+}
+
+const fp = flatpickr("#date-range", dateRangeOptions);
 
 syncDateRangeStateFromInput(fp);
 

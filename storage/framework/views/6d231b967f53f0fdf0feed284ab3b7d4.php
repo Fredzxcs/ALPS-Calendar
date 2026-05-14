@@ -6,7 +6,7 @@
         <div class="container mt-5">
             <div class="shadow-sm border-0">
                 <div class="alps-header-add rounded-top d-flex justify-content-center align-items-center py-4">
-                    <h2 class="text-white fw-boldest m-0 fs-1">Edit Training</h2>
+                    <h2 class="text-white fw-boldest m-0 fs-1">Add Training</h2>
                 </div>
                 <!--begin::Stepper-->
                 <div class="stepper stepper-pills alps-card-glass-body p-md-10" id="kt_stepper_example_basic">
@@ -47,23 +47,6 @@
                     <?php
                         $currentUser = auth()->user();
                         $googleConnected = ($currentUser instanceof \App\Models\User && !empty($currentUser->google_refresh_token)) || session('google_connected', false);
-                        
-                        // Safe accessors for training properties
-                        $t_mode = $training->mode ?? 'virtual';
-                        $t_course_id = $training->course_id ?? null;
-                        $t_account_id = $training->account_id ?? null;
-                        $t_platform = $training->platform ?? null;
-                        $t_conference_link = $training->conference_link ?? null;
-                        $t_location = $training->location ?? null;
-                        $t_company_id = $training->company_id ?? null;
-                        $t_company_name = $training->company_name ?? null;
-                        $t_from_date = $training->from_date ?? null;
-                        $t_to_date = $training->to_date ?? null;
-                        $t_from_time = $training->from_time ?? null;
-                        $t_to_time = $training->to_time ?? null;
-                        $t_facilitator_id = $training->facilitator_id ?? null;
-                        $t_assistants = collect($training->assistants ?? []);
-                        $t_need_transportation = filter_var($training->need_transportation ?? false, FILTER_VALIDATE_BOOLEAN) || ($training->need_transportation ?? '') === 'yes' ? 'yes' : 'no';
                     ?>
 
                     <div class="mb-5">
@@ -75,15 +58,15 @@
                                 <label>Mode of Training <span class="required"></span></label>
                                 <div class="training-radio-group">
                                     <div class="training-radio">
-                                        <input type="radio" id="virtual" value="virtual" name="mode" <?php echo e($t_mode == 'virtual' ? 'checked' : ''); ?>>
+                                        <input type="radio" id="virtual" value="virtual" name="mode" checked>
                                         <label for="virtual">Virtual</label>
                                     </div>
                                     <div class="training-radio">
-                                        <input type="radio" id="face-to-face" value="face-to-face" name="mode" <?php echo e($t_mode == 'face-to-face' ? 'checked' : ''); ?>>
+                                        <input type="radio" id="face-to-face" value="face-to-face" name="mode">
                                         <label for="face-to-face">Face-to-Face</label>
                                     </div>
                                     <div class="training-radio">
-                                        <input type="radio" id="public-course" value="public-course" name="mode" <?php echo e($t_mode == 'public-course' ? 'checked' : ''); ?>>
+                                        <input type="radio" id="public-course" value="public-course" name="mode">
                                         <label for="public-course">Public Course</label>
                                     </div>
                                 </div>
@@ -91,7 +74,7 @@
                         </div>
 
                         <!-- Public Course: Course and In-person Training -->
-                        <div class="training-form-row full <?php echo e($t_mode != 'public-course' ? 'd-none' : ''); ?>" id="public-course-container">
+                        <div class="training-form-row full d-none" id="public-course-container">
                             <div class="training-form-group">
                                 <div style="display: flex; gap: 2rem; align-items: center;">
                                     <div class="training-checkbox">
@@ -103,7 +86,7 @@
                                         <select id="public-course-select" class="training-select" style="width: 100%; margin-top: 0.5rem;">
                                             <option value="" disabled selected>Select Course</option>
                                             <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <option value="<?php echo e($course->id); ?>" <?php echo e($t_course_id == $course->id ? 'selected' : ''); ?>>
+                                            <option value="<?php echo e($course->id); ?>">
                                                 <?php echo e($course->course_code ? $course->course_code . ' - ' : ''); ?><?php echo e($course->course_name); ?>
 
                                             </option>
@@ -115,13 +98,13 @@
                         </div>
 
                         <!-- Account and Platform -->
-                        <div class="training-form-row <?php echo e($t_mode == 'public-course' ? 'd-none' : ''); ?>" id="credentials-container">
+                        <div class="training-form-row" id="credentials-container">
                             <div class="training-form-group">
                                 <label for="credentials">Account <span class="required"></span></label>
                                 <select id="credentials" class="training-select">
-                                    <option value="" disabled>Select Host Email Account</option>
+                                    <option value="" disabled selected>Select Host Email Account</option>
                                     <?php $__currentLoopData = $accounts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($account->id); ?>" <?php echo e($t_account_id == $account->id ? 'selected' : ''); ?>>
+                                        <option value="<?php echo e($account->id); ?>">
                                             <?php echo e($account->account_email); ?>
 
                                         </option>
@@ -133,31 +116,31 @@
                                 <label for="platform">Platform</label>
                                 <select id="platform" class="training-select">
                                     <option value="" selected disabled>Select Platform</option>
-                                    <option value="Zoom" <?php echo e($t_platform == 'Zoom' ? 'selected' : ''); ?>>Zoom</option>
-                                    <option value="Google Meet" <?php echo e($t_platform == 'Google Meet' ? 'selected' : ''); ?>>Google Meet</option>
-                                    <option value="MS Teams" <?php echo e($t_platform == 'MS Teams' ? 'selected' : ''); ?>>MS Teams</option>
-                                    <option value="other" <?php echo e($t_platform && !in_array($t_platform, ['Zoom', 'Google Meet', 'MS Teams']) ? 'selected' : ''); ?>>Other</option>
+                                    <option value="Zoom">Zoom</option>
+                                    <option value="Google Meet">Google Meet</option>
+                                    <option value="MS Teams">MS Teams</option>
+                                    <option value="other">Other</option>
                                 </select>
-                                <input type="text" name="platform_other" id="platform_other" class="training-input <?php echo e($t_platform && !in_array($t_platform, ['Zoom', 'Google Meet', 'MS Teams']) ? '' : 'd-none'); ?>" style="margin-top: 0.5rem;"
-                                    placeholder="Enter platform name" value="<?php echo e($t_platform && !in_array($t_platform, ['Zoom', 'Google Meet', 'MS Teams']) ? $t_platform : ''); ?>">
+                                <input type="text" name="platform_other" id="platform_other" class="training-input d-none" style="margin-top: 0.5rem;"
+                                    placeholder="Enter platform name">
                             </div>
                         </div>
 
                         <!-- Conference Call Link -->
-                        <div class="training-form-row full <?php echo e($t_mode == 'public-course' ? 'd-none' : ''); ?>" id="conference-link-container">
+                        <div class="training-form-row full" id="conference-link-container">
                             <div class="training-form-group">
                                         <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none"></span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="training-input"
-                                    placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)" value="<?php echo e($t_conference_link ?? ''); ?>">
+                                    placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)">
                             </div>
                         </div>
 
                         <!-- Location: Face-to-Face -->
-                        <div class="training-form-row full <?php echo e($t_mode != 'face-to-face' ? 'd-none' : ''); ?>" id="location-container">
+                        <div class="training-form-row full d-none" id="location-container">
                             <div class="training-form-group">
                                 <label for="location">Location <span class="required"></span></label>
                                 <input type="text" id="location" class="training-input"
-                                    placeholder="Enter Location" value="<?php echo e($t_location ?? ''); ?>">
+                                    placeholder="Enter Location">
                             </div>
                         </div>
 
@@ -166,24 +149,24 @@
                             <div class="training-form-group">
                                 <label for="company">Company <span class="required"></span></label>
                                 <select id="company" class="training-select">
-                                    <option value="" disabled>Select Company</option>
+                                    <option value="" disabled selected>Select Company</option>
                                     <?php $__currentLoopData = $companies; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $company): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($company->id); ?>" <?php echo e((string)$t_company_id === (string)$company->id ? 'selected' : ''); ?>>
+                                        <option value="<?php echo e($company->id); ?>">
                                             <?php echo e($company->company_name); ?>
 
                                         </option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    <option value="other" <?php echo e($t_company_id && !$companies->contains('id', $t_company_id) ? 'selected' : ''); ?>>Other</option>
+                                    <option value="other">Other</option>
                                 </select>
-                                <input type="text" id="enter-company" class="training-input <?php echo e($t_company_id && !$companies->contains('id', $t_company_id) ? '' : 'd-none'); ?>" style="margin-top: 0.5rem;" placeholder="Enter Company" value="<?php echo e($t_company_id && !$companies->contains('id', $t_company_id) ? $t_company_name : ''); ?>">
+                                <input type="text" id="enter-company" class="training-input d-none" style="margin-top: 0.5rem;" placeholder="Enter Company">
                             </div>
 
                             <div class="training-form-group">
                                 <label for="course">Course <span class="required"></span></label>
                                 <select id="course" class="training-select">
-                                    <option value="" disabled>Select Course</option>
+                                    <option value="" disabled selected>Select Course</option>
                                     <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <option value="<?php echo e($course->id); ?>" <?php echo e((string)$t_course_id === (string)$course->id ? 'selected' : ''); ?>>
+                                    <option value="<?php echo e($course->id); ?>">
                                         <?php echo e($course->course_code ? $course->course_code . ' - ' : ''); ?><?php echo e($course->course_name); ?>
 
                                     </option>
@@ -196,16 +179,15 @@
                         <div class="training-form-row triple">
                             <div class="training-form-group">
                                 <label for="date-range">Date Range <span class="required"></span></label>
-                                <input type="text" id="date-range" class="training-input" placeholder="Select Date" readonly
-                                    value="<?php echo e($t_from_date && $t_to_date ? date('m-d-Y', strtotime($t_from_date)) . ' to ' . date('m-d-Y', strtotime($t_to_date)) : ''); ?>">
+                                <input type="text" id="date-range" class="training-input" placeholder="Select Date" readonly>
                             </div>
                             <div class="training-form-group">
                                 <label for="time-start">Time Start <span class="required"></span></label>
-                                <input type="time" id="time-start" class="training-input" value="<?php echo e($t_from_time ?? ''); ?>">
+                                <input type="time" id="time-start" class="training-input">
                             </div>
                             <div class="training-form-group">
                                 <label for="time-end">Time End <span class="required"></span></label>
-                                <input type="time" id="time-end" class="training-input" value="<?php echo e($t_to_time ?? ''); ?>">
+                                <input type="time" id="time-end" class="training-input">
                             </div>
                         </div>
 
@@ -235,10 +217,10 @@
                             <div class="training-form-group">
                                 <label for="facilitator">Facilitator</label>
                                 <select id="facilitator" class="training-select">
-                                    <option disabled>Select Facilitator</option>
+                                    <option disabled selected>Select Facilitator</option>
                                     <option value="">No Facilitator Yet</option>
-                                    <?php $__currentLoopData = $facilitators; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($user->id); ?>" <?php echo e($t_facilitator_id == $user->id ? 'selected' : ''); ?>><?php echo e($user->name); ?></option>
+                                    <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
@@ -248,23 +230,14 @@
                                 <div style="display: flex; gap: 0.5rem;">
                                     <select id="assistant_select" class="training-select" style="flex: 1;">
                                         <option value="" selected disabled>Select Assistant</option>
-                                        <?php $__currentLoopData = $facilitators; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                     <button type="button" id="assistant_add_btn" class="training-btn training-btn-secondary-blue">ADD</button>
                                 </div>
-                                <div id="assistant_list_container" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; min-height: 0;">
-                                    <?php if($t_assistants->count()): ?>
-                                        <?php $__currentLoopData = $t_assistants; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $assistant): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <div class="assistant-item" data-id="<?php echo e($assistant->id); ?>" style="background: #dbeafe; border: 1px solid #bfdbfe; color: #1e40af; padding: 0.5rem 0.75rem; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500; white-space: nowrap;">
-                                                <span><?php echo e($assistant->name); ?></span>
-                                                <button type="button" class="remove-assistant" data-id="<?php echo e($assistant->id); ?>" style="background: transparent; border: none; color: #1e40af; cursor: pointer; font-size: 1.1rem; font-weight: bold; padding: 0; display: flex; align-items: center; justify-content: center; width: 1.1rem; height: 1.1rem; margin-left: 0.25rem; line-height: 1;">×</button>
-                                            </div>
-                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                    <?php endif; ?>
-                                </div>
-                                <input type="hidden" id="assistant_list" value="<?php echo e($t_assistants->count() ? implode(', ', $t_assistants->pluck('id')->toArray()) : ''); ?>">
+                                <div id="assistant_list_container" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; min-height: 0;"></div>
+                                <input type="hidden" id="assistant_list" value="">
                                 <div class="training-helper-text">Select one assistant and click Add to include multiple assistants.</div>
                             </div>
                         </div>
@@ -283,11 +256,11 @@
                                 <label>Do you need a transportation? <span class="required">*</span></label>
                                 <div class="training-radio-group">
                                     <div class="training-radio">
-                                        <input type="radio" id="need_transportation_yes" name="need_transportation" value="yes" <?php echo e($t_need_transportation == 'yes' ? 'checked' : ''); ?>>
+                                        <input type="radio" id="need_transportation_yes" name="need_transportation" value="yes">
                                         <label for="need_transportation_yes">Yes, I need a driver</label>
                                     </div>
                                     <div class="training-radio">
-                                        <input type="radio" id="need_transportation_no" name="need_transportation" value="no" <?php echo e($t_need_transportation != 'yes' ? 'checked' : ''); ?>>
+                                        <input type="radio" id="need_transportation_no" name="need_transportation" value="no" checked>
                                         <label for="need_transportation_no">No transportation needed</label>
                                     </div>
                                 </div>
@@ -295,26 +268,26 @@
                         </div>
 
                         <!-- Driver Arrangement Fields -->
-                        <div id="driver-arrangement-fields" class="<?php echo e($t_need_transportation == 'yes' ? '' : 'd-none'); ?>">
+                        <div id="driver-arrangement-fields" class="d-none">
                             <!-- Outbound Trip -->
                             <div class="trip-section">
                                 <div class="trip-section-heading">Outbound Trip</div>
                                 <div class="training-form-row quad">
                                     <div class="training-form-group">
                                         <label for="outbound_pickup_time">Pickup Time <span class="required">*</span></label>
-                                        <input type="time" id="outbound_pickup_time" class="training-input" value="<?php echo e($training->outbound_pickup_time ?? ''); ?>">
+                                        <input type="time" id="outbound_pickup_time" class="training-input">
                                     </div>
                                     <div class="training-form-group">
                                         <label for="outbound_contact_number">Contact Number <span class="required">*</span></label>
-                                        <input type="text" id="outbound_contact_number" class="training-input" placeholder="Contact number" value="<?php echo e($training->outbound_contact_number ?? ''); ?>">
+                                        <input type="text" id="outbound_contact_number" class="training-input" placeholder="Contact number">
                                     </div>
                                     <div class="training-form-group">
                                         <label for="outbound_pickup_location">Pickup Location <span class="required">*</span></label>
-                                        <input type="text" id="outbound_pickup_location" class="training-input" placeholder="Pickup location" value="<?php echo e($training->outbound_pickup_location ?? ''); ?>">
+                                        <input type="text" id="outbound_pickup_location" class="training-input" placeholder="Pickup location">
                                     </div>
                                     <div class="training-form-group">
                                         <label for="outbound_dropoff_location">Drop-off Location <span class="required">*</span></label>
-                                        <input type="text" id="outbound_dropoff_location" class="training-input" placeholder="Drop-off location" value="<?php echo e($training->outbound_dropoff_location ?? ''); ?>">
+                                        <input type="text" id="outbound_dropoff_location" class="training-input" placeholder="Drop-off location">
                                     </div>
                                 </div>
                             </div>
@@ -322,28 +295,28 @@
                             <!-- Return Trip -->
                             <div class="trip-section">
                                 <div class="training-checkbox">
-                                    <input type="checkbox" id="return_trip_needed" <?php echo e($training->return_trip_needed ? 'checked' : ''); ?>>
+                                    <input type="checkbox" id="return_trip_needed">
                                     <label for="return_trip_needed">Return trip needed</label>
                                 </div>
 
-                                <div id="return-trip-fields" class="<?php echo e($training->return_trip_needed ? '' : 'd-none'); ?>" style="margin-top: 1rem;">
+                                <div id="return-trip-fields" class="d-none" style="margin-top: 1rem;">
                                     <div class="trip-section-heading">Return Trip</div>
                                     <div class="training-form-row quad">
                                         <div class="training-form-group">
                                             <label for="return_pickup_time">Return Time <span class="required">*</span></label>
-                                            <input type="time" id="return_pickup_time" class="training-input" value="<?php echo e($training->return_pickup_time ?? ''); ?>">
+                                            <input type="time" id="return_pickup_time" class="training-input">
                                         </div>
                                         <div class="training-form-group">
                                             <label for="return_contact_number">Contact Number <span class="required">*</span></label>
-                                            <input type="text" id="return_contact_number" class="training-input" placeholder="Contact number" value="<?php echo e($training->return_contact_number ?? ''); ?>">
+                                            <input type="text" id="return_contact_number" class="training-input" placeholder="Contact number">
                                         </div>
                                         <div class="training-form-group">
                                             <label for="return_pickup_location">Pickup Location <span class="required">*</span></label>
-                                            <input type="text" id="return_pickup_location" class="training-input" placeholder="Pickup location" value="<?php echo e($training->return_pickup_location ?? ''); ?>">
+                                            <input type="text" id="return_pickup_location" class="training-input" placeholder="Pickup location">
                                         </div>
                                         <div class="training-form-group">
                                             <label for="return_dropoff_location">Drop-off Location <span class="required">*</span></label>
-                                            <input type="text" id="return_dropoff_location" class="training-input" placeholder="Drop-off location" value="<?php echo e($training->return_dropoff_location ?? ''); ?>">
+                                            <input type="text" id="return_dropoff_location" class="training-input" placeholder="Drop-off location">
                                         </div>
                                     </div>
                                 </div>
@@ -353,21 +326,23 @@
                             <div class="trip-section" style="margin-top: 1.5rem;">
                                 <div class="trip-section-heading">Notify Heads</div>
                                 <div class="training-checkbox">
-                                    <input type="checkbox" id="notify_coordinator" <?php echo e($training->notify_coordinator ? 'checked' : ''); ?>>
+                                    <input type="checkbox" id="notify_coordinator">
                                     <label for="notify_coordinator">Notify Coordinator</label>
                                 </div>
 
-                                <div id="coordinator-to-notify-container" class="<?php echo e($training->notify_coordinator ? '' : 'd-none'); ?>" style="margin-top: 1rem;">
+                                <div id="coordinator-to-notify-container" class="d-none" style="margin-top: 1rem;">
                                     <div class="training-form-group">
                                         <label for="coordinator_to_notify">Select coordinator to notify the driver <span class="required">*</span></label>
                                         <select id="coordinator_to_notify" class="training-select">
                                             <option value="" disabled selected>Select Coordinator</option>
-                                            <?php $__currentLoopData = $facilitators; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($user->id); ?>" <?php echo e($training->coordinator_to_notify == $user->id ? 'selected' : ''); ?>><?php echo e($user->name); ?></option>
+                                            <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                 </div>
+
+                                <!-- Removed specific-person notify checkboxes - only coordinator remains -->
                             </div>
                         </div>
                     </div>
@@ -403,12 +378,23 @@
 <?php $__env->startPush('scripts'); ?>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script>
-        window.isEditMode = true;
-        window.trainingId = <?php echo e($training->id); ?>;
-    </script>
     <script src="<?php echo e(asset('js/add_training.js')); ?>"></script>
     <script src="<?php echo e(asset('plugins/custom/formrepeater/formrepeater.bundle.js')); ?>"></script>
+
+    <script>
+        $('#asst_repeat').repeater({
+            initEmpty: false,
+            defaultValues: {
+                'text-input': 'foo'
+            },
+            show: function () {
+                $(this).slideDown();
+            },
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+    </script>
 <?php $__env->stopPush(); ?>
 
-<?php echo $__env->make('global.layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\ALPs\ALPs Calendar\ALPS-Calendar\resources\views/add_training/edit_training.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('global.layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\ALPs\ALPs Calendar\ALPS-Calendar\resources\views/add_training/add_training.blade.php ENDPATH**/ ?>

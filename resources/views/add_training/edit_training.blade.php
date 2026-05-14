@@ -400,12 +400,10 @@
 @push('scripts')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="{{ asset('js/add_training.js') }}"></script>
-    <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
-
     <script>
-        // Override for edit mode
         window.isEditMode = true;
         window.trainingId = {{ $training->id }};
     </script>
+    <script src="{{ asset('js/add_training.js') }}"></script>
+    <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
 @endpush
