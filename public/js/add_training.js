@@ -45,6 +45,30 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Disable driver arrangement for unsupported modes (Virtual OR Public Course without in-person)
+    function updateDriverArrangementSupport() {
+        const mode = $('input[name="mode"]:checked').val();
+        const inperson = $('#inperson-training').is(':checked');
+        const supported = !(mode === 'virtual' || (mode === 'public-course' && !inperson));
+
+        if (!supported) {
+            // Disable transportation radios and hide driver fields
+            $('input[name="need_transportation"]').prop('disabled', true).prop('checked', false);
+            $('#driver-arrangement-fields').addClass('d-none');
+
+            const msg = 'Driver arrangement is not supported for online events. Please select a different event type to enable driver arrangement.';
+            if ($('#driver-arrangement-disabled-message').length === 0) {
+                // Insert message at top of Step 2 container
+                $('#training-step-2').prepend(`<div id="driver-arrangement-disabled-message" class="training-helper-text" style="color:#6b7280; margin-bottom:1rem;">${msg}</div>`);
+            } else {
+                $('#driver-arrangement-disabled-message').text(msg).show();
+            }
+        } else {
+            $('input[name="need_transportation"]').prop('disabled', false);
+            $('#driver-arrangement-disabled-message').hide();
+        }
+    }
+
     // Mode of Training Logic
     modeRadios.forEach(radio => {
         radio.addEventListener("change", function () {
@@ -68,6 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 locationContainer.classList.add("d-none");
             }
             updateConferenceLinkState();
+            updateDriverArrangementSupport();
         });
     });
 
@@ -86,11 +111,13 @@ document.addEventListener("DOMContentLoaded", function () {
         // Update conference link when in-person status changes
         if (selectedMode === "public-course") {
             updateConferenceLinkState();
+            updateDriverArrangementSupport();
         }
     });
 
     // Initialize conference link state
     updateConferenceLinkState();
+    updateDriverArrangementSupport();
 });
 
 function formatDate(date) {
@@ -515,6 +542,8 @@ $(document).ready(function (e) {
         $('input[name="mode"]').change(function () {
             const mode = $(this).val();
             clearFields(mode);
+            // Ensure driver arrangement state updates after mode change
+            updateDriverArrangementSupport();
         });
 
         function clearFields(mode) {
