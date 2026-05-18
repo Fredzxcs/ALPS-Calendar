@@ -201,6 +201,7 @@ main {
 header {
     position: relative;
     z-index: 5;
+    padding: 2rem 3.5rem 0 3.5rem;
 }
 
 a,
@@ -430,10 +431,15 @@ b,
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.84) 100%);
     border: 1px solid rgba(255, 255, 255, 0.66);
     border-radius: 999px;
-    margin: 0.75rem 1rem 0;
+    margin: 0.75rem 0 0 0;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     box-shadow: var(--alps-shadow-mid);
+}
+
+.navbar.alps-navbar .container-fluid {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
 }
 
 .alps-navbar .nav-link,
@@ -1607,16 +1613,20 @@ body.alps-login-page .alps-login-shell {
 /* FIX LOGO POSITION */
 .alps-login-logo-badge {
     position: absolute;
-    top: -60px; /* pulls it OUTSIDE the card */
+    top: -70px; /* pulls it further OUTSIDE the card for more space */
     left: 50%;
     transform: translateX(-50%);
     z-index: 30;
+    background: white;
+    border-radius: 18px;
+    padding: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 /* LOGO CONTAINER */
 .alps-login-logo-badge img {
-    width: 140px;
-    background: rgba(241, 243, 245, 0.75);
+    width: 120px;
+    display: block;
 }
 
 /* ========== GRADIENT HEADER WITH ANIMATED BLUR SHAPES ========== */

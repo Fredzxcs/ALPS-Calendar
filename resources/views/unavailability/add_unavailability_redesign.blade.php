@@ -28,7 +28,7 @@
                     <!-- Date Range -->
                     <div class="training-form-row full">
                         <div class="training-form-group">
-                            <label for="add_unavailable_date">Date Range <span class="required">*</span></label>
+                            <label for="add_unavailable_date">Date Range <span class="required"></span></label>
                             <input type="text" id="add_unavailable_date" class="training-input" placeholder="Select Date" readonly>
                         </div>
                     </div>
@@ -36,7 +36,7 @@
                     <!-- Purpose -->
                     <div class="training-form-row full">
                         <div class="training-form-group">
-                            <label for="add_unavailable_purpose">Purpose <span class="required">*</span></label>
+                            <label for="add_unavailable_purpose">Purpose <span class="required"></span></label>
                             <input type="text" id="add_unavailable_purpose" class="training-input" placeholder="Enter Purpose of Unavailability">
                         </div>
                     </div>

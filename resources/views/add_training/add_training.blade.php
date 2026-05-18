@@ -250,7 +250,7 @@
                         <!-- Transportation Needed -->
                         <div class="training-form-row full">
                             <div class="training-form-group">
-                                <label>Do you need a transportation? <span class="required">*</span></label>
+                                <label>Do you need a transportation? <span class="required"></span></label>
                                 <div class="training-radio-group">
                                     <div class="training-radio">
                                         <input type="radio" id="need_transportation_yes" name="need_transportation" value="yes">
@@ -271,19 +271,19 @@
                                 <div class="trip-section-heading">Outbound Trip</div>
                                 <div class="training-form-row quad">
                                     <div class="training-form-group">
-                                        <label for="outbound_pickup_time">Pickup Time <span class="required">*</span></label>
+                                        <label for="outbound_pickup_time">Pickup Time <span class="required"></span></label>
                                         <input type="time" id="outbound_pickup_time" class="training-input">
                                     </div>
                                     <div class="training-form-group">
-                                        <label for="outbound_contact_number">Contact Number <span class="required">*</span></label>
+                                        <label for="outbound_contact_number">Contact Number <span class="required"></span></label>
                                         <input type="text" id="outbound_contact_number" class="training-input" placeholder="Contact number">
                                     </div>
                                     <div class="training-form-group">
-                                        <label for="outbound_pickup_location">Pickup Location <span class="required">*</span></label>
+                                        <label for="outbound_pickup_location">Pickup Location <span class="required"></span></label>
                                         <input type="text" id="outbound_pickup_location" class="training-input" placeholder="Pickup location">
                                     </div>
                                     <div class="training-form-group">
-                                        <label for="outbound_dropoff_location">Drop-off Location <span class="required">*</span></label>
+                                        <label for="outbound_dropoff_location">Drop-off Location <span class="required"></span></label>
                                         <input type="text" id="outbound_dropoff_location" class="training-input" placeholder="Drop-off location">
                                     </div>
                                 </div>
@@ -300,19 +300,19 @@
                                     <div class="trip-section-heading">Return Trip</div>
                                     <div class="training-form-row quad">
                                         <div class="training-form-group">
-                                            <label for="return_pickup_time">Return Time <span class="required">*</span></label>
+                                            <label for="return_pickup_time">Return Time <span class="required"></span></label>
                                             <input type="time" id="return_pickup_time" class="training-input">
                                         </div>
                                         <div class="training-form-group">
-                                            <label for="return_contact_number">Contact Number <span class="required">*</span></label>
+                                            <label for="return_contact_number">Contact Number <span class="required"></span></label>
                                             <input type="text" id="return_contact_number" class="training-input" placeholder="Contact number">
                                         </div>
                                         <div class="training-form-group">
-                                            <label for="return_pickup_location">Pickup Location <span class="required">*</span></label>
+                                            <label for="return_pickup_location">Pickup Location <span class="required"></span></label>
                                             <input type="text" id="return_pickup_location" class="training-input" placeholder="Pickup location">
                                         </div>
                                         <div class="training-form-group">
-                                            <label for="return_dropoff_location">Drop-off Location <span class="required">*</span></label>
+                                            <label for="return_dropoff_location">Drop-off Location <span class="required"></span></label>
                                             <input type="text" id="return_dropoff_location" class="training-input" placeholder="Drop-off location">
                                         </div>
                                     </div>
