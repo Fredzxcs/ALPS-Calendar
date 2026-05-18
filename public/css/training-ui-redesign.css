@@ -170,6 +170,35 @@
     font-family: inherit;
 }
 
+/* Disabled form controls - visually indicate non-interactive state */
+.training-input:disabled,
+.training-select:disabled,
+.training-input[disabled],
+.training-select[disabled] {
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+/* Radios and checkboxes when disabled */
+.training-radio input[type="radio"]:disabled,
+.training-checkbox input[type="checkbox"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Make labels next to disabled inputs look disabled and not clickable */
+.training-radio input[type="radio"]:disabled + label,
+.training-checkbox input[type="checkbox"]:disabled + label,
+.training-radio input[type="radio"][disabled] + label,
+.training-checkbox input[type="checkbox"][disabled] + label {
+    color: #9ca3af;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 .training-input:focus,
 .training-select:focus {
     outline: none;

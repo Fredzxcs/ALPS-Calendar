@@ -2,10 +2,20 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
 // Global assistants list so it is accessible across handlers
 window.assistantsList = window.assistantsList || [];
 
+function updateAccountFieldState() {
+    const selectedPlatform = ($('#platform').val() || '').trim();
+    const credentialsContainer = $('#credentials-container');
+
+    if (selectedPlatform === 'Zoom') {
+        credentialsContainer.removeClass('d-none');
+    } else {
+        credentialsContainer.addClass('d-none');
+        $('#credentials').val('');
+    }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const modeRadios = document.querySelectorAll('input[name="mode"]');
-    const companyContainer = document.getElementById("company-container");
-    const credentialsContainer = document.getElementById("credentials-container");
     const locationContainer = document.getElementById("location-container");
     const inpersonCheckbox = document.getElementById("inperson-training");
     const companyCourseContainer = document.getElementById("company-course-container");
@@ -43,6 +53,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 conferenceLinkInput.removeAttribute("required");
             }
         }
+        updateAccountFieldState();
+    }
+
+    // Disable driver arrangement for unsupported modes (Virtual OR Public Course without in-person)
+    function updateDriverArrangementSupport() {
+        const mode = $('input[name="mode"]:checked').val();
+        const inperson = $('#inperson-training').is(':checked');
+        const supported = !(mode === 'virtual' || (mode === 'public-course' && !inperson));
+
+        if (!supported) {
+            // Disable transportation radios and hide driver fields
+            $('input[name="need_transportation"]').prop('disabled', true).prop('checked', false);
+            $('#driver-arrangement-fields').addClass('d-none');
+
+            const msg = 'Driver arrangement is not supported for online events. Please select a different event type to enable driver arrangement.';
+            if ($('#driver-arrangement-disabled-message').length === 0) {
+                // Insert message at top of Step 2 container
+                $('#training-step-2').prepend(`<div id="driver-arrangement-disabled-message" class="training-helper-text" style="color:#6b7280; margin-bottom:1rem;">${msg}</div>`);
+            } else {
+                $('#driver-arrangement-disabled-message').text(msg).show();
+            }
+        } else {
+            $('input[name="need_transportation"]').prop('disabled', false);
+            $('#driver-arrangement-disabled-message').hide();
+        }
     }
 
     // Mode of Training Logic
@@ -50,24 +85,23 @@ document.addEventListener("DOMContentLoaded", function () {
         radio.addEventListener("change", function () {
             if (radio.id === "virtual") {
                 // Virtual: Show Email/Password, hide others
-                credentialsContainer.classList.remove("d-none");
                 locationContainer.classList.add("d-none");
                 publicCourseContainer.classList.add("d-none");
                 companyCourseContainer.classList.remove("d-none");
             } else if (radio.id === "face-to-face") {
                 // Face-to-Face: Show Location, hide Email/Password
-                credentialsContainer.classList.add("d-none");
                 locationContainer.classList.remove("d-none");
                 publicCourseContainer.classList.add("d-none");
                 companyCourseContainer.classList.remove("d-none");
             } else if (radio.id === "public-course") {
                 // Public Course: Show Public Course layout, hide Company/Course
-                credentialsContainer.classList.remove("d-none");
                 publicCourseContainer.classList.remove("d-none");
                 companyCourseContainer.classList.add("d-none");
                 locationContainer.classList.add("d-none");
             }
             updateConferenceLinkState();
+            updateDriverArrangementSupport();
+            updateAccountFieldState();
         });
     });
 
@@ -76,21 +110,23 @@ document.addEventListener("DOMContentLoaded", function () {
         const selectedMode = document.querySelector('input[name="mode"]:checked')?.id;
         
         if (inpersonCheckbox.checked) {
-            credentialsContainer.classList.add("d-none");
             locationContainer.classList.remove("d-none");
         } else {
-            credentialsContainer.classList.remove("d-none");
             locationContainer.classList.add("d-none");
         }
         
         // Update conference link when in-person status changes
         if (selectedMode === "public-course") {
             updateConferenceLinkState();
+            updateDriverArrangementSupport();
         }
+        updateAccountFieldState();
     });
 
     // Initialize conference link state
     updateConferenceLinkState();
+    updateDriverArrangementSupport();
+    updateAccountFieldState();
 });
 
 function formatDate(date) {
@@ -104,10 +140,36 @@ function formatDate(date) {
 let startDateFormatted = '';
 let endDateFormatted = '';
 
-const fp = flatpickr("#date-range", {
+function syncDateRangeStateFromInput(datePickerInstance) {
+    if (datePickerInstance && Array.isArray(datePickerInstance.selectedDates) && datePickerInstance.selectedDates.length >= 2) {
+        startDateFormatted = formatDate(datePickerInstance.selectedDates[0]);
+        endDateFormatted = formatDate(datePickerInstance.selectedDates[1]);
+        return;
+    }
+
+    const rawValue = ($('#date-range').val() || '').trim();
+    if (!rawValue) {
+        return;
+    }
+
+    const parts = rawValue.split(' to ');
+    if (parts.length !== 2) {
+        return;
+    }
+
+    const startDate = flatpickr.parseDate(parts[0].trim(), 'm-d-Y');
+    const endDate = flatpickr.parseDate(parts[1].trim(), 'm-d-Y');
+
+    if (startDate && endDate) {
+        startDateFormatted = formatDate(startDate);
+        endDateFormatted = formatDate(endDate);
+    }
+}
+
+const isEditMode = Boolean(window.isEditMode && window.trainingId);
+const dateRangeOptions = {
     mode: "range",
     dateFormat: "m-d-Y",
-    minDate: "today",
     onChange: function (selectedDates) {
         if (selectedDates.length >= 2) {
             const initialStartDate = selectedDates[0];
@@ -118,7 +180,15 @@ const fp = flatpickr("#date-range", {
             console.log("End Date:", endDateFormatted);
         }
     }
-});
+};
+
+if (!isEditMode) {
+    dateRangeOptions.minDate = "today";
+}
+
+const fp = flatpickr("#date-range", dateRangeOptions);
+
+syncDateRangeStateFromInput(fp);
 
 let trainingStepper = null;
 
@@ -176,6 +246,7 @@ $(document).ready(function (e) {
         } else {
             $('#platform_other').addClass('d-none').val('');
         }
+        updateAccountFieldState();
     });
 
     // Add assistant button handler: create pill and add to container
@@ -262,7 +333,7 @@ $(document).ready(function (e) {
         let to_time = $('#time-end').val();
         let course = $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val();
         let platform = $('#platform').val();
-        let account_id = $('#credentials').find('option:selected').val();
+        let account_id = $('#credentials-container').is(':visible') ? ($('#credentials').find('option:selected').val() || '') : '';
         let location = $('#location').val();
         let company = $('#company').find('option:selected').val();
 
@@ -313,7 +384,6 @@ $(document).ready(function (e) {
 
         const requiredFields = [
             'input[name="mode"]:checked',
-            '#credentials',
             '#company',
             '#course',
             '#date-range',
@@ -324,7 +394,6 @@ $(document).ready(function (e) {
         ];
 
         if (mode === 'virtual') {
-            requiredFields.push('#credentials');
         } else if (mode === 'face-to-face') {
             requiredFields.push('#location');
         } else if (mode === 'public-course') {
@@ -481,6 +550,8 @@ $(document).ready(function (e) {
         $('input[name="mode"]').change(function () {
             const mode = $(this).val();
             clearFields(mode);
+            // Ensure driver arrangement state updates after mode change
+            updateDriverArrangementSupport();
         });
 
         function clearFields(mode) {
@@ -624,6 +695,8 @@ $(document).ready(function (e) {
             platformValue = $('#platform_other').val();
         }
 
+        syncDateRangeStateFromInput(fp);
+
         let formData = new FormData();
         formData.append('course_id', $('#course').find('option:selected').val() || $('#public-course-select').find('option:selected').val());
         formData.append('platform', platformValue);
@@ -651,6 +724,11 @@ $(document).ready(function (e) {
         formData.append('notify_coordinator', $('#notify_coordinator').is(':checked') ? '1' : '0');
         formData.append('coordinator_to_notify', $('#coordinator_to_notify').val() || '');
 
+        const isEditMode = Boolean(window.isEditMode && window.trainingId);
+        if (isEditMode) {
+            formData.append('_method', 'PUT');
+        }
+
         for (let [key, value] of formData.entries()) {
             console.log(`${key}: ${value}`);
         }
@@ -659,7 +737,7 @@ $(document).ready(function (e) {
 
         // Show Swal loader
         Swal.fire({
-            title: 'Adding Training...',
+            title: isEditMode ? 'Updating Training...' : 'Adding Training...',
             text: 'Please wait while we process your request.',
             allowOutsideClick: false,
             allowEscapeKey: false,
@@ -669,7 +747,7 @@ $(document).ready(function (e) {
         });
 
         $.ajax({
-            url: '/calendar/add_training',
+            url: isEditMode ? `/calendar/edit_training/${window.trainingId}` : '/calendar/add_training',
             type: 'POST',
             data: formData,
             processData: false,
@@ -685,7 +763,7 @@ $(document).ready(function (e) {
                 if ((response && response.training && response.training.id) || response.success === true) {
                     Swal.fire({
                         title: 'Success!',
-                        text: 'Training has been added.',
+                        text: isEditMode ? 'Training has been updated.' : 'Training has been added.',
                         icon: 'success',
                         confirmButtonText: 'OK',
                         allowOutsideClick: false,

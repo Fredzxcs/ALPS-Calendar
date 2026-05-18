@@ -175,6 +175,75 @@ class GoogleCalendarService
         }
     }
 
+    /**
+     * Try to find an existing event in the user's primary calendar that matches the training summary
+     * within the schedule time window. Returns eventId or null.
+     */
+    public function findEventId($user, $training, $schedule, $refreshToken = null, $accessToken = null)
+    {
+        $token_to_use = $refreshToken
+            ?? ($user && isset($user->google_refresh_token) ? $user->google_refresh_token : null)
+            ?? $accessToken
+            ?? ($user && isset($user->google_access_token) ? $user->google_access_token : null);
+
+        if (!$token_to_use) {
+            Log::info('No Google token to search events for user ' . ($user->id ?? 'unknown'));
+            return null;
+        }
+
+        $client = new Google_Client();
+        $client->setClientId(env('GOOGLE_CLIENT_ID'));
+        $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
+        $client->setRedirectUri(env('GOOGLE_REDIRECT_URI'));
+        $client->setAccessType('offline');
+
+        if ($refreshToken || ($user && isset($user->google_refresh_token))) {
+            $client->refreshToken($token_to_use);
+        } else {
+            $client->setAccessToken([
+                'access_token' => $token_to_use,
+                'expires_in' => 3600,
+                'created' => time(),
+            ]);
+        }
+
+        $service = new Google_Service_Calendar($client);
+
+        // Build summary and time window
+        $courseTitle = $training->course->course_name ?? 'Training';
+        $summary = 'Training: ' . $courseTitle;
+
+        try {
+            $startDt = Carbon::createFromFormat('Y-m-d H:i', $schedule->from_date . ' ' . $schedule->from_time, config('app.timezone') ?: 'UTC');
+        } catch (\Exception $e) {
+            $startDt = Carbon::parse($schedule->from_date . ' ' . $schedule->from_time, config('app.timezone') ?: 'UTC');
+        }
+        try {
+            $endDt = Carbon::createFromFormat('Y-m-d H:i', $schedule->to_date . ' ' . $schedule->to_time, config('app.timezone') ?: 'UTC');
+        } catch (\Exception $e) {
+            $endDt = Carbon::parse($schedule->to_date . ' ' . $schedule->to_time, config('app.timezone') ?: 'UTC');
+        }
+
+        // Expand window by one day each side to be tolerant
+        $timeMin = $startDt->copy()->subDay()->toRfc3339String();
+        $timeMax = $endDt->copy()->addDay()->toRfc3339String();
+
+        try {
+            $optParams = ['timeMin' => $timeMin, 'timeMax' => $timeMax, 'q' => $summary, 'singleEvents' => true];
+            $events = $service->events->listEvents('primary', $optParams);
+            foreach ($events->getItems() as $item) {
+                if ($item->getSummary() === $summary) {
+                    Log::info('Found matching Google event for training', ['eventId' => $item->getId()]);
+                    return $item->getId();
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Error searching for existing Google event: ' . $e->getMessage());
+        }
+
+        return null;
+    }
+
     private function buildDescription($training, $schedule, array $attendeeEmails, string $timezone): string
     {
         $facilitator = $training->facilitator?->name ?? 'N/A';
@@ -183,9 +252,35 @@ class GoogleCalendarService
         $account = $training->account?->account_email ?? 'N/A';
         $assistantNames = $this->resolveAssistantNames($training->assistant ?? '');
         $driverNeeded = $training->need_transportation ? 'Yes' : 'No';
+        // Normalize platform: treat null/empty/'null' as empty
+        $platform = null;
+        if (isset($training->platform)) {
+            $plat = trim((string) $training->platform);
+            if ($plat !== '' && strtolower($plat) !== 'null') {
+                $platform = $training->platform;
+            }
+        }
         $returnTripNeeded = $training->return_trip_needed ? 'Yes' : 'No';
         $notifyCoordinator = $training->notify_coordinator ? 'Yes' : 'No';
-        $coordinator = $training->coordinator?->name ?? (isset($training->coordinator_to_notify) ? 'User ID ' . $training->coordinator_to_notify : 'N/A');
+
+        // Resolve coordinator name: prefer related model, otherwise try to look up by coordinator_to_notify id
+        $coordinator = null;
+        if (!empty($training->coordinator?->name)) {
+            $coordinator = $training->coordinator->name;
+        } elseif (!empty($training->coordinator_to_notify)) {
+            // Attempt to resolve user id to name
+            $coordId = $training->coordinator_to_notify;
+            if (is_numeric($coordId)) {
+                $coordUser = User::find((int) $coordId);
+                if ($coordUser) {
+                    $coordinator = $coordUser->name;
+                } else {
+                    $coordinator = 'User ID ' . $coordId;
+                }
+            } else {
+                $coordinator = (string) $coordId;
+            }
+        }
 
         $lines = [];
 
@@ -195,7 +290,7 @@ class GoogleCalendarService
         if ($facilitator !== 'N/A') $lines[] = 'Facilitator: ' . $facilitator;
         if ($assistantNames !== '') $lines[] = 'Assistants: ' . $assistantNames;
         if (!empty($training->location)) $lines[] = 'Location: ' . $training->location;
-        if (!empty($training->platform)) $lines[] = 'Platform: ' . $training->platform;
+        if (!empty($platform)) $lines[] = 'Platform: ' . $platform;
         if (!empty($training->conference_link)) $lines[] = 'Conference Link: ' . $training->conference_link;
         if ($account !== 'N/A') $lines[] = 'Account: ' . $account;
         if (!empty($schedule->from_date) && !empty($schedule->from_time) && !empty($schedule->to_date) && !empty($schedule->to_time)) {
@@ -222,7 +317,7 @@ class GoogleCalendarService
         }
 
         if ($notifyCoordinator === 'Yes') $lines[] = 'Notify Coordinator: Yes';
-        if ($coordinator !== 'N/A') $lines[] = 'Coordinator to Notify: ' . $coordinator;
+        if (!empty($coordinator)) $lines[] = 'Coordinator to Notify: ' . $coordinator;
 
         return implode("\n", $lines);
     }

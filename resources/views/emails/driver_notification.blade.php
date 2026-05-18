@@ -1,6 +1,10 @@
 <p>Hello {{ $coordinator->name ?? 'Coordinator' }},</p>
 
+@if(!empty($isUpdate))
+<p><strong>Update:</strong> The following training's driver arrangement has been edited, and this is a separate update notification.</p>
+@else
 <p>You have been assigned as the coordinator for the following training's driver arrangement:</p>
+@endif
 
 <ul>
     <li><strong>Course:</strong> {{ $training->course->course_name ?? 'N/A' }}</li>
@@ -96,7 +100,7 @@
 </ul>
 
 <p>
-    Please make the necessary arrangements. This notification is for the event titled:
+    Please make the necessary arrangements for:
     <strong>{{ $training->course->course_name ?? 'Training' }}</strong>.
 </p>
 

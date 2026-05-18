@@ -15,17 +15,21 @@ class DriverNotificationMail extends Mailable
 
     public $training;
     public $coordinator;
+    public $isUpdate;
 
-    public function __construct($training, $coordinator)
+    public function __construct($training, $coordinator, bool $isUpdate = false)
     {
         $this->training = $training;
         $this->coordinator = $coordinator;
+        $this->isUpdate = $isUpdate;
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Driver Arrangement Notification',
+            subject: $this->isUpdate
+                ? 'Driver Arrangement Update Notification'
+                : 'Driver Arrangement Notification',
         );
     }
 
@@ -36,6 +40,7 @@ class DriverNotificationMail extends Mailable
             with: [
                 'training' => $this->training,
                 'coordinator' => $this->coordinator,
+                'isUpdate' => $this->isUpdate,
             ],
         );
     }
@@ -43,11 +48,12 @@ class DriverNotificationMail extends Mailable
     public function build()
     {
         return $this->from('no-reply@alpscalendar.com', 'ALPS Calendar')
-                    ->subject('ALPS Calendar: Driver Arrangement Notification')
+                    ->subject($this->isUpdate ? 'ALPS Calendar: Driver Arrangement Update Notification' : 'ALPS Calendar: Driver Arrangement Notification')
                     ->view('emails.driver_notification')
                     ->with([
                         'training' => $this->training,
                         'coordinator' => $this->coordinator,
+                        'isUpdate' => $this->isUpdate,
                     ]);
     }
 
