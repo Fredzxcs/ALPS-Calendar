@@ -69,6 +69,29 @@ class DemoController extends Controller
         return implode(', ', $names);
     }
 
+    private function resolveCoordinatorNames(?string $coordinatorValue): string
+    {
+        if (trim((string) $coordinatorValue) === '') {
+            return '';
+        }
+
+        $coordinatorIds = $this->extractCoordinatorIds($coordinatorValue);
+        $names = [];
+
+        foreach ($coordinatorIds as $coordinatorId) {
+            if (!is_numeric($coordinatorId)) {
+                continue;
+            }
+
+            $user = User::find((int) $coordinatorId);
+            if ($user && !empty($user->name)) {
+                $names[] = $user->name;
+            }
+        }
+
+        return implode(', ', $names);
+    }
+
     private function extractCoordinatorIds(?string $coordinatorValue): array
     {
         if (trim((string) $coordinatorValue) === '') {
@@ -610,6 +633,7 @@ class DemoController extends Controller
                     'notify_coordinator' => $training->notify_coordinator ?? false,
                     'coordinator_to_notify_list' => $training->coordinator_to_notify_list ?? ($training->coordinator_to_notify ?? null),
                     'coordinator_to_notify' => $training->coordinator_to_notify ?? null,
+                    'coordinator_names' => $this->resolveCoordinatorNames($training->coordinator_to_notify_list ?? ($training->coordinator_to_notify ?? '')),
                     'course' => is_object($training->course) ? [
                         'id' => $training->course->id,
                         'course_code' => $training->course->course_code,
@@ -678,6 +702,7 @@ class DemoController extends Controller
                     'notify_coordinator' => $training->notify_coordinator,
                     'coordinator_to_notify_list' => $training->coordinator_to_notify_list ?? ($training->coordinator_to_notify ?? null),
                     'coordinator_to_notify' => $training->coordinator_to_notify,
+                    'coordinator_names' => $this->resolveCoordinatorNames($training->coordinator_to_notify_list ?? ($training->coordinator_to_notify ?? '')),
                     'course' => $training->course ? [
                         'id' => $training->course->id,
                         'course_code' => $training->course->course_code,
@@ -873,6 +898,10 @@ class DemoController extends Controller
         if (empty($normalizedTraining['coordinator_to_notify_list'])) {
             $normalizedTraining['coordinator_to_notify_list'] = implode(', ', $normalizedTraining['coordinator_to_notify_users']->pluck('id')->all());
         }
+
+        $normalizedTraining['coordinator_names'] = $this->resolveCoordinatorNames(
+            $normalizedTraining['coordinator_to_notify_list'] ?? $normalizedTraining['coordinator_to_notify'] ?? ''
+        );
 
         return view('add_training.edit_training', [
             'training' => (function () use ($normalizedTraining) {

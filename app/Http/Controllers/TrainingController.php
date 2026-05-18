@@ -431,7 +431,12 @@ class TrainingController extends Controller
         // Include the newly added relationships: course and company
         $trainings = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])->get()->map(function ($training) {
             $training->assistant_names = $this->resolveAssistantNames($training->assistant ?? '');
-            $coordinatorValue = $training->coordinator_to_notify_list ?? $training->coordinator_to_notify ?? '';
+
+            $coordinatorList = trim((string) ($training->coordinator_to_notify_list ?? ''));
+            $coordinatorValue = $coordinatorList !== ''
+                ? $coordinatorList
+                : (string) ($training->coordinator_to_notify ?? '');
+
             $training->coordinator_names = $this->resolveCoordinatorNames($coordinatorValue);
             return $training;
         });

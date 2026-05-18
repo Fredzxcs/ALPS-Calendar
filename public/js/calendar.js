@@ -118,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         account: training.account,
                         course: training.course?.course_name || 'N/A',
                         company: training.company ? training.company.company_name : 'No Company (Public Course)',
+                        company_contact_person: training.company ? (training.company.contact_person || 'N/A') : 'N/A',
                         location: training.location,
                         platform: training.platform,
                         conference_link: training.conference_link,
@@ -132,7 +133,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         return_pickup_location: training.return_pickup_location,
                         return_dropoff_location: training.return_dropoff_location,
                         notify_coordinator: training.notify_coordinator,
-                        coordinator_to_notify: training.coordinator_names || training.coordinator_to_notify || 'No Driver Coordinator Yet',
+                        coordinator_to_notify: (training.coordinator_names && String(training.coordinator_names).trim() !== '')
+                            ? training.coordinator_names
+                            : 'No Driver Coordinator Yet',
                     },
                 });
             }
@@ -179,6 +182,100 @@ document.addEventListener('DOMContentLoaded', function () {
         loaderWrapper.style.display = '';
         $('#calendar').removeClass('blur-effect');
     };
+
+    const setModalTab = (tabName) => {
+        const modalElement = document.getElementById('kt_modal_view_training');
+        if (!modalElement || !tabName) {
+            return;
+        }
+
+        modalElement.querySelectorAll('[data-modal-tab]').forEach((button) => {
+            const isActive = button.dataset.modalTab === tabName;
+            button.classList.toggle('is-active', isActive);
+            button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+
+        modalElement.querySelectorAll('[data-modal-panel]').forEach((panel) => {
+            const isActive = panel.dataset.modalPanel === tabName;
+            panel.classList.toggle('is-active', isActive);
+            panel.classList.toggle('d-none', !isActive);
+        });
+    };
+
+    const toggleModalRow = (modalElement, selector, shouldShow) => {
+        const element = modalElement?.querySelector(selector);
+        if (!element) {
+            return;
+        }
+
+        element.classList.toggle('d-none', !shouldShow);
+    };
+
+    const applyTrainingModalVisibility = (modalElement, eventData) => {
+        if (!modalElement) {
+            return;
+        }
+
+        const toBool = (value) => {
+            if (typeof value === 'boolean') {
+                return value;
+            }
+
+            if (typeof value === 'number') {
+                return value === 1;
+            }
+
+            if (typeof value === 'string') {
+                const normalized = value.trim().toLowerCase();
+                return normalized === '1' || normalized === 'true' || normalized === 'yes';
+            }
+
+            return false;
+        };
+
+        const mode = (eventData.modeType || '').toLowerCase();
+        const needsTransportation = toBool(eventData.need_transportation);
+        const returnTripNeeded = toBool(eventData.return_trip_needed);
+        const notifyCoordinator = toBool(eventData.notify_coordinator);
+        const isVirtual = mode === 'virtual';
+        const isFaceToFace = mode === 'face-to-face';
+
+        toggleModalRow(modalElement, '#in-person-row', !isVirtual);
+        toggleModalRow(modalElement, '#location-row', !isVirtual);
+        toggleModalRow(modalElement, '#hosting-account-row', !isFaceToFace);
+        toggleModalRow(modalElement, '#platform-row', !isFaceToFace);
+        toggleModalRow(modalElement, '#conference-link-row', !isFaceToFace);
+
+        toggleModalRow(modalElement, '#transportation-needed-row', true);
+        toggleModalRow(modalElement, '#outbound-group', needsTransportation);
+        toggleModalRow(modalElement, '#return-trip-needed-row', needsTransportation);
+        toggleModalRow(modalElement, '#return-group', needsTransportation && returnTripNeeded);
+        toggleModalRow(modalElement, '#coordination-heading', needsTransportation && notifyCoordinator);
+        toggleModalRow(modalElement, '#notify-coordinator-row', needsTransportation && notifyCoordinator);
+        toggleModalRow(modalElement, '#coordinator-to-notify-row', needsTransportation && notifyCoordinator);
+    };
+
+    const bindTrainingModalTabs = () => {
+        const modalElement = document.getElementById('kt_modal_view_training');
+        if (!modalElement) {
+            return;
+        }
+
+        modalElement.addEventListener('click', (event) => {
+            const tabButton = event.target.closest('[data-modal-tab]');
+            if (!tabButton || !modalElement.contains(tabButton)) {
+                return;
+            }
+
+            setModalTab(tabButton.dataset.modalTab);
+        });
+
+        modalElement.addEventListener('shown.bs.modal', () => {
+            setModalTab('training-details');
+        });
+    };
+
+    bindTrainingModalTabs();
 
     // Function to initialize popovers
     const initPopovers = (element, data) => {
@@ -612,6 +709,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     course: info.event.extendedProps.course,
                     modeType: info.event.extendedProps.modeType || 'N/A',
                     company: info.event.extendedProps.company || 'N/A',
+                    company_contact_person: info.event.extendedProps.company_contact_person || 'N/A',
                     facilitator: info.event.extendedProps.facilitator?.name || 'No Facilitator Yet',
                     assistant: info.event.extendedProps.assistant || 'No Assistant Yet',
                     account: info.event.extendedProps.account || { account_email: 'N/A' },
@@ -687,6 +785,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 $modalElement.find('#modal-company').text(eventData.company);
                 $modalElement.find('#modal-course').text(eventData.course);
+                $modalElement.find('#modal-account-manager').text(eventData.company_contact_person || 'N/A');
                 $modalElement.find('#modal-facilitator').text(eventData.facilitator);
                 $modalElement.find('#modal-assistant').text(eventData.assistant_names || eventData.assistant || 'No Assistant Yet');
                 $modalElement.find('#modal-platform').text(eventData.platform);
@@ -702,7 +801,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 $modalElement.find('#modal-return-pickup-location').text(eventData.return_pickup_location);
                 $modalElement.find('#modal-return-dropoff-location').text(eventData.return_dropoff_location);
                 $modalElement.find('#modal-notify-coordinator').text(eventData.notify_coordinator ? 'Yes' : 'No');
-                $modalElement.find('#modal-coordinator-to-notify').text(eventData.coordinator_to_notify);
+                $modalElement.find('#modal-coordinator-to-notify').text(eventData.coordinator_names || eventData.coordinator_to_notify || 'No Driver Coordinator Yet');
 
                 const formattedStartDate = eventData.startDate ? moment(eventData.startDate).format('MMM DD, YYYY') : 'N/A';
                 const formattedEndDate = eventData.endDate ? moment(eventData.endDate).format('MMM DD, YYYY') : 'N/A';
@@ -711,6 +810,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const formattedStartTime = eventData.startDate ? moment(eventData.startDate).format('h:mm A') : 'N/A';
                 const formattedEndTime = eventData.endDate ? moment(eventData.endDate).format('h:mm A') : 'N/A';
                 $modalElement.find('#modal-time').text(`${formattedStartTime} to ${formattedEndTime}`);
+
+                applyTrainingModalVisibility($modalElement.get(0), eventData);
+                setModalTab('training-details');
 
                 initPopovers(info.el, eventData);
             }

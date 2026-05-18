@@ -114,21 +114,8 @@
                             </div>
                         </div>
 
-                        <!-- Account and Platform -->
-                        <div class="training-form-row <?php echo e($t_mode == 'public-course' ? 'd-none' : ''); ?>" id="credentials-container">
-                            <div class="training-form-group">
-                                <label for="credentials">Account <span class="required"></span></label>
-                                <select id="credentials" class="training-select">
-                                    <option value="" disabled>Select Host Email Account</option>
-                                    <?php $__currentLoopData = $accounts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <option value="<?php echo e($account->id); ?>" <?php echo e($t_account_id == $account->id ? 'selected' : ''); ?>>
-                                            <?php echo e($account->account_email); ?>
-
-                                        </option>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                </select>
-                            </div>
-
+                        <!-- Platform -->
+                        <div class="training-form-row" id="platform-container">
                             <div class="training-form-group">
                                 <label for="platform">Platform</label>
                                 <select id="platform" class="training-select">
@@ -143,12 +130,28 @@
                             </div>
                         </div>
 
-                        <!-- Conference Call Link -->
+                        <!-- Virtual Training Link -->
                         <div class="training-form-row full <?php echo e($t_mode == 'public-course' ? 'd-none' : ''); ?>" id="conference-link-container">
                             <div class="training-form-group">
-                                        <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none"></span></label>
+                                        <label for="conference_link"><span id="conference-link-label">Virtual Training Link</span><span id="conference-link-required" class="required d-none"></span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="training-input"
-                                    placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)" value="<?php echo e($t_conference_link ?? ''); ?>">
+                                    placeholder="Enter the virtual training link (e.g., https://zoom.us/j/...)" value="<?php echo e($t_conference_link ?? ''); ?>">
+                            </div>
+                        </div>
+
+                        <!-- Account -->
+                        <div class="training-form-row full d-none" id="credentials-container">
+                            <div class="training-form-group">
+                                <label for="credentials">Account</label>
+                                <select id="credentials" class="training-select">
+                                    <option value="" disabled>Select Host Email Account</option>
+                                    <?php $__currentLoopData = $accounts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($account->id); ?>" <?php echo e($t_account_id == $account->id ? 'selected' : ''); ?>>
+                                            <?php echo e($account->account_email); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
                             </div>
                         </div>
 
@@ -359,13 +362,28 @@
 
                                 <div id="coordinator-to-notify-container" class="<?php echo e($training->notify_coordinator ? '' : 'd-none'); ?>" style="margin-top: 1rem;">
                                     <div class="training-form-group">
-                                        <label for="coordinator_to_notify">Select coordinator to notify the driver <span class="required">*</span></label>
-                                        <select id="coordinator_to_notify" class="training-select">
-                                            <option value="" disabled selected>Select Coordinator</option>
-                                            <?php $__currentLoopData = $facilitators; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <option value="<?php echo e($user->id); ?>" <?php echo e($training->coordinator_to_notify == $user->id ? 'selected' : ''); ?>><?php echo e($user->name); ?></option>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        </select>
+                                        <label for="coordinator_to_notify_select">Driver Coordinator <span class="required">*</span></label>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <select id="coordinator_to_notify_select" class="training-select" style="flex: 1;">
+                                                <option value="" selected disabled>Select Coordinator</option>
+                                                <?php $__currentLoopData = $facilitators; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </select>
+                                            <button type="button" id="coordinator_add_btn" class="training-btn training-btn-secondary-blue">ADD</button>
+                                        </div>
+                                        <div id="coordinator_list_container" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; min-height: 0;">
+                                            <?php if($training->coordinator_to_notify_users->count()): ?>
+                                                <?php $__currentLoopData = $training->coordinator_to_notify_users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $coordinator): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <div class="coordinator-item" data-id="<?php echo e($coordinator->id); ?>" style="background: #dbeafe; border: 1px solid #bfdbfe; color: #1e40af; padding: 0.5rem 0.75rem; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500; white-space: nowrap;">
+                                                        <span><?php echo e($coordinator->name); ?></span>
+                                                        <button type="button" class="remove-coordinator" data-id="<?php echo e($coordinator->id); ?>" style="background: transparent; border: none; color: #1e40af; cursor: pointer; font-size: 1.1rem; font-weight: bold; padding: 0; display: flex; align-items: center; justify-content: center; width: 1.1rem; height: 1.1rem; margin-left: 0.25rem; line-height: 1;">×</button>
+                                                    </div>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php endif; ?>
+                                        </div>
+                                        <input type="hidden" id="coordinator_to_notify_list" value="<?php echo e($training->coordinator_to_notify_users->count() ? implode(', ', $training->coordinator_to_notify_users->pluck('id')->toArray()) : ''); ?>">
+                                        <div class="training-helper-text">Select one coordinator and click Add to include multiple coordinators.</div>
                                     </div>
                                 </div>
                             </div>

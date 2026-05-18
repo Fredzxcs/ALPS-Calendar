@@ -97,396 +97,328 @@
 
         
 
+    <style>
+        #kt_modal_view_training .modal-content {
+            border: 0;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 24px 70px rgba(17, 29, 51, 0.18);
+        }
+
+        #kt_modal_view_training .modal-header {
+            padding: 1.25rem 1.9rem 0.95rem;
+            border-bottom: 0;
+        }
+
+        #kt_modal_view_training .modal-body {
+            padding: 0.2rem 1.9rem 1.55rem;
+        }
+
+        #kt_modal_view_training .modal-footer {
+            padding: 0.65rem 1.9rem 1.05rem;
+        }
+
+        #kt_modal_view_training .alps-modal-course {
+            margin: 0;
+            color: #159de6;
+            font-size: 1.45rem;
+            line-height: 1.1;
+            font-weight: 800;
+        }
+
+        #kt_modal_view_training .alps-modal-company {
+            margin-top: 0.2rem;
+            color: #8f1111;
+            font-size: 0.98rem;
+            font-weight: 800;
+        }
+
+        #kt_modal_view_training .alps-modal-dates {
+            margin-top: 0.2rem;
+            color: #1f2d4d;
+            font-size: 0.98rem;
+            line-height: 1.35;
+            font-weight: 600;
+        }
+
+        #kt_modal_view_training .alps-modal-tabs {
+            display: flex;
+            gap: 0.25rem;
+            margin: 1.2rem 0 1.35rem;
+            padding: 0.25rem;
+            border-radius: 999px;
+            background: #eef4fb;
+        }
+
+        #kt_modal_view_training .alps-modal-tab {
+            flex: 1;
+            border: 0;
+            border-radius: 999px;
+            padding: 0.78rem 1rem;
+            background: transparent;
+            color: #1f3558;
+            font-size: 0.86rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            transition: background-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        #kt_modal_view_training .alps-modal-tab.is-active {
+            background: linear-gradient(180deg, #d8e8ff 0%, #bed8fb 100%);
+            box-shadow: 0 8px 18px rgba(78, 119, 180, 0.16);
+        }
+
+        #kt_modal_view_training .alps-modal-panel {
+            display: none;
+        }
+
+        #kt_modal_view_training .alps-modal-panel.is-active {
+            display: block;
+        }
+
+        #kt_modal_view_training .alps-modal-section-title,
+        #kt_modal_view_training .alps-modal-group-title {
+            margin: 0.35rem 0 0.78rem;
+            color: #8f1111;
+            font-size: 0.92rem;
+            font-weight: 800;
+        }
+
+        #kt_modal_view_training .alps-modal-row,
+        #kt_modal_view_training .alps-modal-subrow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.95rem;
+        }
+
+        #kt_modal_view_training .alps-modal-row:last-child,
+        #kt_modal_view_training .alps-modal-subrow:last-child {
+            margin-bottom: 0;
+        }
+
+        #kt_modal_view_training .alps-modal-label {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            color: #1f2d4d;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        #kt_modal_view_training .alps-modal-label .bi {
+            color: #1f2d4d;
+        }
+
+        #kt_modal_view_training .alps-modal-value {
+            max-width: 55%;
+            color: #1f2d4d;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        #kt_modal_view_training .alps-modal-group {
+            margin: 0.2rem 0 1rem 1rem;
+            padding-left: 0.95rem;
+            border-left: 1.5px solid rgba(143, 17, 17, 0.28);
+        }
+
+        #kt_modal_view_training .separator {
+            margin-left: 1.5rem;
+            margin-right: 1.5rem;
+        }
+
+        @media (max-width: 575.98px) {
+            #kt_modal_view_training .modal-header {
+                padding: 1rem 1.15rem 0.75rem;
+            }
+
+            #kt_modal_view_training .modal-body {
+                padding: 0.2rem 1.15rem 1.15rem;
+            }
+
+            #kt_modal_view_training .modal-footer {
+                padding: 0.45rem 1.15rem 0.95rem;
+            }
+
+            #kt_modal_view_training .alps-modal-row,
+            #kt_modal_view_training .alps-modal-subrow {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 0.2rem;
+            }
+
+            #kt_modal_view_training .alps-modal-value {
+                max-width: 100%;
+                text-align: left;
+            }
+        }
+    </style>
+
     <!--begin::Modal - View Training-->
     <div class="modal fade" id="kt_modal_view_training" tabindex="-1" aria-hidden="true">
-        <!--begin::Modal dialog-->
         <div class="modal-dialog modal-dialog-centered mw-650px">
-            <!--begin::Modal content-->
             <div class="modal-content">
-                <!--begin::Modal header-->
                 <div class="modal-header">
-
-                    <h3 class="alps-type-h3 alps-modal-heading" id="">View Training</h3>
-                    <!--begin::Close-->
+                    <h3 class="alps-type-h3 alps-modal-heading" id="modal-title">View Training</h3>
                     <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
-                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
                         <span class="svg-icon svg-icon-1">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                                 <rect opacity="0.5" x="6" y="17.3137" width="16" height="2" rx="1" transform="rotate(-45 6 17.3137)" fill="black" />
                                 <rect x="7.41422" y="6" width="16" height="2" rx="1" transform="rotate(45 7.41422 6)" fill="black" />
                             </svg>
                         </span>
-                        <!--end::Svg Icon-->
                     </div>
-                    <!--end::Close-->
                 </div>
-                <!--end::Modal header-->
-                <!--begin::Modal body-->
-                <div class="modal-body py-10 px-lg-17">
-                    <!-- Data Rows -->
-                    <!-- Course -->
-                    <div class="row mb-5 justify-content-between align-items-center text-center">
-                        <h1 class="fs-1 fw-boldest text-primary" id="modal-course">Course</h1>
-                        <h1 class="fs-4 fw-boldest" id="modal-company">Company</h1>
-                        <p class="lead fs-5 ">happening on <span id="modal-date" class="fw-bold"></span>
-                        <br>
-                        from <span id="modal-time" class="fw-bold"></span></p>
-                    </div>
-                    <!-- Company -->
-                    <!-- <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-building fs-3 me-5 alps-icon-accent"></i>Company
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-company">PUPQC</p>
-                            </div>
-                        </div>
-                    </div> -->
-                    <!-- Facilitator -->
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-person-workspace fs-3 me-5 alps-icon-accent"></i>Facilitator
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-facilitator">Kimberly Mae M. Kho</p>
-                            </div>
+                <div class="separator opacity-10 my-0"></div>
+                <div class="modal-body">
+                    <div class="text-center mb-2">
+                        <h2 class="alps-modal-course" id="modal-course">Facilitation Foundations</h2>
+                        <div class="alps-modal-company" id="modal-company">Northwind Group</div>
+                        <div class="alps-modal-dates">
+                            happening on <span id="modal-date" class="fw-bold"></span>
+                            <br>
+                            from <span id="modal-time" class="fw-bold"></span>
                         </div>
                     </div>
-                    <!-- Assistant -->
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-person-plus fs-3 me-5 alps-icon-accent"></i>Assistant
-                                </label>
+
+                    <div class="alps-modal-tabs" role="tablist" aria-label="Training details tabs">
+                        <button type="button" class="alps-modal-tab is-active" data-modal-tab="training-details" role="tab" aria-selected="true">TRAINING DETAILS</button>
+                        <button type="button" class="alps-modal-tab" data-modal-tab="driver-arrangement" role="tab" aria-selected="false">DRIVER ARRANGEMENT</button>
+                    </div>
+
+                    <div class="alps-modal-panel is-active" data-modal-panel="training-details" id="training-details-panel" role="tabpanel">
+                        <div class="alps-modal-section-title">People</div>
+
+                        <div class="alps-modal-row">
+                            <div class="alps-modal-label"><i class="bi bi-person-workspace"></i><span>Account Manager</span></div>
+                            <div class="alps-modal-value" id="modal-account-manager">N/A</div>
+                        </div>
+
+                        <div class="alps-modal-row">
+                            <div class="alps-modal-label"><i class="bi bi-person-badge"></i><span>Facilitator</span></div>
+                            <div class="alps-modal-value" id="modal-facilitator">N/A</div>
+                        </div>
+
+                        <div class="alps-modal-row">
+                            <div class="alps-modal-label"><i class="bi bi-person-plus"></i><span>Assistant</span></div>
+                            <div class="alps-modal-value" id="modal-assistant">N/A</div>
+                        </div>
+
+                        <div class="alps-modal-section-title">Setup</div>
+
+                        <div class="alps-modal-row">
+                            <div class="alps-modal-label"><i class="bi bi-chat-left-text-fill"></i><span>Mode of Training</span></div>
+                            <div class="alps-modal-value" id="modal-mode-of-training">N/A</div>
+                        </div>
+
+                        <div class="alps-modal-row" id="in-person-row">
+                            <div class="alps-modal-label"><i class="bi bi-person-fill"></i><span>In-person?</span></div>
+                            <div class="alps-modal-value" id="modal-in-person">N/A</div>
+                        </div>
+
+                        <div class="alps-modal-row" id="location-row">
+                            <div class="alps-modal-label"><i class="bi bi-geo-alt-fill"></i><span>Location</span></div>
+                            <div class="alps-modal-value" id="modal-location">N/A</div>
+                        </div>
+
+                        <div class="alps-modal-row" id="hosting-account-row">
+                            <div class="alps-modal-label"><i class="bi bi-easel-fill"></i><span>Hosting Account</span></div>
+                            <div class="alps-modal-value text-break">
+                                <div id="modal-credentials">N/A</div>
+                                <div id="password-container" class="d-flex justify-content-end align-items-center gap-2 mt-1">
+                                    <span class="password-display alps-password-toggle">*****</span>
+                                    <span class="password-actual d-none alps-password-toggle" id="modal-password"></span>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-assistant">Daniel A. Del Rosario</p>
-                            </div>
+
+                        <div class="alps-modal-row" id="platform-row">
+                            <div class="alps-modal-label"><i class="bi bi-display"></i><span>Platform</span></div>
+                            <div class="alps-modal-value" id="modal-platform">N/A</div>
+                        </div>
+
+                        <div class="alps-modal-row" id="conference-link-row">
+                            <div class="alps-modal-label"><i class="bi bi-link-45deg"></i><span>Conference Link</span></div>
+                            <div class="alps-modal-value text-break" id="modal-conference-link">N/A</div>
                         </div>
                     </div>
-                    <!-- Platform -->
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-display fs-3 me-5 alps-icon-accent"></i>Platform
-                                </label>
+
+                    <div class="alps-modal-panel d-none" data-modal-panel="driver-arrangement" id="driver-arrangement-panel" role="tabpanel">
+                        <div class="alps-modal-row" id="transportation-needed-row">
+                            <div class="alps-modal-label"><i class="bi bi-truck"></i><span>Transportation Needed?</span></div>
+                            <div class="alps-modal-value" id="modal-transportation-needed">No</div>
+                        </div>
+
+                        <div class="alps-modal-group d-none" id="outbound-group">
+                            <div class="alps-modal-group-title">Outbound</div>
+                            <div class="alps-modal-subrow">
+                                <div class="alps-modal-label"><i class="bi bi-clock-fill"></i><span>Pickup Time</span></div>
+                                <div class="alps-modal-value" id="modal-outbound-pickup-time">N/A</div>
+                            </div>
+                            <div class="alps-modal-subrow">
+                                <div class="alps-modal-label"><i class="bi bi-geo-alt-fill"></i><span>Pickup Location</span></div>
+                                <div class="alps-modal-value" id="modal-outbound-pickup-location">N/A</div>
+                            </div>
+                            <div class="alps-modal-subrow">
+                                <div class="alps-modal-label"><i class="bi bi-telephone-fill"></i><span>Contact Number</span></div>
+                                <div class="alps-modal-value" id="modal-outbound-contact-number">N/A</div>
+                            </div>
+                            <div class="alps-modal-subrow">
+                                <div class="alps-modal-label"><i class="bi bi-geo"></i><span>Drop Off Location</span></div>
+                                <div class="alps-modal-value" id="modal-outbound-dropoff-location">N/A</div>
                             </div>
                         </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-platform">N/A</p>
+
+                        <div class="alps-modal-row d-none" id="return-trip-needed-row">
+                            <div class="alps-modal-label"><i class="bi bi-arrow-repeat"></i><span>Return Trip Needed?</span></div>
+                            <div class="alps-modal-value" id="modal-return-trip-needed">No</div>
+                        </div>
+
+                        <div class="alps-modal-group d-none" id="return-group">
+                            <div class="alps-modal-group-title">Return Trip</div>
+                            <div class="alps-modal-subrow">
+                                <div class="alps-modal-label"><i class="bi bi-clock-history"></i><span>Pickup Time</span></div>
+                                <div class="alps-modal-value" id="modal-return-pickup-time">N/A</div>
+                            </div>
+                            <div class="alps-modal-subrow">
+                                <div class="alps-modal-label"><i class="bi bi-geo-alt-fill"></i><span>Pickup Location</span></div>
+                                <div class="alps-modal-value" id="modal-return-pickup-location">N/A</div>
+                            </div>
+                            <div class="alps-modal-subrow">
+                                <div class="alps-modal-label"><i class="bi bi-telephone"></i><span>Contact Number</span></div>
+                                <div class="alps-modal-value" id="modal-return-contact-number">N/A</div>
+                            </div>
+                            <div class="alps-modal-subrow">
+                                <div class="alps-modal-label"><i class="bi bi-geo"></i><span>Drop Off Location</span></div>
+                                <div class="alps-modal-value" id="modal-return-dropoff-location">N/A</div>
                             </div>
                         </div>
-                    </div>
-                    <!-- Conference Link -->
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-link-45deg fs-3 me-5 alps-icon-accent"></i>Conference Link
-                                </label>
-                            </div>
+
+                        <div class="alps-modal-section-title d-none" id="coordination-heading">Coordination</div>
+
+                        <div class="alps-modal-row d-none" id="notify-coordinator-row">
+                            <div class="alps-modal-label"><i class="bi bi-bell-fill"></i><span>Notify Coordinator?</span></div>
+                            <div class="alps-modal-value" id="modal-notify-coordinator">No</div>
                         </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6 text-break" id="modal-conference-link">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Date -->
-                    <!-- <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-calendar3 fs-3 me-5 alps-icon-accent"></i>Date
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-date">Dec 9, 2024 to Dec 12, 2024</p>
-                            </div>
-                        </div>
-                    </div> -->
-                    <!-- Time -->
-                    <!-- <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-clock-fill fs-3 me-5 alps-icon-accent"></i>Time
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-time">9:00 AM to 10:00 PM</p>
-                            </div>
-                        </div>
-                    </div> -->
-                    <!-- Mode of Training -->
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-chat-left-text-fill fs-3 me-5 alps-icon-accent"></i>Mode of Training
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-mode-of-training">Public Course</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Credentials -->
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-easel-fill fs-3 me-5 alps-icon-accent"></i>Hosting Account
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-credentials">sample@gmail.com</p>
-                            </div>
-                            <div id="password-container" class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6 password-display alps-password-toggle">********</p>
-                                <p class="password-actual d-none alps-password-toggle" id="modal-password"></p>
-                            </div>
-                            <!-- <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6 password-display alps-password-toggle">********</p>
-                                <span class="password-actual d-none alps-password-toggle" id="modal-password">password</span>
-                            </div> -->
-                        </div>
-                    </div>
-                    <!-- In-person -->
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-person-fill fs-3 me-5 alps-icon-accent"></i>In-person?
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-in-person">Yes</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Driver Arrangement -->
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-truck fs-3 me-5 alps-icon-accent"></i>Transportation Needed
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-transportation-needed">No</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-clock-fill fs-3 me-5 alps-icon-accent"></i>Outbound Pickup Time
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-outbound-pickup-time">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-telephone-fill fs-3 me-5 alps-icon-accent"></i>Outbound Contact Number
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-outbound-contact-number">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-geo-alt-fill fs-3 me-5 alps-icon-accent"></i>Outbound Pickup Location
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-outbound-pickup-location">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-geo fs-3 me-5 alps-icon-accent"></i>Outbound Dropoff Location
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-outbound-dropoff-location">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-arrow-repeat fs-3 me-5 alps-icon-accent"></i>Return Trip Needed
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-return-trip-needed">No</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-clock-history fs-3 me-5 alps-icon-accent"></i>Return Pickup Time
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-return-pickup-time">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-telephone fs-3 me-5 alps-icon-accent"></i>Return Contact Number
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-return-contact-number">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-pin-map-fill fs-3 me-5 alps-icon-accent"></i>Return Pickup Location
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-return-pickup-location">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-geo-alt fs-3 me-5 alps-icon-accent"></i>Return Dropoff Location
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-return-dropoff-location">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-bell-fill fs-3 me-5 alps-icon-accent"></i>Notify Coordinator
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-notify-coordinator">No</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-person-badge-fill fs-3 me-5 alps-icon-accent"></i>Coordinator to Notify
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-coordinator-to-notify">N/A</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Location -->
-                    <div class="row mb-5 justify-content-between align-items-center">
-                        <div class="col-5">
-                            <div class="fv-row">
-                                <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-geo-alt-fill fs-3 me-5 alps-icon-accent"></i>Location
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-7">
-                            <div class="fv-row d-flex justify-content-end align-items-center">
-                                <p class="lead fs-6" id="modal-location"></p>
-                            </div>
+
+                        <div class="alps-modal-row d-none" id="coordinator-to-notify-row">
+                            <div class="alps-modal-label"><i class="bi bi-person-badge-fill"></i><span>Coordinator to Notify</span></div>
+                            <div class="alps-modal-value" id="modal-coordinator-to-notify">N/A</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Modal Fo   er -->
                 <div class="modal-footer w-100">
 
                     <?php if(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator'])): ?>
-                    <!-- Delete Button (Left) -->
                     <button type="button" class="btn btn-secondary btn-red deleteBtn me-auto">
                         <i class="bi bi-trash me-2"></i>DELETE
                     </button>
                     <?php endif; ?>
 
-                    <!-- Edit and Close Buttons (Right) -->
                     <?php if(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator'])): ?>
                         <a href="#" id="edit-training-link" data-base-url="<?php echo e(url('calendar/edit_training')); ?>/" class="btn btn-primary btn-orange me-2">
                             <i class="bi bi-pencil-fill me-2"></i>EDIT

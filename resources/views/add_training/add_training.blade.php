@@ -113,12 +113,12 @@
                             </div>
                         </div>
 
-                        <!-- Conference Call Link -->
+                        <!-- Virtual Training Link -->
                         <div class="training-form-row full" id="conference-link-container">
                             <div class="training-form-group">
-                                        <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none"></span></label>
+                                        <label for="conference_link"><span id="conference-link-label">Virtual Training Link</span><span id="conference-link-required" class="required d-none"></span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="training-input"
-                                    placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)">
+                                    placeholder="Enter the virtual training link (e.g., https://zoom.us/j/...)">
                             </div>
                         </div>
 
@@ -332,7 +332,7 @@
 
                                 <div id="coordinator-to-notify-container" class="d-none" style="margin-top: 1rem;">
                                     <div class="training-form-group">
-                                        <label for="coordinator_to_notify_select">Driver Coordinator <span class="required">*</span></label>
+                                        <label for="coordinator_to_notify_select">Driver Coordinator <span class="required"></span></label>
                                         <div style="display: flex; gap: 0.5rem;">
                                             <select id="coordinator_to_notify_select" class="training-select" style="flex: 1;">
                                                 <option value="" selected disabled>Select Coordinator</option>
