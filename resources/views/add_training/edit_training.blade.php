@@ -359,13 +359,28 @@
 
                                 <div id="coordinator-to-notify-container" class="{{ $training->notify_coordinator ? '' : 'd-none' }}" style="margin-top: 1rem;">
                                     <div class="training-form-group">
-                                        <label for="coordinator_to_notify">Select coordinator to notify the driver <span class="required">*</span></label>
-                                        <select id="coordinator_to_notify" class="training-select">
-                                            <option value="" disabled selected>Select Coordinator</option>
-                                            @foreach ($facilitators as $user)
-                                                <option value="{{ $user->id }}" {{ $training->coordinator_to_notify == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <label for="coordinator_to_notify_select">Driver Coordinator <span class="required">*</span></label>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <select id="coordinator_to_notify_select" class="training-select" style="flex: 1;">
+                                                <option value="" selected disabled>Select Coordinator</option>
+                                                @foreach ($facilitators as $user)
+                                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="button" id="coordinator_add_btn" class="training-btn training-btn-secondary-blue">ADD</button>
+                                        </div>
+                                        <div id="coordinator_list_container" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; min-height: 0;">
+                                            @if($training->coordinator_to_notify_users->count())
+                                                @foreach($training->coordinator_to_notify_users as $coordinator)
+                                                    <div class="coordinator-item" data-id="{{ $coordinator->id }}" style="background: #dbeafe; border: 1px solid #bfdbfe; color: #1e40af; padding: 0.5rem 0.75rem; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500; white-space: nowrap;">
+                                                        <span>{{ $coordinator->name }}</span>
+                                                        <button type="button" class="remove-coordinator" data-id="{{ $coordinator->id }}" style="background: transparent; border: none; color: #1e40af; cursor: pointer; font-size: 1.1rem; font-weight: bold; padding: 0; display: flex; align-items: center; justify-content: center; width: 1.1rem; height: 1.1rem; margin-left: 0.25rem; line-height: 1;">×</button>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                        <input type="hidden" id="coordinator_to_notify_list" value="{{ $training->coordinator_to_notify_users->count() ? implode(', ', $training->coordinator_to_notify_users->pluck('id')->toArray()) : '' }}">
+                                        <div class="training-helper-text">Select one coordinator and click Add to include multiple coordinators.</div>
                                     </div>
                                 </div>
                             </div>

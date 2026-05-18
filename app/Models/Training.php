@@ -18,6 +18,7 @@ class Training extends Model
         'facilitator_id',
         'company_id',
         'assistant',
+        'coordinator_to_notify_list',
         'platform',
         'conference_link',
         'mode',
@@ -83,6 +84,30 @@ class Training extends Model
         }
 
         return User::whereIn('id', $assistantIds)->get();
+    }
+
+    /**
+     * Get driver coordinators as a collection of User models.
+     * The new 'coordinator_to_notify_list' column stores comma-separated user IDs.
+     * Falls back to the legacy single foreign key for older records.
+     */
+    public function getCoordinatorToNotifyUsersAttribute()
+    {
+        $coordinatorIds = [];
+
+        if (!empty($this->attributes['coordinator_to_notify_list'] ?? null)) {
+            $coordinatorIds = array_filter(
+                array_map('trim', explode(',', $this->attributes['coordinator_to_notify_list']))
+            );
+        } elseif (!empty($this->attributes['coordinator_to_notify'] ?? null)) {
+            $coordinatorIds = [$this->attributes['coordinator_to_notify']];
+        }
+
+        if (empty($coordinatorIds)) {
+            return collect();
+        }
+
+        return User::whereIn('id', $coordinatorIds)->get();
     }
 
     /**

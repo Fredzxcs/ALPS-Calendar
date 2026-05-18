@@ -69,6 +69,26 @@ class DemoController extends Controller
         return implode(', ', $names);
     }
 
+    private function extractCoordinatorIds(?string $coordinatorValue): array
+    {
+        if (trim((string) $coordinatorValue) === '') {
+            return [];
+        }
+
+        return array_values(array_filter(array_map('trim', explode(',', (string) $coordinatorValue))));
+    }
+
+    private function resolveCoordinatorUsers(?string $coordinatorValue): Collection
+    {
+        $coordinatorIds = $this->extractCoordinatorIds($coordinatorValue);
+
+        if (empty($coordinatorIds)) {
+            return collect();
+        }
+
+        return User::whereIn('id', array_map('intval', $coordinatorIds))->get();
+    }
+
     private function findUser(int $id): ?array
     {
         return collect($this->fixtures('users.json'))->firstWhere('id', $id);
@@ -303,18 +323,22 @@ class DemoController extends Controller
                 $companyId = $reqCompany;
             }
 
-            // Ensure coordinator_to_notify user exists if specified (for driver arrangement)
-            $reqCoordinatorNotify = $request->integer('coordinator_to_notify');
-            if ($reqCoordinatorNotify && !User::whereKey($reqCoordinatorNotify)->exists()) {
-                DB::table('users')->updateOrInsert(['id' => $reqCoordinatorNotify], [
-                    'name' => 'Demo Coordinator ' . $reqCoordinatorNotify,
-                    'email' => 'coordinator' . $reqCoordinatorNotify . '@example.com',
-                    'username' => 'coordinator' . $reqCoordinatorNotify,
-                    'password' => Hash::make('password123'),
-                    'usertype' => 'coordinator',
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
+            // Ensure coordinator_to_notify users exist if specified (for driver arrangement)
+            $coordinatorIds = $this->extractCoordinatorIds(
+                $request->input('coordinator_to_notify_list', $request->input('coordinator_to_notify', ''))
+            );
+            foreach ($coordinatorIds as $coordinatorId) {
+                if (is_numeric($coordinatorId) && !User::whereKey((int) $coordinatorId)->exists()) {
+                    DB::table('users')->updateOrInsert(['id' => (int) $coordinatorId], [
+                        'name' => 'Demo Coordinator ' . $coordinatorId,
+                        'email' => 'coordinator' . $coordinatorId . '@example.com',
+                        'username' => 'coordinator' . $coordinatorId,
+                        'password' => Hash::make('password123'),
+                        'usertype' => 'coordinator',
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ]);
+                }
             }
 
             // Ensure assistant user IDs exist if specified (comma-separated)
@@ -372,7 +396,8 @@ class DemoController extends Controller
                 'return_pickup_location' => $request->return_pickup_location,
                 'return_dropoff_location' => $request->return_dropoff_location,
                 'notify_coordinator' => $request->boolean('notify_coordinator'),
-                'coordinator_to_notify' => $request->coordinator_to_notify,
+                'coordinator_to_notify_list' => implode(', ', $coordinatorIds),
+                'coordinator_to_notify' => $coordinatorIds[0] ?? null,
             ]);
 
             // Create the Schedule record
@@ -449,11 +474,15 @@ class DemoController extends Controller
             }
 
             // Notify coordinator about driver arrangement if requested (demo mode)
-            if ($request->boolean('notify_coordinator') && !empty($request->coordinator_to_notify)) {
-                $coord = User::find($request->coordinator_to_notify);
-                if ($coord && !empty($coord->email)) {
-                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
-                                ->find($training->id);
+            if ($request->boolean('notify_coordinator') && !empty($coordinatorIds)) {
+                $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                            ->find($training->id);
+                foreach ($coordinatorIds as $coordinatorId) {
+                    $coord = User::find((int) $coordinatorId);
+                    if (!$coord || empty($coord->email)) {
+                        continue;
+                    }
+
                     try {
                         Mail::to($coord->email)->send(new DriverNotificationMail($trainingInfo, $coord));
                     } catch (\Exception $e) {
@@ -543,6 +572,7 @@ class DemoController extends Controller
                         'return_pickup_location' => $t['return_pickup_location'] ?? null,
                         'return_dropoff_location' => $t['return_dropoff_location'] ?? null,
                         'notify_coordinator' => $t['notify_coordinator'] ?? false,
+                        'coordinator_to_notify_list' => $t['coordinator_to_notify_list'] ?? ($t['coordinator_to_notify'] ?? null),
                         'coordinator_to_notify' => $t['coordinator_to_notify'] ?? null,
                         'course' => $t['course'] ?? null,
                         'facilitator' => $t['facilitator'] ?? null,
@@ -578,6 +608,7 @@ class DemoController extends Controller
                     'return_pickup_location' => $training->return_pickup_location ?? null,
                     'return_dropoff_location' => $training->return_dropoff_location ?? null,
                     'notify_coordinator' => $training->notify_coordinator ?? false,
+                    'coordinator_to_notify_list' => $training->coordinator_to_notify_list ?? ($training->coordinator_to_notify ?? null),
                     'coordinator_to_notify' => $training->coordinator_to_notify ?? null,
                     'course' => is_object($training->course) ? [
                         'id' => $training->course->id,
@@ -645,6 +676,7 @@ class DemoController extends Controller
                     'return_pickup_location' => $training->return_pickup_location,
                     'return_dropoff_location' => $training->return_dropoff_location,
                     'notify_coordinator' => $training->notify_coordinator,
+                    'coordinator_to_notify_list' => $training->coordinator_to_notify_list ?? ($training->coordinator_to_notify ?? null),
                     'coordinator_to_notify' => $training->coordinator_to_notify,
                     'course' => $training->course ? [
                         'id' => $training->course->id,
@@ -735,6 +767,7 @@ class DemoController extends Controller
                 'return_pickup_location' => $trainingRecord->return_pickup_location,
                 'return_dropoff_location' => $trainingRecord->return_dropoff_location,
                 'notify_coordinator' => $trainingRecord->notify_coordinator,
+                'coordinator_to_notify_list' => $trainingRecord->coordinator_to_notify_list ?? ($trainingRecord->coordinator_to_notify ?? null),
                 'coordinator_to_notify' => $trainingRecord->coordinator_to_notify,
                 'course' => $trainingRecord->course ? [
                     'id' => $trainingRecord->course->id,
@@ -813,6 +846,7 @@ class DemoController extends Controller
             'return_pickup_location' => $training['return_pickup_location'] ?? '',
             'return_dropoff_location' => $training['return_dropoff_location'] ?? '',
             'notify_coordinator' => $training['notify_coordinator'] ?? false,
+            'coordinator_to_notify_list' => $training['coordinator_to_notify_list'] ?? ($training['coordinator_to_notify'] ?? null),
             'coordinator_to_notify' => $training['coordinator_to_notify'] ?? null,
             'from_date' => $schedule['from_date'] ?? now()->toDateString(),
             'to_date' => $schedule['to_date'] ?? now()->toDateString(),
@@ -832,8 +866,20 @@ class DemoController extends Controller
             ],
         ];
 
+        $normalizedTraining['coordinator_to_notify_users'] = $this->resolveCoordinatorUsers(
+            $normalizedTraining['coordinator_to_notify_list'] ?? $normalizedTraining['coordinator_to_notify'] ?? ''
+        );
+
+        if (empty($normalizedTraining['coordinator_to_notify_list'])) {
+            $normalizedTraining['coordinator_to_notify_list'] = implode(', ', $normalizedTraining['coordinator_to_notify_users']->pluck('id')->all());
+        }
+
         return view('add_training.edit_training', [
-            'training' => json_decode(json_encode($normalizedTraining), false),
+            'training' => (function () use ($normalizedTraining) {
+                $trainingObject = json_decode(json_encode($normalizedTraining), false);
+                $trainingObject->coordinator_to_notify_users = $normalizedTraining['coordinator_to_notify_users'];
+                return $trainingObject;
+            })(),
             'facilitators' => $this->fixtureCollection('users.json'),
             'courses' => $this->fixtureCollection('courses.json'),
             'companies' => $this->fixtureCollection('companies.json'),

@@ -37,6 +37,24 @@ class TrainingController extends Controller
         return true;
     }
 
+    private function collectUserEmailsFromIds(?string $idList): array
+    {
+        $emails = [];
+
+        foreach ($this->extractCoordinatorIds($idList) as $userId) {
+            if (!is_numeric($userId)) {
+                continue;
+            }
+
+            $user = User::find((int) $userId);
+            if ($user && $this->shouldSendMailTo($user->email)) {
+                $emails[] = $user->email;
+            }
+        }
+
+        return array_values(array_unique($emails));
+    }
+
     private function resolveAssistantNames(?string $assistantValue): string
     {
         if (trim((string) $assistantValue) === '') {
@@ -52,6 +70,38 @@ class TrainingController extends Controller
             }
 
             $user = User::find((int) $assistantId);
+            if ($user && !empty($user->name)) {
+                $names[] = $user->name;
+            }
+        }
+
+        return implode(', ', $names);
+    }
+
+    private function extractCoordinatorIds(?string $coordinatorValue): array
+    {
+        if (trim((string) $coordinatorValue) === '') {
+            return [];
+        }
+
+        return array_values(array_filter(array_map('trim', explode(',', (string) $coordinatorValue))));
+    }
+
+    private function resolveCoordinatorNames(?string $coordinatorValue): string
+    {
+        if (trim((string) $coordinatorValue) === '') {
+            return '';
+        }
+
+        $coordinatorIds = $this->extractCoordinatorIds($coordinatorValue);
+        $names = [];
+
+        foreach ($coordinatorIds as $coordinatorId) {
+            if (!is_numeric($coordinatorId)) {
+                continue;
+            }
+
+            $user = User::find((int) $coordinatorId);
             if ($user && !empty($user->name)) {
                 $names[] = $user->name;
             }
@@ -114,7 +164,7 @@ class TrainingController extends Controller
             'return_pickup_location' => ['nullable', 'string', 'max:255'],
             'return_dropoff_location' => ['nullable', 'string', 'max:255'],
             'notify_coordinator' => ['nullable'],
-            'coordinator_to_notify' => ['nullable', 'integer', 'exists:users,id'],
+            'coordinator_to_notify_list' => ['required_if:notify_coordinator,1', 'nullable', 'string'],
             'to_time' => ['required'],
         ]);
 
@@ -140,8 +190,12 @@ class TrainingController extends Controller
         if ($request->filled('account_id') && !Account::find($request->account_id)) {
             $missing['account_id'] = ['Selected account/account credentials do not exist.'];
         }
-        if ($request->filled('coordinator_to_notify') && !User::find($request->coordinator_to_notify)) {
-            $missing['coordinator_to_notify'] = ['Selected coordinator does not exist in the database.'];
+        $coordinatorIds = $this->extractCoordinatorIds($request->input('coordinator_to_notify_list', $request->input('coordinator_to_notify', '')));
+        foreach ($coordinatorIds as $coordinatorId) {
+            if (is_numeric($coordinatorId) && !User::find((int) $coordinatorId)) {
+                $missing['coordinator_to_notify_list'] = ['Selected coordinator does not exist in the database.'];
+                break;
+            }
         }
 
         if (!empty($missing)) {
@@ -177,7 +231,8 @@ class TrainingController extends Controller
                 'return_pickup_location' => $request->return_pickup_location,
                 'return_dropoff_location' => $request->return_dropoff_location,
                 'notify_coordinator' => $request->boolean('notify_coordinator'),
-                'coordinator_to_notify' => $request->coordinator_to_notify,
+                'coordinator_to_notify_list' => $request->coordinator_to_notify_list,
+                'coordinator_to_notify' => $coordinatorIds[0] ?? null,
             ]);
 
 
@@ -228,11 +283,16 @@ class TrainingController extends Controller
                         foreach ($assistantIds as $aid) {
                             if (is_numeric($aid)) {
                                 $aUser = User::find((int) $aid);
-                                if ($aUser && !empty($aUser->email)) {
+                                if ($aUser && $this->shouldSendMailTo($aUser->email)) {
                                     $attendees[] = $aUser->email;
                                 }
                             }
                         }
+                    }
+
+                    // Include driver coordinators (comma-separated IDs)
+                    foreach ($this->collectUserEmailsFromIds($request->coordinator_to_notify_list) as $coordinatorEmail) {
+                        $attendees[] = $coordinatorEmail;
                     }
 
                     // Insert event on connected user's primary calendar and send invites
@@ -298,8 +358,9 @@ class TrainingController extends Controller
                         }
                     }
                     // Notify coordinator about driver arrangement if requested
-                    if ($request->boolean('notify_coordinator') && !empty($request->coordinator_to_notify)) {
-                        $coord = User::find($request->coordinator_to_notify);
+                    if ($request->boolean('notify_coordinator') && !empty($coordinatorIds)) {
+                        foreach ($coordinatorIds as $coordinatorId) {
+                            $coord = User::find((int) $coordinatorId);
                             if ($coord && !empty($coord->email)) {
                                 try {
                                     Mail::to($coord->email)->send(new DriverNotificationMail($trainingInfo, $coord));
@@ -311,6 +372,7 @@ class TrainingController extends Controller
                                     ]);
                                 }
                             }
+                        }
                     }
                 } else {
                     \Log::warning('Facilitator email not found', ['facilitator' => $facilitator]);
@@ -369,6 +431,8 @@ class TrainingController extends Controller
         // Include the newly added relationships: course and company
         $trainings = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])->get()->map(function ($training) {
             $training->assistant_names = $this->resolveAssistantNames($training->assistant ?? '');
+            $coordinatorValue = $training->coordinator_to_notify_list ?? $training->coordinator_to_notify ?? '';
+            $training->coordinator_names = $this->resolveCoordinatorNames($coordinatorValue);
             return $training;
         });
 
@@ -452,7 +516,7 @@ class TrainingController extends Controller
             'return_pickup_location' => ['nullable','string','max:255'],
             'return_dropoff_location' => ['nullable','string','max:255'],
             'notify_coordinator' => ['nullable'],
-            'coordinator_to_notify' => ['nullable','integer'],
+            'coordinator_to_notify_list' => ['required_if:notify_coordinator,1', 'nullable', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -495,7 +559,8 @@ class TrainingController extends Controller
                 'return_pickup_location' => $request->return_pickup_location,
                 'return_dropoff_location' => $request->return_dropoff_location,
                 'notify_coordinator' => $request->boolean('notify_coordinator'),
-                'coordinator_to_notify' => $request->coordinator_to_notify,
+                'coordinator_to_notify_list' => $request->coordinator_to_notify_list,
+                'coordinator_to_notify' => $this->extractCoordinatorIds($request->coordinator_to_notify_list)[0] ?? null,
                 'is_updated' => !$facilitatorChanged,
             ]);
 
@@ -551,9 +616,13 @@ class TrainingController extends Controller
                         foreach ($assistantIds as $aid) {
                             if (is_numeric($aid)) {
                                 $aUser = User::find((int) $aid);
-                                if ($aUser && !empty($aUser->email)) $attendees[] = $aUser->email;
+                                if ($aUser && $this->shouldSendMailTo($aUser->email)) $attendees[] = $aUser->email;
                             }
                         }
+                    }
+
+                    foreach ($this->collectUserEmailsFromIds($trainingSession->coordinator_to_notify_list ?? $trainingSession->coordinator_to_notify ?? '') as $coordinatorEmail) {
+                        $attendees[] = $coordinatorEmail;
                     }
 
                     // Refresh training with relations
@@ -648,19 +717,22 @@ class TrainingController extends Controller
 
             // Notify coordinator about driver arrangement on update if configured
             try {
-                if ($trainingSession->notify_coordinator && !empty($trainingSession->coordinator_to_notify)) {
-                    $coord = User::find($trainingSession->coordinator_to_notify);
-                    if ($coord && !empty($coord->email)) {
-                        try {
-                            Mail::to($coord->email)->send(new DriverNotificationMail($trainingSession, $coord, true));
-                        } catch (\Exception $e) {
-                            Log::error('Failed to send coordinator driver notification (on update)', [
-                                'to' => $coord->email,
-                                'coordinator_id' => $coord->id ?? null,
-                                'exception' => $e->getMessage(),
-                            ]);
+                $updatedCoordinatorIds = $this->extractCoordinatorIds($trainingSession->coordinator_to_notify_list ?? $trainingSession->coordinator_to_notify ?? '');
+                if ($trainingSession->notify_coordinator && !empty($updatedCoordinatorIds)) {
+                        foreach ($updatedCoordinatorIds as $coordinatorId) {
+                            $coord = User::find((int) $coordinatorId);
+                            if ($coord && $this->shouldSendMailTo($coord->email)) {
+                                try {
+                                    Mail::to($coord->email)->send(new DriverNotificationMail($trainingSession, $coord, true));
+                                } catch (\Exception $e) {
+                                    Log::error('Failed to send coordinator driver notification (on update)', [
+                                        'to' => $coord->email,
+                                        'coordinator_id' => $coord->id ?? null,
+                                        'exception' => $e->getMessage(),
+                                    ]);
+                                }
+                            }
                         }
-                    }
                 }
             } catch (\Exception $e) {
                 Log::error('Error during coordinator notification (on update): ' . $e->getMessage());

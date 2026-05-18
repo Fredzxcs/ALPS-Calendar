@@ -332,13 +332,19 @@
 
                                 <div id="coordinator-to-notify-container" class="d-none" style="margin-top: 1rem;">
                                     <div class="training-form-group">
-                                        <label for="coordinator_to_notify">Select coordinator to notify the driver <span class="required">*</span></label>
-                                        <select id="coordinator_to_notify" class="training-select">
-                                            <option value="" disabled selected>Select Coordinator</option>
-                                            @foreach ($users as $user)
-                                                <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <label for="coordinator_to_notify_select">Driver Coordinator <span class="required">*</span></label>
+                                        <div style="display: flex; gap: 0.5rem;">
+                                            <select id="coordinator_to_notify_select" class="training-select" style="flex: 1;">
+                                                <option value="" selected disabled>Select Coordinator</option>
+                                                @foreach ($users as $user)
+                                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                                @endforeach
+                                            </select>
+                                            <button type="button" id="coordinator_add_btn" class="training-btn training-btn-secondary-blue">ADD</button>
+                                        </div>
+                                        <div id="coordinator_list_container" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; min-height: 0;"></div>
+                                        <input type="hidden" id="coordinator_to_notify_list" value="">
+                                        <div class="training-helper-text">Select one coordinator and click Add to include multiple coordinators.</div>
                                     </div>
                                 </div>
 

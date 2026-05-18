@@ -238,6 +238,15 @@ $(document).ready(function (e) {
         $('#assistant_list').val(vals.join(', '));
     }
 
+    function updateCoordinatorHidden() {
+        const vals = [];
+        $('#coordinator_list_container .coordinator-item').each(function () {
+            const id = $(this).data('id');
+            if (id) vals.push(id);
+        });
+        $('#coordinator_to_notify_list').val(vals.join(', '));
+    }
+
     // Platform dropdown: show/hide "Other" text input
     $(document).on('change', '#platform', function () {
         const selectedVal = $(this).val();
@@ -294,6 +303,40 @@ $(document).ready(function (e) {
         ev.preventDefault();
         $(this).closest('.assistant-item').remove();
         updateAssistantHidden();
+    });
+
+    $(document).on('click', '#coordinator_add_btn', function (ev) {
+        ev.preventDefault();
+        const val = $('#coordinator_to_notify_select').val();
+        const selectedText = $('#coordinator_to_notify_select option:selected').text();
+
+        if (!val) {
+            return;
+        }
+
+        const existing = [];
+        $('#coordinator_list_container .coordinator-item').each(function () {
+            existing.push(String($(this).data('id')));
+        });
+
+        if (existing.includes(String(val))) {
+            return;
+        }
+
+        const pill = $(`<div class="coordinator-item" data-id="${val}" style="background: #dbeafe; border: 1px solid #bfdbfe; color: #1e40af; padding: 0.5rem 0.75rem; border-radius: 9999px; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 500; white-space: nowrap;">
+            <span>${selectedText}</span>
+            <button type="button" class="remove-coordinator" data-id="${val}" style="background: transparent; border: none; color: #1e40af; cursor: pointer; font-size: 1.1rem; font-weight: bold; padding: 0; display: flex; align-items: center; justify-content: center; width: 1.1rem; height: 1.1rem; margin-left: 0.25rem; line-height: 1;">×</button>
+        </div>`);
+
+        $('#coordinator_list_container').append(pill);
+        $('#coordinator_to_notify_select').val('').trigger('change').removeClass('border-danger');
+        updateCoordinatorHidden();
+    });
+
+    $(document).on('click', '.remove-coordinator', function (ev) {
+        ev.preventDefault();
+        $(this).closest('.coordinator-item').remove();
+        updateCoordinatorHidden();
     });
 
     let trainingWizardStep = 1;
@@ -373,7 +416,10 @@ $(document).ready(function (e) {
             $('#driver-arrangement-fields').addClass('d-none');
             $('#return_trip_needed').prop('checked', false);
             $('#return-trip-fields').addClass('d-none');
-            $('#coordinator_to_notify').val('');
+            $('#notify_coordinator').prop('checked', false);
+            $('#coordinator_to_notify_select').val('').trigger('change');
+            $('#coordinator_list_container').empty();
+            $('#coordinator_to_notify_list').val('');
             $('#coordinator-to-notify-container').addClass('d-none');
         }
     }
@@ -488,12 +534,12 @@ $(document).ready(function (e) {
         }
 
         if ($('#notify_coordinator').is(':checked')) {
-            const coordinator = $('#coordinator_to_notify').val();
+            const coordinator = $('#coordinator_to_notify_list').val();
             if (!coordinator) {
-                $('#coordinator_to_notify').addClass('border-danger');
+                $('#coordinator_to_notify_select').addClass('border-danger');
                 isValid = false;
             } else {
-                $('#coordinator_to_notify').removeClass('border-danger');
+                $('#coordinator_to_notify_select').removeClass('border-danger');
             }
         }
 
@@ -513,7 +559,9 @@ $(document).ready(function (e) {
             $('#coordinator-to-notify-container').removeClass('d-none');
         } else {
             $('#coordinator-to-notify-container').addClass('d-none');
-            $('#coordinator_to_notify').val('');
+            $('#coordinator_to_notify_select').val('').trigger('change');
+            $('#coordinator_list_container').empty();
+            $('#coordinator_to_notify_list').val('');
         }
     });
 
@@ -564,7 +612,10 @@ $(document).ready(function (e) {
             $('#need_transportation_yes').prop('checked', false);
             $('#return_trip_needed').prop('checked', false);
             $('#notify_coordinator').prop('checked', false);
-            $('#outbound_pickup_time, #outbound_contact_number, #outbound_pickup_location, #outbound_dropoff_location, #return_pickup_time, #return_contact_number, #return_pickup_location, #return_dropoff_location, #coordinator_to_notify').val('');
+            $('#outbound_pickup_time, #outbound_contact_number, #outbound_pickup_location, #outbound_dropoff_location, #return_pickup_time, #return_contact_number, #return_pickup_location, #return_dropoff_location').val('');
+            $('#coordinator_to_notify_select').val('').trigger('change');
+            $('#coordinator_list_container').empty();
+            $('#coordinator_to_notify_list').val('');
 
             // Hide platform_other input
             $('#platform_other').addClass('d-none');
@@ -722,7 +773,7 @@ $(document).ready(function (e) {
         formData.append('return_pickup_location', $('#return_pickup_location').val());
         formData.append('return_dropoff_location', $('#return_dropoff_location').val());
         formData.append('notify_coordinator', $('#notify_coordinator').is(':checked') ? '1' : '0');
-        formData.append('coordinator_to_notify', $('#coordinator_to_notify').val() || '');
+        formData.append('coordinator_to_notify_list', $('#coordinator_to_notify_list').val() || '');
 
         const isEditMode = Boolean(window.isEditMode && window.trainingId);
         if (isEditMode) {

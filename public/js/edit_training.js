@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let return_pickup_location = $('#return_pickup_location').val();
                 let return_dropoff_location = $('#return_dropoff_location').val();
                 let notify_coordinator = $('#notify_coordinator').is(':checked') ? 1 : 0;
-                let coordinator_to_notify = $('#coordinator_to_notify').val();
+                let coordinator_to_notify_list = $('#coordinator_to_notify_list').val();
 
                 if (mode === 'virtual') {
                     location = '';
@@ -484,7 +484,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     return_pickup_location: return_pickup_location,
                     return_dropoff_location: return_dropoff_location,
                     notify_coordinator: notify_coordinator,
-                    coordinator_to_notify: coordinator_to_notify
+                    coordinator_to_notify_list: coordinator_to_notify_list
                 };
 
                 const url = window.location.href;

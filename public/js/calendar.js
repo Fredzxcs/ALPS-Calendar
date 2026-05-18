@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         return_pickup_location: training.return_pickup_location,
                         return_dropoff_location: training.return_dropoff_location,
                         notify_coordinator: training.notify_coordinator,
-                        coordinator_to_notify: training.coordinator_to_notify,
+                        coordinator_to_notify: training.coordinator_names || training.coordinator_to_notify || 'No Driver Coordinator Yet',
                     },
                 });
             }
