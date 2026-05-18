@@ -283,7 +283,7 @@
                         <!-- Transportation Needed -->
                         <div class="training-form-row full">
                             <div class="training-form-group">
-                                <label>Do you need a transportation? <span class="required">*</span></label>
+                                <label>Do you need a transportation? <span class="required"></span></label>
                                 <div class="training-radio-group">
                                     <div class="training-radio">
                                         <input type="radio" id="need_transportation_yes" name="need_transportation" value="yes" <?php echo e($t_need_transportation == 'yes' ? 'checked' : ''); ?>>
@@ -304,19 +304,19 @@
                                 <div class="trip-section-heading">Outbound Trip</div>
                                 <div class="training-form-row quad">
                                     <div class="training-form-group">
-                                        <label for="outbound_pickup_time">Pickup Time <span class="required">*</span></label>
+                                        <label for="outbound_pickup_time">Pickup Time <span class="required"></span></label>
                                         <input type="time" id="outbound_pickup_time" class="training-input" value="<?php echo e($training->outbound_pickup_time ?? ''); ?>">
                                     </div>
                                     <div class="training-form-group">
-                                        <label for="outbound_contact_number">Contact Number <span class="required">*</span></label>
+                                        <label for="outbound_contact_number">Contact Number <span class="required"></span></label>
                                         <input type="text" id="outbound_contact_number" class="training-input" placeholder="Contact number" value="<?php echo e($training->outbound_contact_number ?? ''); ?>">
                                     </div>
                                     <div class="training-form-group">
-                                        <label for="outbound_pickup_location">Pickup Location <span class="required">*</span></label>
+                                        <label for="outbound_pickup_location">Pickup Location <span class="required"></span></label>
                                         <input type="text" id="outbound_pickup_location" class="training-input" placeholder="Pickup location" value="<?php echo e($training->outbound_pickup_location ?? ''); ?>">
                                     </div>
                                     <div class="training-form-group">
-                                        <label for="outbound_dropoff_location">Drop-off Location <span class="required">*</span></label>
+                                        <label for="outbound_dropoff_location">Drop-off Location <span class="required"></span></label>
                                         <input type="text" id="outbound_dropoff_location" class="training-input" placeholder="Drop-off location" value="<?php echo e($training->outbound_dropoff_location ?? ''); ?>">
                                     </div>
                                 </div>
@@ -333,19 +333,19 @@
                                     <div class="trip-section-heading">Return Trip</div>
                                     <div class="training-form-row quad">
                                         <div class="training-form-group">
-                                            <label for="return_pickup_time">Return Time <span class="required">*</span></label>
+                                            <label for="return_pickup_time">Return Time <span class="required"></span></label>
                                             <input type="time" id="return_pickup_time" class="training-input" value="<?php echo e($training->return_pickup_time ?? ''); ?>">
                                         </div>
                                         <div class="training-form-group">
-                                            <label for="return_contact_number">Contact Number <span class="required">*</span></label>
+                                            <label for="return_contact_number">Contact Number <span class="required"></span></label>
                                             <input type="text" id="return_contact_number" class="training-input" placeholder="Contact number" value="<?php echo e($training->return_contact_number ?? ''); ?>">
                                         </div>
                                         <div class="training-form-group">
-                                            <label for="return_pickup_location">Pickup Location <span class="required">*</span></label>
+                                            <label for="return_pickup_location">Pickup Location <span class="required"></span></label>
                                             <input type="text" id="return_pickup_location" class="training-input" placeholder="Pickup location" value="<?php echo e($training->return_pickup_location ?? ''); ?>">
                                         </div>
                                         <div class="training-form-group">
-                                            <label for="return_dropoff_location">Drop-off Location <span class="required">*</span></label>
+                                            <label for="return_dropoff_location">Drop-off Location <span class="required"></span></label>
                                             <input type="text" id="return_dropoff_location" class="training-input" placeholder="Drop-off location" value="<?php echo e($training->return_dropoff_location ?? ''); ?>">
                                         </div>
                                     </div>
@@ -362,7 +362,7 @@
 
                                 <div id="coordinator-to-notify-container" class="<?php echo e($training->notify_coordinator ? '' : 'd-none'); ?>" style="margin-top: 1rem;">
                                     <div class="training-form-group">
-                                        <label for="coordinator_to_notify_select">Driver Coordinator <span class="required">*</span></label>
+                                        <label for="coordinator_to_notify_select">Driver Coordinator <span class="required"></span></label>
                                         <div style="display: flex; gap: 0.5rem;">
                                             <select id="coordinator_to_notify_select" class="training-select" style="flex: 1;">
                                                 <option value="" selected disabled>Select Coordinator</option>

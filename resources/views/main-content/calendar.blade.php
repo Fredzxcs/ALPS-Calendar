@@ -359,7 +359,7 @@
                         </div>
 
                         <div class="alps-modal-row" id="conference-link-row">
-                            <div class="alps-modal-label"><i class="bi bi-link-45deg"></i><span>Conference Link</span></div>
+                            <div class="alps-modal-label"><i class="bi bi-link-45deg"></i><span>Virtual Training Link</span></div>
                             <div class="alps-modal-value text-break" id="modal-conference-link">N/A</div>
                         </div>
                     </div>
