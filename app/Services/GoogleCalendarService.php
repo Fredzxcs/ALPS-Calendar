@@ -247,6 +247,7 @@ class GoogleCalendarService
     private function buildDescription($training, $schedule, array $attendeeEmails, string $timezone): string
     {
         $facilitator = $training->facilitator?->name ?? 'N/A';
+        $accountManager = $training->account_manager?->name ?? 'N/A';
         $company = $training->company?->company_name ?? 'N/A';
         $course = $training->course?->course_name ?? 'N/A';
         $account = $training->account?->account_email ?? 'N/A';
@@ -288,6 +289,7 @@ class GoogleCalendarService
         if ($course !== 'N/A') $lines[] = 'Course: ' . $course;
         if ($company !== 'N/A') $lines[] = 'Company: ' . $company;
         if ($facilitator !== 'N/A') $lines[] = 'Facilitator: ' . $facilitator;
+        if ($accountManager !== 'N/A') $lines[] = 'Account Manager: ' . $accountManager;
         if ($assistantNames !== '') $lines[] = 'Assistants: ' . $assistantNames;
         if (!empty($training->location)) $lines[] = 'Location: ' . $training->location;
         if (!empty($platform)) $lines[] = 'Platform: ' . $platform;

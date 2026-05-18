@@ -16,6 +16,7 @@ class Training extends Model
     protected $fillable = [
         'course_id',
         'facilitator_id',
+        'account_manager_id',
         'company_id',
         'assistant',
         'coordinator_to_notify_list',
@@ -58,6 +59,11 @@ class Training extends Model
     public function facilitator()
     {
         return $this->belongsTo(User::class, 'facilitator_id');
+    }
+
+    public function account_manager()
+    {
+        return $this->belongsTo(User::class, 'account_manager_id');
     }
 
     public function account()

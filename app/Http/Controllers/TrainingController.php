@@ -139,11 +139,20 @@ class TrainingController extends Controller
      */
     public function store(Request $request)
     {
+        // Convert empty facilitator_id and account_manager_id to null
+        if ($request->filled('facilitator_id') === false || $request->input('facilitator_id') === '') {
+            $request->merge(['facilitator_id' => null]);
+        }
+        if ($request->filled('account_manager_id') === false || $request->input('account_manager_id') === '') {
+            $request->merge(['account_manager_id' => null]);
+        }
+
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'course_id' => ['required', 'integer', 'exists:course,id'],
             'mode' => ['required', 'string', 'max:255'],
             'facilitator_id' => ['nullable', 'integer', 'exists:users,id'], // Facilitator ID can be null
+            'account_manager_id' => ['nullable', 'integer', 'exists:users,id'], // Account Manager ID can be null
             'company_id' => ['nullable', 'integer', 'exists:company,id'],
             'location' => ['nullable', 'string', 'max:255'],
             'assistant' => ['nullable', 'string'],
@@ -187,6 +196,9 @@ class TrainingController extends Controller
         if ($request->filled('facilitator_id') && !User::find($request->facilitator_id)) {
             $missing['facilitator_id'] = ['Selected facilitator does not exist in the database.'];
         }
+        if ($request->filled('account_manager_id') && !User::find($request->account_manager_id)) {
+            $missing['account_manager_id'] = ['Selected account manager does not exist in the database.'];
+        }
         if ($request->filled('account_id') && !Account::find($request->account_id)) {
             $missing['account_id'] = ['Selected account/account credentials do not exist.'];
         }
@@ -214,6 +226,7 @@ class TrainingController extends Controller
                 'course_id' => $request->course_id,
                 'mode' => $request->mode,
                 'facilitator_id' => $request->facilitator_id,
+                'account_manager_id' => $request->account_manager_id,
                 'location' => $request->location,
                 'platform' => $request->platform,
                 'conference_link' => $request->conference_link,
@@ -290,13 +303,19 @@ class TrainingController extends Controller
                         }
                     }
 
+                    // Include account manager
+                    if (!empty($training->account_manager_id)) {
+                        $accMgr = User::find($training->account_manager_id);
+                        if ($accMgr && $this->shouldSendMailTo($accMgr->email)) $attendees[] = $accMgr->email;
+                    }
+
                     // Include driver coordinators (comma-separated IDs)
                     foreach ($this->collectUserEmailsFromIds($request->coordinator_to_notify_list) as $coordinatorEmail) {
                         $attendees[] = $coordinatorEmail;
                     }
 
                     // Insert event on connected user's primary calendar and send invites
-                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                    $trainingInfo = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])
                                 ->find($training->id);
 
                     // Use schedule created earlier (pass refresh token/access token for demo mode)
@@ -357,6 +376,23 @@ class TrainingController extends Controller
                             }
                         }
                     }
+                    
+                    // Notify account manager by email
+                    if (!empty($request->account_manager_id)) {
+                        $accMgr = User::find($request->account_manager_id);
+                        if ($accMgr && !empty($accMgr->email)) {
+                            try {
+                                Mail::to($accMgr->email)->send(new TrainingNotificationMail($trainingInfo, $accMgr));
+                            } catch (\Exception $e) {
+                                Log::error('Failed to send account manager notification', [
+                                    'to' => $accMgr->email,
+                                    'account_manager_id' => $accMgr->id ?? null,
+                                    'exception' => $e->getMessage(),
+                                ]);
+                            }
+                        }
+                    }
+                    
                     // Notify coordinator about driver arrangement if requested
                     if ($request->boolean('notify_coordinator') && !empty($coordinatorIds)) {
                         foreach ($coordinatorIds as $coordinatorId) {
@@ -469,7 +505,7 @@ class TrainingController extends Controller
     public function edit(Request $request, int $id)
     {
         // Fetch the training with the related schedule and facilitator
-        $training = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])->find($id);
+        $training = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])->find($id);
 
         // Check if the training exists
         if (!$training) {
@@ -495,11 +531,20 @@ class TrainingController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Convert empty facilitator_id and account_manager_id to null
+        if ($request->filled('facilitator_id') === false || $request->input('facilitator_id') === '') {
+            $request->merge(['facilitator_id' => null]);
+        }
+        if ($request->filled('account_manager_id') === false || $request->input('account_manager_id') === '') {
+            $request->merge(['account_manager_id' => null]);
+        }
+
         // Validate request - include driver/transportation and notifier fields
         $validator = Validator::make($request->all(), [
             'course_id' => ['required', 'integer'],
             'mode' => ['required', 'string', 'max:255'],
             'facilitator_id' => ['nullable', 'integer'],
+            'account_manager_id' => ['nullable', 'integer'],
             'company_id' => ['nullable', 'integer'],
             'location' => ['nullable', 'string', 'max:255'],
             'assistant' => ['nullable', 'string'],
@@ -547,6 +592,7 @@ class TrainingController extends Controller
                 'course_id' => $request->course_id,
                 'mode' => $request->mode,
                 'facilitator_id' => $request->facilitator_id,
+                'account_manager_id' => $request->account_manager_id,
                 'location' => $request->location,
                 'platform' => $request->platform,
                 'conference_link' => $request->conference_link,
@@ -616,6 +662,10 @@ class TrainingController extends Controller
                         $fac = User::find($trainingSession->facilitator_id);
                         if ($fac && !empty($fac->email)) $attendees[] = $fac->email;
                     }
+                    if (!empty($trainingSession->account_manager_id)) {
+                        $accMgr = User::find($trainingSession->account_manager_id);
+                        if ($accMgr && $this->shouldSendMailTo($accMgr->email)) $attendees[] = $accMgr->email;
+                    }
                     if (!empty($trainingSession->assistant)) {
                         $assistantIds = array_filter(array_map('trim', explode(',', $trainingSession->assistant)));
                         foreach ($assistantIds as $aid) {
@@ -631,7 +681,7 @@ class TrainingController extends Controller
                     }
 
                     // Refresh training with relations
-                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                    $trainingInfo = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])
                                     ->find($trainingSession->id);
 
                     if (!empty($schedule->google_event_id)) {

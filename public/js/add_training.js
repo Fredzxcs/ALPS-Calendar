@@ -791,7 +791,13 @@ $(document).ready(function (e) {
         formData.append('to_date', endDateFormatted);
         formData.append('from_time', $('#time-start').val());
         formData.append('to_time', $('#time-end').val());
-        formData.append('facilitator_id', $('#facilitator').find('option:selected').val());
+        
+        // Get facilitator and account_manager values
+        const facilitatorValue = $('#facilitator').find('option:selected').val();
+        const accountManagerValue = $('#account_manager').find('option:selected').val();
+        
+        formData.append('facilitator_id', facilitatorValue || '');
+        formData.append('account_manager_id', accountManagerValue || '');
         formData.append('need_transportation', $('#need_transportation_yes').is(':checked') ? 'yes' : 'no');
         formData.append('outbound_pickup_time', $('#outbound_pickup_time').val());
         formData.append('outbound_contact_number', $('#outbound_contact_number').val());

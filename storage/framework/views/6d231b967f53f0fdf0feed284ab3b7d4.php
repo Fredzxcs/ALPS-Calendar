@@ -229,6 +229,20 @@
                             </div>
 
                             <div class="training-form-group">
+                                <label for="account_manager">Account Manager</label>
+                                <select id="account_manager" class="training-select">
+                                    <option disabled selected>Select Account Manager</option>
+                                    <option value="">No Account Manager Yet</option>
+                                    <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Assistant -->
+                        <div class="training-form-row">
+                            <div class="training-form-group">
                                 <label for="assistant_select">Assistant</label>
                                 <div style="display: flex; gap: 0.5rem;">
                                     <select id="assistant_select" class="training-select" style="flex: 1;">

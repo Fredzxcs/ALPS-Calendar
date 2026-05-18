@@ -226,6 +226,20 @@
                             </div>
 
                             <div class="training-form-group">
+                                <label for="account_manager">Account Manager</label>
+                                <select id="account_manager" class="training-select">
+                                    <option disabled selected>Select Account Manager</option>
+                                    <option value="">No Account Manager Yet</option>
+                                    @foreach ($users as $user)
+                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Assistant -->
+                        <div class="training-form-row">
+                            <div class="training-form-group">
                                 <label for="assistant_select">Assistant</label>
                                 <div style="display: flex; gap: 0.5rem;">
                                     <select id="assistant_select" class="training-select" style="flex: 1;">
