@@ -690,8 +690,13 @@ $(document).ready(function (e) {
     // Step 4: Function to create the training session
     function createTraining(companyId) {
         // Get platform: if "other" is selected, use the custom text; otherwise use the dropdown value
+        // For face-to-face training, platform should not be set
         let platformValue = $('#platform').val();
-        if (platformValue === 'other') {
+        const mode = $('input[name="mode"]:checked').val();
+        
+        if (mode === 'face-to-face') {
+            platformValue = '';
+        } else if (platformValue === 'other') {
             platformValue = $('#platform_other').val();
         }
 
@@ -722,7 +727,10 @@ $(document).ready(function (e) {
         formData.append('return_pickup_location', $('#return_pickup_location').val());
         formData.append('return_dropoff_location', $('#return_dropoff_location').val());
         formData.append('notify_coordinator', $('#notify_coordinator').is(':checked') ? '1' : '0');
-        formData.append('coordinator_to_notify', $('#coordinator_to_notify').val() || '');
+        
+        // Handle multiple coordinator IDs - join them with commas
+        const coordinatorIds = $('#coordinator_to_notify').val();
+        formData.append('coordinator_to_notify', coordinatorIds ? coordinatorIds.join(',') : '');
 
         const isEditMode = Boolean(window.isEditMode && window.trainingId);
         if (isEditMode) {

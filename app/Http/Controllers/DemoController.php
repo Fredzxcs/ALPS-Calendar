@@ -317,6 +317,34 @@ class DemoController extends Controller
                 ]);
             }
 
+            $coordinatorIds = [];
+            if ($request->filled('coordinator_to_notify')) {
+                $coordinatorIds = array_values(array_filter(array_map('trim', explode(',', (string) $request->coordinator_to_notify))));
+
+                foreach ($coordinatorIds as $coordId) {
+                    if (is_numeric($coordId)) {
+                        $numId = (int) $coordId;
+
+                        if (!User::whereKey($numId)->exists()) {
+                            DB::table('users')->updateOrInsert(['id' => $numId], [
+                                'name' => 'Demo Coordinator ' . $numId,
+                                'email' => 'coordinator' . $numId . '@example.com',
+                                'username' => 'coordinator' . $numId,
+                                'password' => Hash::make('password123'),
+                                'usertype' => 'coordinator',
+                                'created_at' => now(),
+                                'updated_at' => now()
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            $coordinatorToNotify = !empty($coordinatorIds) ? implode(',', $coordinatorIds) : null;
+
+            $platform = $request->mode === 'face-to-face' ? null : $request->platform;
+            $conferenceLink = $request->mode === 'face-to-face' ? null : $request->conference_link;
+
             // Ensure assistant user IDs exist if specified (comma-separated)
             $assistantStr = $request->string('assistant', '');
             if (!empty($assistantStr)) {
@@ -356,8 +384,8 @@ class DemoController extends Controller
                 'mode' => $request->mode,
                 'facilitator_id' => $facilitatorId,
                 'location' => $request->location,
-                'platform' => $request->platform,
-                'conference_link' => $request->conference_link,
+                'platform' => $platform,
+                'conference_link' => $conferenceLink,
                 'company_id' => $companyId,
                 'assistant' => $request->assistant,
                 'account_id' => $accountId,
@@ -372,7 +400,7 @@ class DemoController extends Controller
                 'return_pickup_location' => $request->return_pickup_location,
                 'return_dropoff_location' => $request->return_dropoff_location,
                 'notify_coordinator' => $request->boolean('notify_coordinator'),
-                'coordinator_to_notify' => $request->coordinator_to_notify,
+                'coordinator_to_notify' => $coordinatorToNotify,
             ]);
 
             // Create the Schedule record
@@ -449,19 +477,26 @@ class DemoController extends Controller
             }
 
             // Notify coordinator about driver arrangement if requested (demo mode)
-            if ($request->boolean('notify_coordinator') && !empty($request->coordinator_to_notify)) {
-                $coord = User::find($request->coordinator_to_notify);
-                if ($coord && !empty($coord->email)) {
-                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
-                                ->find($training->id);
-                    try {
-                        Mail::to($coord->email)->send(new DriverNotificationMail($trainingInfo, $coord));
-                    } catch (\Exception $e) {
-                        Log::error('Failed to send coordinator driver notification (demo)', [
-                            'to' => $coord->email,
-                            'coordinator_id' => $coord->id ?? null,
-                            'exception' => $e->getMessage(),
-                        ]);
+            if ($request->boolean('notify_coordinator') && !empty($coordinatorToNotify)) {
+                $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                            ->find($training->id);
+
+                foreach ($coordinatorIds as $coordId) {
+                    if (!is_numeric($coordId)) {
+                        continue;
+                    }
+
+                    $coord = User::find((int) $coordId);
+                    if ($coord && !empty($coord->email)) {
+                        try {
+                            Mail::to($coord->email)->send(new DriverNotificationMail($trainingInfo, $coord));
+                        } catch (\Exception $e) {
+                            Log::error('Failed to send coordinator driver notification (demo)', [
+                                'to' => $coord->email,
+                                'coordinator_id' => $coord->id ?? null,
+                                'exception' => $e->getMessage(),
+                            ]);
+                        }
                     }
                 }
             }

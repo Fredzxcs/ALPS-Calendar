@@ -130,10 +130,10 @@
                             </div>
                         </div>
 
-                        <!-- Conference Call Link -->
+                        <!-- Virtual Training Link -->
                         <div class="training-form-row full {{ $t_mode == 'public-course' ? 'd-none' : '' }}" id="conference-link-container">
                             <div class="training-form-group">
-                                        <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none"></span></label>
+                                        <label for="conference_link"><span id="conference-link-label">Virtual Training Link</span><span id="conference-link-required" class="required d-none"></span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="training-input"
                                     placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)" value="{{ $t_conference_link ?? '' }}">
                             </div>
@@ -359,13 +359,17 @@
 
                                 <div id="coordinator-to-notify-container" class="{{ $training->notify_coordinator ? '' : 'd-none' }}" style="margin-top: 1rem;">
                                     <div class="training-form-group">
-                                        <label for="coordinator_to_notify">Select coordinator to notify the driver <span class="required">*</span></label>
-                                        <select id="coordinator_to_notify" class="training-select">
-                                            <option value="" disabled selected>Select Coordinator</option>
+                                        <label for="coordinator_to_notify">Select coordinators to notify about the driver arrangement <span class="required">*</span></label>
+                                        <select id="coordinator_to_notify" class="training-select" multiple style="min-height: 100px;">
                                             @foreach ($facilitators as $user)
-                                                <option value="{{ $user->id }}" {{ $training->coordinator_to_notify == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                                                @php
+                                                    $coordinatorIds = array_filter(array_map('trim', explode(',', (string) $training->coordinator_to_notify)));
+                                                    $isSelected = in_array($user->id, $coordinatorIds);
+                                                @endphp
+                                                <option value="{{ $user->id }}" {{ $isSelected ? 'selected' : '' }}>{{ $user->name }}</option>
                                             @endforeach
                                         </select>
+                                        <div class="training-helper-text" style="margin-top: 0.5rem;">Hold Ctrl (or Cmd on Mac) to select multiple coordinators</div>
                                     </div>
                                 </div>
                             </div>

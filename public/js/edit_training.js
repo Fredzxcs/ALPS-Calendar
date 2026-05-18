@@ -443,12 +443,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 let return_pickup_location = $('#return_pickup_location').val();
                 let return_dropoff_location = $('#return_dropoff_location').val();
                 let notify_coordinator = $('#notify_coordinator').is(':checked') ? 1 : 0;
-                let coordinator_to_notify = $('#coordinator_to_notify').val();
+                // Handle multiple coordinator IDs - join them with commas
+                const coordinatorIds = $('#coordinator_to_notify').val();
+                let coordinator_to_notify = coordinatorIds ? coordinatorIds.join(',') : '';
 
                 if (mode === 'virtual') {
                     location = '';
                 } else if (mode === 'face-to-face') {
                     account_id = '';
+                    platform = '';
+                    conference_link = '';
                 } else if (mode === 'public-course') {
                     if ($('#inperson-training').is(':checked')) {
                         account_id = '';
@@ -459,6 +463,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 let finalPlatform = platform === 'other' ? platformOther : platform;
+                // For face-to-face training, ensure platform is empty
+                if (mode === 'face-to-face') {
+                    finalPlatform = '';
+                }
                 let data = {
                     course_id: course,
                     platform: finalPlatform,

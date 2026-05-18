@@ -210,12 +210,12 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Conference Link -->
+                    <!-- Virtual Training Link -->
                     <div class="row mb-5 justify-content-between align-items-center">
                         <div class="col-5">
                             <div class="fv-row">
                                 <label class="fs-6 fw-bold mb-2">
-                                    <i class="bi bi-link-45deg fs-3 me-5 alps-icon-accent"></i>Conference Link
+                                    <i class="bi bi-link-45deg fs-3 me-5 alps-icon-accent"></i>Virtual Training Link
                                 </label>
                             </div>
                         </div>

@@ -97,7 +97,7 @@
                         <!-- Conference Call Link -->
                         <div class="training-form-row full" id="conference-link-container">
                             <div class="training-form-group">
-                                <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none">*</span></label>
+                                <label for="conference_link"><span id="conference-link-label">Virtual Training Link</span><span id="conference-link-required" class="required d-none">*</span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="training-input"
                                     placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)"
                                     value="{{ $training->conference_link ?? '' }}">

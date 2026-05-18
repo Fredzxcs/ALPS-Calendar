@@ -113,10 +113,10 @@
                             </div>
                         </div>
 
-                        <!-- Conference Call Link -->
+                        <!-- Virtual Training Link -->
                         <div class="training-form-row full" id="conference-link-container">
                             <div class="training-form-group">
-                                        <label for="conference_link"><span id="conference-link-label">Conference Call Link</span><span id="conference-link-required" class="required d-none"></span></label>
+                                        <label for="conference_link"><span id="conference-link-label">Virtual Training Link</span><span id="conference-link-required" class="required d-none"></span></label>
                                 <input type="url" name="conference_link" id="conference_link" class="training-input"
                                     placeholder="Enter the conference call link (e.g., https://zoom.us/j/...)">
                             </div>
@@ -332,13 +332,13 @@
 
                                 <div id="coordinator-to-notify-container" class="d-none" style="margin-top: 1rem;">
                                     <div class="training-form-group">
-                                        <label for="coordinator_to_notify">Select coordinator to notify the driver <span class="required">*</span></label>
-                                        <select id="coordinator_to_notify" class="training-select">
-                                            <option value="" disabled selected>Select Coordinator</option>
+                                        <label for="coordinator_to_notify">Select coordinators to notify about the driver arrangement <span class="required">*</span></label>
+                                        <select id="coordinator_to_notify" class="training-select" multiple style="min-height: 100px;">
                                             @foreach ($users as $user)
                                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
                                             @endforeach
                                         </select>
+                                        <div class="training-helper-text" style="margin-top: 0.5rem;">Hold Ctrl (or Cmd on Mac) to select multiple coordinators</div>
                                     </div>
                                 </div>
 

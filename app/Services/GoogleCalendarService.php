@@ -291,7 +291,7 @@ class GoogleCalendarService
         if ($assistantNames !== '') $lines[] = 'Assistants: ' . $assistantNames;
         if (!empty($training->location)) $lines[] = 'Location: ' . $training->location;
         if (!empty($platform)) $lines[] = 'Platform: ' . $platform;
-        if (!empty($training->conference_link)) $lines[] = 'Conference Link: ' . $training->conference_link;
+        if (!empty($training->conference_link)) $lines[] = 'Virtual Training Link: ' . $training->conference_link;
         if ($account !== 'N/A') $lines[] = 'Account: ' . $account;
         if (!empty($schedule->from_date) && !empty($schedule->from_time) && !empty($schedule->to_date) && !empty($schedule->to_time)) {
             $lines[] = 'Schedule: ' . $schedule->from_date . ' ' . $schedule->from_time . ' to ' . $schedule->to_date . ' ' . $schedule->to_time;
