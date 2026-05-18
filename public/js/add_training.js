@@ -20,9 +20,31 @@ document.addEventListener("DOMContentLoaded", function () {
     const inpersonCheckbox = document.getElementById("inperson-training");
     const companyCourseContainer = document.getElementById("company-course-container");
     const publicCourseContainer = document.getElementById("public-course-container");
+    const platformContainer = document.getElementById("platform-container");
     const conferenceLinkContainer = document.getElementById("conference-link-container");
     const conferenceLinkRequired = document.getElementById("conference-link-required");
     const conferenceLinkInput = document.getElementById("conference_link");
+
+    function shouldHidePlatformField() {
+        const selectedMode = document.querySelector('input[name="mode"]:checked')?.id;
+        return selectedMode === 'face-to-face' || (selectedMode === 'public-course' && inpersonCheckbox?.checked);
+    }
+
+    function updatePlatformState() {
+        if (!platformContainer) {
+            return;
+        }
+
+        if (shouldHidePlatformField()) {
+            platformContainer.classList.add('d-none');
+            $('#platform').val('').trigger('change');
+            $('#platform_other').addClass('d-none').val('');
+        } else {
+            platformContainer.classList.remove('d-none');
+        }
+
+        updateAccountFieldState();
+    }
 
     // Update conference link visibility and requirement based on mode and in-person status
     function updateConferenceLinkState() {
@@ -53,6 +75,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 conferenceLinkInput.removeAttribute("required");
             }
         }
+
+        updatePlatformState();
         updateAccountFieldState();
     }
 
@@ -101,6 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             updateConferenceLinkState();
             updateDriverArrangementSupport();
+            updatePlatformState();
             updateAccountFieldState();
         });
     });
@@ -120,12 +145,14 @@ document.addEventListener("DOMContentLoaded", function () {
             updateConferenceLinkState();
             updateDriverArrangementSupport();
         }
+        updatePlatformState();
         updateAccountFieldState();
     });
 
     // Initialize conference link state
     updateConferenceLinkState();
     updateDriverArrangementSupport();
+    updatePlatformState();
     updateAccountFieldState();
 });
 
@@ -742,7 +769,10 @@ $(document).ready(function (e) {
     function createTraining(companyId) {
         // Get platform: if "other" is selected, use the custom text; otherwise use the dropdown value
         let platformValue = $('#platform').val();
-        if (platformValue === 'other') {
+        const platformHidden = $('#platform-container').hasClass('d-none');
+        if (platformHidden) {
+            platformValue = '';
+        } else if (platformValue === 'other') {
             platformValue = $('#platform_other').val();
         }
 
