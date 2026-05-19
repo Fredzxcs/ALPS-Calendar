@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-center align-items-center mt-20">
         <div class="container mt-5">
             <div class="shadow-sm border-0">
-                <div class="alps-header-add rounded-top d-flex justify-content-center align-items-center py-4">
+                <div class="alps-header-add rounded-top d-flex justify-content-center align-items-center py-4" style="background: linear-gradient(90deg, #1D4A8A 0%, #2C66B3 52%, #1B4785 100%);">
                     <h2 class="text-white fw-boldest m-0 fs-1">Edit Training</h2>
                 </div>
                 <!--begin::Stepper-->
@@ -234,10 +234,10 @@
                                 <?php endif; ?>
                         </div>
 
-                        <!-- Facilitator and Assistant -->
-                        <div class="training-form-row">
+                        <!-- People -->
+                        <div class="training-form-row triple">
                             <div class="training-form-group">
-                                <label for="facilitator">Facilitator</label>
+                                <label for="facilitator">Facilitator <span class="required"></span></label>
                                 <select id="facilitator" class="training-select">
                                     <option disabled>Select Facilitator</option>
                                     <option value="">No Facilitator Yet</option>
@@ -250,20 +250,17 @@
                             <div class="training-form-group">
                                 <label for="account_manager">Account Manager</label>
                                 <select id="account_manager" name="account_manager_id" class="training-select">
-                                    <option disabled>Select Account Manager</option>
+                                    <option disabled selected>Select Account Manager</option>
                                     <option value="">No Account Manager Yet</option>
                                     <?php $__currentLoopData = $facilitators; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <option value="<?php echo e($user->id); ?>" <?php echo e($t_account_manager_id == $user->id ? 'selected' : ''); ?>><?php echo e($user->name); ?></option>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
-                        </div>
 
-                        <!-- Assistant -->
-                        <div class="training-form-row">
                             <div class="training-form-group">
                                 <label for="assistant_select">Assistant</label>
-                                <div style="display: flex; gap: 0.5rem;">
+                                <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
                                     <select id="assistant_select" class="training-select" style="flex: 1;">
                                         <option value="" selected disabled>Select Assistant</option>
                                         <?php $__currentLoopData = $facilitators; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>

@@ -215,10 +215,10 @@
                                 <?php endif; ?>
                         </div>
 
-                        <!-- Facilitator and Assistant -->
-                        <div class="training-form-row">
+                        <!-- People -->
+                        <div class="training-form-row triple">
                             <div class="training-form-group">
-                                <label for="facilitator">Facilitator</label>
+                                <label for="facilitator">Facilitator <span class="required"></span></label>
                                 <select id="facilitator" class="training-select">
                                     <option disabled selected>Select Facilitator</option>
                                     <option value="">No Facilitator Yet</option>
@@ -238,13 +238,10 @@
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
-                        </div>
 
-                        <!-- Assistant -->
-                        <div class="training-form-row">
                             <div class="training-form-group">
                                 <label for="assistant_select">Assistant</label>
-                                <div style="display: flex; gap: 0.5rem;">
+                                <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
                                     <select id="assistant_select" class="training-select" style="flex: 1;">
                                         <option value="" selected disabled>Select Assistant</option>
                                         <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
