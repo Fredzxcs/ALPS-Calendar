@@ -227,7 +227,7 @@
 
                             <div class="training-form-group">
                                 <label for="account_manager">Account Manager</label>
-                                <select id="account_manager" class="training-select">
+                                <select id="account_manager" name="account_manager_id" class="training-select">
                                     <option disabled selected>Select Account Manager</option>
                                     <option value="">No Account Manager Yet</option>
                                     @foreach ($users as $user)

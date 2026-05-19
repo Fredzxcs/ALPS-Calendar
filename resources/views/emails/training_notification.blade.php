@@ -85,7 +85,7 @@
 
         @endisset
 
-        <p>You have been assigned as a <strong>facilitator</strong> for the following training session:</p>
+        <p>You have been assigned as an <strong>{{ $roleLabel ?? 'Facilitator' }}</strong> for the following training session:</p>
 
         <ul>
             <li><strong>Course:</strong> {{ $training->course->course_name ?? 'N/A' }}</li>

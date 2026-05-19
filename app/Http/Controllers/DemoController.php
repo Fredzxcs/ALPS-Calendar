@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\TrainingController;
 use App\Mail\DriverNotificationMail;
+use App\Mail\TrainingNotificationMail;
 
 class DemoController extends Controller
 {
@@ -293,6 +294,7 @@ class DemoController extends Controller
         try {
             $courseId = $this->syncCourseFromFixture($request->integer('course_id'));
             $facilitatorId = $this->syncUserFromFixture($request->integer('facilitator_id'));
+            $accountManagerId = $this->syncUserFromFixture($request->integer('account_manager_id'));
             $companyId = $this->syncCompanyFromFixture($request->integer('company_id'));
             $accountId = $this->syncAccountFromFixture($request->integer('account_id'));
 
@@ -301,6 +303,9 @@ class DemoController extends Controller
             }
             if (!$facilitatorId) {
                 $facilitatorId = $this->resolveNullableUserId($request->integer('facilitator_id'));
+            }
+            if (!$accountManagerId) {
+                $accountManagerId = $this->resolveNullableUserId($request->integer('account_manager_id'));
             }
             if (!$companyId) {
                 $companyId = $this->resolveNullableCompanyId($request->integer('company_id'));
@@ -334,6 +339,20 @@ class DemoController extends Controller
                     'updated_at' => now()
                 ]);
                 $facilitatorId = $reqFacilitator;
+            }
+
+            $reqAccountManager = $request->integer('account_manager_id');
+            if ($reqAccountManager && !User::whereKey($reqAccountManager)->exists()) {
+                DB::table('users')->updateOrInsert(['id' => $reqAccountManager], [
+                    'name' => 'Demo Account Manager ' . $reqAccountManager,
+                    'email' => 'accountmgr' . $reqAccountManager . '@example.com',
+                    'username' => 'accountmgr' . $reqAccountManager,
+                    'password' => Hash::make('password123'),
+                    'usertype' => 'coordinator',
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+                $accountManagerId = $reqAccountManager;
             }
 
             $reqCompany = $request->integer('company_id');
@@ -402,6 +421,7 @@ class DemoController extends Controller
                 'course_id' => $courseId,
                 'mode' => $request->mode,
                 'facilitator_id' => $facilitatorId,
+                'account_manager_id' => $accountManagerId,
                 'location' => $request->location,
                 'platform' => $request->platform,
                 'conference_link' => $request->conference_link,
@@ -462,6 +482,14 @@ class DemoController extends Controller
                         }
                     }
 
+                    // Include account manager as invitee
+                    if (!empty($accountManagerId)) {
+                        $accMgr = User::find($accountManagerId);
+                        if ($accMgr && !empty($accMgr->email)) {
+                            $attendees[] = $accMgr->email;
+                        }
+                    }
+
                     // Include assistants (comma-separated IDs) if any
                     if (!empty($training->assistant)) {
                         $assistantIds = array_filter(array_map('trim', explode(',', $training->assistant)));
@@ -476,7 +504,7 @@ class DemoController extends Controller
                     }
 
                     // Fetch the full training with relationships
-                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                    $trainingInfo = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])
                                 ->find($training->id);
 
                     // Create event with refresh token (demo mode passes token from session)
@@ -494,6 +522,26 @@ class DemoController extends Controller
                 }
             } catch (\Exception $e) {
                 Log::error('Google Calendar sync failed in demo mode: ' . $e->getMessage());
+            }
+
+            // Notify account manager on assignment (demo mode)
+            if (!empty($training->account_manager_id)) {
+                $trainingInfo = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])
+                            ->find($training->id);
+                $accountManager = User::find((int) $training->account_manager_id);
+
+                if ($accountManager && !empty($accountManager->email)) {
+                    try {
+                        Mail::to($accountManager->email)
+                            ->send(new TrainingNotificationMail($trainingInfo, $accountManager, 'Account Manager'));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send account manager assignment mail (demo)', [
+                            'to' => $accountManager->email,
+                            'account_manager_id' => $accountManager->id ?? null,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
+                }
             }
 
             // Notify coordinator about driver arrangement if requested (demo mode)
@@ -826,6 +874,11 @@ class DemoController extends Controller
                     'color' => $trainingRecord->facilitator->color,
                     'image' => $trainingRecord->facilitator->image ?? null,
                 ] : null,
+                'account_manager' => $trainingRecord->account_manager ? [
+                    'id' => $trainingRecord->account_manager->id,
+                    'name' => $trainingRecord->account_manager->name,
+                    'email' => $trainingRecord->account_manager->email ?? null,
+                ] : null,
                 'schedule' => $trainingRecord->schedule ? [
                     'from_date' => (string) $trainingRecord->schedule->from_date,
                     'to_date' => (string) $trainingRecord->schedule->to_date,
@@ -858,6 +911,7 @@ class DemoController extends Controller
             'assistants' => $training['assistants'] ?? [],
             'course_id' => $courseId,
             'company_id' => $companyId,
+            'account_manager_id' => $trainingRecord ? $trainingRecord->account_manager_id : ($training['account_manager']['id'] ?? null),
             'account_id' => $accountId,
             'facilitator_id' => $facilitatorId,
             'need_transportation' => filter_var($needTransportationValue, FILTER_VALIDATE_BOOLEAN) ? 'yes' : 'no',
@@ -883,6 +937,7 @@ class DemoController extends Controller
             'company' => $training['company'] ?? null,
             'account' => $training['account'] ?? null,
             'facilitator' => $training['facilitator'] ?? null,
+            'account_manager' => $training['account_manager'] ?? null,
             'schedule' => [
                 'from_date' => $schedule['from_date'] ?? now()->toDateString(),
                 'to_date' => $schedule['to_date'] ?? now()->toDateString(),
@@ -903,16 +958,29 @@ class DemoController extends Controller
             $normalizedTraining['coordinator_to_notify_list'] ?? $normalizedTraining['coordinator_to_notify'] ?? ''
         );
 
+        $trainingObject = json_decode(json_encode($normalizedTraining), false);
+        $trainingObject->coordinator_to_notify_users = $normalizedTraining['coordinator_to_notify_users'];
+
+        // If we loaded a real DB training record, prefer live DB lists so the edit form
+        // reflects current users, courses, companies and accounts. Otherwise fall back to fixtures.
+        if ($trainingRecord) {
+            $facilitatorsList = User::all();
+            $coursesList = Course::all();
+            $companiesList = Company::all();
+            $accountsList = Account::all();
+        } else {
+            $facilitatorsList = $this->fixtureCollection('users.json');
+            $coursesList = $this->fixtureCollection('courses.json');
+            $companiesList = $this->fixtureCollection('companies.json');
+            $accountsList = $this->fixtureCollection('accounts.json');
+        }
+
         return view('add_training.edit_training', [
-            'training' => (function () use ($normalizedTraining) {
-                $trainingObject = json_decode(json_encode($normalizedTraining), false);
-                $trainingObject->coordinator_to_notify_users = $normalizedTraining['coordinator_to_notify_users'];
-                return $trainingObject;
-            })(),
-            'facilitators' => $this->fixtureCollection('users.json'),
-            'courses' => $this->fixtureCollection('courses.json'),
-            'companies' => $this->fixtureCollection('companies.json'),
-            'accounts' => $this->fixtureCollection('accounts.json'),
+            'training' => $trainingObject,
+            'facilitators' => $facilitatorsList,
+            'courses' => $coursesList,
+            'companies' => $companiesList,
+            'accounts' => $accountsList,
         ]);
     }
 

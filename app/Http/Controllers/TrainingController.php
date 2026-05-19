@@ -377,22 +377,6 @@ class TrainingController extends Controller
                         }
                     }
                     
-                    // Notify account manager by email
-                    if (!empty($request->account_manager_id)) {
-                        $accMgr = User::find($request->account_manager_id);
-                        if ($accMgr && !empty($accMgr->email)) {
-                            try {
-                                Mail::to($accMgr->email)->send(new TrainingNotificationMail($trainingInfo, $accMgr));
-                            } catch (\Exception $e) {
-                                Log::error('Failed to send account manager notification', [
-                                    'to' => $accMgr->email,
-                                    'account_manager_id' => $accMgr->id ?? null,
-                                    'exception' => $e->getMessage(),
-                                ]);
-                            }
-                        }
-                    }
-                    
                     // Notify coordinator about driver arrangement if requested
                     if ($request->boolean('notify_coordinator') && !empty($coordinatorIds)) {
                         foreach ($coordinatorIds as $coordinatorId) {
@@ -412,6 +396,24 @@ class TrainingController extends Controller
                     }
                 } else {
                     \Log::warning('Facilitator email not found', ['facilitator' => $facilitator]);
+                }
+            }
+
+            // Notify account manager by email independently of facilitator assignment
+            if (!empty($request->account_manager_id)) {
+                $accMgr = User::find($request->account_manager_id);
+                if ($accMgr && !empty($accMgr->email)) {
+                    $trainingInfo = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])
+                                ->find($training->id);
+                    try {
+                        Mail::to($accMgr->email)->send(new TrainingNotificationMail($trainingInfo, $accMgr, 'Account Manager'));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send account manager notification', [
+                            'to' => $accMgr->email,
+                            'account_manager_id' => $accMgr->id ?? null,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
                 }
             }
 

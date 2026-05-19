@@ -85,7 +85,7 @@
 
         <?php endif; ?>
 
-        <p>You have been assigned as a <strong>facilitator</strong> for the following training session:</p>
+        <p>You have been assigned as an <strong><?php echo e($roleLabel ?? 'Facilitator'); ?></strong> for the following training session:</p>
 
         <ul>
             <li><strong>Course:</strong> <?php echo e($training->course->course_name ?? 'N/A'); ?></li>

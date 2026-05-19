@@ -15,14 +15,16 @@ class TrainingNotificationMail extends Mailable
 
     public $training;
     public $facilitator;
+    public $roleLabel;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($training, $facilitator)
+    public function __construct($training, $facilitator, string $roleLabel = 'Facilitator')
     {
         $this->training = $training;
         $this->facilitator = $facilitator;
+        $this->roleLabel = $roleLabel;
     }
 
     /**
@@ -45,6 +47,7 @@ class TrainingNotificationMail extends Mailable
             with: [
                 'training' => $this->training,
                 'facilitator' => $this->facilitator,
+                'roleLabel' => $this->roleLabel,
             ],
         );
     }
@@ -53,10 +56,11 @@ class TrainingNotificationMail extends Mailable
     {
         return $this->from('no-reply@alpscalendar.com', 'ALPS Calendar')
                     ->subject('ALPS Calendar: Training Notification')
-                    ->view('emails.training-notification')
+                    ->view('emails.training_notification')
                     ->with([
                         'training' => $this->training,
                         'facilitator' => $this->facilitator,
+                        'roleLabel' => $this->roleLabel,
                     ]);
     }
     /**
