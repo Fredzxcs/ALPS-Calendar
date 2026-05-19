@@ -2,7 +2,7 @@ name: Hostinger Staging Deploy
 
 on:
   push:
-    branches: [staging] # Tatakbo lang ito kapag nag-push ang developers sa staging branch
+    branches: [main] # Tatakbo lang ito kapag nag-push ang developers sa staging branch
 
 jobs:
   build:
