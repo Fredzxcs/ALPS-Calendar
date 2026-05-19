@@ -235,7 +235,7 @@
                         <div class="training-form-row triple">
                             <div class="training-form-group">
                                 <label for="facilitator">Facilitator <span class="required"></span></label>
-                                <select id="facilitator" class="training-select">
+                                <select id="facilitator" name="facilitator_id" class="training-select">
                                     <option disabled>Select Facilitator</option>
                                     <option value="">No Facilitator Yet</option>
                                     @foreach ($facilitators as $user)

@@ -219,7 +219,7 @@
                         <div class="training-form-row triple">
                             <div class="training-form-group">
                                 <label for="facilitator">Facilitator <span class="required"></span></label>
-                                <select id="facilitator" class="training-select">
+                                <select id="facilitator" name="facilitator_id" class="training-select">
                                     <option disabled selected>Select Facilitator</option>
                                     <option value="">No Facilitator Yet</option>
                                     <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>

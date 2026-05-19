@@ -39,8 +39,8 @@
         }
         .top-banner {
             position: relative;
-            height: 170px;
-            background-image: url('https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/gbVaqEWhECmgkJR1uxXW/assets/xbha3n4r7yb1/Email_Bg_Top.png');
+            height: 220px;
+            background-image: url('https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/gbVaqEWhECmgkJR1uxXW/assets/iyeohe3zun0y/Email_Bg_Top.png');
             background-repeat: no-repeat;
             background-position: center top;
             background-size: cover;
@@ -54,7 +54,7 @@
         .content {
             position: relative;
             z-index: 1;
-            margin-top: -90px;
+            margin-top: -56px;
             padding: 0 28px 28px;
             color: #16324f;
             line-height: 1.65;
@@ -250,95 +250,100 @@
         <div class="content">
             <div class="hero-card">
                 <div class="brand-pill">Driver Arrangement</div>
-                <p class="greeting">Hello {{ $coordinator->name ?? 'Coordinator' }},</p>
+                <p class="greeting">Hello <?php echo e($coordinator->name ?? 'Coordinator'); ?>,</p>
 
-                @if(!empty($isUpdate))
+                <?php if(!empty($isUpdate)): ?>
                     <div class="update-alert">
                         <p class="update-alert-title">Update Notice</p>
                         <p class="update-alert-text">The following training's driver arrangement has been edited, and this is a separate update notification.</p>
                     </div>
-                @else
+                <?php else: ?>
                     <p class="intro">You have been assigned as the coordinator for the following training's driver arrangement:</p>
-                @endif
+                <?php endif; ?>
 
                 <p class="intro" style="margin-top: 0;">Training Details</p>
 
                 <ul class="details-list">
-                    <li class="detail-item"><span class="detail-label">Course</span><span>{{ $training->course->course_name ?? 'N/A' }}</span></li>
-                    <li class="detail-item"><span class="detail-label">Company</span><span>{{ $training->company->company_name ?? 'N/A' }}</span></li>
+                    <li class="detail-item"><span class="detail-label">Course</span><span><?php echo e($training->course->course_name ?? 'N/A'); ?></span></li>
+                    <li class="detail-item"><span class="detail-label">Company</span><span><?php echo e($training->company->company_name ?? 'N/A'); ?></span></li>
                     <li class="detail-item">
                         <span class="detail-label">Facilitator</span>
                         <span>
-                            {{ $training->facilitator->name ?? 'N/A' }}
-                            @php $assistantCount = $training->assistants->count(); @endphp
-                            @if($assistantCount > 0)
-                                (+{{ $assistantCount }} {{ $assistantCount === 1 ? 'Assistant' : 'Assistants' }})
-                            @endif
+                            <?php echo e($training->facilitator->name ?? 'N/A'); ?>
+
+                            <?php $assistantCount = $training->assistants->count(); ?>
+                            <?php if($assistantCount > 0): ?>
+                                (+<?php echo e($assistantCount); ?> <?php echo e($assistantCount === 1 ? 'Assistant' : 'Assistants'); ?>)
+                            <?php endif; ?>
                         </span>
                     </li>
-                    <li class="detail-item"><span class="detail-label">Location</span><span>{{ $training->location ?? 'N/A' }}</span></li>
+                    <li class="detail-item"><span class="detail-label">Location</span><span><?php echo e($training->location ?? 'N/A'); ?></span></li>
                     <li class="detail-item">
                         <span class="detail-label">Schedule</span>
                         <span>
-                            {{ $training->schedule->from_date ?? '' }}
-                            {{ $training->schedule->from_time ?? '' }}
+                            <?php echo e($training->schedule->from_date ?? ''); ?>
+
+                            <?php echo e($training->schedule->from_time ?? ''); ?>
+
                             to
-                            {{ $training->schedule->to_date ?? '' }}
-                            {{ $training->schedule->to_time ?? '' }}
+                            <?php echo e($training->schedule->to_date ?? ''); ?>
+
+                            <?php echo e($training->schedule->to_time ?? ''); ?>
+
                         </span>
                     </li>
                 </ul>
 
                 <p class="intro" style="margin: 0 0 10px;">Driver Arrangement</p>
 
-                @if($training->need_transportation)
-                    @php
+                <?php if($training->need_transportation): ?>
+                    <?php
                         $returnTripNeeded = filter_var($training->return_trip_needed ?? false, FILTER_VALIDATE_BOOLEAN);
-                    @endphp
+                    ?>
                     <div class="trip-list">
                         <div class="trip-card">
                             <p class="trip-title">Outbound Trip</p>
-                            <p class="trip-meta">{{ $training->outbound_pickup_location ?? 'Pickup location unavailable' }} to {{ $training->outbound_dropoff_location ?? 'Dropoff location unavailable' }}</p>
+                            <p class="trip-meta"><?php echo e($training->outbound_pickup_location ?? 'Pickup location unavailable'); ?> to <?php echo e($training->outbound_dropoff_location ?? 'Dropoff location unavailable'); ?></p>
                             <div class="trip-grid">
-                                <span class="trip-time">{{ $training->outbound_pickup_time ?? 'N/A' }}</span>
+                                <span class="trip-time"><?php echo e($training->outbound_pickup_time ?? 'N/A'); ?></span>
                                 <div class="trip-right">
-                                    <div class="trip-right-row"><span class="trip-label">Pickup</span><span>{{ $training->outbound_pickup_location ?? 'N/A' }}</span></div>
-                                    <div class="trip-right-row"><span class="trip-label">Dropoff</span><span>{{ $training->outbound_dropoff_location ?? 'N/A' }}</span></div>
-                                    <div class="trip-right-row"><span class="trip-label">Contact</span><span>{{ $training->outbound_contact_number ?? 'N/A' }}</span></div>
+                                    <div class="trip-right-row"><span class="trip-label">Pickup</span><span><?php echo e($training->outbound_pickup_location ?? 'N/A'); ?></span></div>
+                                    <div class="trip-right-row"><span class="trip-label">Dropoff</span><span><?php echo e($training->outbound_dropoff_location ?? 'N/A'); ?></span></div>
+                                    <div class="trip-right-row"><span class="trip-label">Contact</span><span><?php echo e($training->outbound_contact_number ?? 'N/A'); ?></span></div>
                                 </div>
                             </div>
                         </div>
 
-                        @if($returnTripNeeded)
+                        <?php if($returnTripNeeded): ?>
                             <div class="trip-card">
                                 <p class="trip-title">Return Trip</p>
-                                <p class="trip-meta">{{ $training->return_pickup_location ?? 'Pickup location unavailable' }} to {{ $training->return_dropoff_location ?? 'Dropoff location unavailable' }}</p>
+                                <p class="trip-meta"><?php echo e($training->return_pickup_location ?? 'Pickup location unavailable'); ?> to <?php echo e($training->return_dropoff_location ?? 'Dropoff location unavailable'); ?></p>
                                 <div class="trip-grid">
-                                    <span class="trip-time">{{ $training->return_pickup_time ?? 'N/A' }}</span>
+                                    <span class="trip-time"><?php echo e($training->return_pickup_time ?? 'N/A'); ?></span>
                                     <div class="trip-right">
-                                        <div class="trip-right-row"><span class="trip-label">Pickup</span><span>{{ $training->return_pickup_location ?? 'N/A' }}</span></div>
-                                        <div class="trip-right-row"><span class="trip-label">Dropoff</span><span>{{ $training->return_dropoff_location ?? 'N/A' }}</span></div>
-                                        <div class="trip-right-row"><span class="trip-label">Contact</span><span>{{ $training->return_contact_number ?? 'N/A' }}</span></div>
+                                        <div class="trip-right-row"><span class="trip-label">Pickup</span><span><?php echo e($training->return_pickup_location ?? 'N/A'); ?></span></div>
+                                        <div class="trip-right-row"><span class="trip-label">Dropoff</span><span><?php echo e($training->return_dropoff_location ?? 'N/A'); ?></span></div>
+                                        <div class="trip-right-row"><span class="trip-label">Contact</span><span><?php echo e($training->return_contact_number ?? 'N/A'); ?></span></div>
                                     </div>
                                 </div>
                             </div>
-                        @else
+                        <?php else: ?>
                             <div class="trip-card">
                                 <p class="trip-title">Return Trip</p>
                                 <div class="detail-block" style="margin-top: 0; padding-top: 0; border-top: 0;">
                                     No return transportation needed
                                 </div>
                             </div>
-                        @endif
+                        <?php endif; ?>
                     </div>
-                @else
+                <?php else: ?>
                     <div class="detail-block" style="margin-top: 0;">
                         Transportation is not required for this training.
                     </div>
-                @endif
+                <?php endif; ?>
 
                 <div class="detail-block">
-                    Please make the necessary arrangements for <strong>{{ $training->course->course_name ?? 'Training' }}</strong>.
+                    Please make the necessary arrangements for <strong><?php echo e($training->course->course_name ?? 'Training'); ?></strong>.
                 </div>
 
                 <p class="intro" style="margin: 16px 0 0;">For more details, you may visit the <a href="https://www.alpscalendar.com">ALPS Calendar</a></p>
@@ -355,4 +360,4 @@
 </div>
 
 </body>
-</html>
+</html><?php /**PATH D:\ALPs\ALPs Calendar\ALPS-Calendar\resources\views/emails/driver_notification.blade.php ENDPATH**/ ?>

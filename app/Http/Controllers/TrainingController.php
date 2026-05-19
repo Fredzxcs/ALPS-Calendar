@@ -330,72 +330,76 @@ class TrainingController extends Controller
                 \Log::error('Google Calendar sync failed: ' . $e->getMessage());
             }
 
-            // ✅ Check if facilitator_id exists before querying
+            // ✅ Check if facilitator_id exists before querying and send notifications
             if (!empty($request->facilitator_id)) {
                 $facilitator = User::find($request->facilitator_id);
-                if ($facilitator && !empty($facilitator->email)) {
 
-                    \Log::info('Email Data:', [
-                        'training' => $training ? $training->toArray() : 'NULL',
-                        'facilitator' => $facilitator ? $facilitator->toArray() : 'NULL',
-                    ]);
+                // Refresh training with relations for passing to mailers
+                $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+                            ->find($training->id);
 
-                    $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
-                                ->find($training->id); // Replace $id with the actual training ID
+                \Log::info('Preparing to send facilitator & assistant notifications', [
+                    'training_id' => $training->id,
+                    'facilitator_id' => $request->facilitator_id,
+                    'facilitator' => $facilitator ? $facilitator->toArray() : null,
+                ]);
 
-                    \Log::info('Training Data', [
-                        'data' => $trainingInfo ? $trainingInfo->toArray() : 'NULL',
-                    ]);
-
+                if ($facilitator && !empty($facilitator->email) && $this->shouldSendMailTo($facilitator->email)) {
                     try {
                         Mail::to($facilitator->email)->send(new TrainingNotificationMail($trainingInfo, $facilitator));
+                        Log::info('Sent training notification to facilitator', ['to' => $facilitator->email, 'training_id' => $training->id]);
                     } catch (\Exception $e) {
                         Log::error('Failed to send facilitator notification', [
                             'to' => $facilitator->email,
                             'exception' => $e->getMessage(),
                         ]);
                     }
-                
-                    // Notify assistants by email as well
-                    if (!empty($request->assistant)) {
-                        $assistantIds = array_filter(array_map('trim', explode(',', $request->assistant)));
-                        foreach ($assistantIds as $aid) {
-                            if (is_numeric($aid)) {
-                                $aUser = User::find((int) $aid);
-                                if ($aUser && !empty($aUser->email)) {
-                                    try {
-                                        Mail::to($aUser->email)->send(new TrainingNotificationMail($trainingInfo, $aUser));
-                                    } catch (\Exception $e) {
-                                        Log::error('Failed to send assistant notification', [
-                                            'to' => $aUser->email,
-                                            'assistant_id' => $aUser->id ?? null,
-                                            'exception' => $e->getMessage(),
-                                        ]);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Notify coordinator about driver arrangement if requested
-                    if ($request->boolean('notify_coordinator') && !empty($coordinatorIds)) {
-                        foreach ($coordinatorIds as $coordinatorId) {
-                            $coord = User::find((int) $coordinatorId);
-                            if ($coord && !empty($coord->email)) {
+                } else {
+                    Log::warning('Skipping facilitator notification due to missing/invalid email', ['facilitator' => $facilitator ? $facilitator->toArray() : null]);
+                }
+
+                // Notify assistants by email as well (if any)
+                if (!empty($request->assistant)) {
+                    $assistantIds = array_filter(array_map('trim', explode(',', $request->assistant)));
+                    foreach ($assistantIds as $aid) {
+                        if (is_numeric($aid)) {
+                            $aUser = User::find((int) $aid);
+                                    if ($aUser && !empty($aUser->email) && $this->shouldSendMailTo($aUser->email)) {
                                 try {
-                                    Mail::to($coord->email)->send(new DriverNotificationMail($trainingInfo, $coord));
+                                    Mail::to($aUser->email)->send(new TrainingNotificationMail($trainingInfo, $aUser, 'Assistant'));
+                                    Log::info('Sent training notification to assistant', ['to' => $aUser->email, 'assistant_id' => $aUser->id]);
                                 } catch (\Exception $e) {
-                                    Log::error('Failed to send coordinator driver notification', [
-                                        'to' => $coord->email,
-                                        'coordinator_id' => $coord->id ?? null,
+                                    Log::error('Failed to send assistant notification', [
+                                        'to' => $aUser->email,
+                                        'assistant_id' => $aUser->id ?? null,
                                         'exception' => $e->getMessage(),
                                     ]);
                                 }
+                            } else {
+                                Log::warning('Skipping assistant notification due to missing/invalid email', ['assistant_id' => $aid]);
                             }
                         }
                     }
-                } else {
-                    \Log::warning('Facilitator email not found', ['facilitator' => $facilitator]);
+                }
+
+                // Notify coordinator about driver arrangement if requested
+                if ($request->boolean('notify_coordinator') && !empty($coordinatorIds)) {
+                    foreach ($coordinatorIds as $coordinatorId) {
+                        $coord = User::find((int) $coordinatorId);
+                        if ($coord && !empty($coord->email) && $this->shouldSendMailTo($coord->email)) {
+                            try {
+                                Mail::to($coord->email)->send(new DriverNotificationMail($trainingInfo, $coord));
+                            } catch (\Exception $e) {
+                                Log::error('Failed to send coordinator driver notification', [
+                                    'to' => $coord->email,
+                                    'coordinator_id' => $coord->id ?? null,
+                                    'exception' => $e->getMessage(),
+                                ]);
+                            }
+                        } else {
+                            Log::warning('Skipping coordinator notification due to missing/invalid email', ['coordinator_id' => $coordinatorId]);
+                        }
+                    }
                 }
             }
 
@@ -729,29 +733,74 @@ class TrainingController extends Controller
                         ]);
                     }
                 }
-
-                if ($newFacilitator && !empty($newFacilitator->email)) {
+                if ($newFacilitator && !empty($newFacilitator->email) && $this->shouldSendMailTo($newFacilitator->email)) {
                     try {
                         Mail::to($newFacilitator->email)
                             ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+                        Log::info('Sent training notification to new facilitator (changed)', ['to' => $newFacilitator->email, 'training_id' => $trainingSession->id]);
                     } catch (\Exception $e) {
                         Log::error('Failed to send notification mail to new facilitator', [
                             'to' => $newFacilitator->email ?? null,
                             'exception' => $e->getMessage(),
                         ]);
                     }
+
+                    // Notify assistants on facilitator change as well
+                    if (!empty($trainingSession->assistant)) {
+                        $assistantIds = array_filter(array_map('trim', explode(',', $trainingSession->assistant)));
+                        foreach ($assistantIds as $aid) {
+                            if (is_numeric($aid)) {
+                                $aUser = User::find((int) $aid);
+                                if ($aUser && !empty($aUser->email) && $this->shouldSendMailTo($aUser->email)) {
+                                    try {
+                                        Mail::to($aUser->email)->send(new TrainingNotificationMail($trainingSession, $aUser, 'Assistant'));
+                                        Log::info('Sent training notification to assistant (facilitator changed)', ['to' => $aUser->email, 'assistant_id' => $aUser->id]);
+                                    } catch (\Exception $e) {
+                                        Log::error('Failed to send assistant notification (facilitator changed)', [
+                                            'to' => $aUser->email,
+                                            'assistant_id' => $aUser->id ?? null,
+                                            'exception' => $e->getMessage(),
+                                        ]);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             } elseif ($newFacilitator) {
                 // Facilitator unchanged, send update email
-                if (!empty($newFacilitator->email)) {
+                if (!empty($newFacilitator->email) && $this->shouldSendMailTo($newFacilitator->email)) {
                     try {
                         Mail::to($newFacilitator->email)
                             ->send(new TrainingNotificationMail($trainingSession, $newFacilitator));
+                        Log::info('Sent training update notification to facilitator', ['to' => $newFacilitator->email, 'training_id' => $trainingSession->id]);
                     } catch (\Exception $e) {
                         Log::error('Failed to send update mail to facilitator', [
                             'to' => $newFacilitator->email ?? null,
                             'exception' => $e->getMessage(),
                         ]);
+                    }
+
+                    // Notify assistants on update as well
+                    if (!empty($trainingSession->assistant)) {
+                        $assistantIds = array_filter(array_map('trim', explode(',', $trainingSession->assistant)));
+                        foreach ($assistantIds as $aid) {
+                            if (is_numeric($aid)) {
+                                $aUser = User::find((int) $aid);
+                                if ($aUser && !empty($aUser->email) && $this->shouldSendMailTo($aUser->email)) {
+                                    try {
+                                        Mail::to($aUser->email)->send(new TrainingNotificationMail($trainingSession, $aUser, 'Assistant'));
+                                        Log::info('Sent training update notification to assistant', ['to' => $aUser->email, 'assistant_id' => $aUser->id]);
+                                    } catch (\Exception $e) {
+                                        Log::error('Failed to send assistant notification (update)', [
+                                            'to' => $aUser->email,
+                                            'assistant_id' => $aUser->id ?? null,
+                                            'exception' => $e->getMessage(),
+                                        ]);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 

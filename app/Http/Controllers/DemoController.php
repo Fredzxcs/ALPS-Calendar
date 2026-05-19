@@ -524,6 +524,50 @@ class DemoController extends Controller
                 Log::error('Google Calendar sync failed in demo mode: ' . $e->getMessage());
             }
 
+            // Notify facilitator and assistants in demo mode (was missing)
+            $trainingInfo = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])
+                        ->find($training->id);
+
+            if (!empty($training->facilitator_id)) {
+                $fac = User::find((int) $training->facilitator_id);
+                if ($fac && !empty($fac->email)) {
+                    $normalized = strtolower(trim($fac->email));
+                    if (!str_contains($normalized, '@example.com') && !str_contains($normalized, '@alps.local')) {
+                        try {
+                            Mail::to($fac->email)->send(new TrainingNotificationMail($trainingInfo, $fac));
+                            Log::info('Sent training notification to facilitator (demo)', ['to' => $fac->email, 'training_id' => $training->id]);
+                        } catch (\Exception $e) {
+                            Log::error('Failed to send facilitator notification (demo)', ['to' => $fac->email, 'exception' => $e->getMessage()]);
+                        }
+                    } else {
+                        Log::warning('Skipping demo facilitator notification due to demo placeholder email', ['email' => $fac->email]);
+                    }
+                }
+            }
+
+            // Notify assistants in demo mode
+            if (!empty($training->assistant)) {
+                $assistantIds = array_filter(array_map('trim', explode(',', $training->assistant)));
+                foreach ($assistantIds as $aid) {
+                    if (is_numeric($aid)) {
+                        $aUser = User::find((int) $aid);
+                        if ($aUser && !empty($aUser->email)) {
+                            $normalized = strtolower(trim($aUser->email));
+                            if (!str_contains($normalized, '@example.com') && !str_contains($normalized, '@alps.local')) {
+                                try {
+                                    Mail::to($aUser->email)->send(new TrainingNotificationMail($trainingInfo, $aUser, 'Assistant'));
+                                    Log::info('Sent training notification to assistant (demo)', ['to' => $aUser->email, 'assistant_id' => $aUser->id]);
+                                } catch (\Exception $e) {
+                                    Log::error('Failed to send assistant notification (demo)', ['to' => $aUser->email, 'exception' => $e->getMessage()]);
+                                }
+                            } else {
+                                Log::warning('Skipping demo assistant notification due to demo placeholder email', ['email' => $aUser->email]);
+                            }
+                        }
+                    }
+                }
+            }
+
             // Notify account manager on assignment (demo mode)
             if (!empty($training->account_manager_id)) {
                 $trainingInfo = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])
