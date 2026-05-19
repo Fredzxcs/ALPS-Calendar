@@ -112,6 +112,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     backgroundColor: training.facilitator ? training.facilitator.color : '#808080',
                     extendedProps: {
                         facilitator: training.facilitator || 'N/A',
+                        account_manager: training.account_manager || 'N/A',
+                        account_manager_name: training.account_manager?.name || 'N/A',
                         assistant: training.assistant_names || training.assistant || 'No Assistant Yet',
                         assistant_names: training.assistant_names || training.assistant || 'No Assistant Yet',
                         modeType: training.mode,
@@ -711,6 +713,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     company: info.event.extendedProps.company || 'N/A',
                     company_contact_person: info.event.extendedProps.company_contact_person || 'N/A',
                     facilitator: info.event.extendedProps.facilitator?.name || 'No Facilitator Yet',
+                    account_manager: info.event.extendedProps.account_manager || null,
+                    account_manager_name: info.event.extendedProps.account_manager_name || 'N/A',
                     assistant: info.event.extendedProps.assistant || 'No Assistant Yet',
                     account: info.event.extendedProps.account || { account_email: 'N/A' },
                     location: info.event.extendedProps.location || 'N/A',
@@ -785,7 +789,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 $modalElement.find('#modal-company').text(eventData.company);
                 $modalElement.find('#modal-course').text(eventData.course);
-                $modalElement.find('#modal-account-manager').text(eventData.company_contact_person || 'N/A');
+                $modalElement.find('#modal-account-manager').text(eventData.account_manager?.name || eventData.account_manager_name || 'N/A');
                 $modalElement.find('#modal-facilitator').text(eventData.facilitator);
                 $modalElement.find('#modal-assistant').text(eventData.assistant_names || eventData.assistant || 'No Assistant Yet');
                 $modalElement.find('#modal-platform').text(eventData.platform);
@@ -1007,6 +1011,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     $modalElement.find('#modal-title').text(info.event.title || 'No Title');
                     $modalElement.find('#modal-company').text(eventData.company || 'N/A');
                     $modalElement.find('#modal-facilitator').text(eventData.facilitator?.name || 'No Facilitator Yet');
+                    $modalElement.find('#modal-account-manager').text(eventData.account_manager?.name || eventData.account_manager_name || 'N/A');
                     $modalElement.find('#modal-assistant').text(eventData.assistant_names || eventData.assistant || 'No Assistant Yet');
 
                     const formattedStartDate = info.event.start ? moment(info.event.start).format('MMM DD, YYYY') : 'N/A';

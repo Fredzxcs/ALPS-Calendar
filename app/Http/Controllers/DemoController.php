@@ -632,6 +632,7 @@ class DemoController extends Controller
                         'facilitator_id' => $t['facilitator_id'] ?? null,
                         'company_id' => $t['company']['id'] ?? null,
                         'account_id' => $t['account']['id'] ?? null,
+                        'account_manager_id' => $t['account_manager']['id'] ?? null,
                         'need_transportation' => $t['need_transportation'] ?? false,
                         'outbound_pickup_time' => $t['outbound_pickup_time'] ?? null,
                         'outbound_contact_number' => $t['outbound_contact_number'] ?? null,
@@ -647,6 +648,7 @@ class DemoController extends Controller
                         'coordinator_to_notify' => $t['coordinator_to_notify'] ?? null,
                         'course' => $t['course'] ?? null,
                         'facilitator' => $t['facilitator'] ?? null,
+                        'account_manager' => $t['account_manager'] ?? null,
                         'company' => $t['company'] ?? null,
                         'account' => $t['account'] ?? null,
                         'schedule' => $t['schedule'] ?? null,
@@ -668,6 +670,7 @@ class DemoController extends Controller
                     'facilitator_id' => $training->facilitator_id ?? null,
                     'company_id' => $training->company_id ?? null,
                     'account_id' => $training->account_id ?? null,
+                    'account_manager_id' => $training->account_manager_id ?? null,
                     'need_transportation' => $training->need_transportation ?? false,
                     'outbound_pickup_time' => $training->outbound_pickup_time ?? null,
                     'outbound_contact_number' => $training->outbound_contact_number ?? null,
@@ -695,6 +698,12 @@ class DemoController extends Controller
                         'color' => $training->facilitator->color,
                         'image' => $training->facilitator->image ?? null,
                     ] : ($training->facilitator ?? null),
+                    'account_manager_name' => is_object($training->account_manager) ? $training->account_manager->name : ($training->account_manager['name'] ?? null),
+                    'account_manager' => is_object($training->account_manager) ? [
+                        'id' => $training->account_manager->id,
+                        'name' => $training->account_manager->name,
+                        'email' => $training->account_manager->email ?? null,
+                    ] : ($training->account_manager ?? null),
                     'company' => is_object($training->company) ? [
                         'id' => $training->company->id,
                         'company_name' => $training->company->company_name,
@@ -722,7 +731,7 @@ class DemoController extends Controller
         }
 
         // Fetch trainings from database when not in demo mode
-        $trainings = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+        $trainings = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])
             ->get()
             ->map(function ($training) {
                 return [
@@ -737,6 +746,7 @@ class DemoController extends Controller
                     'facilitator_id' => $training->facilitator_id,
                     'company_id' => $training->company_id,
                     'account_id' => $training->account_id,
+                    'account_manager_id' => $training->account_manager_id,
                     'need_transportation' => $training->need_transportation,
                     'outbound_pickup_time' => $training->outbound_pickup_time,
                     'outbound_contact_number' => $training->outbound_contact_number,
@@ -763,6 +773,12 @@ class DemoController extends Controller
                         'email' => $training->facilitator->email,
                         'color' => $training->facilitator->color,
                         'image' => $training->facilitator->image,
+                    ] : null,
+                    'account_manager_name' => $training->account_manager ? $training->account_manager->name : null,
+                    'account_manager' => $training->account_manager ? [
+                        'id' => $training->account_manager->id,
+                        'name' => $training->account_manager->name,
+                        'email' => $training->account_manager->email,
                     ] : null,
                     'company' => $training->company ? [
                         'id' => $training->company->id,
