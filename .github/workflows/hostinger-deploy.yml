@@ -2,68 +2,55 @@ name: Hostinger Staging Deploy
 
 on:
   push:
-    branches: [main] # Tatakbo lang ito kapag nag-push ang developers sa staging branch
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # 1. Setup PHP Environment
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
 
-      # 2. Checkout Code (In-update sa v4)
       - uses: actions/checkout@v4
 
-      # 3. Setup Node.js (In-update sa v4 at ginawang Node 18 para sa stability)
       - uses: actions/setup-node@v4
         with:
           node-version: 18
 
-      # 4. Copy Environment File locally para sa build process
       - name: Copy .env
         run: cp .env.example .env
 
-      # 5. Install Backend Dependencies
-      - name: Install composer Dependencies
+      - name: Install Composer Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-      # 6. Install Frontend Dependencies
-      - name: Install node dependencies
+      - name: Install Node Dependencies
         run: npm ci
 
-      # 7. Compile Frontend Assets (Dito bini-build ang graphics/designs ng calendar)
-      - name: Setup Project
-        run: |
-          npm run build
+      - name: Build Assets
+        run: npm run build
 
-      # 8. Command sa Server via SSH (In-update para sa Staging at SSH Password)
-      - name: Deploy PHP to Server via SSH
-        if: ${{ success() }}
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }} # Ginamit ang password na pinalit natin sa Key
-          port: ${{ secrets.SSH_PORT }}
-          script_stop: true
-          script: |
-            cd public_html/staging
-            git fetch origin staging
-            git reset --hard origin/staging
-            php composer.phar install --no-dev
-            php artisan migrate --force # Ligtas itong tatakbo dahil staging database ang gamit nito
-
-      # 9. Modernized File Copy (Inalis ang mahabang rsync, pinalitan ng mas simpleng SCP gamit ang Password)
-      - name: Copy Compiled Build Files to Staging Server
-        if: ${{ success() }}
+      # STEP 1: I-UPLOAD ANG LAHAT NG CODE AT BUILT FILES SA TAMANG PATH
+      - name: Upload All Files to Staging Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
-          source: "public/build/"
-          target: "public_html/staging/public/"
-          strip_components: 1 # Para hindi magdoble ang "public" folder pag-akyat sa server
+          source: "."
+          target: "domains/alpscalendar.com/public_html/staging"
+
+      # STEP 2: PATAKBUHIN ANG DATABASE UPDATE SA TAMANG FOLDER
+      - name: Run Database Migration on Server
+        if: ${{ success() }}
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          script_stop: true
+          script: |
+            cd domains/alpscalendar.com/public_html/staging
+            php artisan migrate --force
