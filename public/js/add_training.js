@@ -2,6 +2,15 @@ var csrfToken = $('meta[name="csrf-token"]').attr('content');
 // Global assistants list so it is accessible across handlers
 window.assistantsList = window.assistantsList || [];
 
+// Stub functions for draft persistence (removed functionality)
+function saveTrainingDraft() {
+    // Draft persistence functionality has been removed
+}
+
+function restoreTrainingDraft() {
+    // Draft persistence functionality has been removed
+}
+
 function updateAccountFieldState() {
     const selectedPlatform = ($('#platform').val() || '').trim();
     const credentialsContainer = $('#credentials-container');
@@ -206,6 +215,8 @@ const dateRangeOptions = {
             console.log("Start Date:", startDateFormatted);
             console.log("End Date:", endDateFormatted);
         }
+
+        saveTrainingDraft();
     }
 };
 
@@ -322,6 +333,7 @@ $(document).ready(function (e) {
         
         $('#assistant_select').val('').trigger('change');
         updateAssistantHidden();
+        saveTrainingDraft();
         console.log('Assistant list value:', $('#assistant_list').val());
     });
 
@@ -330,6 +342,7 @@ $(document).ready(function (e) {
         ev.preventDefault();
         $(this).closest('.assistant-item').remove();
         updateAssistantHidden();
+        saveTrainingDraft();
     });
 
     $(document).on('click', '#coordinator_add_btn', function (ev) {
@@ -358,12 +371,14 @@ $(document).ready(function (e) {
         $('#coordinator_list_container').append(pill);
         $('#coordinator_to_notify_select').val('').trigger('change').removeClass('border-danger');
         updateCoordinatorHidden();
+        saveTrainingDraft();
     });
 
     $(document).on('click', '.remove-coordinator', function (ev) {
         ev.preventDefault();
         $(this).closest('.coordinator-item').remove();
         updateCoordinatorHidden();
+        saveTrainingDraft();
     });
 
     let trainingWizardStep = 1;
@@ -600,6 +615,7 @@ $(document).ready(function (e) {
     });
 
     toggleDriverArrangementFields();
+    restoreTrainingDraft();
 
     $(document).on('click', '[data-kt-stepper-action="next"]', function (ev) {
         ev.preventDefault();
@@ -676,6 +692,10 @@ $(document).ready(function (e) {
                 $('#location-container, #company-container').hide();
             }
         }
+    });
+
+    $(function () {
+        restoreTrainingDraft();
     });
 
 

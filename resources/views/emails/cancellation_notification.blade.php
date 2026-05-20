@@ -199,7 +199,7 @@
         <div class="content">
             <div class="hero-card">
                 <div class="brand-pill">Training Cancellation</div>
-                <p class="greeting">Hi {{ $facilitator->name }},</p>
+                <p class="greeting">Hi {{ $recipient->name }} ({{ $role }}),</p>
 
                 <div class="update-alert">
                     <p class="update-alert-title">Training Cancelled</p>

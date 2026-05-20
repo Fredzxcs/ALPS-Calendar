@@ -912,28 +912,125 @@ class TrainingController extends Controller
         try {
             $trainingSession = Training::findOrFail($id);
 
-            if($trainingSession->facilitator_id)
-            {
-                $facilitator = User::findOrFail($trainingSession->facilitator_id);
+            if ($trainingSession->facilitator_id) {
+                $facilitator = User::find($trainingSession->facilitator_id);
 
-                if ($this->shouldSendMailTo($facilitator->email)) {
+                if ($facilitator && $this->shouldSendMailTo($facilitator->email)) {
                     try {
-                        Mail::to($facilitator->email)
-                            ->send(new CancelledTrainingMail($trainingSession, $facilitator));
+                        Mail::to($facilitator->email)->send(new CancelledTrainingMail($trainingSession, $facilitator, 'Facilitator'));
                     } catch (\Exception $e) {
                         Log::error('Failed to send cancellation mail to facilitator', [
                             'to' => $facilitator->email ?? null,
                             'exception' => $e->getMessage(),
                         ]);
                     }
+                } else {
+                    Log::warning('Skipping facilitator cancellation mail due to missing/invalid email', ['facilitator_id' => $trainingSession->facilitator_id]);
+                }
+            }
+
+            // Notify account manager if assigned
+            if (!empty($trainingSession->account_manager_id)) {
+                $accMgr = User::find($trainingSession->account_manager_id);
+                if ($accMgr && $this->shouldSendMailTo($accMgr->email)) {
+                    try {
+                        Mail::to($accMgr->email)->send(new CancelledTrainingMail($trainingSession, $accMgr, 'Account Manager'));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send cancellation mail to account manager', [
+                            'to' => $accMgr->email ?? null,
+                            'exception' => $e->getMessage(),
+                        ]);
+                    }
+                } else {
+                    Log::warning('Skipping account manager cancellation mail due to missing/invalid email', ['account_manager_id' => $trainingSession->account_manager_id]);
+                }
+            }
+
+            // Notify assistants (assistant field contains comma-separated user ids)
+            if (!empty($trainingSession->assistant)) {
+                $assistantIds = array_filter(array_map('trim', explode(',', $trainingSession->assistant)));
+                foreach ($assistantIds as $aid) {
+                    if (!is_numeric($aid)) continue;
+                    $aUser = User::find((int) $aid);
+                    if ($aUser && $this->shouldSendMailTo($aUser->email)) {
+                        try {
+                            Mail::to($aUser->email)->send(new CancelledTrainingMail($trainingSession, $aUser, 'Assistant'));
+                        } catch (\Exception $e) {
+                            Log::error('Failed to send cancellation mail to assistant', [
+                                'to' => $aUser->email ?? null,
+                                'assistant_id' => $aUser->id ?? null,
+                                'exception' => $e->getMessage(),
+                            ]);
+                        }
+                    } else {
+                        Log::warning('Skipping assistant cancellation mail due to missing/invalid email', ['assistant_id' => $aid]);
+                    }
                 }
             }
 
             $this->sendDriverCancellationNotifications($trainingSession);
 
-            $schedule = Schedule::where('training_id', $trainingSession->id)->first();
+            // Prefer the schedule row that already has a google_event_id (if any), otherwise fall back to the most-recent schedule record for this training.
+            $schedule = Schedule::where('training_id', $trainingSession->id)->whereNotNull('google_event_id')->first();
+            if (!$schedule) {
+                $schedule = Schedule::where('training_id', $trainingSession->id)->orderBy('id', 'desc')->first();
+            }
 
             if ($schedule) {
+                // Attempt to delete the event from Google Calendar if it exists
+                try {
+                    $currentUser = Auth::user();
+                    $isDemo = filter_var(env('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN);
+                    $googleRefreshToken = null;
+                    $googleAccessToken = null;
+
+                    $hasGoogleConnection = false;
+                    if ($currentUser && !empty($currentUser->google_refresh_token)) {
+                        $hasGoogleConnection = true;
+                    } elseif ($isDemo && session('google_connected') && (session('google_refresh_token') || session('google_access_token'))) {
+                        $hasGoogleConnection = true;
+                        $googleRefreshToken = session('google_refresh_token');
+                        $googleAccessToken = session('google_access_token');
+                    }
+
+                    if (!$hasGoogleConnection) {
+                        Log::info('No Google connection available to delete event for training', ['training_id' => $trainingSession->id]);
+                    }
+
+                    $eventIdToDelete = $schedule->google_event_id;
+
+                    if (empty($eventIdToDelete) && $hasGoogleConnection) {
+                        $trainingInfo = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])
+                            ->find($trainingSession->id);
+
+                        $eventIdToDelete = (new GoogleCalendarService())->findEventId(
+                            $currentUser ?? (object)[],
+                            $trainingInfo,
+                            $schedule,
+                            $googleRefreshToken,
+                            $googleAccessToken
+                        );
+                    }
+
+                    if (!empty($eventIdToDelete)) {
+                        if ($hasGoogleConnection) {
+                            $googleService = new GoogleCalendarService();
+                            $deleted = $googleService->deleteEvent($currentUser ?? (object)[], $eventIdToDelete, $googleRefreshToken, $googleAccessToken);
+                            if ($deleted) {
+                                Log::info('Deleted Google Calendar event for schedule', ['schedule_id' => $schedule->id, 'eventId' => $eventIdToDelete]);
+                            } else {
+                                Log::warning('Failed to delete Google Calendar event for schedule', ['schedule_id' => $schedule->id, 'eventId' => $eventIdToDelete]);
+                            }
+                        } else {
+                            Log::warning('Schedule has google_event_id but no google connection available to delete it', ['schedule_id' => $schedule->id, 'eventId' => $eventIdToDelete]);
+                        }
+                    } else {
+                        Log::info('No google_event_id present on selected schedule; skipping calendar delete', ['schedule_id' => $schedule->id]);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Error deleting google calendar event: ' . $e->getMessage());
+                }
+
                 $schedule->delete();
             }
 

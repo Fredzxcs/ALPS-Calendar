@@ -244,6 +244,53 @@ class GoogleCalendarService
         return null;
     }
 
+    /**
+     * Delete an event from the user's primary calendar.
+     * Returns true on success, false on failure or when no token is available.
+     */
+    public function deleteEvent($user, $eventId, $refreshToken = null, $accessToken = null)
+    {
+        if (empty($eventId)) {
+            return false;
+        }
+
+        $token_to_use = $refreshToken
+            ?? ($user && isset($user->google_refresh_token) ? $user->google_refresh_token : null)
+            ?? $accessToken
+            ?? ($user && isset($user->google_access_token) ? $user->google_access_token : null);
+
+        if (!$token_to_use) {
+            Log::info('No Google token to delete event for user ' . ($user->id ?? 'unknown'));
+            return false;
+        }
+
+        $client = new Google_Client();
+        $client->setClientId(env('GOOGLE_CLIENT_ID'));
+        $client->setClientSecret(env('GOOGLE_CLIENT_SECRET'));
+        $client->setRedirectUri(env('GOOGLE_REDIRECT_URI'));
+        $client->setAccessType('offline');
+
+        if ($refreshToken || ($user && isset($user->google_refresh_token))) {
+            $client->refreshToken($token_to_use);
+        } else {
+            $client->setAccessToken([
+                'access_token' => $token_to_use,
+                'expires_in' => 3600,
+                'created' => time(),
+            ]);
+        }
+
+        try {
+            $service = new Google_Service_Calendar($client);
+            $service->events->delete('primary', $eventId, ['sendUpdates' => 'all']);
+            Log::info('Google Calendar event deleted', ['eventId' => $eventId, 'user' => ($user->id ?? 'unknown')]);
+            return true;
+        } catch (\Exception $e) {
+            Log::error('Google Calendar delete event failed: ' . $e->getMessage());
+            return false;
+        }
+    }
+
     private function buildDescription($training, $schedule, array $attendeeEmails, string $timezone): string
     {
         $facilitator = $training->facilitator?->name ?? 'N/A';

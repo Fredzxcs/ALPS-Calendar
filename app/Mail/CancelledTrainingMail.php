@@ -19,13 +19,15 @@ class CancelledTrainingMail extends Mailable
      * Create a new message instance.
      */
 
-     public $training;
-     public $facilitator;
+    public $training;
+    public $recipient;
+    public $role;
 
-    public function __construct(Training $training, ?User $facilitator)
+    public function __construct(Training $training, ?User $recipient, string $role = 'Facilitator')
     {
         $this->training = $training;
-        $this->facilitator = $facilitator;
+        $this->recipient = $recipient;
+        $this->role = $role;
     }
 
     /**
@@ -47,7 +49,8 @@ class CancelledTrainingMail extends Mailable
             view: 'emails.cancellation_notification',
             with: [
                 'training' => $this->training,
-                'facilitator' => $this->facilitator,
+                'recipient' => $this->recipient,
+                'role' => $this->role,
             ],
         );
     }
