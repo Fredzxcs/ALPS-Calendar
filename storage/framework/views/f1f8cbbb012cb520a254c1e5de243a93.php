@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Driver Arrangement Notification</title>
+    <title>Driver Arrangement Cancellation Notification</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
@@ -11,8 +11,8 @@
             margin: 0;
             padding: 0;
             background:
-                radial-gradient(circle at top left, rgba(14, 165, 233, 0.14), transparent 30%),
-                radial-gradient(circle at top right, rgba(20, 184, 166, 0.12), transparent 28%),
+                radial-gradient(circle at top left, rgba(239, 68, 68, 0.12), transparent 30%),
+                radial-gradient(circle at top right, rgba(20, 184, 166, 0.10), transparent 28%),
                 linear-gradient(180deg, #eef4fb 0%, #f7fafc 100%);
         }
         .page-shell {
@@ -70,8 +70,8 @@
             display: inline-block;
             padding: 8px 14px;
             border-radius: 999px;
-            background: rgba(20, 184, 166, 0.12);
-            color: #0f766e;
+            background: rgba(220, 38, 38, 0.08);
+            color: #c02626;
             font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.9px;
@@ -93,21 +93,21 @@
             margin: 0 0 18px;
             padding: 18px 18px 18px 20px;
             border-radius: 18px;
-            background: linear-gradient(135deg, rgba(236, 254, 255, 0.96), rgba(255, 255, 255, 0.9));
-            border: 1px solid rgba(20, 184, 166, 0.14);
-            border-left: 6px solid #14b8a6;
-            box-shadow: 0 12px 30px rgba(20, 184, 166, 0.08);
+            background: linear-gradient(135deg, rgba(254, 242, 242, 0.96), rgba(255, 255, 255, 0.88));
+            border: 1px solid rgba(239, 68, 68, 0.14);
+            border-left: 6px solid #dc2626;
+            box-shadow: 0 12px 30px rgba(220, 38, 38, 0.08);
         }
         .update-alert-title {
             margin: 0 0 6px 0;
-            color: #0f766e;
+            color: #8b1d1d;
             font-size: 15px;
             font-weight: 700;
             letter-spacing: 0.2px;
         }
         .update-alert-text {
             margin: 0;
-            color: #115e59;
+            color: #7c2d2d;
             font-size: 15px;
             line-height: 1.55;
         }
@@ -252,14 +252,10 @@
                 <div class="brand-pill">Driver Arrangement</div>
                 <p class="greeting">Hello <?php echo e($coordinator->name ?? 'Coordinator'); ?>,</p>
 
-                <?php if(!empty($isUpdate)): ?>
-                    <div class="update-alert">
-                        <p class="update-alert-title">Update Notice</p>
-                        <p class="update-alert-text">The following training's driver arrangement has been edited, and this is a separate update notification.</p>
-                    </div>
-                <?php else: ?>
-                    <p class="intro">You have been assigned as the coordinator for the following training's driver arrangement:</p>
-                <?php endif; ?>
+                <div class="update-alert">
+                    <p class="update-alert-title">Training Cancelled</p>
+                    <p class="update-alert-text">The driver arrangement for this training is no longer needed because the session has been cancelled or deleted.</p>
+                </div>
 
                 <p class="intro" style="margin-top: 0;">Training Details</p>
 
@@ -293,8 +289,6 @@
                         </span>
                     </li>
                 </ul>
-
-                <p class="intro" style="margin: 0 0 10px;">Driver Arrangement</p>
 
                 <?php if($training->need_transportation): ?>
                     <?php
@@ -353,11 +347,11 @@
         <div class="footer">
             <div class="signature">
                 Best regards,<br>
-                <strong>ALPS Calendar</strong>
+                <strong>ALPS Calendar Team</strong>
             </div>
         </div>
     </div>
 </div>
 
 </body>
-</html><?php /**PATH D:\ALPs\ALPs Calendar\ALPS-Calendar\resources\views/emails/driver_notification.blade.php ENDPATH**/ ?>
+</html><?php /**PATH D:\ALPs\ALPs Calendar\ALPS-Calendar\resources\views/emails/driver_cancellation_notification.blade.php ENDPATH**/ ?>

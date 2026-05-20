@@ -201,6 +201,7 @@ main {
 header {
     position: relative;
     z-index: 5;
+    padding: 0 1rem;
 }
 
 a,
@@ -430,10 +431,19 @@ b,
     background: linear-gradient(145deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.84) 100%);
     border: 1px solid rgba(255, 255, 255, 0.66);
     border-radius: 999px;
-    margin: 0.75rem 1rem 0;
+    margin: 1.75rem 2rem 0;
+    padding: 0.6rem 0;
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     box-shadow: var(--alps-shadow-mid);
+}
+
+.navbar.alps-navbar > .container-fluid {
+    padding: 0.85rem 0;
+}
+
+.alps-navbar .navbar-brand {
+    padding: 0.15rem 0;
 }
 
 .alps-navbar .nav-link,
