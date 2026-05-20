@@ -456,7 +456,7 @@
         <div class="modal-content">
             <!--begin::Modal header-->
             <div class="modal-header">
-                <h3 class="alps-type-h3 alps-modal-heading" id="modal-title">View Unavailability</h3>
+                <h3 class="alps-type-h3 alps-modal-heading" id="view-modal-title">View Unavailability</h3>
                 <!--begin::Close-->
                 <div class="btn btn-icon btn-sm btn-color-gray-500 btn-active-icon-primary" data-bs-toggle="tooltip" title="Close" data-bs-dismiss="modal">
                     <!--begin::Svg Icon | path: icons/duotune/arrows/arr061.svg-->
@@ -508,7 +508,7 @@
                     </div>
                     <div class="col-7">
                         <div class="fv-row d-flex justify-content-end align-items-center">
-                            <p class="lead fs-6" id="modal-purpose">Team Building</p>
+                            <p class="lead fs-6" id="modal-title">Team Building</p>
                         </div>
                     </div>
                 </div>
