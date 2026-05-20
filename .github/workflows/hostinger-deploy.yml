@@ -47,45 +47,39 @@ jobs:
         if: ${{ success() }}
         run: rm -f .env
 
-      # STEP 2: LIGTAS NA I-MIGRATE ANG LIVE DATABASE (Inalis ang maling domains/ path)
+      # STEP 2: RUN DATABASE MIGRATION ON THE CORRECT PATH
       - name: Run Database Migration on Production Server
         if: ${{ success() }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script_stop: true
           script: |
-            cd public_html
+            cd domains/alpscalendar.com/public_html
             php artisan migrate --force
 
-      # STEP 3: REFRESH ANG LARAVEL CACHE NG LIVE SITE (Inalis ang maling domains/ path)
+      # STEP 3: REFRESH LARAVEL CACHE ON THE CORRECT PATH
       - name: Clear Laravel Cache on Production Server
         if: ${{ success() }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script_stop: true
           script: |
-            cd public_html
+            cd domains/alpscalendar.com/public_html
             php artisan optimize:clear
 
-      # STEP 4: Isulat ang deployed commit SHA para sa tracking at verification
+      # STEP 4: WRITE DEPLOYED COMMIT SHA FOR VERIFICATION
       - name: Write deployed commit SHA on production server
         if: ${{ success() }}
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script_stop: true
           script: |
-            cd public_html
+            cd domains/alpscalendar.com/public_html
             echo "${{ github.sha }}" > deployed_commit.txt
             cat deployed_commit.txt
