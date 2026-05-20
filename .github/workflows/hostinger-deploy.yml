@@ -41,7 +41,7 @@ jobs:
       - name: Mirror via rsync to Staging (delete removed files)
         if: ${{ success() }}
         run: |
-          rsync -avz --delete --exclude='.env' -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:domains/alpscalendar.com/public_html/staging/
+          rsync -avz --delete --exclude='.env' -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:domains/alpscalendar.com/public_html/staging/
 
       # Remove local temporary .env after upload/build for security
       - name: Delete temporary .env
