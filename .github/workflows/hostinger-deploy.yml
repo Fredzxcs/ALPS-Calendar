@@ -47,7 +47,7 @@ jobs:
         if: ${{ success() }}
         run: rm -f .env
 
-      # STEP 2: I-MIGRATE ANG MAIN DATABASE GAMIT ANG UMIRIRAL NA LIVE SERVER .ENV
+      # STEP 2: LIGTAS NA I-MIGRATE ANG LIVE DATABASE (Inalis ang maling domains/ path)
       - name: Run Database Migration on Production Server
         if: ${{ success() }}
         uses: appleboy/ssh-action@master
@@ -58,10 +58,10 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
-            cd domains/alpscalendar.com/public_html
+            cd public_html
             php artisan migrate --force
 
-      # STEP 3: REFRESH ANG LARAVEL CACHE NG LIVE SITE PARA LUMABAS ANG UPDATE
+      # STEP 3: REFRESH ANG LARAVEL CACHE NG LIVE SITE (Inalis ang maling domains/ path)
       - name: Clear Laravel Cache on Production Server
         if: ${{ success() }}
         uses: appleboy/ssh-action@master
@@ -72,7 +72,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
-            cd domains/alpscalendar.com/public_html
+            cd public_html
             php artisan optimize:clear
 
       # STEP 4: Isulat ang deployed commit SHA para sa tracking at verification
@@ -86,6 +86,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
-            cd domains/alpscalendar.com/public_html
+            cd public_html
             echo "${{ github.sha }}" > deployed_commit.txt
             cat deployed_commit.txt
