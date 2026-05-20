@@ -16,6 +16,7 @@ use App\Mail\TrainingNotificationMail;
 use App\Mail\DriverNotificationMail;
 use App\Mail\TrainingReassignmentMail;
 use App\Mail\CancelledTrainingMail;
+use App\Mail\DriverCancellationMail;
 use App\Services\GoogleCalendarService;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,6 +54,41 @@ class TrainingController extends Controller
         }
 
         return array_values(array_unique($emails));
+    }
+
+    private function sendDriverCancellationNotifications(Training $trainingSession): void
+    {
+        $recipientIds = $this->extractCoordinatorIds(
+            $trainingSession->coordinator_to_notify_list ?? $trainingSession->coordinator_to_notify ?? ''
+        );
+
+        if (empty($recipientIds)) {
+            return;
+        }
+
+        $trainingInfo = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])
+            ->find($trainingSession->id) ?? $trainingSession;
+
+        foreach ($recipientIds as $recipientId) {
+            $recipient = User::find((int) $recipientId);
+
+            if (!$recipient || empty($recipient->email) || !$this->shouldSendMailTo($recipient->email)) {
+                Log::warning('Skipping driver cancellation notification due to missing/invalid email', [
+                    'coordinator_id' => $recipientId,
+                ]);
+                continue;
+            }
+
+            try {
+                Mail::to($recipient->email)->send(new DriverCancellationMail($trainingInfo, $recipient));
+            } catch (\Exception $e) {
+                Log::error('Failed to send driver cancellation notification', [
+                    'to' => $recipient->email,
+                    'coordinator_id' => $recipient->id ?? null,
+                    'exception' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 
     private function resolveAssistantNames(?string $assistantValue): string
@@ -892,6 +928,8 @@ class TrainingController extends Controller
                     }
                 }
             }
+
+            $this->sendDriverCancellationNotifications($trainingSession);
 
             $schedule = Schedule::where('training_id', $trainingSession->id)->first();
 
