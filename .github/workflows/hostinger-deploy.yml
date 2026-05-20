@@ -31,20 +31,17 @@ jobs:
         run: npm run build
 
 
-      # STEP A: Prepare SSH key for rsync (uses secret SSH_PRIVATE_KEY)
-      - name: Setup SSH key for rsync
-        if: ${{ success() }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      # STEP A: Load SSH key into agent for rsync and remote SSH steps
+      - name: Start ssh-agent and add key
+        uses: webfactory/ssh-agent@v0.8.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       # STEP 1: Mirror repository to staging with rsync (keeps remote .env)
       - name: Mirror via rsync to Staging (delete removed files)
         if: ${{ success() }}
         run: |
-          rsync -avz --delete --exclude='.env' -e "ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:domains/alpscalendar.com/public_html/staging/
+          rsync -avz --delete --exclude='.env' -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:domains/alpscalendar.com/public_html/staging/
 
       # Remove local temporary .env after upload/build for security
       - name: Delete temporary .env
@@ -58,7 +55,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
@@ -72,7 +69,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
@@ -86,7 +83,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script_stop: true
           script: |
