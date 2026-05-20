@@ -26,20 +26,17 @@
     <style>
         html,
         body {
-            background: #f7f7f4 !important;
+            min-height: 100%;
+            background: transparent !important;
         }
 
-        body::before,
-        body::after {
-            content: none !important;
-            display: none !important;
-            animation: none !important;
-            filter: none !important;
-            opacity: 0 !important;
+        body {
+            min-height: 100vh;
         }
 
         main {
             background: transparent !important;
+            min-height: 100vh;
         }
     </style>
 

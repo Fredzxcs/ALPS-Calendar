@@ -121,6 +121,8 @@ body {
     padding: 0;
     min-height: 100%;
     overflow-x: clip;
+    background-size: 220% 220%;
+    background-position: 50% 0%;
     background:
         linear-gradient(180deg, rgba(60, 90, 140, 0.12) 0%, rgba(80, 110, 160, 0.18) 100%),
         radial-gradient(circle at 16% 18%, var(--alps-sky-glow-1) 0%, rgba(255, 255, 255, 0) 38%),
@@ -128,6 +130,7 @@ body {
         radial-gradient(circle at 52% 82%, var(--alps-sky-glow-3) 0%, rgba(255, 255, 255, 0) 42%),
         linear-gradient(180deg, var(--alps-sky-top) 0%, var(--alps-sky-mid) 48%, var(--alps-sky-bottom) 100%);
     background-attachment: fixed;
+    animation: alpsSkyDrift 28s ease-in-out infinite alternate;
     color: var(--alps-text);
     font-family: var(--alps-font-sans);
     font-size: 16px;
@@ -140,54 +143,60 @@ body::before,
 body::after {
     content: "";
     position: fixed;
-    z-index: 0;
+    inset: -30vh -30vw;
+    z-index: -1;
     pointer-events: none;
-    filter: blur(56px);
+    filter: blur(72px) saturate(1.45);
     mix-blend-mode: screen;
     opacity: var(--alps-sky-blur-opacity);
     will-change: transform, opacity, filter;
 }
 
 body::before {
-    width: 200vw;
-    height: 200vh;
-    top: -50vh;
-    left: -50vw;
     border-radius: 50%;
     background: radial-gradient(circle at 30% 30%, var(--alps-sky-glow-1) 0%, var(--alps-sky-glow-2) 58%, rgba(255, 255, 255, 0) 100%);
+    animation: alpsSkyFloat1 12s cubic-bezier(0.45, 0.05, 0.2, 0.95) infinite alternate;
 }
 
 body::after {
-    width: 200vw;
-    height: 200vh;
-    bottom: -50vh;
-    right: -50vw;
     border-radius: 50%;
     background: radial-gradient(circle at 60% 40%, var(--alps-sky-glow-3) 0%, var(--alps-sky-glow-4) 60%, rgba(255, 255, 255, 0) 100%);
+    animation: alpsSkyFloat2 16s cubic-bezier(0.45, 0.05, 0.2, 0.95) infinite alternate;
+}
+
+@keyframes alpsSkyDrift {
+    0% {
+        background-position: 48% 0%;
+        background-size: 210% 210%;
+    }
+    35% {
+        background-position: 54% 26%;
+        background-size: 230% 230%;
+    }
+    70% {
+        background-position: 44% 58%;
+        background-size: 240% 240%;
+    }
+    100% {
+        background-position: 50% 100%;
+        background-size: 225% 225%;
+    }
 }
 
 @keyframes alpsSkyFloat1 {
-    0% { transform: translate3d(-12rem, -6rem, 0) scale(0.92) rotate(-4deg); opacity: 0.72; filter: blur(56px) saturate(1.12) brightness(1.08) hue-rotate(0deg); }
-    20% { transform: translate3d(4rem, 10rem, 0) scale(1.02) rotate(3deg); opacity: 0.96; filter: blur(58px) saturate(1.36) brightness(1.16) hue-rotate(10deg); }
-    45% { transform: translate3d(18rem, -2rem, 0) scale(1.14) rotate(8deg); opacity: 1; filter: blur(60px) saturate(1.55) brightness(1.22) hue-rotate(20deg); }
-    70% { transform: translate3d(0rem, 14rem, 0) scale(1.06) rotate(-2deg); opacity: 0.9; filter: blur(57px) saturate(1.42) brightness(1.14) hue-rotate(12deg); }
-    100% { transform: translate3d(-10rem, 4rem, 0) scale(0.98) rotate(-6deg); opacity: 0.8; filter: blur(56px) saturate(1.2) brightness(1.06) hue-rotate(4deg); }
+    0% { transform: translate3d(-34rem, -20rem, 0) scale(0.84) rotate(-10deg); opacity: 0.62; filter: blur(74px) saturate(1.22) brightness(1.08) hue-rotate(0deg); }
+    16% { transform: translate3d(18rem, 28rem, 0) scale(1.06) rotate(6deg); opacity: 0.94; filter: blur(76px) saturate(1.48) brightness(1.18) hue-rotate(10deg); }
+    40% { transform: translate3d(44rem, -16rem, 0) scale(1.26) rotate(14deg); opacity: 1; filter: blur(78px) saturate(1.72) brightness(1.26) hue-rotate(20deg); }
+    66% { transform: translate3d(-14rem, 34rem, 0) scale(1.12) rotate(-5deg); opacity: 0.92; filter: blur(76px) saturate(1.56) brightness(1.18) hue-rotate(14deg); }
+    100% { transform: translate3d(-28rem, 12rem, 0) scale(0.98) rotate(-12deg); opacity: 0.78; filter: blur(74px) saturate(1.3) brightness(1.08) hue-rotate(6deg); }
 }
 
 @keyframes alpsSkyFloat2 {
-    0% { transform: translate3d(12rem, 6rem, 0) scale(0.94) rotate(5deg); opacity: 0.7; filter: blur(56px) saturate(1.18) brightness(1.04) hue-rotate(-6deg); }
-    22% { transform: translate3d(-6rem, -12rem, 0) scale(1.06) rotate(-4deg); opacity: 0.92; filter: blur(58px) saturate(1.34) brightness(1.12) hue-rotate(8deg); }
-    48% { transform: translate3d(-18rem, 4rem, 0) scale(1.16) rotate(9deg); opacity: 1; filter: blur(60px) saturate(1.52) brightness(1.2) hue-rotate(18deg); }
-    72% { transform: translate3d(2rem, -16rem, 0) scale(1.04) rotate(-2deg); opacity: 0.88; filter: blur(57px) saturate(1.4) brightness(1.1) hue-rotate(10deg); }
-    100% { transform: translate3d(10rem, -4rem, 0) scale(0.98) rotate(4deg); opacity: 0.8; filter: blur(56px) saturate(1.22) brightness(1.04) hue-rotate(0deg); }
-}
-
-body::before {
-    animation: alpsSkyFloat1 16s cubic-bezier(0.45, 0.05, 0.2, 0.95) infinite alternate;
-}
-
-body::after {
-    animation: alpsSkyFloat2 21s cubic-bezier(0.45, 0.05, 0.2, 0.95) infinite alternate;
+    0% { transform: translate3d(28rem, 18rem, 0) scale(0.88) rotate(8deg); opacity: 0.62; filter: blur(74px) saturate(1.18) brightness(1.04) hue-rotate(-6deg); }
+    18% { transform: translate3d(-18rem, -30rem, 0) scale(1.1) rotate(-7deg); opacity: 0.9; filter: blur(76px) saturate(1.36) brightness(1.12) hue-rotate(8deg); }
+    44% { transform: translate3d(-42rem, 14rem, 0) scale(1.26) rotate(13deg); opacity: 1; filter: blur(78px) saturate(1.62) brightness(1.22) hue-rotate(18deg); }
+    72% { transform: translate3d(14rem, -34rem, 0) scale(1.08) rotate(-5deg); opacity: 0.88; filter: blur(76px) saturate(1.44) brightness(1.1) hue-rotate(12deg); }
+    100% { transform: translate3d(24rem, -12rem, 0) scale(0.98) rotate(7deg); opacity: 0.76; filter: blur(74px) saturate(1.26) brightness(1.04) hue-rotate(2deg); }
 }
 
 
