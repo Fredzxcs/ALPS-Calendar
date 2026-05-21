@@ -71,6 +71,26 @@ class Training extends Model
         return $this->belongsTo(Account::class);
     }
 
+    public function getFromDateAttribute($value)
+    {
+        return $value ?? optional($this->schedule)->from_date;
+    }
+
+    public function getToDateAttribute($value)
+    {
+        return $value ?? optional($this->schedule)->to_date;
+    }
+
+    public function getFromTimeAttribute($value)
+    {
+        return $value ?? optional($this->schedule)->from_time;
+    }
+
+    public function getToTimeAttribute($value)
+    {
+        return $value ?? optional($this->schedule)->to_time;
+    }
+
     /**
      * Get assistants as a collection of User models.
      * The 'assistant' column stores comma-separated user IDs.

@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var popover = null; // Reference to the active popover
     var currentHoveredEvent = null; // Track the currently hovered event
     var calendar;
+    var holidays = []; // array of holiday objects {name, date: {iso: 'YYYY-MM-DD'}}
+    var holidayDatesSet = new Set(); // for quick lookup of holiday date strings
 
     const clampColorChannel = (value) => Math.max(0, Math.min(255, Math.round(value)));
 
@@ -854,7 +856,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const baseUrl = $('#edit-training-link').data('base-url');
                 const editUrl = `${baseUrl}${eventData.id}`;
-                $('#edit-training-link').attr('href', editUrl);
+
+                // Block editing if the training overlaps a holiday
+                const isOnHoliday = isDateRangeIncludesHoliday(eventData.startDate, eventData.endDate);
+                if (isOnHoliday) {
+                    $('#edit-training-link').attr('href', '#').attr('data-holiday-blocked', '1').off('click.holiday').on('click.holiday', function (e) {
+                        e.preventDefault();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Cannot edit on holiday',
+                            text: 'This training falls on a holiday. Editing is disabled for holiday dates.',
+                            confirmButtonText: 'OK',
+                            customClass: { confirmButton: 'btn btn-light' }
+                        });
+                    });
+                } else {
+                    $('#edit-training-link').attr('href', editUrl).removeAttr('data-holiday-blocked').off('click.holiday');
+                }
 
                 const mode = eventData.modeType;
                 $modalElement.find('#modal-mode-of-training').text(mode.toUpperCase());
@@ -941,62 +959,80 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    // const getHolidays = () => {
-    //     $.ajax({
-    //         url: '/calendar/api/get/holidays',
-    //         method: 'GET',
-    //         dataType: 'json',
-    //         headers: {
-    //             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //         },
-    //         beforeSend: function () {
-    //             $('#calendar').addClass('blur-effect');
-    //             loaderWrapper.style.display = 'flex';
-    //         },
-    //         success: function (response) {
-    //             console.log(response);
+    const loadHolidays = () => {
+        const processRemoteHolidays = (remoteHolidays) => {
+            if (!Array.isArray(remoteHolidays)) return;
 
-    //             if (response.response && response.response.holidays) {
-    //                 // Clear all existing background events
-    //                 calendar.getEvents().forEach(event => {
-    //                     if (event.extendedProps.isHoliday) {
-    //                         event.remove();
-    //                     }
-    //                 });
+            // Clear prior holiday events and sets
+            holidayDatesSet.clear();
+            calendar.getEvents().forEach(event => {
+                if (event.extendedProps && event.extendedProps.isHoliday) {
+                    event.remove();
+                }
+            });
 
-    //                 // Add holidays as background events
-    //                 response.response.holidays.forEach(function (holiday) {
-    //                     calendar.addEvent({
-    //                         title: holiday.name,
-    //                         start: holiday.date.iso,
-    //                         display: 'background',         // Keeps the event as a background highlight
-    //                         backgroundColor: '#FFCCCC',    // Light red background
-    //                         borderColor: '#FFCCCC',
-    //                         textColor: '#FF0000',          // Bright red text
-    //                         allDay: true,
-    //                         extendedProps: {
-    //                             isHoliday: true
-    //                         }
-    //                     });
-    //                 });
-    //             }
+            remoteHolidays.forEach(function (holiday) {
+                const iso = (holiday.date && holiday.date.iso) ? holiday.date.iso : holiday.iso || holiday.date;
+                if (!iso) return;
 
-    //             // Rebind other event listeners if needed
-    //             bindEventListeners();
+                const day = moment(iso).format('YYYY-MM-DD');
+                holidayDatesSet.add(day);
 
-    //             loaderWrapper.classList.add('d-none');
-    //             $('#calendar').removeClass('blur-effect');
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.error('Error fetching holidays:', error);
-    //             loaderWrapper.classList.add('d-none');
-    //         },
-    //         complete: function () {
-    //             loaderWrapper.classList.add('d-none');
-    //             $('#calendar').removeClass('blur-effect');
-    //         },
-    //     });
-    // };
+                calendar.addEvent({
+                    title: `${holiday.name || 'Holiday'}`,
+                    start: day,
+                    display: 'background',
+                    backgroundColor: '#FFE6E6',
+                    borderColor: '#FFE6E6',
+                    textColor: '#B30000',
+                    allDay: true,
+                    extendedProps: { isHoliday: true }
+                });
+            });
+
+            holidays = remoteHolidays;
+            console.log('Holidays loaded:', remoteHolidays.length);
+        };
+
+        return $.ajax({
+            url: '/calendar/api/get/holidays',
+            method: 'GET',
+            dataType: 'json',
+            headers: { 'X-CSRF-TOKEN': csrfToken },
+        }).done(function (response) {
+            let remoteHolidays = [];
+            if (response && response.response && Array.isArray(response.response.holidays)) {
+                remoteHolidays = response.response.holidays;
+            } else if (response && Array.isArray(response.holidays)) {
+                remoteHolidays = response.holidays;
+            } else if (response && Array.isArray(response)) {
+                remoteHolidays = response;
+            }
+            processRemoteHolidays(remoteHolidays);
+        }).fail(function (xhr, status, error) {
+            console.error('Error fetching holidays from API:', error);
+            // Fallback: try a public JSON file under /data/philippines_holidays.json
+            $.getJSON('/data/philippines_holidays.json').done(function (localResponse) {
+                const remoteHolidays = Array.isArray(localResponse.holidays) ? localResponse.holidays : (Array.isArray(localResponse) ? localResponse : []);
+                processRemoteHolidays(remoteHolidays);
+            }).fail(function (err) {
+                console.error('Fallback local holidays file not found or invalid:', err);
+            });
+        });
+    };
+
+    const isDateRangeIncludesHoliday = (startDate, endDate) => {
+        if (!startDate) return false;
+        const start = moment(startDate).startOf('day');
+        const end = endDate ? moment(endDate).startOf('day') : start;
+
+        for (let m = moment(start); m.diff(end, 'days') <= 0; m.add(1, 'days')) {
+            if (holidayDatesSet.has(m.format('YYYY-MM-DD'))) {
+                return true;
+            }
+        }
+        return false;
+    };
 
         // Initialize the calendar and its initial population
         if (calendarEl) {
@@ -1163,9 +1199,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             calendar.render();
 
-            // Load initial data
-            getPopulation(initial);
-            // getHolidays();
+            // Load initial data — fetch holidays first so they are present when trainings load
+            loadHolidays().always(function () {
+                getPopulation(initial);
+            });
 
             // Bind filter change to update events
             $('#applyFilter').click(function (e) {

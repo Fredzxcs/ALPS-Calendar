@@ -19,6 +19,7 @@ use App\Mail\CancelledTrainingMail;
 use App\Mail\DriverCancellationMail;
 use App\Services\GoogleCalendarService;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 
 class TrainingController extends Controller
@@ -221,6 +222,31 @@ class TrainingController extends Controller
             ], 422);
         }
 
+        // Server-side holiday check: warn-only unless the user explicitly proceeded.
+        $holidayFile = resource_path('data/philippines_holidays.json');
+        $allowHolidaySchedule = filter_var($request->input('allow_holiday_schedule', false), FILTER_VALIDATE_BOOLEAN);
+        if (!$allowHolidaySchedule && file_exists($holidayFile)) {
+            $content = json_decode(file_get_contents($holidayFile), true);
+            $holidayDates = array_map(function ($h) {
+                $iso = $h['date']['iso'] ?? ($h['iso'] ?? null);
+                return $iso ? Carbon::parse($iso)->format('Y-m-d') : null;
+            }, $content['holidays'] ?? []);
+            $holidayDates = array_filter($holidayDates);
+
+            $from = Carbon::parse($request->from_date)->startOfDay();
+            $to = Carbon::parse($request->to_date)->startOfDay();
+            foreach ($holidayDates as $hd) {
+                $d = Carbon::parse($hd)->startOfDay();
+                if ($d->between($from, $to)) {
+                    return response()->json([
+                        'message' => 'Holiday warning',
+                        'error' => 'Selected date range includes a holiday: ' . $d->toDateString(),
+                        'holiday_date' => $d->toDateString(),
+                    ], 422);
+                }
+            }
+        }
+
         // Additional explicit existence checks to avoid DB FK exceptions
         $missing = [];
         if (!Course::find($request->course_id)) {
@@ -251,6 +277,31 @@ class TrainingController extends Controller
                 'message' => 'Validation failed',
                 'errors' => $missing,
             ], 422);
+        }
+
+        // Server-side holiday check: warn-only unless the user explicitly proceeded.
+        $holidayFile = resource_path('data/philippines_holidays.json');
+        $allowHolidaySchedule = filter_var($request->input('allow_holiday_schedule', false), FILTER_VALIDATE_BOOLEAN);
+        if (!$allowHolidaySchedule && file_exists($holidayFile)) {
+            $content = json_decode(file_get_contents($holidayFile), true);
+            $holidayDates = array_map(function ($h) {
+                $iso = $h['date']['iso'] ?? ($h['iso'] ?? null);
+                return $iso ? Carbon::parse($iso)->format('Y-m-d') : null;
+            }, $content['holidays'] ?? []);
+            $holidayDates = array_filter($holidayDates);
+
+            $from = Carbon::parse($request->from_date)->startOfDay();
+            $to = Carbon::parse($request->to_date)->startOfDay();
+            foreach ($holidayDates as $hd) {
+                $d = Carbon::parse($hd)->startOfDay();
+                if ($d->between($from, $to)) {
+                    return response()->json([
+                        'message' => 'Holiday warning',
+                        'error' => 'Selected date range includes a holiday: ' . $d->toDateString(),
+                        'holiday_date' => $d->toDateString(),
+                    ], 422);
+                }
+            }
         }
 
         \DB::beginTransaction();
@@ -506,8 +557,8 @@ class TrainingController extends Controller
 
     public function getTraining(Request $request)
     {
-        // Include the newly added relationships: course and company
-        $trainings = Training::with(['schedule', 'facilitator', 'course', 'company', 'account'])->get()->map(function ($training) {
+        // Include the newly added relationships: course, company, account, and account manager
+        $trainings = Training::with(['schedule', 'facilitator', 'account_manager', 'course', 'company', 'account'])->get()->map(function ($training) {
             $training->assistant_names = $this->resolveAssistantNames($training->assistant ?? '');
 
             $coordinatorList = trim((string) ($training->coordinator_to_notify_list ?? ''));

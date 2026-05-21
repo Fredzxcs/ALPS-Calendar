@@ -141,6 +141,7 @@
 .training-form-group {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .training-form-group label {
@@ -166,6 +167,26 @@
     background: #ffffff;
     transition: all 0.2s ease;
     font-family: inherit;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-inline-size: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+
+#course,
+#public-course-select {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 /* Disabled form controls - visually indicate non-interactive state */

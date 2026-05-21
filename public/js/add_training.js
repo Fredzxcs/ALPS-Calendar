@@ -23,6 +23,42 @@ function updateAccountFieldState() {
     }
 }
 
+window.loadHolidayDates = window.loadHolidayDates || function () {
+    return $.getJSON('/data/philippines_holidays.json')
+        .then(function (response) {
+            const holidays = Array.isArray(response?.holidays)
+                ? response.holidays
+                : (Array.isArray(response) ? response : []);
+
+            return holidays
+                .map(function (holiday) {
+                    const iso = holiday?.date?.iso || holiday?.iso || holiday?.date;
+                    return iso ? moment(iso).format('YYYY-MM-DD') : null;
+                })
+                .filter(Boolean);
+        })
+        .catch(function () {
+            return [];
+        });
+};
+
+window.dateRangeContainsHoliday = window.dateRangeContainsHoliday || function (fromDate, toDate, holidayDates) {
+    if (!fromDate) {
+        return false;
+    }
+
+    const start = moment(fromDate).startOf('day');
+    const end = toDate ? moment(toDate).startOf('day') : start;
+
+    for (let cursor = moment(start); cursor.diff(end, 'days') <= 0; cursor.add(1, 'day')) {
+        if (holidayDates.includes(cursor.format('YYYY-MM-DD'))) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
 document.addEventListener("DOMContentLoaded", function () {
     const modeRadios = document.querySelectorAll('input[name="mode"]');
     const locationContainer = document.getElementById("location-container");
@@ -422,32 +458,60 @@ $(document).ready(function (e) {
         let location = $('#location').val();
         let company = $('#company').find('option:selected').val();
 
-        if (!facilitator_id || facilitator_id === "") {
-            handleCompanyAndStoreTraining(company);
-        } else {
-            checkAvailability(facilitator_id, from_date, to_date, function (isAvailable) {
-                if (isAvailable) {
-                    handleCompanyAndStoreTraining(company);
-                } else {
-                    Swal.fire({
-                        title: 'Facilitator Unavailable',
-                        text: 'The selected facilitator is unavailable on the selected date(s). Do you want to proceed anyway?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonText: 'Proceed',
-                        cancelButtonText: 'Cancel',
-                        customClass: {
-                            confirmButton: "btn btn-success",
-                            cancelButton: 'btn btn-secondary'
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            handleCompanyAndStoreTraining(company);
-                        }
-                    });
-                }
-            });
-        }
+        const submitTraining = (allowHolidaySchedule = false) => {
+            if (!facilitator_id || facilitator_id === "") {
+                handleCompanyAndStoreTraining(company, allowHolidaySchedule);
+            } else {
+                checkAvailability(facilitator_id, from_date, to_date, function (isAvailable) {
+                    if (isAvailable) {
+                        handleCompanyAndStoreTraining(company, allowHolidaySchedule);
+                    } else {
+                        Swal.fire({
+                            title: 'Facilitator Unavailable',
+                            text: 'The selected facilitator is unavailable on the selected date(s). Do you want to proceed anyway?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Proceed',
+                            cancelButtonText: 'Back',
+                            reverseButtons: true,
+                            customClass: {
+                                confirmButton: 'btn btn-success',
+                                cancelButton: 'btn btn-secondary'
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                handleCompanyAndStoreTraining(company, allowHolidaySchedule);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+
+        window.loadHolidayDates().then(function (holidayDates) {
+            if (window.dateRangeContainsHoliday(from_date, to_date, holidayDates)) {
+                Swal.fire({
+                    title: 'Holiday conflict',
+                    text: 'You are about to schedule over a holiday. Back lets you change the date. Proceed will save it anyway.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Proceed',
+                    cancelButtonText: 'Back',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-success',
+                        cancelButton: 'btn btn-secondary'
+                    }
+                }).then(function (result) {
+                    if (result.isConfirmed) {
+                        submitTraining(true);
+                    }
+                });
+                return;
+            }
+
+            submitTraining(false);
+        });
     }
 
     function toggleDriverArrangementFields() {
@@ -726,7 +790,7 @@ $(document).ready(function (e) {
     }
 
     // Step 3: Function to handle company creation and training storage
-    function handleCompanyAndStoreTraining(company) {
+    function handleCompanyAndStoreTraining(company, allowHolidaySchedule = false) {
         // Check for duplicate company
         const enteredCompany = $('#enter-company').val().trim().toLowerCase();
         let isDuplicate = false;
@@ -769,7 +833,7 @@ $(document).ready(function (e) {
                 success: function (response) {
                     if (response.success) {
                         console.log('Company Created:', response.company.id);
-                        createTraining(response.company.id);
+                        createTraining(response.company.id, allowHolidaySchedule);
                     } else {
                         Swal.fire('Error!', 'Failed to create company.', 'error');
                     }
@@ -781,12 +845,12 @@ $(document).ready(function (e) {
             });
         } else {
             console.log('6');
-            createTraining(company);
+            createTraining(company, allowHolidaySchedule);
         }
     }
 
     // Step 4: Function to create the training session
-    function createTraining(companyId) {
+    function createTraining(companyId, allowHolidaySchedule = false) {
         // Get platform: if "other" is selected, use the custom text; otherwise use the dropdown value
         let platformValue = $('#platform').val();
         const platformHidden = $('#platform-container').hasClass('d-none');
@@ -830,6 +894,7 @@ $(document).ready(function (e) {
         formData.append('return_dropoff_location', $('#return_dropoff_location').val());
         formData.append('notify_coordinator', $('#notify_coordinator').is(':checked') ? '1' : '0');
         formData.append('coordinator_to_notify_list', $('#coordinator_to_notify_list').val() || '');
+        formData.append('allow_holiday_schedule', allowHolidaySchedule ? '1' : '0');
 
         const isEditMode = Boolean(window.isEditMode && window.trainingId);
         if (isEditMode) {

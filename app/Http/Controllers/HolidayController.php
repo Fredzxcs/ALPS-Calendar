@@ -15,22 +15,35 @@ class HolidayController extends Controller
 
     public function get_holidays(Request $request)
     {
+        // Prefer the deployable public JSON file first, then fall back to the source copy.
+        $candidatePaths = [
+            public_path('data/philippines_holidays.json'),
+            resource_path('data/philippines_holidays.json'),
+        ];
+
+        foreach ($candidatePaths as $localPath) {
+            if (!file_exists($localPath)) {
+                continue;
+            }
+
+            $content = file_get_contents($localPath);
+            $data = json_decode($content, true);
+            if (isset($data['holidays']) && is_array($data['holidays'])) {
+                return response()->json(['response' => ['holidays' => $data['holidays']]]);
+            }
+        }
+
+        // Fallback to Calendarific API if local file not available
         $API_KEY = $this->get_api_key();
-
         $year = $request->input('year', date('Y'));
-
         $url = "https://calendarific.com/api/v2/holidays?api_key={$API_KEY}&country=PH&year={$year}";
 
         try {
-            // Make GET request using Laravel's HTTP client
             $response = Http::get($url);
-
-            // Check if the request was successful
             if ($response->successful()) {
                 return response()->json($response->json());
-            } else {
-                return response()->json(['status' => 200, 'error' => 'Failed to fetch holidays', 'details' => $response->json()], $response->status());
             }
+            return response()->json(['status' => 200, 'error' => 'Failed to fetch holidays', 'details' => $response->json()], $response->status());
         } catch (\Exception $e) {
             return response()->json(['error' => 'An error occurred', 'message' => $e->getMessage()], 500);
         }

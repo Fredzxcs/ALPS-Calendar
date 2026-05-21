@@ -89,6 +89,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
 const csrfToken = $('meta[name="csrf-token"]').attr('content') || '';
 
+window.loadHolidayDates = window.loadHolidayDates || function () {
+    return $.getJSON('/data/philippines_holidays.json')
+        .then(function (response) {
+            const holidays = Array.isArray(response?.holidays)
+                ? response.holidays
+                : (Array.isArray(response) ? response : []);
+
+            return holidays
+                .map(function (holiday) {
+                    const iso = holiday?.date?.iso || holiday?.iso || holiday?.date;
+                    return iso ? moment(iso).format('YYYY-MM-DD') : null;
+                })
+                .filter(Boolean);
+        })
+        .catch(function () {
+            return [];
+        });
+};
+
+window.dateRangeContainsHoliday = window.dateRangeContainsHoliday || function (fromDate, toDate, holidayDates) {
+    if (!fromDate) {
+        return false;
+    }
+
+    const start = moment(fromDate).startOf('day');
+    const end = toDate ? moment(toDate).startOf('day') : start;
+
+    for (let cursor = moment(start); cursor.diff(end, 'days') <= 0; cursor.add(1, 'day')) {
+        if (holidayDates.includes(cursor.format('YYYY-MM-DD'))) {
+            return true;
+        }
+    }
+
+    return false;
+};
+
 document.addEventListener('DOMContentLoaded', function () {
     const cancelBtn = document.getElementById('cancel_training_button');
     const editSubmitBtn = document.getElementById('edit_training_submit');
@@ -391,8 +427,9 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        function editTraining(companyId) {
+        function editTraining(companyId, allowHolidaySchedule = false) {
             console.log('editTraining() called with companyId:', companyId);
+
             Swal.fire({
                 title: 'Are you sure?',
                 text: 'You are about to edit this training.',
@@ -459,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 let finalPlatform = platform === 'other' ? platformOther : platform;
-                let data = {
+                const data = {
                     course_id: course,
                     platform: finalPlatform,
                     conference_link: conference_link,
@@ -484,95 +521,118 @@ document.addEventListener('DOMContentLoaded', function () {
                     return_pickup_location: return_pickup_location,
                     return_dropoff_location: return_dropoff_location,
                     notify_coordinator: notify_coordinator,
-                    coordinator_to_notify_list: coordinator_to_notify_list
+                    coordinator_to_notify_list: coordinator_to_notify_list,
+                    allow_holiday_schedule: allowHolidaySchedule ? 1 : 0
                 };
 
                 const url = window.location.href;
                 const match = url.match(/\/edit_training\/(\d+)$/);
                 const trainingId = match ? match[1] : '';
 
-                Swal.fire({
-                    title: 'Updating Training...',
-                    text: 'Please wait while the training is being updated.',
-                    allowOutsideClick: false,
-                    allowEscapeKey: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
-                console.log('Sending AJAX PUT request to /calendar/edit_training/' + trainingId);
-                console.log('Data payload:', JSON.stringify(data, null, 2));
-
-                $.ajax({
-                    url: `/calendar/edit_training/${trainingId}`,
-                    type: 'PUT',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    success: function (response) {
-                        console.log('AJAX success response:', response);
-                        Swal.close();
-
-                        if (response && response.code === '200') {
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'Training has been updated.',
-                                icon: 'success',
-                                confirmButtonText: 'OK',
-                                allowOutsideClick: false,
-                                allowEscapeKey: false
-                            }).then(() => {
-                                // Hard refresh to clear cache and reload calendar with fresh data
-                                window.location.href = '/calendar?t=' + Date.now();
-                            });
-                            return;
-                        }
-
-                        let html = 'Unknown server response';
-                        if (response && response.errors) {
-                            const keys = Object.keys(response.errors);
-                            html = keys.map(k => `<strong>${k}:</strong> ${response.errors[k].join(', ')}`).join('<br/>');
-                        } else if (response && (response.message || response.error)) {
-                            html = response.message || response.error;
-                        } else if (response) {
-                            html = JSON.stringify(response);
-                        }
-
+                window.loadHolidayDates().then(function (holidayDates) {
+                    if (window.dateRangeContainsHoliday(from_date, to_date, holidayDates) && !allowHolidaySchedule) {
                         Swal.fire({
-                            title: 'Update did not complete',
-                            html: html,
+                            title: 'Holiday conflict',
+                            text: 'You are about to edit a training over a holiday. Back lets you change the date. Proceed will save it anyway.',
                             icon: 'warning',
-                            confirmButtonText: 'OK'
+                            showCancelButton: true,
+                            confirmButtonText: 'Proceed',
+                            cancelButtonText: 'Back',
+                            reverseButtons: true,
+                            customClass: {
+                                confirmButton: 'btn btn-success',
+                                cancelButton: 'btn btn-secondary'
+                            }
+                        }).then(function (result) {
+                            if (result.isConfirmed) {
+                                editTraining(companyId, true);
+                            }
                         });
-                    },
-                    error: function (xhr) {
-                        console.log('AJAX error - Status:', xhr?.status);
-                        console.log('AJAX error - Response:', xhr?.responseJSON || xhr?.responseText);
-                        Swal.close();
+                        return;
+                    }
 
-                        if (xhr && xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
-                            const errors = xhr.responseJSON.errors;
-                            const html = Object.keys(errors).map(k => `<strong>${k}:</strong> ${errors[k].join(', ')}`).join('<br/>');
+                    Swal.fire({
+                        title: 'Updating Training...',
+                        text: 'Please wait while the training is being updated.',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    console.log('Sending AJAX PUT request to /calendar/edit_training/' + trainingId);
+                    console.log('Data payload:', JSON.stringify(data, null, 2));
+
+                    $.ajax({
+                        url: `/calendar/edit_training/${trainingId}`,
+                        type: 'PUT',
+                        data: JSON.stringify(data),
+                        contentType: 'application/json',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken
+                        },
+                        success: function (response) {
+                            console.log('AJAX success response:', response);
+                            Swal.close();
+
+                            if (response && response.code === '200') {
+                                Swal.fire({
+                                    title: 'Success!',
+                                    text: 'Training has been updated.',
+                                    icon: 'success',
+                                    confirmButtonText: 'OK',
+                                    allowOutsideClick: false,
+                                    allowEscapeKey: false
+                                }).then(() => {
+                                    window.location.href = '/calendar?t=' + Date.now();
+                                });
+                                return;
+                            }
+
+                            let html = 'Unknown server response';
+                            if (response && response.errors) {
+                                const keys = Object.keys(response.errors);
+                                html = keys.map(k => `<strong>${k}:</strong> ${response.errors[k].join(', ')}`).join('<br/>');
+                            } else if (response && (response.message || response.error)) {
+                                html = response.message || response.error;
+                            } else if (response) {
+                                html = JSON.stringify(response);
+                            }
+
                             Swal.fire({
-                                title: 'Validation error',
+                                title: 'Update did not complete',
                                 html: html,
+                                icon: 'warning',
+                                confirmButtonText: 'OK'
+                            });
+                        },
+                        error: function (xhr) {
+                            console.log('AJAX error - Status:', xhr?.status);
+                            console.log('AJAX error - Response:', xhr?.responseJSON || xhr?.responseText);
+                            Swal.close();
+
+                            if (xhr && xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                                const errors = xhr.responseJSON.errors;
+                                const html = Object.keys(errors).map(k => `<strong>${k}:</strong> ${errors[k].join(', ')}`).join('<br/>');
+                                Swal.fire({
+                                    title: 'Validation error',
+                                    html: html,
+                                    icon: 'error',
+                                    confirmButtonText: 'OK'
+                                });
+                                return;
+                            }
+
+                            Swal.fire({
+                                title: 'Error!',
+                                text: 'There was an error updating the training. See console/network for details.',
+                                footer: xhr && xhr.responseText ? xhr.responseText : 'No response body',
                                 icon: 'error',
                                 confirmButtonText: 'OK'
                             });
-                            return;
                         }
-
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'There was an error updating the training. See console/network for details.',
-                            footer: xhr && xhr.responseText ? xhr.responseText : 'No response body',
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
+                    });
                 });
             });
         }
