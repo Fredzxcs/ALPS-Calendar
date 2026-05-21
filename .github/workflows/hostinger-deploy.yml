@@ -1,8 +1,8 @@
-name: Hostinger Staging Deploy
+name: Hostinger Production Deploy
 
 on:
   push:
-    branches: [main]
+    branches: [main] # Awtomatikong magpapatakbo kapag nag-push ka sa main branch
 
 jobs:
   build:
@@ -30,26 +30,25 @@ jobs:
       - name: Build Assets
         run: npm run build
 
-
-      # STEP A: Load SSH key into agent for rsync and remote SSH steps
+      # STEP A: I-load ang SSH key para sa rsync at malayuang utos sa server
       - name: Start ssh-agent and add key
-        uses: webfactory/ssh-agent@v0.8.1
+        uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # STEP 1: Mirror repository to staging with rsync (keeps remote .env)
-      - name: Mirror via rsync to Staging (delete removed files)
+      # STEP 1: I-mirror ang repository sa TOTOONG public_html (Ligtas ang inyong live .env at staging folder)
+      - name: Mirror via rsync to Production (delete removed files)
         if: ${{ success() }}
         run: |
-          rsync -avz --delete --exclude='.env' -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:domains/alpscalendar.com/public_html/staging/
+          rsync -avz --delete --exclude='.env' --exclude='.htaccess' --exclude='staging/' -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=no" ./ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:domains/alpscalendar.com/public_html/
 
-      # Remove local temporary .env after upload/build for security
+      # Burahin ang pansamantalang .env sa GitHub Runner para sa seguridad
       - name: Delete temporary .env
         if: ${{ success() }}
         run: rm -f .env
 
-      # STEP 2: PATAKBUHIN ANG DATABASE UPDATE LIGTAS GAMIT ANG SERVER .ENV
-      - name: Run Database Migration on Server
+      # STEP 2: RUN DATABASE MIGRATION ON THE CORRECT PATH
+      - name: Run Database Migration on Production Server
         if: ${{ success() }}
         uses: appleboy/ssh-action@master
         with:
@@ -57,13 +56,12 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script_stop: true
           script: |
-            cd domains/alpscalendar.com/public_html/staging
+            cd domains/alpscalendar.com/public_html
             php artisan migrate --force
 
-      # STEP 3: LINISIN ANG LARAVEL CACHE PARA MALABAS ANG LATEST NA CODE AT VIEWS
-      - name: Clear Laravel Cache on Staging Server
+      # STEP 3: REFRESH LARAVEL CACHE ON THE CORRECT PATH
+      - name: Clear Laravel Cache on Production Server
         if: ${{ success() }}
         uses: appleboy/ssh-action@master
         with:
@@ -71,13 +69,12 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script_stop: true
           script: |
-            cd domains/alpscalendar.com/public_html/staging
+            cd domains/alpscalendar.com/public_html
             php artisan optimize:clear
 
-      # STEP 4: Write deployed commit SHA for verification
-      - name: Write deployed commit SHA on server
+      # STEP 4: WRITE DEPLOYED COMMIT SHA FOR VERIFICATION
+      - name: Write deployed commit SHA on production server
         if: ${{ success() }}
         uses: appleboy/ssh-action@master
         with:
@@ -85,8 +82,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
-          script_stop: true
           script: |
-            cd domains/alpscalendar.com/public_html/staging
+            cd domains/alpscalendar.com/public_html
             echo "${{ github.sha }}" > deployed_commit.txt
             cat deployed_commit.txt

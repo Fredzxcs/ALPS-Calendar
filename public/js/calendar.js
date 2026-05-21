@@ -97,6 +97,78 @@ document.addEventListener('DOMContentLoaded', function () {
         eventEl.style.color = textColor;
     };
 
+    const showModalPreservingScroll = (modalElement) => {
+        if (!modalElement) {
+            return;
+        }
+
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+        const existingBackdrop = document.querySelector('.alps-calendar-modal-backdrop');
+        if (existingBackdrop) {
+            existingBackdrop.remove();
+        }
+
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop fade show alps-calendar-modal-backdrop';
+        backdrop.addEventListener('click', () => hideModalPreservingScroll(modalElement));
+        document.body.appendChild(backdrop);
+
+        modalElement.style.display = 'block';
+        modalElement.classList.add('show');
+        modalElement.setAttribute('aria-modal', 'true');
+        modalElement.removeAttribute('aria-hidden');
+
+        modalElement.dataset.alpsScrollTop = String(scrollTop);
+
+        window.requestAnimationFrame(() => {
+            window.scrollTo({ top: scrollTop, left: 0, behavior: 'auto' });
+        });
+    };
+
+    const hideModalPreservingScroll = (modalElement) => {
+        if (!modalElement) {
+            return;
+        }
+
+        const scrollTop = Number(modalElement.dataset.alpsScrollTop || window.pageYOffset || 0);
+        modalElement.classList.remove('show');
+        modalElement.style.display = 'none';
+        modalElement.setAttribute('aria-hidden', 'true');
+        modalElement.removeAttribute('aria-modal');
+
+        const backdrop = document.querySelector('.alps-calendar-modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+
+        delete modalElement.dataset.alpsScrollTop;
+
+        window.requestAnimationFrame(() => {
+            window.scrollTo({ top: scrollTop, left: 0, behavior: 'auto' });
+        });
+    };
+
+    const bindCalendarModalDismissHandlers = (modalSelector) => {
+        const modalElement = document.querySelector(modalSelector);
+        if (!modalElement) {
+            return;
+        }
+
+        modalElement.addEventListener('click', (event) => {
+            const dismissButton = event.target.closest('[data-bs-dismiss="modal"]');
+            if (!dismissButton || !modalElement.contains(dismissButton)) {
+                return;
+            }
+
+            event.preventDefault();
+            event.stopPropagation();
+            hideModalPreservingScroll(modalElement);
+        });
+    };
+
+    bindCalendarModalDismissHandlers('#kt_modal_view_training');
+    bindCalendarModalDismissHandlers('#kt_modal_view_unavailability');
+
     const addTrainingEvents = (trainings) => {
         trainings.forEach(function (training) {
             if (training.schedule) {
@@ -153,10 +225,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 const startDate = moment(unavailability.from_date).format('YYYY-MM-DD');
                 const endDateExclusive = moment(unavailability.to_date).add(1, 'day').format('YYYY-MM-DD');
 
+                // Compose title like training events: "FirstName - Reason"
+                const rawName = unavailability.user && unavailability.user.name ? unavailability.user.name : '';
+                const firstName = rawName ? String(rawName).split(' ')[0] : 'Unknown';
+                const reasonText = unavailability.reason || 'Unavailable';
+
                 calendar.addEvent({
                     id: unavailability.id,
                     user_id: unavailability.user.id,
-                    title: unavailability.reason || 'Unavailable',
+                    title: `${reasonText} - ${firstName}`,
                     start: startDate,
                     end: endDateExclusive,
                     allDay: true,
@@ -166,7 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     extendedProps: {
                         eventType: 'unavailability',
                         user: unavailability.user ? unavailability.user.name : 'Unknown User',
-                        reason: unavailability.reason || 'Unavailable'
+                        reason: reasonText
                     },
                 });
             }
@@ -428,10 +505,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Attach the modal event listener after popover HTML is inserted
         document.getElementById('kt_calendar_event_view').addEventListener('click', function (e) {
             e.preventDefault(); // Prevent default link action
+            e.stopPropagation();
+            if (typeof e.stopImmediatePropagation === 'function') {
+                e.stopImmediatePropagation();
+            }
 
             const modalElement = document.getElementById('kt_modal_view_training');
-            const modal = new bootstrap.Modal(modalElement);
-            modal.show();
+            showModalPreservingScroll(modalElement);
         });
     };
 
@@ -471,8 +551,12 @@ document.addEventListener('DOMContentLoaded', function () {
         // Attach the modal event listener after popover HTML is inserted
         document.getElementById('kt_calendar_unavailability_view').addEventListener('click', function (e) {
             e.preventDefault();
+            e.stopPropagation();
+            if (typeof e.stopImmediatePropagation === 'function') {
+                e.stopImmediatePropagation();
+            }
             const modalElement = document.getElementById('kt_modal_view_unavailability');
-            const modal = new bootstrap.Modal(modalElement);
+            showModalPreservingScroll(modalElement);
 
             let date_unavailable = ` ${moment(data.startDate).format('MMM DD, YYYY')} to ${moment(data.endDate).format('MMM DD, YYYY')} `
 
@@ -550,7 +634,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             });
 
-            modal.show();
         });
     };
     // Function to hide active popovers
@@ -944,6 +1027,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         // Ensure full-width styling
                         eventEl.style.width = '100%';
                     }
+
+                    // (Name displayed in the title for unavailability events to match training style)
                 },
                 eventClick: function(info) {
                     info.jsEvent.preventDefault();
@@ -999,8 +1084,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         $modalElement.find('#modal-date-unavailable').text(dateUnavailable);
                         $modalElement.find('#modal-reason').text(eventData.reason || 'No reason provided');
 
-                        const modal = new bootstrap.Modal(document.getElementById('kt_modal_view_unavailability'));
-                        modal.show();
+                        showModalPreservingScroll(document.getElementById('kt_modal_view_unavailability'));
 
                         return;
                     }
@@ -1022,8 +1106,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const formattedEndTime = info.event.end ? moment(info.event.end).format('h:mm A') : 'N/A';
                     $modalElement.find('#modal-time').text(`${formattedStartTime} to ${formattedEndTime}`);
 
-                    const modal = new bootstrap.Modal(document.getElementById('kt_modal_view_training'));
-                    modal.show();
+                    showModalPreservingScroll(document.getElementById('kt_modal_view_training'));
                 }
             });
 
