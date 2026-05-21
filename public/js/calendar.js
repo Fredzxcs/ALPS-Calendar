@@ -356,6 +356,92 @@ document.addEventListener('DOMContentLoaded', function () {
 
     bindTrainingModalTabs();
 
+    // Bind global unavailability delete handler (single binding)
+    const bindUnavailabilityDeleteHandler = () => {
+        const $delBtn = $('.deleteBtnUnavailability');
+        if (!$delBtn || $delBtn.length === 0) return;
+
+        // hide by default (will be shown for allowed users when modal opens)
+        $delBtn.addClass('d-none');
+
+        // remove previous handlers to avoid double-binding
+        $delBtn.off('click.alpsUnavailabilityDelete');
+
+        $delBtn.on('click.alpsUnavailabilityDelete', function (event) {
+            event.preventDefault();
+
+            const modalEl = document.getElementById('kt_modal_view_unavailability');
+            const id = modalEl?.dataset.alpsEventId;
+            if (!id) {
+                console.error('Unavailability id missing on modal.');
+                return;
+            }
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You are about to delete this unavailability.",
+                icon: 'warning',
+                buttonsStyling: false,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Delete',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    confirmButton: "btn btn-danger",
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (!result.isConfirmed) return;
+
+                Swal.fire({
+                    title: 'Deleting...',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                $.ajax({
+                    url: '/calendar/delete_unavailability/' + id,
+                    type: 'DELETE',
+                    headers: { 'X-CSRF-TOKEN': csrfToken },
+                    success: function (response) {
+                        Swal.close();
+                        if (response && response.success) {
+                            Swal.fire({
+                                title: 'Deleted',
+                                text: response.message || 'Unavailability deleted.',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // refresh calendar
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Error',
+                                text: response?.message || 'Unable to delete unavailability.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        Swal.close();
+                        console.error('AJAX Error Details:', xhr.responseText);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'There was an error deleting the unavailability.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        });
+    };
+
+    // initialize the delete handler once
+    bindUnavailabilityDeleteHandler();
+
     // Function to initialize popovers
     const initPopovers = (element, data) => {
         hidePopovers(); // Hide any active popovers
@@ -558,82 +644,26 @@ document.addEventListener('DOMContentLoaded', function () {
             const modalElement = document.getElementById('kt_modal_view_unavailability');
             showModalPreservingScroll(modalElement);
 
+            // store the event id on the modal for the global delete handler
+            if (modalElement) {
+                modalElement.dataset.alpsEventId = data.id;
+            }
+
             let date_unavailable = ` ${moment(data.startDate).format('MMM DD, YYYY')} to ${moment(data.endDate).format('MMM DD, YYYY')} `
 
             $('h1[id="modal-user"]').text(data.user);
             $('p[id="modal-date-unavailable"]').text(date_unavailable);
             $('p[id="modal-purpose"]').text(data.reason);
 
-            if (data.user_id !== authenticated_user) {
-                if (!(authenticated_usertype == "admin")) {
-                    $('.deleteBtnUnavailability').addClass('d-none');
+            // Show/hide delete button: admins can delete any; others only their own
+            const $delBtn = $('.deleteBtnUnavailability');
+            const isAdmin = String(authenticated_usertype || '').trim().toLowerCase() === 'admin';
+            const isOwner = Number(data.user_id) === Number(authenticated_user);
+            if (isAdmin || isOwner) {
+                $delBtn.removeClass('d-none');
+            } else {
+                $delBtn.addClass('d-none');
             }
-        }
-            //Delete unavailability button
-            document.querySelectorAll('.deleteBtnUnavailability').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    event.preventDefault(); // Prevent default action (e.g., form submission)
-
-                    Swal.fire({
-                        title: 'Are you sure?',
-                        text: "You are about to delete this unavailability.",
-                        icon: 'warning',
-                        buttonsStyling: false,
-                        showCancelButton: true,
-                        confirmButtonText: 'Yes, Delete',
-                        cancelButtonText: 'Cancel',
-                        customClass: {
-                            confirmButton: "btn btn-danger",
-                            cancelButton: 'btn btn-secondary'
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            // Proceed with the delete
-
-                            $.ajax({
-                                url: '/calendar/delete_unavailability/'+data.id,
-                                type: 'DELETE',
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                                },
-                                success: function (response) {
-                                    if (response) {
-                                        Swal.fire({
-                                            title: 'Success!',
-                                            text: 'The unavailability has been deleted.',
-                                            icon: 'success',
-                                            confirmButtonText: 'OK'
-                                        }).then((result) => {
-                                            if (result.isConfirmed) {
-                                                window.location.href = '/calendar';
-                                            }
-                                        });
-                                    } else {
-                                        Swal.fire({
-                                            title: 'Wait!',
-                                            text: response.message,
-                                            icon: 'warning',
-                                            confirmButtonText: 'OK'
-                                        }).then(() => {
-                                            location.reload();
-                                        });
-                                    }
-                                },
-                                error: function (xhr, status, error) {
-                                    console.log('AJAX Error Details:', xhr.responseText);
-                                    Swal.fire({
-                                        title: 'Error!',
-                                        text: 'There was an error deleting the unavailability.',
-                                        icon: 'error',
-                                        confirmButtonText: 'OK'
-                                    });
-                                }
-                            });
-                        }
-                    });
-                });
-            });
-
         });
     };
     // Function to hide active popovers
@@ -1085,6 +1115,21 @@ document.addEventListener('DOMContentLoaded', function () {
                         $modalElement.find('#modal-reason').text(eventData.reason || 'No reason provided');
 
                         showModalPreservingScroll(document.getElementById('kt_modal_view_unavailability'));
+
+                        // store id on modal and control delete button visibility
+                        const modalEl = document.getElementById('kt_modal_view_unavailability');
+                        if (modalEl) {
+                            modalEl.dataset.alpsEventId = info.event.id;
+                        }
+
+                        const $delBtn = $('#kt_modal_view_unavailability .deleteBtnUnavailability');
+                        const isAdmin = String(authenticated_usertype || '').trim().toLowerCase() === 'admin';
+                        const isOwner = Number(eventData.user_id) === Number(authenticated_user);
+                        if (isAdmin || isOwner) {
+                            $delBtn.removeClass('d-none');
+                        } else {
+                            $delBtn.addClass('d-none');
+                        }
 
                         return;
                     }
