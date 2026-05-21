@@ -25,6 +25,7 @@ if (filter_var(env('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN)) {
             Route::get('/add_training', [DemoController::class, 'addTrainingForm'])->name('add_training');
             Route::post('/add_training', [DemoController::class, 'storeTraining'])->name('add_training.store');
             Route::get('/api/get/training', [DemoController::class, 'getTraining'])->name('get_training');
+            Route::get('/api/get/holidays', [HolidayController::class, 'get_holidays'])->name('get_holidays');
             Route::get('/edit_training/{id}', [DemoController::class, 'editTraining'])->name('edit_training');
             Route::put('/edit_training/{id}', [DemoController::class, 'updateTraining'])->name('add_training.put');
             Route::delete('/delete_training/{id}', [DemoController::class, 'deleteTraining'])->name('delete_training');

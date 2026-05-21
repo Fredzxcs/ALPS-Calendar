@@ -959,6 +959,39 @@ $(document).ready(function (e) {
                 Swal.close(); // Close loader
 
                 console.log('AJAX Error Details:', xhr.responseText);
+
+                const responseJson = xhr && xhr.responseJSON ? xhr.responseJSON : null;
+                const holidayWarning = xhr && xhr.status === 422 && (
+                    (responseJson && responseJson.message === 'Holiday warning') ||
+                    (responseJson && typeof responseJson.error === 'string' && responseJson.error.toLowerCase().includes('holiday')) ||
+                    (typeof xhr.responseText === 'string' && xhr.responseText.toLowerCase().includes('holiday warning'))
+                );
+
+                if (holidayWarning) {
+                    const warningText = responseJson && responseJson.error
+                        ? responseJson.error
+                        : 'You are about to schedule over a holiday. Back lets you change the date. Proceed will save it anyway.';
+
+                    Swal.fire({
+                        title: 'Holiday conflict',
+                        text: warningText,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Proceed',
+                        cancelButtonText: 'Back',
+                        reverseButtons: true,
+                        customClass: {
+                            confirmButton: 'btn btn-success',
+                            cancelButton: 'btn btn-secondary'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            createTraining(companyId, true);
+                        }
+                    });
+                    return;
+                }
+
                 Swal.fire({
                     title: 'Error!',
                     text: 'There was an error adding the training.',

@@ -720,7 +720,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (completedRequests === 2) {
                     bindEventListeners();
-                    hideCalendarLoader();
+                    loadHolidays().always(function () {
+                        hideCalendarLoader();
+                    });
                 }
             };
 
@@ -785,7 +787,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.error('Error fetching events:', error);
             })
             .always(function () {
-                hideCalendarLoader();
+                loadHolidays().always(function () {
+                    hideCalendarLoader();
+                });
             });
     };
 
@@ -1199,10 +1203,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             calendar.render();
 
-            // Load initial data — fetch holidays first so they are present when trainings load
-            loadHolidays().always(function () {
-                getPopulation(initial);
-            });
+            // Load initial data, then re-apply holidays after calendar population clears events.
+            getPopulation(initial);
 
             // Bind filter change to update events
             $('#applyFilter').click(function (e) {
