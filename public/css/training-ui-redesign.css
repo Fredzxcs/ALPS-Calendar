@@ -1,6 +1,13 @@
 /* ========== TRAINING UI REDESIGN ========== */
 
 /* Overall Page Background & Layout */
+.unavailability-page-wrapper {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .training-page-wrapper {
     background: linear-gradient(180deg, #fbfbfb 0%, #f6f7f8 100%);
     min-height: 100vh;
