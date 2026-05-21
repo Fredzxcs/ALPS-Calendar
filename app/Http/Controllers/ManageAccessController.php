@@ -40,6 +40,17 @@ class ManageAccessController extends Controller
         ], 200);
     }
 
+    public function avatar($id)
+    {
+        $user = User::find($id);
+
+        if ($user && filled($user->image) && Storage::disk('public')->exists($user->image)) {
+            return response()->file(storage_path('app/public/' . ltrim($user->image, '/')));
+        }
+
+        return response()->file(public_path('img/img_default.jpg'));
+    }
+
     public function delete_user($id)
     {
         $user = User::find($id);

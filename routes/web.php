@@ -184,6 +184,10 @@ Route::prefix('access')->middleware(['sesh'])->group(function (){
     Route::get('/api/get/user/{id}', [ManageAccessController::class, 'get_user'])
         ->name('get_user');
 
+    Route::get('/avatar/{id}', [ManageAccessController::class, 'avatar'])
+        ->middleware(['auth', 'user:admin'])
+        ->name('access.avatar');
+
     Route::get('/edit_user/{id}', [ManageAccessController::class, 'edit_user'])
         ->middleware(['auth', 'user:admin'])
         ->name('edit_user');

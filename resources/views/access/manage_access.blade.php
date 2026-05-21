@@ -94,11 +94,7 @@
                         <tr row-id="{{ $user->id }}" data-role="{{ strtolower($user->usertype) }}">
                             <td class="d-flex align-items-center text-start">
                                 <div class="symbol symbol-50px me-3 border border-2 border-dark">
-                                    @isset($user->image)
-                                        <img src="{{ asset('storage/' . $user->image) }}" alt="Profile Picture">
-                                    @else
-                                        <img src="{{ asset('img/img_default.jpg') }}" alt="default-image">
-                                    @endisset
+                                    <img src="{{ route('access.avatar', $user->id) }}" alt="Profile Picture" style="object-fit: cover; width: 100%; height: 100%;">
                                 </div>
                                 <div class="fs-5">
                                     <span class="fw-bold d-block">{{ $user->name }}</span>
@@ -437,12 +433,8 @@
                     $('#email').text(response.user.email);
                     $('#num').text(response.user.contact_number);
                     
-                    if (response.user.image) {
-                        let picture = `<img class="w-125px h-125px" src="/storage/${response.user.image}" alt="default-image">`;
-                        $('#idpic').html(picture);
-                    } else {
-                        $('#idpic').html('<p>No Image</p>');
-                    }
+                    let picture = `<img class="w-125px h-125px" style="object-fit: cover;" src="{{ url('/access/avatar') }}/${response.user.id}" alt="Profile Picture">`;
+                    $('#idpic').html(picture);
 
                     $('#username').text(response.user.username);
                     $('#pass').text(response.user.password);

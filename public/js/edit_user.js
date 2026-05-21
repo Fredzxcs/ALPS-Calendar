@@ -52,11 +52,12 @@ function fetchUserData(userId) {
                 $(`input[name="radio_buttons_2"][value="${response.user.usertype}"]`).prop('checked', true);
 
                 // Update image preview
-                if (response.user.image) {
-                    $('.image-input-wrapper').css('background-image', `url(/storage/${response.user.image})`);
-                } else {
-                    $('.image-input-wrapper').css('background-image', 'none');
-                }
+                $('.image-input-wrapper').css({
+                    'background-image': `url(/access/avatar/${response.user.id})`,
+                    'background-size': 'cover',
+                    'background-position': 'center',
+                    'background-repeat': 'no-repeat'
+                });
 
                 console.log('User data loaded successfully', response);
             }
