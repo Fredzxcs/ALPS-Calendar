@@ -24,6 +24,25 @@ use Carbon\Carbon;
 
 class TrainingController extends Controller
 {
+    private function facilitatorDropdownUsers()
+    {
+        return User::query()
+            ->where(function ($query) {
+                $query->where('usertype', 'facilitator')
+                    ->orWhereIn('username', ['noel.alps', 'loyce.alps']);
+            })
+            ->orderBy('name')
+            ->get();
+    }
+
+    private function staffDropdownUsers()
+    {
+        return User::query()
+            ->whereIn('usertype', ['admin', 'coordinator'])
+            ->orderBy('name')
+            ->get();
+    }
+
     private function shouldSendMailTo(?string $email): bool
     {
         if (empty($email)) {
@@ -161,6 +180,9 @@ class TrainingController extends Controller
     public function create()
     {
         $users = User::all();
+        $facilitatorUsers = $this->facilitatorDropdownUsers();
+        $accountManagerUsers = $this->staffDropdownUsers();
+        $assistantUsers = $accountManagerUsers;
 
         $courses = Course::all();
 
@@ -168,7 +190,7 @@ class TrainingController extends Controller
 
         $accounts = Account::all();
 
-        return view('add_training.add_training', compact('users', 'courses', 'companies', 'accounts'));
+        return view('add_training.add_training', compact('users', 'facilitatorUsers', 'accountManagerUsers', 'assistantUsers', 'courses', 'companies', 'accounts'));
     }
 
     /**
@@ -606,8 +628,11 @@ class TrainingController extends Controller
             return redirect()->route('calendar')->with('error', 'Training not found.');
         }
 
-        // Fetch all users to populate the facilitator dropdown
-        $facilitators = User::all();
+        // Fetch filtered users for the dropdowns
+        $users = User::all();
+        $facilitatorUsers = $this->facilitatorDropdownUsers();
+        $accountManagerUsers = $this->staffDropdownUsers();
+        $assistantUsers = $accountManagerUsers;
 
         $courses = Course::all();
 
@@ -616,7 +641,7 @@ class TrainingController extends Controller
         $accounts = Account::all();
 
         // Pass the training object and facilitators to the view
-        return view('add_training.edit_training', compact('training', 'facilitators', 'courses', 'companies', 'accounts'));
+        return view('add_training.edit_training', compact('training', 'users', 'facilitatorUsers', 'accountManagerUsers', 'assistantUsers', 'courses', 'companies', 'accounts'));
     }
 
     /**

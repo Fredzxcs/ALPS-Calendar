@@ -238,7 +238,7 @@
                                 <select id="facilitator" name="facilitator_id" class="training-select">
                                     <option disabled>Select Facilitator</option>
                                     <option value="">No Facilitator Yet</option>
-                                    @foreach ($facilitators as $user)
+                                    @foreach ($facilitatorUsers as $user)
                                         <option value="{{ $user->id }}" {{ $t_facilitator_id == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
                                     @endforeach
                                 </select>
@@ -249,7 +249,7 @@
                                 <select id="account_manager" name="account_manager_id" class="training-select">
                                     <option disabled selected>Select Account Manager</option>
                                     <option value="">No Account Manager Yet</option>
-                                    @foreach ($facilitators as $user)
+                                    @foreach ($accountManagerUsers as $user)
                                         <option value="{{ $user->id }}" {{ $t_account_manager_id == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
                                     @endforeach
                                 </select>
@@ -260,7 +260,7 @@
                                 <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
                                     <select id="assistant_select" class="training-select" style="flex: 1;">
                                         <option value="" selected disabled>Select Assistant</option>
-                                        @foreach ($facilitators as $user)
+                                        @foreach ($assistantUsers as $user)
                                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                                         @endforeach
                                     </select>

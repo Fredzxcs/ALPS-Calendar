@@ -1,8 +1,7 @@
-@extends('global.layout')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<link rel="stylesheet" href="{{ asset('css/training-ui-redesign.css') }}">
+<link rel="stylesheet" href="<?php echo e(asset('css/training-ui-redesign.css')); ?>">
 
-@section('maincontent')
+<?php $__env->startSection('maincontent'); ?>
     <div class="d-flex justify-content-center align-items-center mt-20">
         <div class="container mt-5">
             <div class="shadow-sm border-0">
@@ -45,20 +44,20 @@
 
                     <!--begin::Form-->
                     <form class="form mx-auto w-75 px-5" novalidate="novalidate" id="training-form">
-                    @php
+                    <?php
                         $currentUser = auth()->user();
                         $googleConnected = ($currentUser instanceof \App\Models\User && !empty($currentUser->google_refresh_token)) || session('google_connected', false);
-                    @endphp
+                    ?>
 
                     <div class="google-calendar-card mb-5">
                         <h3>Connect Account for Google Calendar Invites</h3>
                         <p>The connected account will be listed as the event organizer and used to send invites.</p>
-                            @if ($googleConnected)
+                            <?php if($googleConnected): ?>
                             <div style="background: #d1fae5; color: #047857; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.9rem; font-weight: 600;">
                                 ✓ Connected - Ensure you are using your work profile.
                             </div>
-                            @else
-                            <a id="google_signin_btn" href="{{ route('google.redirect', ['from' => 'add_training']) }}" class="google-calendar-button">
+                            <?php else: ?>
+                            <a id="google_signin_btn" href="<?php echo e(route('google.redirect', ['from' => 'add_training'])); ?>" class="google-calendar-button">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -67,7 +66,7 @@
                                 </svg>
                                 SIGN IN WITH GOOGLE
                             </a>
-                            @endif
+                            <?php endif; ?>
                     </div>
 
                     <div class="mb-5">
@@ -106,11 +105,12 @@
                                         <label for="public-course-select">Course <span class="required"></span></label>
                                         <select id="public-course-select" class="training-select" style="width: 100%; margin-top: 0.5rem;">
                                             <option value="" disabled selected>Select Course</option>
-                                            @foreach ($courses as $course)
-                                            <option value="{{ $course->id }}">
-                                                {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
+                                            <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($course->id); ?>">
+                                                <?php echo e($course->course_code ? $course->course_code . ' - ' : ''); ?><?php echo e($course->course_name); ?>
+
                                             </option>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </select>
                                     </div>
                                 </div>
@@ -148,11 +148,12 @@
                                 <label for="credentials">Account</label>
                                 <select id="credentials" class="training-select">
                                     <option value="" disabled selected>Select Host Email Account</option>
-                                    @foreach ($accounts as $account)
-                                        <option value="{{ $account->id }}">
-                                            {{ $account->account_email }}
+                                    <?php $__currentLoopData = $accounts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $account): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($account->id); ?>">
+                                            <?php echo e($account->account_email); ?>
+
                                         </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -172,11 +173,12 @@
                                 <label for="company">Company <span class="required"></span></label>
                                 <select id="company" class="training-select">
                                     <option value="" disabled selected>Select Company</option>
-                                    @foreach ($companies as $company)
-                                        <option value="{{ $company->id }}">
-                                            {{ $company->company_name }}
+                                    <?php $__currentLoopData = $companies; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $company): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($company->id); ?>">
+                                            <?php echo e($company->company_name); ?>
+
                                         </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <option value="other">Other</option>
                                 </select>
                                 <input type="text" id="enter-company" class="training-input d-none" style="margin-top: 0.5rem;" placeholder="Enter Company">
@@ -186,11 +188,12 @@
                                 <label for="course">Course <span class="required"></span></label>
                                 <select id="course" class="training-select">
                                     <option value="" disabled selected>Select Course</option>
-                                    @foreach ($courses as $course)
-                                    <option value="{{ $course->id }}">
-                                        {{ $course->course_code ? $course->course_code . ' - ' : '' }}{{ $course->course_name }}
+                                    <?php $__currentLoopData = $courses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $course): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($course->id); ?>">
+                                        <?php echo e($course->course_code ? $course->course_code . ' - ' : ''); ?><?php echo e($course->course_name); ?>
+
                                     </option>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
                         </div>
@@ -218,9 +221,9 @@
                                 <select id="facilitator" name="facilitator_id" class="training-select">
                                     <option disabled selected>Select Facilitator</option>
                                     <option value="">No Facilitator Yet</option>
-                                    @foreach ($facilitatorUsers as $user)
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $facilitatorUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
 
@@ -229,9 +232,9 @@
                                 <select id="account_manager" name="account_manager_id" class="training-select">
                                     <option disabled selected>Select Account Manager</option>
                                     <option value="">No Account Manager Yet</option>
-                                    @foreach ($accountManagerUsers as $user)
-                                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                    @endforeach
+                                    <?php $__currentLoopData = $accountManagerUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </select>
                             </div>
 
@@ -240,9 +243,9 @@
                                 <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
                                     <select id="assistant_select" class="training-select" style="flex: 1;">
                                         <option value="" selected disabled>Select Assistant</option>
-                                        @foreach ($assistantUsers as $user)
-                                            <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                        @endforeach
+                                        <?php $__currentLoopData = $assistantUsers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                            <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                     <button type="button" id="assistant_add_btn" class="training-btn training-btn-secondary-blue">ADD</button>
                                 </div>
@@ -346,9 +349,9 @@
                                         <div style="display: flex; gap: 0.5rem;">
                                             <select id="coordinator_to_notify_select" class="training-select" style="flex: 1;">
                                                 <option value="" selected disabled>Select Coordinator</option>
-                                                @foreach ($users as $user)
-                                                    <option value="{{ $user->id }}">{{ $user->name }}</option>
-                                                @endforeach
+                                                <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($user->id); ?>"><?php echo e($user->name); ?></option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                             <button type="button" id="coordinator_add_btn" class="training-btn training-btn-secondary-blue">ADD</button>
                                         </div>
@@ -366,7 +369,7 @@
                     <!-- Buttons -->
                     <div class="d-flex flex-stack mt-5">
                         <div class="me-2 d-flex gap-2">
-                            <a href="{{ route('calendar') }}" class="btn btn-light btn-active-light-primary">CANCEL</a>
+                            <a href="<?php echo e(route('calendar')); ?>" class="btn btn-light btn-active-light-primary">CANCEL</a>
                             <button type="button" class="btn btn-light btn-active-light-primary" id="add_training_back" data-kt-stepper-action="previous">BACK</button>
                         </div>
                         <div>
@@ -389,13 +392,13 @@
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="{{ asset('js/add_training.js') }}"></script>
-    <script src="{{ asset('plugins/custom/formrepeater/formrepeater.bundle.js') }}"></script>
+    <script src="<?php echo e(asset('js/add_training.js')); ?>"></script>
+    <script src="<?php echo e(asset('plugins/custom/formrepeater/formrepeater.bundle.js')); ?>"></script>
 
     <script>
         $('#asst_repeat').repeater({
@@ -411,4 +414,6 @@
             }
         });
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('global.layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Lagman\Desktop\Codes\ALPs Calendar\ALPS-Calendar\resources\views/add_training/add_training.blade.php ENDPATH**/ ?>

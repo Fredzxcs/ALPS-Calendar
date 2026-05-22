@@ -29,6 +29,21 @@ class DemoController extends Controller
         return filter_var(env('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN);
     }
 
+    private function facilitatorDropdownUsers(): Collection
+    {
+        return $this->fixtureCollection('users.json')->filter(function ($user) {
+            return ($user->usertype ?? null) === 'facilitator'
+                || in_array($user->username ?? null, ['noel.alps', 'loyce.alps'], true);
+        })->sortBy('name')->values();
+    }
+
+    private function staffDropdownUsers(): Collection
+    {
+        return $this->fixtureCollection('users.json')->filter(function ($user) {
+            return in_array($user->usertype ?? null, ['admin', 'coordinator'], true);
+        })->sortBy('name')->values();
+    }
+
     private function fixtures(string $file): array
     {
         $path = public_path('mock/' . $file);
@@ -279,8 +294,13 @@ class DemoController extends Controller
 
     public function addTrainingForm(): View
     {
+        $users = $this->fixtureCollection('users.json');
+
         return view('add_training.add_training', [
-            'users' => $this->fixtureCollection('users.json'),
+            'users' => $users,
+            'facilitatorUsers' => $this->facilitatorDropdownUsers(),
+            'accountManagerUsers' => $this->staffDropdownUsers(),
+            'assistantUsers' => $this->staffDropdownUsers(),
             'courses' => $this->fixtureCollection('courses.json'),
             'companies' => $this->fixtureCollection('companies.json'),
             'accounts' => $this->fixtureCollection('accounts.json'),
@@ -1035,9 +1055,16 @@ class DemoController extends Controller
             $accountsList = $this->fixtureCollection('accounts.json');
         }
 
+        $facilitatorUsers = $this->facilitatorDropdownUsers();
+        $accountManagerUsers = $this->staffDropdownUsers();
+        $assistantUsers = $accountManagerUsers;
+
         return view('add_training.edit_training', [
             'training' => $trainingObject,
             'facilitators' => $facilitatorsList,
+            'facilitatorUsers' => $facilitatorUsers,
+            'accountManagerUsers' => $accountManagerUsers,
+            'assistantUsers' => $assistantUsers,
             'courses' => $coursesList,
             'companies' => $companiesList,
             'accounts' => $accountsList,
