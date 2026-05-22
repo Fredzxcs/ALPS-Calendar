@@ -612,6 +612,38 @@ document.addEventListener('DOMContentLoaded', function () {
                             console.log('AJAX error - Response:', xhr?.responseJSON || xhr?.responseText);
                             Swal.close();
 
+                            const responseJson = xhr && xhr.responseJSON ? xhr.responseJSON : null;
+                            const holidayWarning = xhr && xhr.status === 422 && (
+                                (responseJson && responseJson.message === 'Holiday warning') ||
+                                (responseJson && typeof responseJson.error === 'string' && responseJson.error.toLowerCase().includes('holiday')) ||
+                                (typeof xhr.responseText === 'string' && xhr.responseText.toLowerCase().includes('holiday warning'))
+                            );
+
+                            if (holidayWarning) {
+                                const warningText = responseJson && responseJson.error
+                                    ? responseJson.error
+                                    : 'You are about to edit a training over a holiday. Back lets you change the date. Proceed will save it anyway.';
+
+                                Swal.fire({
+                                    title: 'Holiday conflict',
+                                    text: warningText,
+                                    icon: 'warning',
+                                    showCancelButton: true,
+                                    confirmButtonText: 'Proceed',
+                                    cancelButtonText: 'Back',
+                                    reverseButtons: true,
+                                    customClass: {
+                                        confirmButton: 'btn btn-success',
+                                        cancelButton: 'btn btn-secondary'
+                                    }
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        editTraining(companyId, true);
+                                    }
+                                });
+                                return;
+                            }
+
                             if (xhr && xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
                                 const errors = xhr.responseJSON.errors;
                                 const html = Object.keys(errors).map(k => `<strong>${k}:</strong> ${errors[k].join(', ')}`).join('<br/>');
