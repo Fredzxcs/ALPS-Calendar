@@ -185,7 +185,7 @@
                                         <!--begin::Image input-->
                                         <div class="image-input image-input-outline alps-avatar-blank-bg" data-kt-image-input="true">
                                             <!--begin::Preview existing avatar-->
-                                            <div class="image-input-wrapper w-125px h-125px alps-avatar-default-bg" style="background-image: url('{{ route('access.avatar', $user->id ?? 0) }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
+                                            <div class="image-input-wrapper w-125px h-125px alps-avatar-default-bg" style="background-image: url('{{ $user->image ? asset('storage/' . ltrim($user->image, '/')) : asset('img/img_default.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
                                             <!--end::Preview existing avatar-->
                                             <!--begin::Label-->
                                             <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Select Image">
@@ -251,7 +251,9 @@
 @push('scripts')
 
 <script>
-    var userId = {{ $user ?? 'null' }}; // Pass user ID to JavaScript
+    window.userId = @json($user->id ?? null);
+    window.avatarStorageBaseUrl = @json(asset('storage'));
+    window.defaultAvatarUrl = @json(asset('img/img_default.jpg'));
 </script>
 <script src="{{ asset('js/manage_access.js') }}"></script>
 <script src="{{ asset('js/edit_user.js') }}"></script>

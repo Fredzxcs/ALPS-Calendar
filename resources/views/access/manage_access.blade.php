@@ -94,7 +94,7 @@
                         <tr row-id="{{ $user->id }}" data-role="{{ strtolower($user->usertype) }}">
                             <td class="d-flex align-items-center text-start">
                                 <div class="symbol symbol-50px me-3 border border-2 border-dark">
-                                    <img src="{{ route('access.avatar', $user->id) }}" alt="Profile Picture" style="object-fit: cover; width: 100%; height: 100%;">
+                                    <img src="{{ $user->image ? asset('storage/' . ltrim($user->image, '/')) : asset('img/img_default.jpg') }}" alt="Profile Picture" style="object-fit: cover; width: 100%; height: 100%;">
                                 </div>
                                 <div class="fs-5">
                                     <span class="fw-bold d-block">{{ $user->name }}</span>
@@ -433,7 +433,11 @@
                     $('#email').text(response.user.email);
                     $('#num').text(response.user.contact_number);
                     
-                    let picture = `<img class="w-125px h-125px" style="object-fit: cover;" src="{{ url('/access/avatar') }}/${response.user.id}" alt="Profile Picture">`;
+                    const avatarUrl = response.user.image
+                        ? `{{ asset('storage') }}/${String(response.user.image).replace(/^\/+/, '')}`
+                        : `{{ asset('img/img_default.jpg') }}`;
+
+                    let picture = `<img class="w-125px h-125px" style="object-fit: cover;" src="${avatarUrl}" alt="Profile Picture">`;
                     $('#idpic').html(picture);
 
                     $('#username').text(response.user.username);

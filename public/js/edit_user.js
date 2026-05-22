@@ -2,19 +2,17 @@
 var element = document.querySelector("#kt_stepper_example_basic");
 
 // Initialize Stepper
-var stepper = element ? new KTStepper(element) : null;
+var stepper = new KTStepper(element);
 
-if (stepper && typeof stepper.on === "function") {
-    // Handle next step
-    stepper.on("kt.stepper.next", function (stepper) {
-        stepper.goNext(); // go next step
-    });
+// Handle next step
+stepper.on("kt.stepper.next", function (stepper) {
+    stepper.goNext(); // go next step
+});
 
-    // Handle previous step
-    stepper.on("kt.stepper.previous", function (stepper) {
-        stepper.goPrevious(); // go previous step
-    });
-}
+// Handle previous step
+stepper.on("kt.stepper.previous", function (stepper) {
+    stepper.goPrevious(); // go previous step
+});
 
 // Example usage: Fetch user data when any row's button is clicked
 $(document).ready(function () {
@@ -54,8 +52,9 @@ function fetchUserData(userId) {
                 $(`input[name="radio_buttons_2"][value="${response.user.usertype}"]`).prop('checked', true);
 
                 // Update image preview
+                const avatarUrl = buildAvatarUrl(response.user.image);
                 $('.image-input-wrapper').css({
-                    'background-image': `url(/access/avatar/${response.user.id})`,
+                    'background-image': `url('${avatarUrl}')`,
                     'background-size': 'cover',
                     'background-position': 'center',
                     'background-repeat': 'no-repeat'
@@ -216,7 +215,7 @@ function fetchUserData(userId) {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const userId = window.userId;
+    const userId = window.userId ?? document.getElementById('userId')?.value ?? null;
 
     if (!userId || userId === 'null') {
         console.error("User ID not found.");
@@ -234,8 +233,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let contactNumberInput = $('#edit_contact_number');
     let idPictureInput = $('input[name="avatar"]');
 
+    const avatarStorageBaseUrl = window.avatarStorageBaseUrl || '/storage';
+    const defaultAvatarUrl = window.defaultAvatarUrl || '/img/img_default.jpg';
+
+    function buildAvatarUrl(imagePath) {
+        if (!imagePath) {
+            return defaultAvatarUrl;
+        }
+
+        return `${avatarStorageBaseUrl}/${String(imagePath).replace(/^\/+/, '')}`;
+    }
+
     // Remove error border when user starts typing
     [fullnameInput, emailInput, contactNumberInput].forEach(input => {
+        if (!input || !input.length) {
+            return;
+        }
+
         input.on('input', function () {
             if ($(this).val().trim()) {
                 $(this).removeClass('border-danger');
@@ -372,10 +386,12 @@ $(document).on('input change', 'input, select, textarea', function () {
 const contactNumberInput = document.getElementById('edit_contact_number');
 
 // Prevent non-numeric input
-contactNumberInput.addEventListener('input', function(event) {
-    // Replace any non-digit characters with an empty string
-    this.value = this.value.replace(/\D/g, '');
-});
+if (contactNumberInput) {
+    contactNumberInput.addEventListener('input', function(event) {
+        // Replace any non-digit characters with an empty string
+        this.value = this.value.replace(/\D/g, '');
+    });
+}
 
         // formData.append('middle_name', middlenameInput.value.trim());
         // formData.append('last_name', lastnameInput.value.trim());
