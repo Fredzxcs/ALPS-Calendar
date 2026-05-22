@@ -45,6 +45,7 @@ if (filter_var(env('APP_DEMO', false), FILTER_VALIDATE_BOOLEAN)) {
             Route::get('/add_user', [DemoController::class, 'addUserForm'])->name('add_user');
             Route::post('/add_user', [DemoController::class, 'storeUser'])->name('add_user.store');
             Route::get('/api/get/user/{id}', [DemoController::class, 'getUser'])->name('get_user');
+            Route::get('/avatar/{id}', [DemoController::class, 'avatar'])->name('access.avatar');
             Route::get('/edit_user/{id}', [DemoController::class, 'editUser'])->name('edit_user');
             Route::post('/update_user/{id}', [DemoController::class, 'updateUser']);
             Route::get('/change_credentials/{id}', [DemoController::class, 'changeCredentials'])->name('change_credential');

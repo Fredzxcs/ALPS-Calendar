@@ -1,6 +1,4 @@
-@extends('global.layout')
-
-@section('maincontent')
+<?php $__env->startSection('maincontent'); ?>
 <div class="container mt-5 d-flex justify-content-center align-items-center">
     <div class="container mt-5 alps-card">
         <!-- Title -->
@@ -61,7 +59,7 @@
 
             <div>
                 <!-- ADD USER Button (primary orange) -->
-                 <a href="{{ route('add_user') }}" class="btn btn-primary btn-orange rounded-3 fw-boldest btn-hover-rise">
+                 <a href="<?php echo e(route('add_user')); ?>" class="btn btn-primary btn-orange rounded-3 fw-boldest btn-hover-rise">
                     <span class="svg-icon svg-icon-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
                             <rect opacity="0.5" x="11.364" y="20.364" width="16" height="2" rx="1" transform="rotate(-90 11.364 20.364)" fill="black" />
@@ -89,51 +87,51 @@
                 <tbody>
                     <!-- Row -->
 
-                    @foreach ($users as $user)
+                    <?php $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $user): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 
-                        <tr row-id="{{ $user->id }}" data-role="{{ strtolower($user->usertype) }}">
+                        <tr row-id="<?php echo e($user->id); ?>" data-role="<?php echo e(strtolower($user->usertype)); ?>">
                             <td class="d-flex align-items-center text-start">
                                 <div class="symbol symbol-50px alps-avatar-frame-sm me-3 border border-2 border-dark">
-                                    <img src="{{ route('access.avatar', $user->id) }}" alt="Profile Picture" style="object-fit: cover; width: 100%; height: 100%;">
+                                    <img src="<?php echo e(route('access.avatar', $user->id)); ?>" alt="Profile Picture" style="object-fit: cover; width: 100%; height: 100%;">
                                 </div>
                                 <div class="fs-5">
-                                    <span class="fw-bold d-block">{{ $user->name }}</span>
-                                    <small class="text-muted">{{ $user->username }}</small>
+                                    <span class="fw-bold d-block"><?php echo e($user->name); ?></span>
+                                    <small class="text-muted"><?php echo e($user->username); ?></small>
                                 </div>
                             </td>
-                            <td>{{ $user->email }}</td>
+                            <td><?php echo e($user->email); ?></td>
 
-                            <td class="user-role" data-role="{{ strtolower($user->usertype) }}"> 
-                                @switch($user->usertype)
-                                    @case("admin")
+                            <td class="user-role" data-role="<?php echo e(strtolower($user->usertype)); ?>"> 
+                                <?php switch($user->usertype):
+                                    case ("admin"): ?>
                                         <span class="badge badge-light-warning">SYSTEM ADMIN</span>
-                                        @break
-                                    @case("coordinator")
+                                        <?php break; ?>
+                                    <?php case ("coordinator"): ?>
                                         <span class="badge badge-light-primary">COORDINATOR</span>
-                                        @break
-                                    @case("facilitator")
+                                        <?php break; ?>
+                                    <?php case ("facilitator"): ?>
                                         <span class="badge badge-light-info">FACILITATOR</span>
-                                        @break
-                                    <!-- @case("assistant")
+                                        <?php break; ?>
+                                    <!-- <?php case ("assistant"): ?>
                                         <span class="badge badge-light-success">ASSISTANT</span>
-                                        @break -->
-                                    @default
+                                        <?php break; ?> -->
+                                    <?php default: ?>
                                         <span class="badge badge-light-secondary">-</span>
-                                @endswitch
+                                <?php endswitch; ?>
 
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center">
 
-                                    @if ($user->color)
+                                    <?php if($user->color): ?>
 
-                                    <div class="alps-user-color-chip user-color-chip" data-color="{{ $user->color }}"></div>
+                                    <div class="alps-user-color-chip user-color-chip" data-color="<?php echo e($user->color); ?>"></div>
 
-                                    @else
+                                    <?php else: ?>
 
                                     <p class="mb-0">No Color Assigned</p>
 
-                                    @endif
+                                    <?php endif; ?>
 
                                 </div>
                             </td>
@@ -156,14 +154,14 @@
                                         </div>
 
                                         <div class="menu-item px-0">
-                                            <a href="{{ route('change_credential', [$user->id]) }}" id="edit-credential-btn" class="menu-link px-4 py-3 alps-action-link">
+                                            <a href="<?php echo e(route('change_credential', [$user->id])); ?>" id="edit-credential-btn" class="menu-link px-4 py-3 alps-action-link">
                                                 <i class="bi bi-lock-fill me-3 fs-5" style="color: #804AC0;"></i>
                                                 <span class="alps-action-text">Change Credentials</span>
                                             </a>
                                         </div>
 
                                         <div class="menu-item px-0">
-                                            <a class="menu-link px-4 py-3 alps-action-link deleteBtn" data-id="{{ $user->id }}">
+                                            <a class="menu-link px-4 py-3 alps-action-link deleteBtn" data-id="<?php echo e($user->id); ?>">
                                                 <i class="bi bi-trash text-danger me-3 fs-5"></i>
                                                 <span class="alps-action-text">Delete</span>
                                             </a>
@@ -174,9 +172,9 @@
                             </td>
                         </tr>
 
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                    {{-- End Row --}}
+                    
                 </tbody>
             </table>
         </div>
@@ -388,11 +386,11 @@
     <!--end::Modals-->
 
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
-<script src="{{ asset('js/manage_access.js') }}"></script>
-<script src="{{ asset('js/edit_user.js') }}"></script>
+<?php $__env->startPush('scripts'); ?>
+<script src="<?php echo e(asset('js/manage_access.js')); ?>"></script>
+<script src="<?php echo e(asset('js/edit_user.js')); ?>"></script>
 
 
 <!-- VIEW USER DATA  -->
@@ -433,7 +431,7 @@
                     $('#email').text(response.user.email);
                     $('#num').text(response.user.contact_number);
                     
-                    let picture = `<img class="alps-avatar-preview" src="{{ url('/access/avatar') }}/${response.user.id}" alt="Profile Picture">`;
+                    let picture = `<img class="alps-avatar-preview" src="<?php echo e(url('/access/avatar')); ?>/${response.user.id}" alt="Profile Picture">`;
                     $('#idpic').html(picture);
 
                     $('#username').text(response.user.username);
@@ -457,4 +455,6 @@
     });
 </script>
 
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('global.layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Lagman\Desktop\Codes\ALPs Calendar\ALPS-Calendar\resources\views\access\manage_access.blade.php ENDPATH**/ ?>

@@ -1210,6 +1210,21 @@ class DemoController extends Controller
         return response()->json(['user' => $user], 200);
     }
 
+    public function avatar(int $id)
+    {
+        $user = $this->findUser($id);
+
+        if ($user && !empty($user['image'])) {
+            $imagePath = public_path(ltrim((string) $user['image'], '/'));
+
+            if (file_exists($imagePath)) {
+                return response()->file($imagePath);
+            }
+        }
+
+        return response()->file(public_path('img/img_default.jpg'));
+    }
+
     public function editUser(int $id): View
     {
         return view('access.edit_user', [
