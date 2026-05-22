@@ -44,10 +44,25 @@ class ManageAccessController extends Controller
     {
         $user = User::find($id);
 
-        if ($user && filled($user->image) && Storage::disk('public')->exists($user->image)) {
-            return response()->file(storage_path('app/public/' . ltrim($user->image, '/')));
+        if ($user) {
+            $image = $user->image;
+
+            // 1) If stored on the public disk (storage/app/public/...), redirect to the public URL
+            if (!empty($image) && Storage::disk('public')->exists($image)) {
+                $publicUrl = url('storage/app/public/' . ltrim($image, '/'));
+                return redirect()->to($publicUrl);
+            }
+
+            // 2) If the image path points to a file under public/ (e.g., 'img/...')
+            if (!empty($image)) {
+                $publicPath = public_path(ltrim($image, '/'));
+                if (file_exists($publicPath)) {
+                    return response()->file($publicPath);
+                }
+            }
         }
 
+        // Fallback to bundled default image
         return response()->file(public_path('img/img_default.jpg'));
     }
 
