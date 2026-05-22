@@ -52,9 +52,8 @@ function fetchUserData(userId) {
                 $(`input[name="radio_buttons_2"][value="${response.user.usertype}"]`).prop('checked', true);
 
                 // Update image preview
-                const avatarUrl = buildAvatarUrl(response.user.image);
                 $('.image-input-wrapper').css({
-                    'background-image': `url('${avatarUrl}')`,
+                    'background-image': `url(/access/avatar/${response.user.id})`,
                     'background-size': 'cover',
                     'background-position': 'center',
                     'background-repeat': 'no-repeat'
@@ -215,7 +214,7 @@ function fetchUserData(userId) {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const userId = window.userId ?? document.getElementById('userId')?.value ?? null;
+    const userId = window.userId;
 
     if (!userId || userId === 'null') {
         console.error("User ID not found.");
@@ -233,23 +232,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let contactNumberInput = $('#edit_contact_number');
     let idPictureInput = $('input[name="avatar"]');
 
-    const avatarStorageBaseUrl = window.avatarStorageBaseUrl || '/storage';
-    const defaultAvatarUrl = window.defaultAvatarUrl || '/img/img_default.jpg';
-
-    function buildAvatarUrl(imagePath) {
-        if (!imagePath) {
-            return defaultAvatarUrl;
-        }
-
-        return `${avatarStorageBaseUrl}/${String(imagePath).replace(/^\/+/, '')}`;
-    }
-
     // Remove error border when user starts typing
     [fullnameInput, emailInput, contactNumberInput].forEach(input => {
-        if (!input || !input.length) {
-            return;
-        }
-
         input.on('input', function () {
             if ($(this).val().trim()) {
                 $(this).removeClass('border-danger');
@@ -386,12 +370,10 @@ $(document).on('input change', 'input, select, textarea', function () {
 const contactNumberInput = document.getElementById('edit_contact_number');
 
 // Prevent non-numeric input
-if (contactNumberInput) {
-    contactNumberInput.addEventListener('input', function(event) {
-        // Replace any non-digit characters with an empty string
-        this.value = this.value.replace(/\D/g, '');
-    });
-}
+contactNumberInput.addEventListener('input', function(event) {
+    // Replace any non-digit characters with an empty string
+    this.value = this.value.replace(/\D/g, '');
+});
 
         // formData.append('middle_name', middlenameInput.value.trim());
         // formData.append('last_name', lastnameInput.value.trim());
