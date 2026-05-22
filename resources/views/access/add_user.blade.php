@@ -308,7 +308,14 @@
                                     <div class="col-md-6">
                                         <div id="assignColorSection" class="mt-5">
                                             <label for="color" class="form-label fw-bold required">Assign Color</label>
-                                            <input type="color" id="color" class="form-control form-control-solid w-100px h-50px" />
+                                            <input type="hidden" id="color" name="color" value="{{ old('color') }}">
+                                            <button type="button" id="openColorPicker" class="btn alps-color-trigger w-100 mt-2">
+                                                <span class="alps-color-trigger-swatch" id="colorPreviewSwatch"></span>
+                                                <span class="d-flex flex-column text-start">
+                                                    <span class="fw-bold">Choose a color</span>
+                                                    <span class="small text-muted" id="colorPreviewHex">Tap to open the color modal</span>
+                                                </span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -354,8 +361,16 @@
         </div>
     </div>
 </div>
+@include('access.partials.color_picker_modal')
 @endsection
 @push('scripts')
+    <script>
+        window.ALPS_ACCESS_COLOR_STATE = @json([
+            'takenColors' => $takenColors ?? [],
+            'currentColor' => $currentColor ?? null,
+        ]);
+    </script>
+    <script src="{{ asset('js/access_color_picker.js') }}"></script>
     <script src="{{ asset('js/add_user.js') }}"></script>
     <!-- <script>
         const roleRadios = document.querySelectorAll('input[name="radio_buttons_2"]');

@@ -1,5 +1,4 @@
-@extends('global.layout')
-@section('maincontent')
+<?php $__env->startSection('maincontent'); ?>
     <div class="d-flex justify-content-center align-items-center mt-20">
     <div class="container mt-5">
         <div class="shadow-sm border-0">
@@ -8,7 +7,7 @@
             </div>
             <!--begin::Form-->
             <form class="form w-100 px-5 alps-card-glass-body p-10" novalidate="novalidate" id="change_credentials_form">
-                @csrf
+                <?php echo csrf_field(); ?>
                 <!--begin::Group-->
                 <div class="mb-5 my-10">
                     <!--begin::Input Group-->
@@ -55,7 +54,7 @@
                                 <div class="col-md-6">
                                     <div id="assignColorSection" class="mt-5">
                                         <label for="color" class="form-label fw-bold required">Assign Color</label>
-                                        <input type="hidden" id="color" name="color" value="{{ old('color', $currentColor ?? '') }}">
+                                        <input type="hidden" id="color" name="color" value="<?php echo e(old('color', $currentColor ?? '')); ?>">
                                         <button type="button" id="openColorPicker" class="btn alps-color-trigger w-100 mt-2">
                                             <span class="alps-color-trigger-swatch" id="colorPreviewSwatch"></span>
                                             <span class="d-flex flex-column text-start">
@@ -72,27 +71,26 @@
 
                     <!-- Buttons -->
                     <div class="d-flex justify-content-center gap-5 mt-5">
-                        <a href="{{ route('manage_access') }}">
+                        <a href="<?php echo e(route('manage_access')); ?>">
                             <button type="button" class="btn btn-light fw-boldest">CANCEL</button>
                         </a>
                         <button type="submit" id="change_credentials_submit" class="btn btn-success fw-boldest">SAVE</button>
                     </div>
                 </div>
-            @include('access.partials.color_picker_modal')
+            <?php echo $__env->make('access.partials.color_picker_modal', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </form>
             <!--end::Form-->
             <script>
-                window.ALPS_ACCESS_COLOR_STATE = @json([
-                    'takenColors' => $takenColors ?? [],
-                    'currentColor' => $currentColor ?? null,
-                ]);
+                window.ALPS_ACCESS_COLOR_STATE = <?php echo json_encode([
+                    'takenColors' => $takenColors ?? [], 'currentColor' => $currentColor ?? null, ]) ?>;
             </script>
-            <script src="{{ asset('js/access_color_picker.js') }}"></script>
+            <script src="<?php echo e(asset('js/access_color_picker.js')); ?>"></script>
         </div>
     </div>
 </div>
-@endsection
-@push('scripts')
-<script src="{{ asset('js/manage_access.js') }}"></script>
-<script src="{{ asset('js/change_credentials.js') }}"></script>
-@endpush
+<?php $__env->stopSection(); ?>
+<?php $__env->startPush('scripts'); ?>
+<script src="<?php echo e(asset('js/manage_access.js')); ?>"></script>
+<script src="<?php echo e(asset('js/change_credentials.js')); ?>"></script>
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('global.layout', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\Users\Lagman\Desktop\Codes\ALPs Calendar\ALPS-Calendar\resources\views/access/change_credentials.blade.php ENDPATH**/ ?>

@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var popoverState = false; // Track if a popover is active
     var popover = null; // Reference to the active popover
     var currentHoveredEvent = null; // Track the currently hovered event
+    var popoverHovering = false; // Track whether the mouse is over the popover itself
+    var hidePopoverTimer = null; // Small bridge timer between event and popover hover
     var calendar;
     var holidays = []; // array of holiday objects {name, date: {iso: 'YYYY-MM-DD'}}
     var holidayDatesSet = new Set(); // for quick lookup of holiday date strings
@@ -447,6 +449,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to initialize popovers
     const initPopovers = (element, data) => {
         hidePopovers(); // Hide any active popovers
+        popoverHovering = false;
+        currentHoveredEvent = element;
 
         console.log(data);
 
@@ -496,6 +500,26 @@ document.addEventListener('DOMContentLoaded', function () {
         popover = KTApp.initBootstrapPopover(element, options);
         popover.show();
         popoverState = true;
+
+        setTimeout(() => {
+            const activePopover = document.querySelector('.popover.show');
+            if (!activePopover || activePopover.dataset.alpsHoverBound === '1') {
+                return;
+            }
+
+            activePopover.dataset.alpsHoverBound = '1';
+            activePopover.addEventListener('mouseenter', function () {
+                popoverHovering = true;
+                if (hidePopoverTimer) {
+                    clearTimeout(hidePopoverTimer);
+                    hidePopoverTimer = null;
+                }
+            });
+            activePopover.addEventListener('mouseleave', function () {
+                popoverHovering = false;
+                hidePopovers();
+            });
+        }, 0);
 
         //Delete training button
         document.querySelectorAll('.deleteBtn').forEach(button => {
@@ -606,6 +630,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // popovers for Unavailability
     const initUnavailabilityPopover = (element, data) => {
         hidePopovers(); // Hide any active popovers
+        popoverHovering = false;
+        currentHoveredEvent = element;
 
         console.log("Unavailability Data:", data);
 
@@ -633,6 +659,26 @@ document.addEventListener('DOMContentLoaded', function () {
         popover = KTApp.initBootstrapPopover(element, options);
         popover.show();
         popoverState = true;
+
+        setTimeout(() => {
+            const activePopover = document.querySelector('.popover.show');
+            if (!activePopover || activePopover.dataset.alpsHoverBound === '1') {
+                return;
+            }
+
+            activePopover.dataset.alpsHoverBound = '1';
+            activePopover.addEventListener('mouseenter', function () {
+                popoverHovering = true;
+                if (hidePopoverTimer) {
+                    clearTimeout(hidePopoverTimer);
+                    hidePopoverTimer = null;
+                }
+            });
+            activePopover.addEventListener('mouseleave', function () {
+                popoverHovering = false;
+                hidePopovers();
+            });
+        }, 0);
 
 
 
@@ -670,6 +716,15 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     // Function to hide active popovers
     const hidePopovers = () => {
+        if (hidePopoverTimer) {
+            clearTimeout(hidePopoverTimer);
+            hidePopoverTimer = null;
+        }
+
+        if (popoverHovering) {
+            return;
+        }
+
         if (popoverState && popover) {
             try {
                 popover.dispose(); // Ensure popover exists and is attached before disposing
@@ -796,6 +851,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to bind event listeners to FullCalendar events
     const bindEventListeners = () => {
         calendar.setOption('eventMouseEnter', function (info) {
+            if (hidePopoverTimer) {
+                clearTimeout(hidePopoverTimer);
+                hidePopoverTimer = null;
+            }
+
             // Safely dispose of any existing popover
             if (popover) {
                 try {
@@ -957,9 +1017,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
         calendar.setOption('eventMouseLeave', function () {
-            setTimeout(() => {
-                hidePopovers();
-            }, 3000); // Small delay before hiding popovers
+            hidePopoverTimer = setTimeout(() => {
+                if (!popoverHovering) {
+                    hidePopovers();
+                }
+            }, 120);
         });
     };
 
@@ -1196,9 +1258,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             calendar.setOption('eventMouseLeave', function () {
-                setTimeout(() => {
-                    hidePopovers();
-                }, 4000); // Small delay before hiding popovers
+                hidePopoverTimer = setTimeout(() => {
+                    if (!popoverHovering) {
+                        hidePopovers();
+                    }
+                }, 120);
             });
 
             calendar.render();

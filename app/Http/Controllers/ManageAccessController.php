@@ -13,6 +13,27 @@ use App\Models\User;
 
 class ManageAccessController extends Controller
 {
+    private function colorPalette(int $excludeUserId = 0): array
+    {
+        return User::query()
+            ->select(['id', 'name', 'username', 'color'])
+            ->when($excludeUserId > 0, function ($query) use ($excludeUserId) {
+                $query->where('id', '!=', $excludeUserId);
+            })
+            ->whereNotNull('color')
+            ->get()
+            ->map(function (User $user) {
+                return [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'username' => $user->username,
+                    'color' => strtoupper(trim((string) $user->color)),
+                ];
+            })
+            ->values()
+            ->all();
+    }
+
     public function index(): View
     {
         $users = User::all();
@@ -22,7 +43,10 @@ class ManageAccessController extends Controller
 
     public function create(): View
     {
-        return view('access.add_user');
+        return view('access.add_user', [
+            'takenColors' => $this->colorPalette(),
+            'currentColor' => null,
+        ]);
     }
 
     public function get_user(Request $request, $id)
@@ -160,7 +184,11 @@ class ManageAccessController extends Controller
             return redirect()->back()->with('error', 'User not found.');
         }
     
-        return view('access.change_credentials', compact('user'));
+        return view('access.change_credentials', [
+            'user' => $user,
+            'takenColors' => $this->colorPalette((int) $user->id),
+            'currentColor' => $user->color ? strtoupper(trim((string) $user->color)) : null,
+        ]);
     }
 
 

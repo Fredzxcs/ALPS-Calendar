@@ -307,7 +307,14 @@
                                     <div class="col-md-6">
                                         <div id="assignColorSection" class="mt-5">
                                             <label for="color" class="form-label fw-bold required">Assign Color</label>
-                                            <input type="color" id="color" class="form-control form-control-solid w-100px h-50px" />
+                                            <input type="hidden" id="color" name="color" value="<?php echo e(old('color')); ?>">
+                                            <button type="button" id="openColorPicker" class="btn alps-color-trigger w-100 mt-2">
+                                                <span class="alps-color-trigger-swatch" id="colorPreviewSwatch"></span>
+                                                <span class="d-flex flex-column text-start">
+                                                    <span class="fw-bold">Choose a color</span>
+                                                    <span class="small text-muted" id="colorPreviewHex">Tap to open the color modal</span>
+                                                </span>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -353,8 +360,14 @@
         </div>
     </div>
 </div>
+<?php echo $__env->make('access.partials.color_picker_modal', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 <?php $__env->stopSection(); ?>
 <?php $__env->startPush('scripts'); ?>
+    <script>
+        window.ALPS_ACCESS_COLOR_STATE = <?php echo json_encode([
+            'takenColors' => $takenColors ?? [], 'currentColor' => $currentColor ?? null, ]) ?>;
+    </script>
+    <script src="<?php echo e(asset('js/access_color_picker.js')); ?>"></script>
     <script src="<?php echo e(asset('js/add_user.js')); ?>"></script>
     <!-- <script>
         const roleRadios = document.querySelectorAll('input[name="radio_buttons_2"]');

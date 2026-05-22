@@ -48,50 +48,48 @@
     --alps-sky-blur-opacity: 0.62;
     
     /* TYPOGRAPHY SYSTEM */
+    --alps-font-display: var(--alps-font-sans);
     --alps-typo-h1-size: 52px;
     --alps-typo-h1-weight: 700;
     --alps-typo-h1-spacing: -0.02em;
     --alps-typo-h1-lh: 1.2;
-    
+
     --alps-typo-h2-size: 40px;
     --alps-typo-h2-weight: 700;
     --alps-typo-h2-spacing: -0.02em;
     --alps-typo-h2-lh: 1.2;
-    
+
     --alps-typo-h3-size: 24px;
     --alps-typo-h3-weight: 700;
     --alps-typo-h3-spacing: -0.02em;
     --alps-typo-h3-lh: 1.3;
-    
+
     --alps-typo-body-large-size: 24px;
     --alps-typo-body-large-weight: 500;
     --alps-typo-body-large-lh: 1.4;
-    
-         --alps-glass-bg: rgba(255, 255, 255, 0.60);
-         --alps-glass-border: rgba(255, 255, 255, 0.58);
     --alps-typo-body-lh: 1.4;
     --alps-typo-body-letter-spacing: 0em;
-    
+
     --alps-typo-small-size: 14px;
     --alps-typo-small-weight: 500;
     --alps-typo-small-lh: 1.4;
     --alps-typo-small-letter-spacing: 0em;
-    
+
     --alps-typo-caption-size: 12px;
     --alps-typo-caption-weight: 500;
     --alps-typo-caption-lh: 1.4;
     --alps-typo-caption-letter-spacing: 0em;
-    
+
     --alps-typo-pre-title-size: 10px;
     --alps-typo-pre-title-weight: 700;
     --alps-typo-pre-title-spacing: 0.03em;
     --alps-typo-pre-title-lh: 1.2;
-    
+
     --alps-typo-button-size: 10px;
     --alps-typo-button-weight: 700;
     --alps-typo-button-spacing: 0.03em;
     --alps-typo-button-lh: 1.2;
-    
+
     --alps-typo-link-size: 16px;
     --alps-typo-link-weight: 700;
     --alps-typo-link-lh: 1.4;
@@ -208,7 +206,7 @@ main {
 }
 
 header {
-    position: relative;
+    color: var(--alps-ink);
     z-index: 5;
     padding: 0 1rem;
 }
@@ -783,7 +781,6 @@ b,
         background-position: 0% 50%;
     }
     50% {
-        background-position: 100% 50%;
     }
     100% {
         background-position: 0% 50%;
@@ -2761,4 +2758,199 @@ OGO CONTAINER */
 
 .alps-action-text {
     white-space: nowrap;
+}
+
+.alps-color-modal-content {
+    border: 1px solid rgba(125, 153, 190, 0.18);
+    border-radius: 28px;
+    background: linear-gradient(180deg, rgba(14, 26, 51, 0.95), rgba(8, 14, 27, 0.92));
+    color: var(--alps-ink);
+    box-shadow: 0 34px 90px rgba(2, 8, 18, 0.42);
+}
+
+.alps-color-modal-content .modal-title,
+.alps-color-modal-content .form-label,
+.alps-color-modal-content h6,
+.alps-color-modal-content .form-text {
+    color: var(--alps-ink);
+}
+
+.alps-color-modal-content .text-muted {
+    color: rgba(15, 39, 71, 0.68) !important;
+}
+
+.alps-color-modal-content .form-text { opacity: 0.82; }
+
+.alps-color-preview-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    padding: 20px;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(15, 39, 71, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.68), 0 1px 2px rgba(15, 39, 71, 0.06);
+}
+
+.alps-color-preview-large {
+    width: 78px;
+    height: 78px;
+    border-radius: 22px;
+    background: #5D78FF;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32);
+    flex: 0 0 auto;
+}
+
+.alps-color-hex-value {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: var(--alps-ink);
+}
+
+.alps-color-note {
+    font-size: 0.92rem;
+    margin-top: 4px;
+    color: rgba(15, 39, 71, 0.72);
+}
+
+.alps-color-current-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.alps-color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+}
+
+.alps-color-grid-tight {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.alps-color-chip {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--alps-ink);
+    text-align: left;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.alps-color-chip-clickable {
+    cursor: pointer;
+}
+
+.alps-color-chip-clickable:hover,
+.alps-color-chip-clickable.is-selected {
+    transform: translateY(-2px);
+    border-color: rgba(30, 74, 138, 0.35);
+    box-shadow: 0 10px 28px rgba(8, 20, 39, 0.24);
+}
+
+.alps-color-chip-swatch,
+.alps-color-trigger-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 12px;
+    flex: 0 0 auto;
+    background: #5D78FF;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.alps-color-trigger {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 460px;
+    min-height: 68px;
+    justify-content: flex-start;
+    border: 1px solid rgba(15, 39, 71, 0.10);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.95) 0%, rgba(242, 247, 253, 0.95) 100%);
+    color: var(--alps-ink);
+    text-align: left;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 1px 2px rgba(15, 39, 71, 0.06);
+}
+
+.alps-color-trigger:hover {
+    border-color: rgba(15, 39, 71, 0.16);
+    color: #143463;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 2px 4px rgba(15, 39, 71, 0.08);
+}
+
+.alps-color-trigger:focus-visible,
+.alps-color-chip:focus-visible {
+    outline: 2px solid rgba(94, 189, 255, 0.8);
+    outline-offset: 2px;
+}
+
+.alps-color-chip-taken {
+    opacity: 0.9;
+}
+
+.alps-color-chip-icon {
+    margin-left: auto;
+    opacity: 0.85;
+}
+
+.alps-color-chip-text {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.alps-color-empty-state {
+    padding: 16px;
+    border-radius: 18px;
+    border: 1px dashed rgba(30, 74, 138, 0.18);
+    color: rgba(15, 39, 71, 0.72);
+}
+
+.alps-color-native-picker {
+    height: 60px;
+    padding: 8px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+.alps-color-modal-content .modal-body {
+    padding-bottom: 1.5rem;
+}
+
+.alps-color-modal-content .modal-footer .btn {
+    min-width: 140px;
+}
+
+@media (max-width: 767.98px) {
+    .alps-color-preview-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .alps-color-trigger {
+        max-width: 100%;
+    }
+
+    .alps-color-grid,
+    .alps-color-grid-tight {
+        grid-template-columns: 1fr;
+    }
 }
