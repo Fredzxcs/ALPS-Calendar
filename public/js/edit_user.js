@@ -2,17 +2,19 @@
 var element = document.querySelector("#kt_stepper_example_basic");
 
 // Initialize Stepper
-var stepper = new KTStepper(element);
+var stepper = element ? new KTStepper(element) : null;
 
-// Handle next step
-stepper.on("kt.stepper.next", function (stepper) {
-    stepper.goNext(); // go next step
-});
+if (stepper && typeof stepper.on === "function") {
+    // Handle next step
+    stepper.on("kt.stepper.next", function (stepper) {
+        stepper.goNext(); // go next step
+    });
 
-// Handle previous step
-stepper.on("kt.stepper.previous", function (stepper) {
-    stepper.goPrevious(); // go previous step
-});
+    // Handle previous step
+    stepper.on("kt.stepper.previous", function (stepper) {
+        stepper.goPrevious(); // go previous step
+    });
+}
 
 // Example usage: Fetch user data when any row's button is clicked
 $(document).ready(function () {
