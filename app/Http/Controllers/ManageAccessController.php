@@ -46,19 +46,26 @@ class ManageAccessController extends Controller
 
         if ($user) {
             $image = $user->image;
+            try {
+                if (!empty($image)) {
+                    // If the image is already an absolute URL, redirect directly
+                    if (preg_match('#^https?://#i', $image)) {
+                        return redirect()->to($image);
+                    }
 
-            // 1) If stored on the public disk (storage/app/public/...), redirect to the public URL
-            if (!empty($image) && Storage::disk('public')->exists($image)) {
-                $publicUrl = url('storage/app/public/' . ltrim($image, '/'));
-                return redirect()->to($publicUrl);
-            }
+                    // If the image points to a file under the public folder, serve it
+                    $publicPath = public_path(ltrim($image, '/'));
+                    if (file_exists($publicPath)) {
+                        return response()->file($publicPath);
+                    }
 
-            // 2) If the image path points to a file under public/ (e.g., 'img/...')
-            if (!empty($image)) {
-                $publicPath = public_path(ltrim($image, '/'));
-                if (file_exists($publicPath)) {
-                    return response()->file($publicPath);
+                    // Otherwise redirect to the explicit storage path requested by ops/team
+                    $publicUrl = url('storage/app/public/' . ltrim($image, '/'));
+                    return redirect()->to($publicUrl);
                 }
+            } catch (\Throwable $e) {
+                // Log and fallthrough to default image; avoid throwing a 500 if Storage is misconfigured
+                \Log::error('Error serving avatar for user '.$id.': '.$e->getMessage());
             }
         }
 
