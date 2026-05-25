@@ -40,7 +40,7 @@
         .top-banner {
             position: relative;
             height: 170px;
-            background-image: url('https://alpscalendar.com/public/img/email_bg_top.jpg');
+            background-image: url('https://alpscalendar.com/public/img/email_bg_top.png');
             background-repeat: no-repeat;
             background-position: center top;
             background-size: cover;
