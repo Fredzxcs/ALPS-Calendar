@@ -9,7 +9,7 @@
             <form class="form w-100 px-5 alps-card-glass-body p-10" novalidate="novalidate" id="change_credentials_form">
                 <?php echo csrf_field(); ?>
                 <!--begin::Group-->
-                <div class="mb-5 my-10">
+                <div class="mb-5 my-10 mx-auto" style="width: 70%;">
                     <!--begin::Input Group-->
                     <div class="flex-column">
                         <div class="d flex-center px-16">
@@ -55,7 +55,7 @@
                                     <div id="assignColorSection" class="mt-5">
                                         <label for="color" class="form-label fw-bold required">Assign Color</label>
                                         <input type="hidden" id="color" name="color" value="<?php echo e(old('color', $currentColor ?? '')); ?>">
-                                        <button type="button" id="openColorPicker" class="btn alps-color-trigger w-100 mt-2">
+                                        <button type="button" id="openColorPicker" class="btn alps-color-trigger w-100 mt-2" data-bs-toggle="modal" data-bs-target="#accessColorPickerModal">
                                             <span class="alps-color-trigger-swatch" id="colorPreviewSwatch"></span>
                                             <span class="d-flex flex-column text-start">
                                                 <span class="fw-bold">Update color</span>

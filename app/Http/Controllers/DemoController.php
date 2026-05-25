@@ -1215,7 +1215,20 @@ class DemoController extends Controller
 
     public function addUserForm(): View
     {
-        return view('access.add_user');
+        $takenColors = $this->fixtureCollection('users.json')
+            ->filter(function ($entry) {
+                return !empty($entry->color);
+            })
+            ->map(function ($entry) {
+                return strtoupper(trim((string) ($entry->color ?? '')));
+            })
+            ->values()
+            ->all();
+
+        return view('access.add_user', [
+            'takenColors' => $takenColors,
+            'currentColor' => null,
+        ]);
     }
 
     public function storeUser(): JsonResponse
@@ -1277,8 +1290,20 @@ class DemoController extends Controller
             return redirect('/access');
         }
 
+        $takenColors = $this->fixtureCollection('users.json')
+            ->filter(function ($entry) use ($id) {
+                return (int) ($entry->id ?? 0) !== $id && !empty($entry->color);
+            })
+            ->map(function ($entry) {
+                return strtoupper(trim((string) ($entry->color ?? '')));
+            })
+            ->values()
+            ->all();
+
         return view('access.change_credentials', [
             'user' => (object) $user,
+            'takenColors' => $takenColors,
+            'currentColor' => !empty($user['color']) ? strtoupper(trim((string) $user['color'])) : null,
         ]);
     }
 

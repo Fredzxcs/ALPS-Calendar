@@ -21,7 +21,15 @@ function fetchUserData(userId) {
                 // Populate form fields with user data
                 $('#username').val(response.user.username);
                 $('#password').val(response.user.password);
-                $('#color').val(response.user.color);
+
+                const normalizedColor = normalizeHexColor(response.user.color);
+                $('#color').val(normalizedColor);
+                if (window.ALPS_ACCESS_COLOR_STATE) {
+                    window.ALPS_ACCESS_COLOR_STATE.currentColor = normalizedColor;
+                }
+                document.dispatchEvent(new CustomEvent('alps-access-color:sync', {
+                    detail: { color: normalizedColor }
+                }));
             }
         },
         error: function (error) {
@@ -188,7 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (passwordInput.value.trim()) { // Only send password if it's not empty
                     formData.append('password', passwordInput.value.trim());
                 }
-                formData.append('color', colorInput.value.trim());
+                const selectedColor = normalizeHexColor(colorInput.value) || normalizeHexColor(window.ALPS_ACCESS_COLOR_STATE && window.ALPS_ACCESS_COLOR_STATE.currentColor) || '';
+                formData.append('color', selectedColor);
                 formData.append('_token', document.querySelector('meta[name="csrf-token"]').getAttribute('content'));
 
                 $.ajax({
@@ -255,6 +264,28 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    function normalizeHexColor(color) {
+        if (!color) {
+            return '';
+        }
+
+        let value = String(color).trim().toUpperCase();
+        if (!value) {
+            return '';
+        }
+
+        if (value[0] !== '#') {
+            value = `#${value}`;
+        }
+
+        if (/^#([0-9A-F]{3})$/.test(value)) {
+            const digits = value.slice(1).split('');
+            return `#${digits.map((digit) => digit + digit).join('')}`;
+        }
+
+        return /^#([0-9A-F]{6})$/.test(value) ? value : '';
+    }
 });
 
 

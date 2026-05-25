@@ -55,6 +55,22 @@
     renderSuggestions();
     renderTakenColors();
 
+    document.addEventListener('alps-access-color:sync', function (event) {
+        const nextColor = normalizeHex(event.detail && event.detail.color ? event.detail.color : hiddenInput.value);
+        if (!nextColor) {
+            return;
+        }
+
+        committedColor = nextColor;
+        pendingColor = nextColor;
+        hiddenInput.value = nextColor;
+        updateTriggerPreview(nextColor);
+        updateModalPreview(nextColor);
+        syncPicker(nextColor);
+        setWarningText(nextColor);
+        renderSelectionState();
+    });
+
     triggerButton.addEventListener('click', function () {
         pendingColor = committedColor;
         openModal();
@@ -76,6 +92,8 @@
 
         if (bootstrapModal) {
             bootstrapModal.hide();
+        } else {
+            closeModalFallback();
         }
 
         if (conflict && window.Swal) {
@@ -99,9 +117,58 @@
         renderSelectionState();
     });
 
+    modalElement.addEventListener('click', function (event) {
+        if (event.target === modalElement) {
+            if (bootstrapModal) {
+                bootstrapModal.hide();
+            } else {
+                closeModalFallback();
+            }
+        }
+    });
+
+    modalElement.querySelectorAll('[data-bs-dismiss="modal"]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            if (!bootstrapModal) {
+                closeModalFallback();
+            }
+        });
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && modalElement.classList.contains('show') && !bootstrapModal) {
+            closeModalFallback();
+        }
+    });
+
     function openModal() {
         if (bootstrapModal) {
             bootstrapModal.show();
+            return;
+        }
+
+        modalElement.classList.add('show');
+        modalElement.style.display = 'block';
+        modalElement.setAttribute('aria-hidden', 'false');
+
+        if (!document.querySelector('.modal-backdrop[data-alps-color-backdrop="true"]')) {
+            const backdrop = document.createElement('div');
+            backdrop.className = 'modal-backdrop fade show';
+            backdrop.setAttribute('data-alps-color-backdrop', 'true');
+            backdrop.addEventListener('click', closeModalFallback);
+            document.body.appendChild(backdrop);
+        }
+    }
+
+    function closeModalFallback() {
+        modalElement.classList.remove('show');
+        modalElement.style.display = 'none';
+        modalElement.setAttribute('aria-hidden', 'true');
+
+        const backdrop = document.querySelector('.modal-backdrop[data-alps-color-backdrop="true"]');
+        if (backdrop) {
+            backdrop.removeEventListener('click', closeModalFallback);
+            backdrop.remove();
         }
     }
 
