@@ -55,7 +55,7 @@
 
             <div class="modal-footer border-0 pt-0">
                 <button type="button" class="btn btn-tertiary fw-bold" data-bs-dismiss="modal">Discard</button>
-                <button type="button" class="btn btn-primary btn-green fw-boldest" id="accessColorConfirmBtn">Confirm color</button>
+                <button type="button" class="btn btn-primary btn-green fw-boldest" id="accessColorConfirmBtn" data-bs-dismiss="modal">Confirm color</button>
             </div>
         </div>
     </div>
