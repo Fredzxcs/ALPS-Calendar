@@ -40,7 +40,7 @@
         .top-banner {
             position: relative;
             height: 170px;
-            background-image: url('https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/gbVaqEWhECmgkJR1uxXW/assets/xbha3n4r7yb1/Email_Bg_Top.png');
+            background-image: url('https://alpscalendar.com/public/img/email_bg_top.jpg');
             background-repeat: no-repeat;
             background-position: center top;
             background-size: cover;
