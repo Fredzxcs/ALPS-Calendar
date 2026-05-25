@@ -375,7 +375,7 @@
                                         <div style="display: flex; gap: 0.5rem;">
                                             <select id="coordinator_to_notify_select" class="training-select" style="flex: 1;">
                                                 <option value="" selected disabled>Select Coordinator</option>
-                                                @foreach ($facilitators as $user)
+                                                @foreach ($users as $user)
                                                     <option value="{{ $user->id }}">{{ $user->name }}</option>
                                                 @endforeach
                                             </select>
