@@ -18,14 +18,17 @@
                 </div>
 
                 <!-- FILTER Button with Menu (secondary orange) -->
-                <div class="position-relative">
+                <div class="position-relative alps-manage-access-filter-dropdown">
                     <button class="btn btn-secondary btn-orange rounded-3 fw-boldest d-flex align-items-center btn-hover-rise"
-                        data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                        data-kt-menu-trigger="click"
+                        data-kt-menu-placement="bottom-end"
+                        data-kt-menu-attach="parent"
+                        data-kt-menu-overflow="true">
                         <i class="bi bi-funnel me-1"></i> FILTER
                     </button>
 
                     <!-- Filter Menu -->
-                    <div class="menu menu-sub menu-sub-dropdown w-250px w-md-300px" data-kt-menu="true">
+                    <div class="menu menu-sub menu-sub-dropdown w-250px w-md-300px alps-manage-access-filter-menu" data-kt-menu="true">
                         <!-- Menu Header -->
                         <div class="px-7 py-5">
                             <div class="fs-5 text-dark fw-bolder">Filter Options</div>

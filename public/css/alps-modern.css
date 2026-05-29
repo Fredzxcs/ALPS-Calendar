@@ -1122,6 +1122,16 @@ b,
     margin-top: 0.5rem;
 }
 
+.alps-manage-access-filter-dropdown {
+    position: relative;
+    z-index: 50;
+}
+
+.alps-manage-access-filter-menu {
+    margin-top: 0.5rem;
+    z-index: 2050 !important;
+}
+
 .alps-loader-wrapper {
     display: none;
 }
