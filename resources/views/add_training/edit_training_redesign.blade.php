@@ -152,18 +152,18 @@
                         <div class="training-form-row triple">
                             <div class="training-form-group">
                                 <label for="date-range">Date Range <span class="required">*</span></label>
-                                <input type="text" id="date-range" class="training-input" placeholder="Select Date" readonly
-                                    value="{{ $training->from_date && $training->to_date ? date('m-d-Y', strtotime($training->from_date)) . ' to ' . date('m-d-Y', strtotime($training->to_date)) : '' }}">
+                                <input type="text" id="date-range" class="training-input" placeholder="Select Date" readonly 
+                                    value="{{ isset($training) ? \Carbon\Carbon::parse($training->from_date)->format('m-d-Y') . ' to ' . \Carbon\Carbon::parse($training->to_date)->format('m-d-Y') : '' }}">
                             </div>
                             <div class="training-form-group">
                                 <label for="time-start">Time Start <span class="required">*</span></label>
                                 <input type="time" id="time-start" class="training-input"
-                                    value="{{ $training->from_time ?? '' }}">
+                                    value="{{ isset($training->from_time) ? date('H:i', strtotime($training->from_time)) : '' }}">
                             </div>
                             <div class="training-form-group">
                                 <label for="time-end">Time End <span class="required">*</span></label>
                                 <input type="time" id="time-end" class="training-input"
-                                    value="{{ $training->to_time ?? '' }}">
+                                    value="{{ isset($training->to_time) ? date('H:i', strtotime($training->to_time)) : '' }}">
                             </div>
                         </div>
 

@@ -203,9 +203,15 @@ function syncDateRangeStateFromInput(datePickerInstance) {
 }
 
 const isEditMode = Boolean(window.isEditMode && window.trainingId);
+
+// 1. Grab the existing value from the input field
+const existingDateString = document.getElementById('date-range').value;
+
 const dateRangeOptions = {
     mode: "range",
     dateFormat: "m-d-Y",
+    // 2. Add this line: tell Flatpickr to use the existing dates as the default
+    defaultDate: existingDateString ? existingDateString.split(' to ') : null, 
     onChange: function (selectedDates) {
         if (selectedDates.length >= 2) {
             const initialStartDate = selectedDates[0];
