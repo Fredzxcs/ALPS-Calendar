@@ -248,21 +248,27 @@
             margin-right: 1.5rem;
         }
 
-        .fc-event {
-            overflow: hidden !important; 
+        .fc-daygrid-event {
+            white-space: nowrap !important;
         }
-        
-        .fc-event-main {
-            overflow: hidden !important; 
+
+        .fc-event-main-frame {
+            display: flex !important;
+            align-items: center !important;
+            overflow: hidden !important;
+        }
+
+        .fc-event-title-container {
+            flex-grow: 1 !important;
+            min-width: 0 !important; /* Critical for Flexbox truncation */
+            overflow: hidden !important;
         }
 
         .fc-event-title {
+            display: block !important;
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
-            display: inline-block !important; /* Critical to prevent layout breaks */
-            max-width: 100% !important;
-            vertical-align: bottom !important;
         }
         
         @media (max-width: 575.98px) {
