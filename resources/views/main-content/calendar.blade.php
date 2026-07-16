@@ -248,42 +248,29 @@
             margin-right: 1.5rem;
         }
 
-        .fc-event, 
-        .fc-daygrid-event {
-            max-height: 24px !important; /* Physically prevents vertical stretching */
-            overflow: hidden !important;
-            white-space: nowrap !important;
-        }
-
-        /* 2. Force the inner wrapper to act like a standard block of text */
+        /* Target the main wrapper */
         .fc-event-main {
-            display: block !important;
             overflow: hidden !important;
             white-space: nowrap !important;
             text-overflow: ellipsis !important;
+            display: block !important;
             padding: 2px 4px !important;
         }
 
-        /* 3. Destroy the Flexbox properties that are stacking the text */
-        .fc-event-main-frame,
-        .fc-event-title-container {
-            display: inline !important; 
+        /* THE FIX: Force ALL custom injected HTML (divs, spans, p) to obey truncation */
+        .fc-event-main * {
             white-space: nowrap !important;
-        }
-
-        /* 4. Truncate the actual title text */
-        .fc-event-title {
-            display: inline !important;
-            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            display: inline !important; /* Stops custom divs from stacking vertically */
         }
         
-        /* 5. Keep the time inline with the title */
-        .fc-event-time {
-            display: inline !important;
-            margin-right: 3px !important;
+        /* Prevent the outer blue box from breaking its grid bounds */
+        .fc-event, .fc-daygrid-event {
+            max-height: 25px !important;
+            overflow: hidden !important;
         }
 
-        
         @media (max-width: 575.98px) {
             #kt_modal_view_training .modal-header {
                 padding: 1rem 1.15rem 0.75rem;
