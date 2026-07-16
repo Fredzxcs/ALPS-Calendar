@@ -248,28 +248,41 @@
             margin-right: 1.5rem;
         }
 
+        .fc-event, 
         .fc-daygrid-event {
+            max-height: 24px !important; /* Physically prevents vertical stretching */
+            overflow: hidden !important;
             white-space: nowrap !important;
         }
 
-        .fc-event-main-frame {
-            display: flex !important;
-            align-items: center !important;
-            overflow: hidden !important;
-        }
-
-        .fc-event-title-container {
-            flex-grow: 1 !important;
-            min-width: 0 !important; /* Critical for Flexbox truncation */
-            overflow: hidden !important;
-        }
-
-        .fc-event-title {
+        /* 2. Force the inner wrapper to act like a standard block of text */
+        .fc-event-main {
             display: block !important;
-            white-space: nowrap !important;
             overflow: hidden !important;
+            white-space: nowrap !important;
             text-overflow: ellipsis !important;
+            padding: 2px 4px !important;
         }
+
+        /* 3. Destroy the Flexbox properties that are stacking the text */
+        .fc-event-main-frame,
+        .fc-event-title-container {
+            display: inline !important; 
+            white-space: nowrap !important;
+        }
+
+        /* 4. Truncate the actual title text */
+        .fc-event-title {
+            display: inline !important;
+            white-space: nowrap !important;
+        }
+        
+        /* 5. Keep the time inline with the title */
+        .fc-event-time {
+            display: inline !important;
+            margin-right: 3px !important;
+        }
+
         
         @media (max-width: 575.98px) {
             #kt_modal_view_training .modal-header {
