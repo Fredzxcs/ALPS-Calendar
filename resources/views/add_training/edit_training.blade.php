@@ -198,15 +198,17 @@
                             <div class="training-form-group">
                                 <label for="date-range">Date Range <span class="required"></span></label>
                                 <input type="text" id="date-range" class="training-input" placeholder="Select Date" readonly
-                                    value="{{ $t_from_date && $t_to_date ? date('m-d-Y', strtotime($t_from_date)) . ' to ' . date('m-d-Y', strtotime($t_to_date)) : '' }}">
+                                    value="{{ $t_from_date && $t_to_date ? \Carbon\Carbon::parse($t_from_date)->format('Y-m-d') . ' to ' . \Carbon\Carbon::parse($t_to_date)->format('Y-m-d') : '' }}">
                             </div>
                             <div class="training-form-group">
                                 <label for="time-start">Time Start <span class="required"></span></label>
-                                <input type="time" id="time-start" class="training-input" value="{{ $t_from_time ?? '' }}">
+                                <input type="time" id="time-start" class="training-input" 
+                                    value="{{ $t_from_time ? \Carbon\Carbon::parse($t_from_time)->format('H:i') : '' }}">
                             </div>
                             <div class="training-form-group">
                                 <label for="time-end">Time End <span class="required"></span></label>
-                                <input type="time" id="time-end" class="training-input" value="{{ $t_to_time ?? '' }}">
+                                <input type="time" id="time-end" class="training-input" 
+                                    value="{{ $t_to_time ? \Carbon\Carbon::parse($t_to_time)->format('H:i') : '' }}">
                             </div>
                         </div>
 
