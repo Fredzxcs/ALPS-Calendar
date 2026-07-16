@@ -248,21 +248,14 @@
             margin-right: 1.5rem;
         }
 
-        .fc-daygrid-event,
-        .fc-event-main {
+        .fc-event-main,
+        .fc-event-title-container,
+        .fc-event-title {
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
-            display: block !important;
         }
-
-        /* Target the specific title text */
-        .fc-event-title,
-        .fc-event-time {
-            display: inline-block !important;
-            vertical-align: middle !important;
-        }
-
+        
         @media (max-width: 575.98px) {
             #kt_modal_view_training .modal-header {
                 padding: 1rem 1.15rem 0.75rem;
