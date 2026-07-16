@@ -193,18 +193,6 @@
                             </div>
                         </div>
 
-                        <div style="background-color: #ffcccc; color: #900; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
-                            <strong>🕵️ Debugging Variables:</strong><br>
-                            $t_from_date: {{ $t_from_date ?? 'NULL or EMPTY' }} <br>
-                            $t_to_date: {{ $t_to_date ?? 'NULL or EMPTY' }} <br>
-                            $t_from_time: {{ $t_from_time ?? 'NULL or EMPTY' }} <br>
-                            $t_to_time: {{ $t_to_time ?? 'NULL or EMPTY' }} <br>
-                            <hr style="border-color: #900; my-2">
-                            <em>Wait, is the data actually inside a $training object? Let's check:</em><br>
-                            $training->from_date: {{ $training->from_date ?? 'NULL' }}<br>
-                            $training->from_time: {{ $training->from_time ?? 'NULL' }}
-                        </div>
-
                         <!-- Date and Time -->
                         <div class="training-form-row triple">
                             <div class="training-form-group">
