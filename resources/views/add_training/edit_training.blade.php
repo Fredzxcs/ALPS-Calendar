@@ -194,23 +194,30 @@
                         </div>
 
                         <!-- Date and Time -->
+                        @php
+                            // Grab the schedule data related to this training session
+                            $sched = $training->schedule instanceof \Illuminate\Database\Eloquent\Collection 
+                                        ? $training->schedule->sortByDesc('id')->first() 
+                                        : $training->schedule;
+                        @endphp
+
                         <div class="training-form-row triple">
                             <div class="training-form-group">
                                 <label for="date-range">Date Range <span class="required"></span></label>
                                 <input type="text" id="date-range" class="training-input" placeholder="Select Date" readonly
-                                    value="{{ !empty($training->from_date) && !empty($training->to_date) ? \Carbon\Carbon::parse($training->from_date)->format('m-d-Y') . ' to ' . \Carbon\Carbon::parse($training->to_date)->format('m-d-Y') : '' }}">
+                                    value="{{ !empty($sched->from_date) && !empty($sched->to_date) ? \Carbon\Carbon::parse($sched->from_date)->format('m-d-Y') . ' to ' . \Carbon\Carbon::parse($sched->to_date)->format('m-d-Y') : '' }}">
                             </div>
                             
                             <div class="training-form-group">
                                 <label for="time-start">Time Start <span class="required"></span></label>
                                 <input type="time" id="time-start" class="training-input" 
-                                    value="{{ !empty($training->from_time) ? \Carbon\Carbon::parse($training->from_time)->format('H:i') : '' }}">
+                                    value="{{ !empty($sched->from_time) ? \Carbon\Carbon::parse($sched->from_time)->format('H:i') : '' }}">
                             </div>
                             
                             <div class="training-form-group">
                                 <label for="time-end">Time End <span class="required"></span></label>
                                 <input type="time" id="time-end" class="training-input" 
-                                    value="{{ !empty($training->to_time) ? \Carbon\Carbon::parse($training->to_time)->format('H:i') : '' }}">
+                                    value="{{ !empty($sched->to_time) ? \Carbon\Carbon::parse($sched->to_time)->format('H:i') : '' }}">
                             </div>
                         </div>
 
