@@ -248,12 +248,21 @@
             margin-right: 1.5rem;
         }
 
-        .fc-event-main,
-        .fc-event-title-container,
+        .fc-event {
+            overflow: hidden !important; 
+        }
+        
+        .fc-event-main {
+            overflow: hidden !important; 
+        }
+
         .fc-event-title {
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
+            display: inline-block !important; /* Critical to prevent layout breaks */
+            max-width: 100% !important;
+            vertical-align: bottom !important;
         }
         
         @media (max-width: 575.98px) {
