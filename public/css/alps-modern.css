@@ -1264,19 +1264,6 @@ b,
     color: inherit !important;
 }
 
-/* Truncate long event titles in FullCalendar */
-.fc-event-title {
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    display: block !important;
-}
-
-/* Optional: Make the event block look a little nicer */
-.fc-event {
-    padding: 2px 4px !important;
-}
-
 #calendar .alps-pop-event .fc-event-title {
     font-weight: 500;
 }
