@@ -248,29 +248,6 @@
             margin-right: 1.5rem;
         }
 
-        /* Target the main wrapper */
-        .fc-event-main {
-            overflow: hidden !important;
-            white-space: nowrap !important;
-            text-overflow: ellipsis !important;
-            display: block !important;
-            padding: 2px 4px !important;
-        }
-
-        /* THE FIX: Force ALL custom injected HTML (divs, spans, p) to obey truncation */
-        .fc-event-main * {
-            white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            display: inline !important; /* Stops custom divs from stacking vertically */
-        }
-        
-        /* Prevent the outer blue box from breaking its grid bounds */
-        .fc-event, .fc-daygrid-event {
-            max-height: 25px !important;
-            overflow: hidden !important;
-        }
-
         @media (max-width: 575.98px) {
             #kt_modal_view_training .modal-header {
                 padding: 1rem 1.15rem 0.75rem;

@@ -553,6 +553,7 @@ $(document).ready(function (e) {
         }
 
         const requiredFields = [
+            '#outbound_pickup_date', // <-- ADDED
             '#outbound_pickup_time',
             '#outbound_contact_number',
             '#outbound_pickup_location',
@@ -570,7 +571,7 @@ $(document).ready(function (e) {
         });
 
         if ($('#return_trip_needed').is(':checked')) {
-            ['#return_pickup_time', '#return_contact_number', '#return_pickup_location', '#return_dropoff_location'].forEach(function (selector) {
+            ['#return_pickup_date','#return_pickup_time', '#return_contact_number', '#return_pickup_location', '#return_dropoff_location'].forEach(function (selector) {
                 const element = $(selector);
                 if ((element.val() || '').trim() === '') {
                     element.addClass('border-danger');
@@ -661,7 +662,7 @@ $(document).ready(function (e) {
             $('#need_transportation_yes').prop('checked', false);
             $('#return_trip_needed').prop('checked', false);
             $('#notify_coordinator').prop('checked', false);
-            $('#outbound_pickup_time, #outbound_contact_number, #outbound_pickup_location, #outbound_dropoff_location, #return_pickup_time, #return_contact_number, #return_pickup_location, #return_dropoff_location').val('');
+            $('#outbound_pickup_date, #outbound_pickup_time, #outbound_contact_number, #outbound_pickup_location, #outbound_dropoff_location, #return_pickup_date, #return_pickup_time, #return_contact_number, #return_pickup_location, #return_dropoff_location').val('');
             $('#coordinator_to_notify_select').val('').trigger('change');
             $('#coordinator_list_container').empty();
             $('#coordinator_to_notify_list').val('');
@@ -825,11 +826,13 @@ $(document).ready(function (e) {
         formData.append('facilitator_id', facilitatorValue || '');
         formData.append('account_manager_id', accountManagerValue || '');
         formData.append('need_transportation', $('#need_transportation_yes').is(':checked') ? 'yes' : 'no');
+        formData.append('outbound_pickup_date', $('#outbound_pickup_date').val());
         formData.append('outbound_pickup_time', $('#outbound_pickup_time').val());
         formData.append('outbound_contact_number', $('#outbound_contact_number').val());
         formData.append('outbound_pickup_location', $('#outbound_pickup_location').val());
         formData.append('outbound_dropoff_location', $('#outbound_dropoff_location').val());
         formData.append('return_trip_needed', $('#return_trip_needed').is(':checked') ? '1' : '0');
+        formData.append('return_pickup_date', $('#return_pickup_date').val());
         formData.append('return_pickup_time', $('#return_pickup_time').val());
         formData.append('return_contact_number', $('#return_contact_number').val());
         formData.append('return_pickup_location', $('#return_pickup_location').val());

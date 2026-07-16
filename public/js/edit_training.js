@@ -433,11 +433,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 let location = $('#location').val();
                 let conference_link = $('#conference_link').val();
                 let need_transportation = $('input[name="need_transportation"]:checked').val() === 'yes' ? 1 : 0;
+                let outbound_pickup_date = $('#outbound_pickup_date').val();
                 let outbound_pickup_time = $('#outbound_pickup_time').val();
                 let outbound_contact_number = $('#outbound_contact_number').val();
                 let outbound_pickup_location = $('#outbound_pickup_location').val();
                 let outbound_dropoff_location = $('#outbound_dropoff_location').val();
                 let return_trip_needed = $('#return_trip_needed').is(':checked') ? 1 : 0;
+                let return_pickup_date = $('#return_pickup_date').val();
                 let return_pickup_time = $('#return_pickup_time').val();
                 let return_contact_number = $('#return_contact_number').val();
                 let return_pickup_location = $('#return_pickup_location').val();
@@ -474,11 +476,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     from_time: from_time,
                     to_time: to_time,
                     need_transportation: need_transportation,
-                    outbound_pickup_time: outbound_pickup_time,
+                    outbound_pickup_date: outbound_pickup_date,
+                    outbound_pickup_time: outbound_pickup_time,           
                     outbound_contact_number: outbound_contact_number,
                     outbound_pickup_location: outbound_pickup_location,
                     outbound_dropoff_location: outbound_dropoff_location,
-                    return_trip_needed: return_trip_needed,
+                    return_trip_needed: return_trip_needed,                 
+                    return_pickup_date: return_pickup_date,
                     return_pickup_time: return_pickup_time,
                     return_contact_number: return_contact_number,
                     return_pickup_location: return_pickup_location,

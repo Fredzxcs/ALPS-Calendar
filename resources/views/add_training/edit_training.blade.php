@@ -324,6 +324,11 @@
                                 <div class="trip-section-heading">Outbound Trip</div>
                                 <div class="training-form-row quad">
                                     <div class="training-form-group">
+                                        <label for="outbound_pickup_date">Pick-Up Date</label>
+                                        <input type="date" id="outbound_pickup_date" class="training-input form-control" 
+                                            value="{{ !empty($training->outbound_pickup_date) ? \Carbon\Carbon::parse($training->outbound_pickup_date)->format('Y-m-d') : '' }}">
+                                    </div>
+                                    <div class="training-form-group">
                                         <label for="outbound_pickup_time">Pickup Time <span class="required"></span></label>
                                         <input type="time" id="outbound_pickup_time" class="training-input" value="{{ $training->outbound_pickup_time ?? '' }}">
                                     </div>
@@ -352,6 +357,11 @@
                                 <div id="return-trip-fields" class="{{ $training->return_trip_needed ? '' : 'd-none' }}" style="margin-top: 1rem;">
                                     <div class="trip-section-heading">Return Trip</div>
                                     <div class="training-form-row quad">
+                                        <div class="training-form-group">
+                                            <label for="return_pickup_date">Pick-Up Date</label>
+                                            <input type="date" id="return_pickup_date" class="training-input form-control" 
+                                                value="{{ !empty($training->return_pickup_date) ? \Carbon\Carbon::parse($training->return_pickup_date)->format('Y-m-d') : '' }}">
+                                        </div>
                                         <div class="training-form-group">
                                             <label for="return_pickup_time">Return Time <span class="required"></span></label>
                                             <input type="time" id="return_pickup_time" class="training-input" value="{{ $training->return_pickup_time ?? '' }}">
