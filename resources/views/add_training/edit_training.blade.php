@@ -325,7 +325,7 @@
                                 <div class="training-form-row quad">
                                     <div class="training-form-group">
                                         <label for="outbound_pickup_date">Pick-Up Date</label>
-                                        <input type="date" id="outbound_pickup_date" class="training-input form-control" 
+                                        <input type="date" id="outbound_pickup_date" class="training-input"
                                             value="{{ !empty($training->outbound_pickup_date) ? \Carbon\Carbon::parse($training->outbound_pickup_date)->format('Y-m-d') : '' }}">
                                     </div>
                                     <div class="training-form-group">
@@ -359,7 +359,7 @@
                                     <div class="training-form-row quad">
                                         <div class="training-form-group">
                                             <label for="return_pickup_date">Pick-Up Date</label>
-                                            <input type="date" id="return_pickup_date" class="training-input form-control" 
+                                            <input type="date" id="return_pickup_date" class="training-input"
                                                 value="{{ !empty($training->return_pickup_date) ? \Carbon\Carbon::parse($training->return_pickup_date)->format('Y-m-d') : '' }}">
                                         </div>
                                         <div class="training-form-group">
