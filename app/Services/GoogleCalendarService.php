@@ -347,18 +347,25 @@ class GoogleCalendarService
         }
 
         // Driver Arrangement section - only show if transportation is needed or if any driver field is filled
-        if ($training->need_transportation || !empty($training->outbound_pickup_time) || !empty($training->outbound_contact_number) ||
+        if ($training->need_transportation || !empty($training->outbound_pickup_date) || !empty($training->outbound_pickup_time) || !empty($training->outbound_contact_number) ||
             !empty($training->outbound_pickup_location) || !empty($training->outbound_dropoff_location) ||
-            !empty($training->return_pickup_time) || !empty($training->return_contact_number) ||
+            !empty($training->return_pickup_date) || !empty($training->return_pickup_time) || !empty($training->return_contact_number) ||
             !empty($training->return_pickup_location) || !empty($training->return_dropoff_location)) {
             
             $lines[] = 'Driver Arrangement:';
             $lines[] = '  Transportation Needed: ' . $driverNeeded;
+            
+            // NEW: Outbound Pickup Date
+            if (!empty($training->outbound_pickup_date)) $lines[] = '  Outbound Pickup Date: ' . \Carbon\Carbon::parse($training->outbound_pickup_date)->format('Y-m-d');
             if (!empty($training->outbound_pickup_time)) $lines[] = '  Outbound Pickup Time: ' . $training->outbound_pickup_time;
             if (!empty($training->outbound_contact_number)) $lines[] = '  Outbound Contact Number: ' . $training->outbound_contact_number;
             if (!empty($training->outbound_pickup_location)) $lines[] = '  Outbound Pickup Location: ' . $training->outbound_pickup_location;
             if (!empty($training->outbound_dropoff_location)) $lines[] = '  Outbound Dropoff Location: ' . $training->outbound_dropoff_location;
+            
             $lines[] = '  Return Trip Needed: ' . $returnTripNeeded;
+            
+            // NEW: Return Pickup Date
+            if (!empty($training->return_pickup_date)) $lines[] = '  Return Pickup Date: ' . \Carbon\Carbon::parse($training->return_pickup_date)->format('Y-m-d');
             if (!empty($training->return_pickup_time)) $lines[] = '  Return Pickup Time: ' . $training->return_pickup_time;
             if (!empty($training->return_contact_number)) $lines[] = '  Return Contact Number: ' . $training->return_contact_number;
             if (!empty($training->return_pickup_location)) $lines[] = '  Return Pickup Location: ' . $training->return_pickup_location;

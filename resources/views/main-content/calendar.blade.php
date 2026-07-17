@@ -373,6 +373,10 @@
                         <div class="alps-modal-group d-none" id="outbound-group">
                             <div class="alps-modal-group-title">Outbound</div>
                             <div class="alps-modal-subrow">
+                                <div class="alps-modal-label"><i class="bi bi-calendar-event-fill"></i><span>Pickup Date</span></div>
+                                <div class="alps-modal-value" id="modal-outbound-pickup-date">N/A</div>
+                            </div>
+                            <div class="alps-modal-subrow">
                                 <div class="alps-modal-label"><i class="bi bi-clock-fill"></i><span>Pickup Time</span></div>
                                 <div class="alps-modal-value" id="modal-outbound-pickup-time">N/A</div>
                             </div>
@@ -397,6 +401,10 @@
 
                         <div class="alps-modal-group d-none" id="return-group">
                             <div class="alps-modal-group-title">Return Trip</div>
+                            <div class="alps-modal-subrow">
+                                <div class="alps-modal-label"><i class="bi bi-calendar-event-fill"></i><span>Pickup Date</span></div>
+                                <div class="alps-modal-value" id="modal-return-pickup-date">N/A</div>
+                            </div>
                             <div class="alps-modal-subrow">
                                 <div class="alps-modal-label"><i class="bi bi-clock-history"></i><span>Pickup Time</span></div>
                                 <div class="alps-modal-value" id="modal-return-pickup-time">N/A</div>

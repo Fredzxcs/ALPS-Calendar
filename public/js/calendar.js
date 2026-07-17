@@ -125,11 +125,13 @@ document.addEventListener('DOMContentLoaded', function () {
                         platform: training.platform,
                         conference_link: training.conference_link,
                         need_transportation: training.need_transportation,
+                        outbound_pickup_date: training.outbound_date, 
                         outbound_pickup_time: training.outbound_pickup_time,
                         outbound_contact_number: training.outbound_contact_number,
                         outbound_pickup_location: training.outbound_pickup_location,
                         outbound_dropoff_location: training.outbound_dropoff_location,
                         return_trip_needed: training.return_trip_needed,
+                        return_pickup_date: training.return_date,  
                         return_pickup_time: training.return_pickup_time,
                         return_contact_number: training.return_contact_number,
                         return_pickup_location: training.return_pickup_location,
@@ -721,11 +723,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     platform: info.event.extendedProps.platform || 'N/A',
                     conference_link: info.event.extendedProps.conference_link || 'N/A',
                     need_transportation: info.event.extendedProps.need_transportation,
+                    outbound_pickup_date: info.event.extendedProps.outbound_pickup_date ? moment(info.event.extendedProps.outbound_pickup_date).format('MMM DD, YYYY') : 'N/A',
                     outbound_pickup_time: info.event.extendedProps.outbound_pickup_time || 'N/A',
                     outbound_contact_number: info.event.extendedProps.outbound_contact_number || 'N/A',
                     outbound_pickup_location: info.event.extendedProps.outbound_pickup_location || 'N/A',
                     outbound_dropoff_location: info.event.extendedProps.outbound_dropoff_location || 'N/A',
                     return_trip_needed: info.event.extendedProps.return_trip_needed,
+                    return_pickup_date: info.event.extendedProps.return_pickup_date ? moment(info.event.extendedProps.return_pickup_date).format('MMM DD, YYYY') : 'N/A',
                     return_pickup_time: info.event.extendedProps.return_pickup_time || 'N/A',
                     return_contact_number: info.event.extendedProps.return_contact_number || 'N/A',
                     return_pickup_location: info.event.extendedProps.return_pickup_location || 'N/A',
@@ -795,11 +799,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 $modalElement.find('#modal-platform').text(eventData.platform);
                 $modalElement.find('#modal-conference-link').text(eventData.conference_link);
                 $modalElement.find('#modal-transportation-needed').text(eventData.need_transportation ? 'Yes' : 'No');
+                $modalElement.find('#modal-outbound-pickup-date').text(eventData.outbound_pickup_date);
                 $modalElement.find('#modal-outbound-pickup-time').text(eventData.outbound_pickup_time);
                 $modalElement.find('#modal-outbound-contact-number').text(eventData.outbound_contact_number);
                 $modalElement.find('#modal-outbound-pickup-location').text(eventData.outbound_pickup_location);
                 $modalElement.find('#modal-outbound-dropoff-location').text(eventData.outbound_dropoff_location);
                 $modalElement.find('#modal-return-trip-needed').text(eventData.return_trip_needed ? 'Yes' : 'No');
+                $modalElement.find('#modal-return-pickup-date').text(eventData.return_pickup_date);
                 $modalElement.find('#modal-return-pickup-time').text(eventData.return_pickup_time);
                 $modalElement.find('#modal-return-contact-number').text(eventData.return_contact_number);
                 $modalElement.find('#modal-return-pickup-location').text(eventData.return_pickup_location);
