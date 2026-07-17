@@ -126,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         conference_link: training.conference_link,
                         need_transportation: training.need_transportation,
                         outbound_pickup_date: training.outbound_pickup_date,
-                        outbound_pickup_date: training.outbound_date, 
                         outbound_pickup_time: training.outbound_pickup_time,
                         outbound_contact_number: training.outbound_contact_number,
                         outbound_pickup_location: training.outbound_pickup_location,
