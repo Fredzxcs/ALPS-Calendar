@@ -552,15 +552,25 @@ $(document).ready(function (e) {
             return true;
         }
 
-        const requiredFields = [
-            '#outbound_pickup_date', // <-- ADDED
+        // --- OUTBOUND VALIDATION ---
+        
+        // 1. Check Outbound Date specifically
+        if ($('#outbound_pickup_date').val() === '' && !$('#outbound_date_na').is(':checked')) {
+            $('#outbound_pickup_date').addClass('border-danger');
+            isValid = false;
+        } else {
+            $('#outbound_pickup_date').removeClass('border-danger');
+        }
+
+        // 2. Check other Outbound fields
+        const outboundFields = [
             '#outbound_pickup_time',
             '#outbound_contact_number',
             '#outbound_pickup_location',
             '#outbound_dropoff_location'
         ];
 
-        requiredFields.forEach(function (selector) {
+        outboundFields.forEach(function (selector) {
             const element = $(selector);
             if ((element.val() || '').trim() === '') {
                 element.addClass('border-danger');
@@ -570,8 +580,19 @@ $(document).ready(function (e) {
             }
         });
 
+        // --- RETURN TRIP VALIDATION ---
         if ($('#return_trip_needed').is(':checked')) {
-            ['#return_pickup_date','#return_pickup_time', '#return_contact_number', '#return_pickup_location', '#return_dropoff_location'].forEach(function (selector) {
+            
+            // 1. Check Return Date specifically
+            if ($('#return_pickup_date').val() === '' && !$('#return_date_na').is(':checked')) {
+                $('#return_pickup_date').addClass('border-danger');
+                isValid = false;
+            } else {
+                $('#return_pickup_date').removeClass('border-danger');
+            }
+
+            // 2. Check other Return fields
+            ['#return_pickup_time', '#return_contact_number', '#return_pickup_location', '#return_dropoff_location'].forEach(function (selector) {
                 const element = $(selector);
                 if ((element.val() || '').trim() === '') {
                     element.addClass('border-danger');
@@ -582,6 +603,7 @@ $(document).ready(function (e) {
             });
         }
 
+        // --- COORDINATOR VALIDATION ---
         if ($('#notify_coordinator').is(':checked')) {
             const coordinator = $('#coordinator_to_notify_list').val();
             if (!coordinator) {
@@ -944,7 +966,8 @@ $(document).ready(function() {
     // Handle Outbound Date N/A
     $('#outbound_date_na').on('change', function() {
         if ($(this).is(':checked')) {
-            $('#outbound_pickup_date').val('').prop('disabled', true);
+            // Disable, clear value, and remove any red validation borders
+            $('#outbound_pickup_date').val('').prop('disabled', true).removeClass('is-invalid border-danger');
         } else {
             $('#outbound_pickup_date').prop('disabled', false);
         }
@@ -953,7 +976,8 @@ $(document).ready(function() {
     // Handle Return Date N/A
     $('#return_date_na').on('change', function() {
         if ($(this).is(':checked')) {
-            $('#return_pickup_date').val('').prop('disabled', true);
+            // Disable, clear value, and remove any red validation borders
+            $('#return_pickup_date').val('').prop('disabled', true).removeClass('is-invalid border-danger');
         } else {
             $('#return_pickup_date').prop('disabled', false);
         }

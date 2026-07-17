@@ -297,6 +297,63 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
+        // --- DRIVER ARRANGEMENT VALIDATION (EDIT MODE) ---
+        if ($('input[name="need_transportation"]:checked').val() === 'yes') {
+            
+            // 1. Check Outbound Date specifically
+            if ($('#outbound_pickup_date').val() === '' && !$('#outbound_date_na').is(':checked')) {
+                $('#outbound_pickup_date').addClass('border-danger');
+                isValid = false;
+            } else {
+                $('#outbound_pickup_date').removeClass('border-danger');
+            }
+
+            // 2. Check other Outbound fields
+            ['#outbound_pickup_time', '#outbound_contact_number', '#outbound_pickup_location', '#outbound_dropoff_location'].forEach(function (selector) {
+                const element = $(selector);
+                if ((element.val() || '').trim() === '') {
+                    element.addClass('border-danger');
+                    isValid = false;
+                } else {
+                    element.removeClass('border-danger');
+                }
+            });
+
+            // 3. Check Return Trip
+            if ($('#return_trip_needed').is(':checked')) {
+                // Check Return Date
+                if ($('#return_pickup_date').val() === '' && !$('#return_date_na').is(':checked')) {
+                    $('#return_pickup_date').addClass('border-danger');
+                    isValid = false;
+                } else {
+                    $('#return_pickup_date').removeClass('border-danger');
+                }
+
+                // Check other Return fields
+                ['#return_pickup_time', '#return_contact_number', '#return_pickup_location', '#return_dropoff_location'].forEach(function (selector) {
+                    const element = $(selector);
+                    if ((element.val() || '').trim() === '') {
+                        element.addClass('border-danger');
+                        isValid = false;
+                    } else {
+                        element.removeClass('border-danger');
+                    }
+                });
+            }
+
+            // 4. Check Coordinator
+            if ($('#notify_coordinator').is(':checked')) {
+                const coordinator = $('#coordinator_to_notify_list').val();
+                if (!coordinator) {
+                    $('#coordinator_to_notify_select').addClass('border-danger');
+                    isValid = false;
+                } else {
+                    $('#coordinator_to_notify_select').removeClass('border-danger');
+                }
+            }
+        }
+        // -------------------------------------------------
+        
         if (!isValid) {
             Swal.fire({
                 title: 'Missing Fields!',
@@ -616,7 +673,8 @@ $(document).ready(function() {
     // Handle Outbound Date N/A
     $('#outbound_date_na').on('change', function() {
         if ($(this).is(':checked')) {
-            $('#outbound_pickup_date').val('').prop('disabled', true);
+            // Disable, clear value, and remove any red validation borders
+            $('#outbound_pickup_date').val('').prop('disabled', true).removeClass('is-invalid border-danger');
         } else {
             $('#outbound_pickup_date').prop('disabled', false);
         }
@@ -625,7 +683,8 @@ $(document).ready(function() {
     // Handle Return Date N/A
     $('#return_date_na').on('change', function() {
         if ($(this).is(':checked')) {
-            $('#return_pickup_date').val('').prop('disabled', true);
+            // Disable, clear value, and remove any red validation borders
+            $('#return_pickup_date').val('').prop('disabled', true).removeClass('is-invalid border-danger');
         } else {
             $('#return_pickup_date').prop('disabled', false);
         }
