@@ -554,7 +554,7 @@ $(document).ready(function (e) {
 
         // --- OUTBOUND VALIDATION ---
         
-        // 1. Check Outbound Date specifically
+        // 1. Check Outbound Date specifically (Handles N/A)
         if ($('#outbound_pickup_date').val() === '' && !$('#outbound_date_na').is(':checked')) {
             $('#outbound_pickup_date').addClass('border-danger');
             isValid = false;
@@ -562,7 +562,7 @@ $(document).ready(function (e) {
             $('#outbound_pickup_date').removeClass('border-danger');
         }
 
-        // 2. Check other Outbound fields
+        // 2. Check other Outbound fields (Notice date is NOT in this list!)
         const outboundFields = [
             '#outbound_pickup_time',
             '#outbound_contact_number',
@@ -583,7 +583,7 @@ $(document).ready(function (e) {
         // --- RETURN TRIP VALIDATION ---
         if ($('#return_trip_needed').is(':checked')) {
             
-            // 1. Check Return Date specifically
+            // 1. Check Return Date specifically (Handles N/A)
             if ($('#return_pickup_date').val() === '' && !$('#return_date_na').is(':checked')) {
                 $('#return_pickup_date').addClass('border-danger');
                 isValid = false;
@@ -591,7 +591,7 @@ $(document).ready(function (e) {
                 $('#return_pickup_date').removeClass('border-danger');
             }
 
-            // 2. Check other Return fields
+            // 2. Check other Return fields (Notice date is NOT in this list!)
             ['#return_pickup_time', '#return_contact_number', '#return_pickup_location', '#return_dropoff_location'].forEach(function (selector) {
                 const element = $(selector);
                 if ((element.val() || '').trim() === '') {

@@ -308,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 $('#outbound_pickup_date').removeClass('border-danger');
             }
 
-            // 2. Check other Outbound fields
+            // 2. Check other Outbound fields (NO DATE IN THIS LIST)
             ['#outbound_pickup_time', '#outbound_contact_number', '#outbound_pickup_location', '#outbound_dropoff_location'].forEach(function (selector) {
                 const element = $(selector);
                 if ((element.val() || '').trim() === '') {
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     $('#return_pickup_date').removeClass('border-danger');
                 }
 
-                // Check other Return fields
+                // Check other Return fields (NO DATE IN THIS LIST)
                 ['#return_pickup_time', '#return_contact_number', '#return_pickup_location', '#return_dropoff_location'].forEach(function (selector) {
                     const element = $(selector);
                     if ((element.val() || '').trim() === '') {
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         // -------------------------------------------------
-        
+
         if (!isValid) {
             Swal.fire({
                 title: 'Missing Fields!',
