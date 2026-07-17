@@ -940,3 +940,22 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+$(document).ready(function() {
+    // Handle Outbound Date N/A
+    $('#outbound_date_na').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#outbound_pickup_date').val('').prop('disabled', true);
+        } else {
+            $('#outbound_pickup_date').prop('disabled', false);
+        }
+    });
+
+    // Handle Return Date N/A
+    $('#return_date_na').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#return_pickup_date').val('').prop('disabled', true);
+        } else {
+            $('#return_pickup_date').prop('disabled', false);
+        }
+    });
+});

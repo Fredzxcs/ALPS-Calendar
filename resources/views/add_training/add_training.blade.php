@@ -284,8 +284,14 @@
                                 <div class="trip-section-heading">Outbound Trip</div>
                                 <div class="training-form-row quad">
                                     <div class="training-form-group">
-                                        <label for="outbound_pickup_date">Pick-Up Date</label>
-                                        <input type="date" id="outbound_pickup_date" class="training-input" 
+                                        <label for="outbound_pickup_date" class="d-flex justify-content-between align-items-center w-100">
+                                            Pick-Up Date
+                                            <div class="form-check form-check-sm form-check-custom mb-0">
+                                                <input class="form-check-input" type="checkbox" id="outbound_date_na" name="outbound_date_na" value="1">
+                                                <label class="form-check-label text-muted fs-7" for="outbound_date_na">N/A</label>
+                                            </div>
+                                        </label>
+                                        <input type="date" id="outbound_pickup_date" name="outbound_pickup_date" class="training-input" 
                                             value="{{ !empty($training->outbound_pickup_date) ? \Carbon\Carbon::parse($training->outbound_pickup_date)->format('Y-m-d') : '' }}">
                                     </div>
                                     <div class="training-form-group">
@@ -318,8 +324,14 @@
                                     <div class="trip-section-heading">Return Trip</div>
                                     <div class="training-form-row quad">
                                         <div class="training-form-group">
-                                            <label for="return_pickup_date">Pick-Up Date</label>
-                                            <input type="date" id="return_pickup_date" class="training-input" 
+                                            <label for="return_pickup_date" class="d-flex justify-content-between align-items-center w-100">
+                                                Pick-Up Date
+                                                <div class="form-check form-check-sm form-check-custom mb-0">
+                                                    <input class="form-check-input" type="checkbox" id="return_date_na" name="return_date_na" value="1">
+                                                    <label class="form-check-label text-muted fs-7" for="return_date_na">N/A</label>
+                                                </div>
+                                            </label>
+                                            <input type="date" id="return_pickup_date" name="return_pickup_date" class="training-input" 
                                                 value="{{ !empty($training->return_pickup_date) ? \Carbon\Carbon::parse($training->return_pickup_date)->format('Y-m-d') : '' }}">
                                         </div>
                                         <div class="training-form-group">
