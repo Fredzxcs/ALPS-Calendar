@@ -238,9 +238,28 @@ document.addEventListener('DOMContentLoaded', function () {
         const extraCount = extraTrips.length;
         const buttonLabel = `View Other ${sectionLabel}${extraCount > 1 ? 's' : ''}`;
 
+        const formatTripDate = (value) => {
+            if (!value) {
+                return 'N/A';
+            }
+
+            const parsedDate = moment(value, [moment.ISO_8601, 'YYYY-MM-DD', 'MMM DD, YYYY', 'MM/DD/YYYY'], true);
+            return parsedDate.isValid() ? parsedDate.format('MMM DD, YYYY') : value;
+        };
+
+        const formatTripTime = (value) => {
+            if (!value) {
+                return 'N/A';
+            }
+
+            const parsedTime = moment(value, ['HH:mm:ss', 'HH:mm', 'h:mm A', 'h:mmA'], true);
+            return parsedTime.isValid() ? parsedTime.format('h:mm A') : value;
+        };
+
         container.innerHTML = `
-            <button type="button" class="btn btn-sm btn-primary btn-blue w-100 mb-3" data-extra-trips-toggle="${listId}" data-default-label="${buttonLabel}" aria-expanded="false" id="${buttonId}" style="font-weight:700; letter-spacing:0.01em;">
-                ${buttonLabel}
+            <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center justify-content-center gap-2 px-3 py-2 mb-3 rounded-pill" data-extra-trips-toggle="${listId}" data-default-label="${buttonLabel}" aria-expanded="false" id="${buttonId}" style="font-weight:700; letter-spacing:0.01em; border-width:2px;">
+                <i class="bi bi-chevron-down"></i>
+                <span>${buttonLabel}</span>
             </button>
             <div id="${listId}" class="d-none"></div>
         `;
@@ -252,8 +271,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         listElement.innerHTML = extraTrips.map((trip, index) => {
             const tripNumber = index + 2;
-            const pickupDate = trip.date_na ? 'N/A' : (trip.pickup_date || 'N/A');
-            const pickupTime = trip.pickup_time || 'N/A';
+            const pickupDate = trip.date_na ? 'N/A' : formatTripDate(trip.pickup_date);
+            const pickupTime = formatTripTime(trip.pickup_time);
             const contactNumber = trip.contact_number || 'N/A';
             const pickupLocation = trip.pickup_location || 'N/A';
             const dropoffLocation = trip.dropoff_location || 'N/A';
@@ -368,9 +387,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const isHidden = listElement.classList.contains('d-none');
             listElement.classList.toggle('d-none', !isHidden);
             toggleButton.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-            toggleButton.textContent = isHidden
-                ? 'Hide Other Trips'
-                : (toggleButton.dataset.defaultLabel || 'View Other Trips');
+            toggleButton.innerHTML = isHidden
+                ? '<i class="bi bi-chevron-up"></i><span>Hide Other Trips</span>'
+                : `<i class="bi bi-chevron-down"></i><span>${toggleButton.dataset.defaultLabel || 'View Other Trips'}</span>`;
+            toggleButton.classList.toggle('btn-outline-primary', !isHidden);
+            toggleButton.classList.toggle('btn-primary', isHidden);
         });
 
         modalElement.addEventListener('shown.bs.modal', () => {

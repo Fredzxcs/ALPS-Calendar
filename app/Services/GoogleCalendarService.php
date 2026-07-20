@@ -368,8 +368,8 @@ class GoogleCalendarService
                 foreach (array_slice($outboundTrips, 1) as $index => $trip) {
                     $tripNumber = $index + 2;
                     $lines[] = '    Trip ' . $tripNumber . ':';
-                    if (!empty($trip['pickup_date'])) $lines[] = '      Pick-Up Date: ' . $trip['pickup_date'];
-                    if (!empty($trip['pickup_time'])) $lines[] = '      Pickup Time: ' . $trip['pickup_time'];
+                    if (!empty($trip['pickup_date'])) $lines[] = '      Pick-Up Date: ' . $this->formatTripDate($trip['pickup_date']);
+                    if (!empty($trip['pickup_time'])) $lines[] = '      Pickup Time: ' . $this->formatTripTime($trip['pickup_time']);
                     if (!empty($trip['contact_number'])) $lines[] = '      Contact Number: ' . $trip['contact_number'];
                     if (!empty($trip['pickup_location'])) $lines[] = '      Pickup Location: ' . $trip['pickup_location'];
                     if (!empty($trip['dropoff_location'])) $lines[] = '      Drop-off Location: ' . $trip['dropoff_location'];
@@ -392,8 +392,8 @@ class GoogleCalendarService
                 foreach (array_slice($returnTrips, 1) as $index => $trip) {
                     $tripNumber = $index + 2;
                     $lines[] = '    Trip ' . $tripNumber . ':';
-                    if (!empty($trip['pickup_date'])) $lines[] = '      Pick-Up Date: ' . $trip['pickup_date'];
-                    if (!empty($trip['pickup_time'])) $lines[] = '      Return Time: ' . $trip['pickup_time'];
+                    if (!empty($trip['pickup_date'])) $lines[] = '      Pick-Up Date: ' . $this->formatTripDate($trip['pickup_date']);
+                    if (!empty($trip['pickup_time'])) $lines[] = '      Return Time: ' . $this->formatTripTime($trip['pickup_time']);
                     if (!empty($trip['contact_number'])) $lines[] = '      Contact Number: ' . $trip['contact_number'];
                     if (!empty($trip['pickup_location'])) $lines[] = '      Pickup Location: ' . $trip['pickup_location'];
                     if (!empty($trip['dropoff_location'])) $lines[] = '      Drop-off Location: ' . $trip['dropoff_location'];
@@ -431,5 +431,39 @@ class GoogleCalendarService
         }
 
         return implode(', ', $names);
+    }
+
+    private function formatTripDate($value): string
+    {
+        if (empty($value)) {
+            return 'N/A';
+        }
+
+        try {
+            return Carbon::parse($value)->format('M d, Y');
+        } catch (\Throwable $e) {
+            return (string) $value;
+        }
+    }
+
+    private function formatTripTime($value): string
+    {
+        if (empty($value)) {
+            return 'N/A';
+        }
+
+        foreach (['H:i:s', 'H:i', 'g:i A', 'g:iA'] as $format) {
+            try {
+                return Carbon::createFromFormat($format, (string) $value)->format('g:i A');
+            } catch (\Throwable $e) {
+                // Try the next format.
+            }
+        }
+
+        try {
+            return Carbon::parse($value)->format('g:i A');
+        } catch (\Throwable $e) {
+            return (string) $value;
+        }
     }
 }
