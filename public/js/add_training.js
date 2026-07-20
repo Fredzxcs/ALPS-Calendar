@@ -23,6 +23,131 @@ function updateAccountFieldState() {
     }
 }
 
+function parseTripCollection(rawTrips) {
+    if (!Array.isArray(rawTrips)) {
+        return [];
+    }
+
+    return rawTrips.filter((trip) => trip && typeof trip === 'object');
+}
+
+function getTripTemplate(section) {
+    const template = document.getElementById(`${section}-trip-template`);
+    if (!template || !template.content || !template.content.firstElementChild) {
+        return null;
+    }
+
+    return template.content.firstElementChild.cloneNode(true);
+}
+
+function populateTripCard(card, trip) {
+    const $card = $(card);
+    const values = trip || {};
+
+    $card.find('.trip-pickup-date').val(values.pickup_date || '');
+    $card.find('.trip-date-na').prop('checked', Boolean(values.date_na));
+    $card.find('.trip-pickup-time').val(values.pickup_time || '');
+    $card.find('.trip-contact-number').val(values.contact_number || '');
+    $card.find('.trip-pickup-location').val(values.pickup_location || '');
+    $card.find('.trip-dropoff-location').val(values.dropoff_location || '');
+}
+
+function appendTripCard(section, trip) {
+    const container = document.getElementById(`${section}-trip-entries`);
+    const templateCard = getTripTemplate(section);
+
+    if (!container || !templateCard) {
+        return;
+    }
+
+    populateTripCard(templateCard, trip);
+    container.appendChild(templateCard);
+}
+
+function readTripCard($card) {
+    return {
+        pickup_date: $card.find('.trip-pickup-date').val() || '',
+        date_na: $card.find('.trip-date-na').is(':checked') ? 1 : 0,
+        pickup_time: $card.find('.trip-pickup-time').val() || '',
+        contact_number: $card.find('.trip-contact-number').val() || '',
+        pickup_location: $card.find('.trip-pickup-location').val() || '',
+        dropoff_location: $card.find('.trip-dropoff-location').val() || ''
+    };
+}
+
+function readPrimaryTrip(section) {
+    if (section === 'outbound') {
+        return {
+            pickup_date: $('#outbound_pickup_date').val() || '',
+            date_na: $('#outbound_date_na').is(':checked') ? 1 : 0,
+            pickup_time: $('#outbound_pickup_time').val() || '',
+            contact_number: $('#outbound_contact_number').val() || '',
+            pickup_location: $('#outbound_pickup_location').val() || '',
+            dropoff_location: $('#outbound_dropoff_location').val() || ''
+        };
+    }
+
+    return {
+        pickup_date: $('#return_pickup_date').val() || '',
+        date_na: $('#return_date_na').is(':checked') ? 1 : 0,
+        pickup_time: $('#return_pickup_time').val() || '',
+        contact_number: $('#return_contact_number').val() || '',
+        pickup_location: $('#return_pickup_location').val() || '',
+        dropoff_location: $('#return_dropoff_location').val() || ''
+    };
+}
+
+function collectTripEntries(section) {
+    const trips = [readPrimaryTrip(section)];
+
+    $(`#${section}-trip-entries .dynamic-trip-card`).each(function () {
+        trips.push(readTripCard($(this)));
+    });
+
+    return trips;
+}
+
+function clearTripEntries(section) {
+    $(`#${section}-trip-entries`).empty();
+}
+
+function validateTripCard($card) {
+    let isValid = true;
+    const dateInput = $card.find('.trip-pickup-date');
+    const dateNa = $card.find('.trip-date-na');
+
+    if ((dateInput.val() || '').trim() === '' && !dateNa.is(':checked')) {
+        dateInput.addClass('border-danger');
+        isValid = false;
+    } else {
+        dateInput.removeClass('border-danger');
+    }
+
+    ['.trip-pickup-time', '.trip-contact-number', '.trip-pickup-location', '.trip-dropoff-location'].forEach(function (selector) {
+        const element = $card.find(selector);
+        if ((element.val() || '').trim() === '') {
+            element.addClass('border-danger');
+            isValid = false;
+        } else {
+            element.removeClass('border-danger');
+        }
+    });
+
+    return isValid;
+}
+
+function validateTripCollection(section) {
+    let isValid = true;
+
+    $(`#${section}-trip-entries .dynamic-trip-card`).each(function () {
+        if (!validateTripCard($(this))) {
+            isValid = false;
+        }
+    });
+
+    return isValid;
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     const modeRadios = document.querySelectorAll('input[name="mode"]');
     const locationContainer = document.getElementById("location-container");
@@ -427,6 +552,8 @@ $(document).ready(function (e) {
         let account_id = $('#credentials-container').is(':visible') ? ($('#credentials').find('option:selected').val() || '') : '';
         let location = $('#location').val();
         let company = $('#company').find('option:selected').val();
+            const outboundTrips = collectTripEntries('outbound');
+            const returnTrips = $('#return_trip_needed').is(':checked') ? collectTripEntries('return') : [];
 
         if (!facilitator_id || facilitator_id === "") {
             handleCompanyAndStoreTraining(company);
@@ -580,6 +707,10 @@ $(document).ready(function (e) {
             }
         });
 
+        if (!validateTripCollection('outbound')) {
+            isValid = false;
+        }
+
         // --- RETURN TRIP VALIDATION ---
         if ($('#return_trip_needed').is(':checked')) {
             
@@ -601,6 +732,10 @@ $(document).ready(function (e) {
                     element.removeClass('border-danger');
                 }
             });
+
+            if (!validateTripCollection('return')) {
+                isValid = false;
+            }
         }
 
         // --- COORDINATOR VALIDATION ---
@@ -623,6 +758,7 @@ $(document).ready(function (e) {
             $('#return-trip-fields').removeClass('d-none');
         } else {
             $('#return-trip-fields').addClass('d-none');
+            clearTripEntries('return');
         }
     });
     $(document).on('change', '#notify_coordinator', function () {
@@ -641,6 +777,24 @@ $(document).ready(function (e) {
         if (trainingStepper) {
             trainingStepper.goPrevious();
         }
+    });
+
+    $(document).on('click', '[data-trip-add="outbound"]', function (ev) {
+        ev.preventDefault();
+        appendTripCard('outbound');
+    });
+
+    $(document).on('click', '[data-trip-add="return"]', function (ev) {
+        ev.preventDefault();
+        if (!$('#return_trip_needed').is(':checked')) {
+            $('#return_trip_needed').prop('checked', true).trigger('change');
+        }
+        appendTripCard('return');
+    });
+
+    $(document).on('click', '[data-trip-remove]', function (ev) {
+        ev.preventDefault();
+        $(this).closest('.dynamic-trip-card').remove();
     });
 
     toggleDriverArrangementFields();
@@ -692,6 +846,8 @@ $(document).ready(function (e) {
             // Hide platform_other input
             $('#platform_other').addClass('d-none');
             $('#driver-arrangement-fields, #return-trip-fields, #coordinator-to-notify-container').addClass('d-none');
+            clearTripEntries('outbound');
+            clearTripEntries('return');
 
             // Clear assistants list UI and state
             window.assistantsList = [];
@@ -725,6 +881,12 @@ $(document).ready(function (e) {
 
     $(function () {
         restoreTrainingDraft();
+        parseTripCollection(window.existingOutboundTrips || []).slice(1).forEach(function (trip) {
+            appendTripCard('outbound', trip);
+        });
+        parseTripCollection(window.existingReturnTrips || []).slice(1).forEach(function (trip) {
+            appendTripCard('return', trip);
+        });
     });
 
 
@@ -853,12 +1015,14 @@ $(document).ready(function (e) {
         formData.append('outbound_contact_number', $('#outbound_contact_number').val());
         formData.append('outbound_pickup_location', $('#outbound_pickup_location').val());
         formData.append('outbound_dropoff_location', $('#outbound_dropoff_location').val());
+            formData.append('outbound_trips_json', JSON.stringify(outboundTrips));
         formData.append('return_trip_needed', $('#return_trip_needed').is(':checked') ? '1' : '0');
         formData.append('return_pickup_date', $('#return_pickup_date').val());
         formData.append('return_pickup_time', $('#return_pickup_time').val());
         formData.append('return_contact_number', $('#return_contact_number').val());
         formData.append('return_pickup_location', $('#return_pickup_location').val());
         formData.append('return_dropoff_location', $('#return_dropoff_location').val());
+            formData.append('return_trips_json', JSON.stringify(returnTrips));
         formData.append('notify_coordinator', $('#notify_coordinator').is(':checked') ? '1' : '0');
         formData.append('coordinator_to_notify_list', $('#coordinator_to_notify_list').val() || '');
 

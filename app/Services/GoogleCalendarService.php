@@ -361,6 +361,21 @@ class GoogleCalendarService
             if (!empty($training->outbound_contact_number)) $lines[] = '  Outbound Contact Number: ' . $training->outbound_contact_number;
             if (!empty($training->outbound_pickup_location)) $lines[] = '  Outbound Pickup Location: ' . $training->outbound_pickup_location;
             if (!empty($training->outbound_dropoff_location)) $lines[] = '  Outbound Dropoff Location: ' . $training->outbound_dropoff_location;
+
+            $outboundTrips = is_array($training->outbound_trips_json ?? null) ? $training->outbound_trips_json : [];
+            if (count($outboundTrips) > 1) {
+                $lines[] = '  Additional Outbound Trips:';
+                foreach (array_slice($outboundTrips, 1) as $index => $trip) {
+                    $tripNumber = $index + 2;
+                    $lines[] = '    Trip ' . $tripNumber . ':';
+                    if (!empty($trip['pickup_date'])) $lines[] = '      Pick-Up Date: ' . $trip['pickup_date'];
+                    if (!empty($trip['pickup_time'])) $lines[] = '      Pickup Time: ' . $trip['pickup_time'];
+                    if (!empty($trip['contact_number'])) $lines[] = '      Contact Number: ' . $trip['contact_number'];
+                    if (!empty($trip['pickup_location'])) $lines[] = '      Pickup Location: ' . $trip['pickup_location'];
+                    if (!empty($trip['dropoff_location'])) $lines[] = '      Drop-off Location: ' . $trip['dropoff_location'];
+                    if (!empty($trip['date_na'])) $lines[] = '      Pick-Up Date: Not Applicable';
+                }
+            }
             
             $lines[] = '  Return Trip Needed: ' . $returnTripNeeded;
             
@@ -370,6 +385,21 @@ class GoogleCalendarService
             if (!empty($training->return_contact_number)) $lines[] = '  Return Contact Number: ' . $training->return_contact_number;
             if (!empty($training->return_pickup_location)) $lines[] = '  Return Pickup Location: ' . $training->return_pickup_location;
             if (!empty($training->return_dropoff_location)) $lines[] = '  Return Dropoff Location: ' . $training->return_dropoff_location;
+
+            $returnTrips = is_array($training->return_trips_json ?? null) ? $training->return_trips_json : [];
+            if (count($returnTrips) > 1) {
+                $lines[] = '  Additional Return Trips:';
+                foreach (array_slice($returnTrips, 1) as $index => $trip) {
+                    $tripNumber = $index + 2;
+                    $lines[] = '    Trip ' . $tripNumber . ':';
+                    if (!empty($trip['pickup_date'])) $lines[] = '      Pick-Up Date: ' . $trip['pickup_date'];
+                    if (!empty($trip['pickup_time'])) $lines[] = '      Return Time: ' . $trip['pickup_time'];
+                    if (!empty($trip['contact_number'])) $lines[] = '      Contact Number: ' . $trip['contact_number'];
+                    if (!empty($trip['pickup_location'])) $lines[] = '      Pickup Location: ' . $trip['pickup_location'];
+                    if (!empty($trip['dropoff_location'])) $lines[] = '      Drop-off Location: ' . $trip['dropoff_location'];
+                    if (!empty($trip['date_na'])) $lines[] = '      Pick-Up Date: Not Applicable';
+                }
+            }
         }
 
         if ($notifyCoordinator === 'Yes') $lines[] = 'Notify Coordinator: Yes';

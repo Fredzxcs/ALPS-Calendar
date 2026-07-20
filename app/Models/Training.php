@@ -31,16 +31,26 @@ class Training extends Model
         'outbound_contact_number',
         'outbound_pickup_location',
         'outbound_dropoff_location',
+        'outbound_trips_json',
         'return_pickup_date',
         'return_trip_needed',
         'return_pickup_time',
         'return_contact_number',
         'return_pickup_location',
         'return_dropoff_location',
+        'return_trips_json',
         'notify_coordinator',
         'coordinator_to_notify',
         'is_updated',
         // 'credentials_id', --if credentials object is done
+    ];
+
+    protected $casts = [
+        'need_transportation' => 'boolean',
+        'return_trip_needed' => 'boolean',
+        'notify_coordinator' => 'boolean',
+        'outbound_trips_json' => 'array',
+        'return_trips_json' => 'array',
     ];
 
     public function schedule()

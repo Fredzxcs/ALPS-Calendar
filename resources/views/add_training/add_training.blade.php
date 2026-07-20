@@ -288,10 +288,14 @@
                                         <input type="date" id="outbound_pickup_date" name="outbound_pickup_date" class="training-input" 
                                             value="{{ !empty($training->outbound_pickup_date) ? \Carbon\Carbon::parse($training->outbound_pickup_date)->format('Y-m-d') : '' }}">
                                         
-                                        <!-- Moved Below the Input -->
-                                        <div class="form-check form-check-sm mt-2">
-                                            <input class="form-check-input" type="checkbox" id="outbound_date_na" name="outbound_date_na" value="1">
-                                            <label class="form-check-label text-muted fs-7" for="outbound_date_na">Not Applicable</label>
+                                        <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-top:0.5rem; flex-wrap:wrap;">
+                                            <div class="form-check form-check-sm m-0">
+                                                <input class="form-check-input" type="checkbox" id="outbound_date_na" name="outbound_date_na" value="1">
+                                                <label class="form-check-label text-muted fs-7" for="outbound_date_na">Not Applicable</label>
+                                            </div>
+                                            <button type="button" class="training-btn training-btn-secondary-blue" data-trip-add="outbound" style="padding:0.5rem 1rem; font-size:0.8rem;">
+                                                Add Outbound Trip
+                                            </button>
                                         </div>
                                     </div>                                    
                                     <div class="training-form-group">
@@ -311,6 +315,8 @@
                                         <input type="text" id="outbound_dropoff_location" class="training-input" placeholder="Drop-off location">
                                     </div>
                                 </div>
+
+                                <div id="outbound-trip-entries" style="margin-top:1rem; display:flex; flex-direction:column; gap:1rem;"></div>
                             </div>
 
                             <!-- Return Trip -->
@@ -328,10 +334,14 @@
                                             <input type="date" id="return_pickup_date" name="return_pickup_date" class="training-input" 
                                                 value="{{ !empty($training->return_pickup_date) ? \Carbon\Carbon::parse($training->return_pickup_date)->format('Y-m-d') : '' }}">
                                             
-                                            <!-- Moved Below the Input -->
-                                            <div class="form-check form-check-sm mt-2">
-                                                <input class="form-check-input" type="checkbox" id="return_date_na" name="return_date_na" value="1">
-                                                <label class="form-check-label text-muted fs-7" for="return_date_na">Not Applicable</label>
+                                            <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-top:0.5rem; flex-wrap:wrap;">
+                                                <div class="form-check form-check-sm m-0">
+                                                    <input class="form-check-input" type="checkbox" id="return_date_na" name="return_date_na" value="1">
+                                                    <label class="form-check-label text-muted fs-7" for="return_date_na">Not Applicable</label>
+                                                </div>
+                                                <button type="button" class="training-btn training-btn-secondary-blue" data-trip-add="return" style="padding:0.5rem 1rem; font-size:0.8rem;">
+                                                    Add Return Trip
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="training-form-group">
@@ -351,8 +361,84 @@
                                             <input type="text" id="return_dropoff_location" class="training-input" placeholder="Drop-off location">
                                         </div>
                                     </div>
+
+                                    <div id="return-trip-entries" style="margin-top:1rem; display:flex; flex-direction:column; gap:1rem;"></div>
                                 </div>
                             </div>
+
+                            <template id="outbound-trip-template">
+                                <div class="dynamic-trip-card" data-trip-section="outbound" style="border:1px solid #e2e8f0; border-radius:0.75rem; padding:1rem; background:#fff; box-shadow:0 1px 3px rgba(15,23,42,0.06);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+                                        <div class="trip-section-heading" style="margin-bottom:0;">Outbound Trip</div>
+                                        <button type="button" class="training-btn training-btn-secondary" data-trip-remove style="padding:0.45rem 0.9rem; font-size:0.8rem;">Remove</button>
+                                    </div>
+                                    <div class="training-form-row quad">
+                                        <div class="training-form-group">
+                                            <label>Pick-Up Date</label>
+                                            <input type="date" class="training-input trip-pickup-date">
+                                            <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-top:0.5rem; flex-wrap:wrap;">
+                                                <div class="form-check form-check-sm m-0">
+                                                    <input class="form-check-input trip-date-na" type="checkbox" value="1">
+                                                    <label class="form-check-label text-muted fs-7">Not Applicable</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="training-form-group">
+                                            <label>Pickup Time <span class="required"></span></label>
+                                            <input type="time" class="training-input trip-pickup-time">
+                                        </div>
+                                        <div class="training-form-group">
+                                            <label>Contact Number <span class="required"></span></label>
+                                            <input type="text" class="training-input trip-contact-number" placeholder="Contact number">
+                                        </div>
+                                        <div class="training-form-group">
+                                            <label>Pickup Location <span class="required"></span></label>
+                                            <input type="text" class="training-input trip-pickup-location" placeholder="Pickup location">
+                                        </div>
+                                        <div class="training-form-group">
+                                            <label>Drop-off Location <span class="required"></span></label>
+                                            <input type="text" class="training-input trip-dropoff-location" placeholder="Drop-off location">
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <template id="return-trip-template">
+                                <div class="dynamic-trip-card" data-trip-section="return" style="border:1px solid #e2e8f0; border-radius:0.75rem; padding:1rem; background:#fff; box-shadow:0 1px 3px rgba(15,23,42,0.06);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem; flex-wrap:wrap;">
+                                        <div class="trip-section-heading" style="margin-bottom:0;">Return Trip</div>
+                                        <button type="button" class="training-btn training-btn-secondary" data-trip-remove style="padding:0.45rem 0.9rem; font-size:0.8rem;">Remove</button>
+                                    </div>
+                                    <div class="training-form-row quad">
+                                        <div class="training-form-group">
+                                            <label>Pick-Up Date</label>
+                                            <input type="date" class="training-input trip-pickup-date">
+                                            <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-top:0.5rem; flex-wrap:wrap;">
+                                                <div class="form-check form-check-sm m-0">
+                                                    <input class="form-check-input trip-date-na" type="checkbox" value="1">
+                                                    <label class="form-check-label text-muted fs-7">Not Applicable</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="training-form-group">
+                                            <label>Return Time <span class="required"></span></label>
+                                            <input type="time" class="training-input trip-pickup-time">
+                                        </div>
+                                        <div class="training-form-group">
+                                            <label>Contact Number <span class="required"></span></label>
+                                            <input type="text" class="training-input trip-contact-number" placeholder="Contact number">
+                                        </div>
+                                        <div class="training-form-group">
+                                            <label>Pickup Location <span class="required"></span></label>
+                                            <input type="text" class="training-input trip-pickup-location" placeholder="Pickup location">
+                                        </div>
+                                        <div class="training-form-group">
+                                            <label>Drop-off Location <span class="required"></span></label>
+                                            <input type="text" class="training-input trip-dropoff-location" placeholder="Drop-off location">
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
 
                             <!-- Notify Heads -->
                             <div class="trip-section" style="margin-top: 1.5rem;">
