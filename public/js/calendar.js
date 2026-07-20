@@ -885,14 +885,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     conference_link: info.event.extendedProps.conference_link || 'N/A',
                     need_transportation: info.event.extendedProps.need_transportation,
                     outbound_pickup_date: info.event.extendedProps.outbound_pickup_date ? moment(info.event.extendedProps.outbound_pickup_date).format('MMM DD, YYYY') : 'N/A',
-                    outbound_pickup_time: info.event.extendedProps.outbound_pickup_time || 'N/A',
+                    outbound_pickup_time: info.event.extendedProps.outbound_pickup_time
+                        ? moment(info.event.extendedProps.outbound_pickup_time, ['HH:mm:ss', 'HH:mm', 'h:mm A', 'h:mmA'], true).isValid()
+                            ? moment(info.event.extendedProps.outbound_pickup_time, ['HH:mm:ss', 'HH:mm', 'h:mm A', 'h:mmA'], true).format('h:mm A')
+                            : info.event.extendedProps.outbound_pickup_time
+                        : 'N/A',
                     outbound_contact_number: info.event.extendedProps.outbound_contact_number || 'N/A',
                     outbound_pickup_location: info.event.extendedProps.outbound_pickup_location || 'N/A',
                     outbound_dropoff_location: info.event.extendedProps.outbound_dropoff_location || 'N/A',
                     outbound_trips_json: info.event.extendedProps.outbound_trips_json || [],
                     return_trip_needed: info.event.extendedProps.return_trip_needed,
                     return_pickup_date: info.event.extendedProps.return_pickup_date ? moment(info.event.extendedProps.return_pickup_date).format('MMM DD, YYYY') : 'N/A',
-                    return_pickup_time: info.event.extendedProps.return_pickup_time || 'N/A',
+                    return_pickup_time: info.event.extendedProps.return_pickup_time
+                        ? moment(info.event.extendedProps.return_pickup_time, ['HH:mm:ss', 'HH:mm', 'h:mm A', 'h:mmA'], true).isValid()
+                            ? moment(info.event.extendedProps.return_pickup_time, ['HH:mm:ss', 'HH:mm', 'h:mm A', 'h:mmA'], true).format('h:mm A')
+                            : info.event.extendedProps.return_pickup_time
+                        : 'N/A',
                     return_contact_number: info.event.extendedProps.return_contact_number || 'N/A',
                     return_pickup_location: info.event.extendedProps.return_pickup_location || 'N/A',
                     return_dropoff_location: info.event.extendedProps.return_dropoff_location || 'N/A',
