@@ -232,7 +232,25 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        container.innerHTML = extraTrips.map((trip, index) => {
+        const containerId = container.id || containerSelector.replace('#', '');
+        const buttonId = `${containerId}-toggle`;
+        const listId = `${containerId}-list`;
+        const extraCount = extraTrips.length;
+        const buttonLabel = `View ${extraCount} More ${sectionLabel}${extraCount > 1 ? 's' : ''}`;
+
+        container.innerHTML = `
+            <button type="button" class="btn btn-sm btn-light btn-blue w-100 mb-3" data-extra-trips-toggle="${listId}" data-default-label="${buttonLabel}" aria-expanded="false" id="${buttonId}">
+                ${buttonLabel}
+            </button>
+            <div id="${listId}" class="d-none"></div>
+        `;
+
+        const listElement = document.getElementById(listId);
+        if (!listElement) {
+            return;
+        }
+
+        listElement.innerHTML = extraTrips.map((trip, index) => {
             const tripNumber = index + 2;
             const pickupDate = trip.date_na ? 'N/A' : (trip.pickup_date || 'N/A');
             const pickupTime = trip.pickup_time || 'N/A';
@@ -334,6 +352,25 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             setModalTab(tabButton.dataset.modalTab);
+        });
+
+        modalElement.addEventListener('click', (event) => {
+            const toggleButton = event.target.closest('[data-extra-trips-toggle]');
+            if (!toggleButton || !modalElement.contains(toggleButton)) {
+                return;
+            }
+
+            const listElement = document.getElementById(toggleButton.dataset.extraTripsToggle);
+            if (!listElement) {
+                return;
+            }
+
+            const isHidden = listElement.classList.contains('d-none');
+            listElement.classList.toggle('d-none', !isHidden);
+            toggleButton.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+            toggleButton.textContent = isHidden
+                ? 'Hide Other Trips'
+                : (toggleButton.dataset.defaultLabel || 'View Other Trips');
         });
 
         modalElement.addEventListener('shown.bs.modal', () => {
