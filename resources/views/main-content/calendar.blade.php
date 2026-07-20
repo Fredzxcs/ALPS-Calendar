@@ -392,6 +392,7 @@
                                 <div class="alps-modal-label"><i class="bi bi-geo"></i><span>Drop Off Location</span></div>
                                 <div class="alps-modal-value" id="modal-outbound-dropoff-location">N/A</div>
                             </div>
+                            <div id="modal-outbound-extra-trips" class="mt-4"></div>
                         </div>
 
                         <div class="alps-modal-row d-none" id="return-trip-needed-row">
@@ -421,6 +422,7 @@
                                 <div class="alps-modal-label"><i class="bi bi-geo"></i><span>Drop Off Location</span></div>
                                 <div class="alps-modal-value" id="modal-return-dropoff-location">N/A</div>
                             </div>
+                            <div id="modal-return-extra-trips" class="mt-4"></div>
                         </div>
 
                         <div class="alps-modal-section-title d-none" id="coordination-heading">Coordination</div>

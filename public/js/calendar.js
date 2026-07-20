@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var popoverState = false; // Track if a popover is active
     var popover = null; // Reference to the active popover
     var currentHoveredEvent = null; // Track the currently hovered event
+    var popoverHideTimer = null;
+    var activePopoverElement = null;
     var calendar;
 
     const clampColorChannel = (value) => Math.max(0, Math.min(255, Math.round(value)));
@@ -130,12 +132,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         outbound_contact_number: training.outbound_contact_number,
                         outbound_pickup_location: training.outbound_pickup_location,
                         outbound_dropoff_location: training.outbound_dropoff_location,
+                        outbound_trips_json: training.outbound_trips_json || [],
                         return_trip_needed: training.return_trip_needed,
                         return_pickup_date: training.return_pickup_date,    
                         return_pickup_time: training.return_pickup_time,
                         return_contact_number: training.return_contact_number,
                         return_pickup_location: training.return_pickup_location,
                         return_dropoff_location: training.return_dropoff_location,
+                        return_trips_json: training.return_trips_json || [],
                         notify_coordinator: training.notify_coordinator,
                         coordinator_to_notify: (training.coordinator_names && String(training.coordinator_names).trim() !== '')
                             ? training.coordinator_names
@@ -204,6 +208,56 @@ document.addEventListener('DOMContentLoaded', function () {
             panel.classList.toggle('is-active', isActive);
             panel.classList.toggle('d-none', !isActive);
         });
+    };
+
+    const renderExtraTrips = (containerSelector, trips, sectionLabel) => {
+        const container = document.querySelector(containerSelector);
+        if (!container) {
+            return;
+        }
+
+        const tripList = Array.isArray(trips) ? trips : [];
+        const extraTrips = tripList.slice(1).filter((trip) => trip && typeof trip === 'object');
+
+        if (extraTrips.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        container.innerHTML = extraTrips.map((trip, index) => {
+            const tripNumber = index + 2;
+            const pickupDate = trip.date_na ? 'N/A' : (trip.pickup_date || 'N/A');
+            const pickupTime = trip.pickup_time || 'N/A';
+            const contactNumber = trip.contact_number || 'N/A';
+            const pickupLocation = trip.pickup_location || 'N/A';
+            const dropoffLocation = trip.dropoff_location || 'N/A';
+
+            return `
+                <div class="alps-modal-group mt-4" style="border-left: 3px solid rgba(37, 99, 235, 0.35); padding-left: 0.9rem;">
+                    <div class="alps-modal-group-title">${sectionLabel} ${tripNumber}</div>
+                    <div class="alps-modal-subrow">
+                        <div class="alps-modal-label"><i class="bi bi-calendar-event-fill"></i><span>Pickup Date</span></div>
+                        <div class="alps-modal-value">${pickupDate}</div>
+                    </div>
+                    <div class="alps-modal-subrow">
+                        <div class="alps-modal-label"><i class="bi bi-clock-fill"></i><span>Pickup Time</span></div>
+                        <div class="alps-modal-value">${pickupTime}</div>
+                    </div>
+                    <div class="alps-modal-subrow">
+                        <div class="alps-modal-label"><i class="bi bi-geo-alt-fill"></i><span>Pickup Location</span></div>
+                        <div class="alps-modal-value">${pickupLocation}</div>
+                    </div>
+                    <div class="alps-modal-subrow">
+                        <div class="alps-modal-label"><i class="bi bi-telephone-fill"></i><span>Contact Number</span></div>
+                        <div class="alps-modal-value">${contactNumber}</div>
+                    </div>
+                    <div class="alps-modal-subrow">
+                        <div class="alps-modal-label"><i class="bi bi-geo"></i><span>Drop Off Location</span></div>
+                        <div class="alps-modal-value">${dropoffLocation}</div>
+                    </div>
+                </div>
+            `;
+        }).join('');
     };
 
     const toggleModalRow = (modalElement, selector, shouldShow) => {
@@ -333,6 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
         popover = KTApp.initBootstrapPopover(element, options);
         popover.show();
         popoverState = true;
+        setTimeout(bindPopoverHoverState, 0);
 
         //Delete training button
         document.querySelectorAll('.deleteBtn').forEach(button => {
@@ -557,6 +612,17 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     // Function to hide active popovers
     const hidePopovers = () => {
+        if (popoverHideTimer) {
+            clearTimeout(popoverHideTimer);
+            popoverHideTimer = null;
+        }
+
+        if (activePopoverElement) {
+            activePopoverElement.removeEventListener('mouseenter', cancelPopoverHide);
+            activePopoverElement.removeEventListener('mouseleave', schedulePopoverHide);
+            activePopoverElement = null;
+        }
+
         if (popoverState && popover) {
             try {
                 popover.dispose(); // Ensure popover exists and is attached before disposing
@@ -568,6 +634,35 @@ document.addEventListener('DOMContentLoaded', function () {
             currentHoveredEvent = null;
         }
     };
+
+    function cancelPopoverHide() {
+        if (popoverHideTimer) {
+            clearTimeout(popoverHideTimer);
+            popoverHideTimer = null;
+        }
+    }
+
+    function schedulePopoverHide(delayMs = 1200) {
+        cancelPopoverHide();
+        popoverHideTimer = setTimeout(() => {
+            hidePopovers();
+        }, delayMs);
+    }
+
+    function bindPopoverHoverState() {
+        cancelPopoverHide();
+
+        if (activePopoverElement) {
+            activePopoverElement.removeEventListener('mouseenter', cancelPopoverHide);
+            activePopoverElement.removeEventListener('mouseleave', schedulePopoverHide);
+        }
+
+        activePopoverElement = document.querySelector('.popover.show');
+        if (activePopoverElement) {
+            activePopoverElement.addEventListener('mouseenter', cancelPopoverHide);
+            activePopoverElement.addEventListener('mouseleave', () => schedulePopoverHide(900));
+        }
+    }
 
     const clearCalendarEvents = (calendar) => {
         if (calendar) {
@@ -804,12 +899,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 $modalElement.find('#modal-outbound-contact-number').text(eventData.outbound_contact_number);
                 $modalElement.find('#modal-outbound-pickup-location').text(eventData.outbound_pickup_location);
                 $modalElement.find('#modal-outbound-dropoff-location').text(eventData.outbound_dropoff_location);
+                renderExtraTrips('#modal-outbound-extra-trips', eventData.outbound_trips_json, 'Outbound Trip');
                 $modalElement.find('#modal-return-trip-needed').text(eventData.return_trip_needed ? 'Yes' : 'No');
                 $modalElement.find('#modal-return-pickup-date').text(eventData.return_pickup_date);
                 $modalElement.find('#modal-return-pickup-time').text(eventData.return_pickup_time);
                 $modalElement.find('#modal-return-contact-number').text(eventData.return_contact_number);
                 $modalElement.find('#modal-return-pickup-location').text(eventData.return_pickup_location);
                 $modalElement.find('#modal-return-dropoff-location').text(eventData.return_dropoff_location);
+                renderExtraTrips('#modal-return-extra-trips', eventData.return_trips_json, 'Return Trip');
                 $modalElement.find('#modal-notify-coordinator').text(eventData.notify_coordinator ? 'Yes' : 'No');
                 $modalElement.find('#modal-coordinator-to-notify').text(eventData.coordinator_names || eventData.coordinator_to_notify || 'No Driver Coordinator Yet');
 
@@ -828,9 +925,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
         calendar.setOption('eventMouseLeave', function () {
-            setTimeout(() => {
-                hidePopovers();
-            }, 3000); // Small delay before hiding popovers
+            schedulePopoverHide(1400);
         });
     };
 
@@ -1034,9 +1129,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             calendar.setOption('eventMouseLeave', function () {
-                setTimeout(() => {
-                    hidePopovers();
-                }, 4000); // Small delay before hiding popovers
+                schedulePopoverHide(1400);
             });
 
             calendar.render();

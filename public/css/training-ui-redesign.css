@@ -173,6 +173,9 @@
     min-height: 2.75rem;
     font-size: 0.9rem;
     line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Disabled form controls - visually indicate non-interactive state */
