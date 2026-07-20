@@ -236,10 +236,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const buttonId = `${containerId}-toggle`;
         const listId = `${containerId}-list`;
         const extraCount = extraTrips.length;
-        const buttonLabel = `View ${extraCount} More ${sectionLabel}${extraCount > 1 ? 's' : ''}`;
+        const buttonLabel = `View Other ${sectionLabel}${extraCount > 1 ? 's' : ''}`;
 
         container.innerHTML = `
-            <button type="button" class="btn btn-sm btn-light btn-blue w-100 mb-3" data-extra-trips-toggle="${listId}" data-default-label="${buttonLabel}" aria-expanded="false" id="${buttonId}">
+            <button type="button" class="btn btn-sm btn-primary btn-blue w-100 mb-3" data-extra-trips-toggle="${listId}" data-default-label="${buttonLabel}" aria-expanded="false" id="${buttonId}" style="font-weight:700; letter-spacing:0.01em;">
                 ${buttonLabel}
             </button>
             <div id="${listId}" class="d-none"></div>
