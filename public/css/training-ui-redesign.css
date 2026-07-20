@@ -168,6 +168,13 @@
     font-family: inherit;
 }
 
+.training-select {
+    width: 100%;
+    min-height: 2.75rem;
+    font-size: 0.9rem;
+    line-height: 1.25;
+}
+
 /* Disabled form controls - visually indicate non-interactive state */
 .training-input:disabled,
 .training-select:disabled,

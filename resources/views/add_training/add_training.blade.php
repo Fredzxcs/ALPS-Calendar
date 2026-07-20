@@ -293,9 +293,6 @@
                                                 <input class="form-check-input" type="checkbox" id="outbound_date_na" name="outbound_date_na" value="1">
                                                 <label class="form-check-label text-muted fs-7" for="outbound_date_na">Not Applicable</label>
                                             </div>
-                                            <button type="button" class="training-btn training-btn-secondary-blue" data-trip-add="outbound" style="padding:0.5rem 1rem; font-size:0.8rem;">
-                                                Add Outbound Trip
-                                            </button>
                                         </div>
                                     </div>                                    
                                     <div class="training-form-group">
@@ -313,6 +310,11 @@
                                     <div class="training-form-group">
                                         <label for="outbound_dropoff_location">Drop-off Location <span class="required"></span></label>
                                         <input type="text" id="outbound_dropoff_location" class="training-input" placeholder="Drop-off location">
+                                    </div>
+                                    <div class="training-form-group" style="display:flex; align-items:flex-end; justify-content:flex-end;">
+                                        <button type="button" class="training-btn training-btn-secondary-blue" data-trip-add="outbound" style="padding:0.5rem 1rem; font-size:0.8rem;">
+                                            Add Outbound Trip
+                                        </button>
                                     </div>
                                 </div>
 
@@ -339,9 +341,6 @@
                                                     <input class="form-check-input" type="checkbox" id="return_date_na" name="return_date_na" value="1">
                                                     <label class="form-check-label text-muted fs-7" for="return_date_na">Not Applicable</label>
                                                 </div>
-                                                <button type="button" class="training-btn training-btn-secondary-blue" data-trip-add="return" style="padding:0.5rem 1rem; font-size:0.8rem;">
-                                                    Add Return Trip
-                                                </button>
                                             </div>
                                         </div>
                                         <div class="training-form-group">
@@ -359,6 +358,11 @@
                                         <div class="training-form-group">
                                             <label for="return_dropoff_location">Drop-off Location <span class="required"></span></label>
                                             <input type="text" id="return_dropoff_location" class="training-input" placeholder="Drop-off location">
+                                        </div>
+                                        <div class="training-form-group" style="display:flex; align-items:flex-end; justify-content:flex-end;">
+                                            <button type="button" class="training-btn training-btn-secondary-blue" data-trip-add="return" style="padding:0.5rem 1rem; font-size:0.8rem;">
+                                                Add Return Trip
+                                            </button>
                                         </div>
                                     </div>
 

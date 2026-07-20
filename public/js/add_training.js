@@ -50,6 +50,25 @@ function populateTripCard(card, trip) {
     $card.find('.trip-contact-number').val(values.contact_number || '');
     $card.find('.trip-pickup-location').val(values.pickup_location || '');
     $card.find('.trip-dropoff-location').val(values.dropoff_location || '');
+    syncTripDateNaState($card);
+}
+
+function syncTripDateNaState($scope) {
+    $scope.find('.trip-date-na').each(function () {
+        const $checkbox = $(this);
+        const $card = $checkbox.closest('.dynamic-trip-card, .training-form-group');
+        const $dateInput = $card.find('.trip-pickup-date').first();
+
+        if (!$dateInput.length) {
+            return;
+        }
+
+        if ($checkbox.is(':checked')) {
+            $dateInput.val('').prop('disabled', true).removeClass('border-danger');
+        } else {
+            $dateInput.prop('disabled', false);
+        }
+    });
 }
 
 function appendTripCard(section, trip) {
@@ -552,8 +571,6 @@ $(document).ready(function (e) {
         let account_id = $('#credentials-container').is(':visible') ? ($('#credentials').find('option:selected').val() || '') : '';
         let location = $('#location').val();
         let company = $('#company').find('option:selected').val();
-            const outboundTrips = collectTripEntries('outbound');
-            const returnTrips = $('#return_trip_needed').is(':checked') ? collectTripEntries('return') : [];
 
         if (!facilitator_id || facilitator_id === "") {
             handleCompanyAndStoreTraining(company);
@@ -797,6 +814,19 @@ $(document).ready(function (e) {
         $(this).closest('.dynamic-trip-card').remove();
     });
 
+    $(document).on('change', '.trip-date-na', function () {
+        syncTripDateNaState($(this).closest('.dynamic-trip-card, .training-form-group'));
+    });
+
+    $(document).on('change', '#outbound_date_na, #return_date_na', function () {
+        const dateInput = $(this).closest('.training-form-group').find('.training-input').first();
+        if ($(this).is(':checked')) {
+            dateInput.val('').prop('disabled', true).removeClass('border-danger');
+        } else {
+            dateInput.prop('disabled', false);
+        }
+    });
+
     toggleDriverArrangementFields();
     restoreTrainingDraft();
 
@@ -887,6 +917,7 @@ $(document).ready(function (e) {
         parseTripCollection(window.existingReturnTrips || []).slice(1).forEach(function (trip) {
             appendTripCard('return', trip);
         });
+        syncTripDateNaState($(document));
     });
 
 
@@ -986,6 +1017,9 @@ $(document).ready(function (e) {
         } else if (platformValue === 'other') {
             platformValue = $('#platform_other').val();
         }
+
+        const outboundTrips = collectTripEntries('outbound');
+        const returnTrips = $('#return_trip_needed').is(':checked') ? collectTripEntries('return') : [];
 
         syncDateRangeStateFromInput(fp);
 
