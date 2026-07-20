@@ -216,6 +216,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
+        if (typeof trips === 'string' && trips.trim() !== '') {
+            try {
+                trips = JSON.parse(trips);
+            } catch (error) {
+                trips = [];
+            }
+        }
+
         const tripList = Array.isArray(trips) ? trips : [];
         const extraTrips = tripList.slice(1).filter((trip) => trip && typeof trip === 'object');
 

@@ -24,6 +24,14 @@ function updateAccountFieldState() {
 }
 
 function parseTripCollection(rawTrips) {
+    if (typeof rawTrips === 'string' && rawTrips.trim() !== '') {
+        try {
+            rawTrips = JSON.parse(rawTrips);
+        } catch (error) {
+            return [];
+        }
+    }
+
     if (!Array.isArray(rawTrips)) {
         return [];
     }
