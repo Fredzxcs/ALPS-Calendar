@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Unavailability;
 use App\Models\Training;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 class UnavailabilityController extends Controller //TODO: Update return views
 {
@@ -35,43 +35,37 @@ class UnavailabilityController extends Controller //TODO: Update return views
      */
     public function store(Request $request)
     {
-        try {
-            // Validate the request data
-            $validatedData = $request->validate([
-                'reason' => 'required|string|max:255',
-                'from_date' => 'required|date',
-                'user_id' => 'required|integer', // Ensure user_id is sent
-                'to_date' => 'nullable|date|after_or_equal:from_date',
-            ], [
-                'reason.required' => 'The reason field is required.',
-                'from_date.required' => 'The from date is required.',
-                'from_date.date' => 'The from date must be a valid date.',
-                'to_date.date' => 'The to date must be a valid date.',
-                'to_date.after_or_equal' => 'The to date must be the same or later than the from date.',
-                'user_id.required' => 'The user ID is required.',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'reason' => ['required', 'string', 'max:255'],
+            'from_date' => ['required', 'date'],
+            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'to_date' => ['nullable', 'date', 'after_or_equal:from_date'],
+        ], [
+            'reason.required' => 'Please tell us why you will be unavailable.',
+            'reason.string' => 'The reason should be written as text.',
+            'reason.max' => 'The reason is too long. Please keep it to 255 characters or fewer.',
+            'from_date.required' => 'Please choose the first day of your unavailability.',
+            'from_date.date' => 'The start date needs to be a valid date.',
+            'user_id.required' => 'We could not identify the user for this request.',
+            'user_id.integer' => 'The user selection is not valid.',
+            'user_id.exists' => 'The selected user could not be found. Please refresh and try again.',
+            'to_date.date' => 'The end date needs to be a valid date.',
+            'to_date.after_or_equal' => 'The end date must be the same as or later than the start date.',
+        ]);
 
-            // Create the unavailability record
-            $unavailability = Unavailability::create($validatedData);
-
-            // Return a JSON response for success
+        if ($validator->fails()) {
             return response()->json([
-                'message' => 200,
-                'data' => $unavailability,
-            ], 200);
-        } catch (ValidationException $e) {
-            // Return a JSON response for validation errors
-            return response()->json([
-                'message' => 'Validation failed.',
-                'errors' => $e->errors(),
+                'message' => 'Please review the unavailability details and try again.',
+                'errors' => $validator->errors(),
             ], 422);
-        } catch (\Exception $e) {
-            // Return a JSON response for unexpected errors
-            return response()->json([
-                'message' => 'An unexpected error occurred.',
-                'error' => $e->getMessage(),
-            ], 500);
         }
+
+        $unavailability = Unavailability::create($validator->validated());
+
+        return response()->json([
+            'message' => 200,
+            'data' => $unavailability,
+        ], 200);
     }
 
 
@@ -90,11 +84,23 @@ class UnavailabilityController extends Controller //TODO: Update return views
 
     public function checkUnavailability(Request $request, $id)
     {
-        // Validate incoming request (expects `from_date` and `to_date` in payload)
-        $request->validate([
-            'from_date' => 'required|date',
-            'to_date' => 'required|date|after_or_equal:from_date',
+        $validator = Validator::make($request->all(), [
+            'from_date' => ['required', 'date'],
+            'to_date' => ['required', 'date', 'after_or_equal:from_date'],
+        ], [
+            'from_date.required' => 'Please choose a start date before checking availability.',
+            'from_date.date' => 'The start date must be a valid date.',
+            'to_date.required' => 'Please choose an end date before checking availability.',
+            'to_date.date' => 'The end date must be a valid date.',
+            'to_date.after_or_equal' => 'The end date must be the same as or later than the start date.',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Please review the date range and try again.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
         // Extract dates from request
         $fromDate = $request->input('from_date');
@@ -141,28 +147,28 @@ class UnavailabilityController extends Controller //TODO: Update return views
      */
     public function update(Request $request, Unavailability $unavailability)
     {
-        try {
-            $request->validate([
-                'reason' => 'required|string|max:255',
-                'from_date' => 'required|date',
-                'to_date' => 'nullable|date|after_or_equal:from_date',
-            ], [
-                'reason.required' => 'The reason field is required.',
-                'from_date.required' => 'The from date is required.',
-                'from_date.date' => 'The from date must be a valid date.',
-                'to_date.date' => 'The to date must be a valid date.',
-                'to_date.after_or_equal' => 'The to date must be the same or later than the from date.',
-            ]);
+        $validator = Validator::make($request->all(), [
+            'reason' => ['required', 'string', 'max:255'],
+            'from_date' => ['required', 'date'],
+            'to_date' => ['nullable', 'date', 'after_or_equal:from_date'],
+        ], [
+            'reason.required' => 'Please tell us why this time should stay blocked out.',
+            'reason.string' => 'The reason should be written as text.',
+            'reason.max' => 'The reason is too long. Please keep it to 255 characters or fewer.',
+            'from_date.required' => 'Please choose the first day of the blocked period.',
+            'from_date.date' => 'The start date needs to be a valid date.',
+            'to_date.date' => 'The end date needs to be a valid date.',
+            'to_date.after_or_equal' => 'The end date must be the same as or later than the start date.',
+        ]);
 
-            $unavailability->update($request->all());
-
-            return redirect()->route('unavailabilities.index')
-                ->with('success', 'Unavailability record updated successfully.');
-        } catch (ValidationException $e) {
-            return back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            return back()->with('error', 'An unexpected error occurred: ' . $e->getMessage())->withInput();
+        if ($validator->fails()) {
+            return back()->withErrors($validator->errors())->withInput();
         }
+
+        $unavailability->update($validator->validated());
+
+        return redirect()->route('unavailabilities.index')
+            ->with('success', 'Unavailability record updated successfully.');
     }
 
     /**

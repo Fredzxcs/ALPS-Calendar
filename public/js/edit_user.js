@@ -334,26 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
             },
-            error: function (xhr, status, error) {
-                if (xhr.status === 422) {
-                    let errors = xhr.responseJSON.errors;
-                    let errorMessages = Object.values(errors).flat().join("\n");
-
-                    Swal.fire({
-                        title: 'Validation Error!',
-                        text: errorMessages,
-                        icon: 'warning',
-                        confirmButtonText: 'OK'
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'There was an error updating the user.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            }
+            error: handleAjaxError
         });
     }
 });

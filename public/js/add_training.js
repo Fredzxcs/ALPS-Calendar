@@ -949,7 +949,7 @@ $(document).ready(function (e) {
             },
             error: function (xhr, status, error) {
                 console.error('Error checking availability:', xhr.responseText);
-                Swal.fire('Error!', 'Could not check facilitator availability.', 'error');
+                handleAjaxError(xhr);
                 callback(false); // Assume unavailable if error occurs
             }
         });
@@ -1006,7 +1006,7 @@ $(document).ready(function (e) {
                 },
                 error: function (xhr, status, error) {
                     console.error('AJAX Error:', xhr.responseText);
-                    Swal.fire('Error!', 'An unexpected error occurred.', 'error');
+                    handleAjaxError(xhr);
                 }
             });
         } else {
@@ -1131,12 +1131,7 @@ $(document).ready(function (e) {
                 Swal.close(); // Close loader
 
                 console.log('AJAX Error Details:', xhr.responseText);
-                Swal.fire({
-                    title: 'Error!',
-                    text: 'There was an error adding the training.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
+                handleAjaxError(xhr);
             }
         });
     }

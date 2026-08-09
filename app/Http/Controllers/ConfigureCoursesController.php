@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course; // Ensure the model name matches
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ConfigureCoursesController extends Controller
 {
@@ -32,11 +34,27 @@ class ConfigureCoursesController extends Controller
 
     public function addCourse(Request $request)
     {
-        // Validate the incoming data
-        $validated = $request->validate([
-            'course_name' => 'required|unique:course|max:255',
-            'course_code' => 'nullable|unique:course|max:255', // Use correct table name
+        $validator = Validator::make($request->all(), [
+            'course_name' => ['required', 'string', 'max:255', 'unique:course,course_name'],
+            'course_code' => ['nullable', 'string', 'max:255', 'unique:course,course_code'],
+        ], [
+            'course_name.required' => 'Please enter the course name before saving.',
+            'course_name.string' => 'The course name should be written as text.',
+            'course_name.max' => 'The course name is too long. Please keep it to 255 characters or fewer.',
+            'course_name.unique' => 'That course name already exists. Please choose another one.',
+            'course_code.string' => 'The course code should be written as text.',
+            'course_code.max' => 'The course code is too long. Please keep it to 255 characters or fewer.',
+            'course_code.unique' => 'That course code already exists. Please choose another one.',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Please review the course details and try again.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $validated = $validator->validated();
 
         // Create and store the new course
         $course = new Course();
@@ -53,14 +71,27 @@ class ConfigureCoursesController extends Controller
 
     public function editCourse(Request $request, $id)
     {
-        // Validate the incoming data
-        $rules = [
-            'course_name' => 'required|max:255',
-            'course_code' => "nullable|unique:course,course_code,{$id}|max:255",
-        ];
+        $validator = Validator::make($request->all(), [
+            'course_name' => ['required', 'string', 'max:255', Rule::unique('course', 'course_name')->ignore($id)],
+            'course_code' => ['nullable', 'string', 'max:255', Rule::unique('course', 'course_code')->ignore($id)],
+        ], [
+            'course_name.required' => 'Please enter the course name before updating.',
+            'course_name.string' => 'The course name should be written as text.',
+            'course_name.max' => 'The course name is too long. Please keep it to 255 characters or fewer.',
+            'course_name.unique' => 'That course name already exists. Please choose another one.',
+            'course_code.string' => 'The course code should be written as text.',
+            'course_code.max' => 'The course code is too long. Please keep it to 255 characters or fewer.',
+            'course_code.unique' => 'That course code already exists. Please choose another one.',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Please review the course details and try again.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
-        $validated = $request->validate($rules);
+        $validated = $validator->validated();
 
         // Find the company by ID
         $course = Course::findOrFail($id);

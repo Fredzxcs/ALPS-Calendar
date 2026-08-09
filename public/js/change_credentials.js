@@ -24,9 +24,9 @@ function fetchUserData(userId) {
                 $('#color').val(response.user.color);
             }
         },
-        error: function (error) {
-            console.error("Error fetching user data:", error);
-            alert("Failed to fetch user data.");
+        error: function (xhr) {
+            console.error("Error fetching user data:", xhr);
+            handleAjaxError(xhr);
         }
     });
 }
@@ -221,26 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                         }
                     },
-                    error: function (xhr, status, error) {
-                        if (xhr.status === 422) {
-                            let errors = xhr.responseJSON.errors;
-                            let errorMessages = Object.values(errors).flat().join("\n");
-
-                            Swal.fire({
-                                title: 'Validation Error!',
-                                text: errorMessages,
-                                icon: 'warning',
-                                confirmButtonText: 'OK'
-                            });
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: 'There was an error adding the user.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    }
+                    error: handleAjaxError
                 });
 
             }

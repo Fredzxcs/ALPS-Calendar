@@ -137,12 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             console.log('Response Text:', xhr.responseText);
                             console.log('ReadyState:', xhr.readyState);
                             console.log('Response Status:', xhr.status);
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.message || 'There was an error adding the user.',
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
+                            handleAjaxError(xhr);
                         }
                     });
                 }

@@ -118,6 +118,19 @@ var KTCookie = {
 "undefined" != typeof module &&
   void 0 !== module.exports &&
   (module.exports = KTCookie);
+window.handleAjaxError = function (xhr) {
+  let message = 'Something went wrong. Please try again.';
+
+  if (xhr && xhr.status === 422 && xhr.responseJSON) {
+    const errors = xhr.responseJSON.errors || {};
+    const firstError = Object.values(errors).flat()[0];
+    message = firstError || xhr.responseJSON.message || 'Please check the form and try again.';
+  } else if (xhr && xhr.responseJSON && xhr.responseJSON.message) {
+    message = xhr.responseJSON.message;
+  }
+
+  Swal.fire({ icon: 'error', title: 'Unable to submit', text: message });
+};
 var KTDialer = function (e, t) {
   var n = this;
   if (e) {

@@ -132,21 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 'error');
                         }
                     },
-                    error: function (xhr, status, error) {
-                        const csrfToken = $('meta[name="csrf-token"]').attr('content');
-                        console.error('AJAX Error Status:', xhr.status);
-                        console.error('AJAX Error Response:', xhr.responseText);
-                        console.error('CSRF Token Present:', !!csrfToken);
-                        
-                        let errorMsg = 'An unexpected error occurred.';
-                        if (xhr.status === 419) {
-                            errorMsg = 'Session expired. Please refresh the page and try again.';
-                        } else if (xhr.status === 401 || xhr.status === 403) {
-                            errorMsg = 'Authentication failed. Please log in again.';
-                        }
-                        
-                        Swal.fire('Error!', errorMsg, 'error');
-                    },
+                    error: handleAjaxError,
                     complete: function () {
                         submitButton.disabled = false;
                     }
@@ -239,12 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 'error');
                         }
                     },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX Error:', xhr.responseText);
-                        Swal.fire('Error!',
-                            'An unexpected error occurred.',
-                            'error');
-                    },
+                    error: handleAjaxError,
                     complete: function () {
                         submitButton.disabled = false;
                     }
