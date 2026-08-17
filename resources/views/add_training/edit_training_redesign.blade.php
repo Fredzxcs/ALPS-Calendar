@@ -4,7 +4,7 @@
 
 @section('maincontent')
     <div class="training-page-wrapper">
-        <div class="training-card-container">
+        <div class="training-card-container training-form-shell training-form-shell--loading">
             <!-- Header -->
             <div class="training-header training-header-edit">
                 Edit Training

@@ -176,6 +176,7 @@ function validateTripCollection(section) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+    const trainingShell = document.querySelector('.training-form-shell--loading');
     const modeRadios = document.querySelectorAll('input[name="mode"]');
     const locationContainer = document.getElementById("location-container");
     const inpersonCheckbox = document.getElementById("inperson-training");
@@ -1134,6 +1135,11 @@ $(document).ready(function (e) {
                 handleAjaxError(xhr);
             }
         });
+    }
+
+    if (trainingShell) {
+        trainingShell.classList.remove('training-form-shell--loading');
+        trainingShell.classList.add('training-form-shell--ready');
     }
 
 

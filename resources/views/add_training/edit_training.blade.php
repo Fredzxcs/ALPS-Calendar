@@ -5,7 +5,7 @@
 @section('maincontent')
     <div class="d-flex justify-content-center align-items-center mt-20">
         <div class="container mt-5">
-            <div class="shadow-sm border-0">
+            <div class="shadow-sm border-0 training-form-shell training-form-shell--loading">
                 <div class="alps-header-add rounded-top d-flex justify-content-center align-items-center py-4" style="background: linear-gradient(90deg, #1D4A8A 0%, #2C66B3 52%, #1B4785 100%);">
                     <h2 class="text-white fw-boldest m-0 fs-1">Edit Training</h2>
                 </div>
