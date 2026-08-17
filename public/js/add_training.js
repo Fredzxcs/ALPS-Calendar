@@ -177,6 +177,23 @@ function validateTripCollection(section) {
 
 document.addEventListener("DOMContentLoaded", function () {
     const trainingShell = document.querySelector('.training-form-shell--loading');
+    let trainingShellRevealed = false;
+
+    const revealTrainingShell = () => {
+        if (!trainingShell || trainingShellRevealed) {
+            return;
+        }
+
+        trainingShellRevealed = true;
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                trainingShell.classList.remove('training-form-shell--loading');
+                trainingShell.classList.add('training-form-shell--ready');
+            });
+        });
+    };
+
+    window.addEventListener('load', revealTrainingShell, { once: true });
     const modeRadios = document.querySelectorAll('input[name="mode"]');
     const locationContainer = document.getElementById("location-container");
     const inpersonCheckbox = document.getElementById("inperson-training");
@@ -1079,10 +1096,7 @@ $(document).ready(function (e) {
         });
     }
 
-    if (trainingShell) {
-        trainingShell.classList.remove('training-form-shell--loading');
-        trainingShell.classList.add('training-form-shell--ready');
-    }
+    revealTrainingShell();
 
 
 });
