@@ -859,64 +859,6 @@ $(document).ready(function (e) {
     });
 
     $(document).on('click', '#add_training_submit', handleTrainingSubmit);
-    $(document).ready(function () {
-        $('input[name="mode"]').change(function () {
-            const mode = $(this).val();
-            clearFields(mode);
-            // Ensure driver arrangement state updates after mode change
-            updateDriverArrangementSupport();
-        });
-
-        function clearFields(mode) {
-            // Clear all input fields, dropdowns, and date pickers
-            $('#credentials, #company, #course, #public-course-select, #platform, #location, #facilitator, #assistant_select, #date-range, #time-start, #time-end, #platform_other, #conference_link')
-                .val('')
-                .trigger('change');
-
-            $('#need_transportation_no').prop('checked', true);
-            $('#need_transportation_yes').prop('checked', false);
-            $('#return_trip_needed').prop('checked', false);
-            $('#notify_coordinator').prop('checked', false);
-            $('#outbound_pickup_date, #outbound_pickup_time, #outbound_contact_number, #outbound_pickup_location, #outbound_dropoff_location, #return_pickup_date, #return_pickup_time, #return_contact_number, #return_pickup_location, #return_dropoff_location').val('');
-            $('#coordinator_to_notify_select').val('').trigger('change');
-            $('#coordinator_list_container').empty();
-            $('#coordinator_to_notify_list').val('');
-
-            // Hide platform_other input
-            $('#platform_other').addClass('d-none');
-            $('#driver-arrangement-fields, #return-trip-fields, #coordinator-to-notify-container').addClass('d-none');
-            clearTripEntries('outbound');
-            clearTripEntries('return');
-
-            // Clear assistants list UI and state
-            window.assistantsList = [];
-            $('#assistant_list_container').empty();
-            $('#assistant_list').val('');
-            $('#assistant_select').val('').trigger('change');
-
-            if (trainingStepper) {
-                trainingStepper.goFirst();
-            }
-
-            // Clear datepicker selections if used
-            $('#date-range').datepicker('clearDates');
-
-            // Uncheck checkboxes (like In-person training)
-            $('input[type="checkbox"]').prop('checked', false);
-
-            // Hide/Show based on the selected mode
-            if (mode === 'virtual') {
-                $('#credentials-container').show();
-                $('#location-container, #public-course-container, #company-container').hide();
-            } else if (mode === 'face-to-face') {
-                $('#location-container').show();
-                $('#credentials-container, #public-course-container').hide();
-            } else if (mode === 'public-course') {
-                $('#public-course-container, #credentials-container').show();
-                $('#location-container, #company-container').hide();
-            }
-        }
-    });
 
     $(function () {
         restoreTrainingDraft();
