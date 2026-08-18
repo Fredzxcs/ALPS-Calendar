@@ -2136,11 +2136,64 @@ body.alps-login-page .alps-login-shell {
 
     .alps-calendar-root {
         padding: 0.85rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden;
+    }
+
+    #calendar {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    #calendar .fc {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    #calendar .fc-view-harness,
+    #calendar .fc-scrollgrid,
+    #calendar .fc-daygrid-body,
+    #calendar .fc-scrollgrid-section-body {
+        max-width: 100% !important;
+        overflow: hidden;
     }
 
     #calendar .fc-daygrid-day {
         min-height: 8.5rem;
         height: 9.5rem;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .alps-calendar-shell {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    .alps-calendar-root {
+        padding: 0.5rem !important;
+    }
+
+    #calendar .fc-toolbar {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+    }
+
+    #calendar .fc-toolbar-title {
+        font-size: 1.05rem;
+        text-align: center;
+    }
+
+    #calendar .fc-button-group {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    #calendar .fc-daygrid-day {
+        min-height: 7rem;
+        height: 7.5rem;
     }
 }
 .table tbody tr:nth-child(even) {
