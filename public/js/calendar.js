@@ -1068,15 +1068,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
             hidePopovers();
 
-            const getResponsiveCalendarHeight = () => {
+            const getResponsiveContentHeight = () => {
                 const width = window.innerWidth;
                 if (width <= 575) {
-                    return 500;
+                    return 480;
                 }
                 if (width <= 991) {
-                    return 650;
+                    return 620;
                 }
-                return 820;
+                return 760;
             };
 
             calendar = new FullCalendar.Calendar(calendarEl, {
@@ -1087,9 +1087,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     right: 'dayGridMonth,timeGridWeek,timeGridDay',
                 },
                 dayMaxEvents: 5,
-                height: getResponsiveCalendarHeight(),
+                height: 'auto',
+                contentHeight: getResponsiveContentHeight(),
                 handleWindowResize: true,
-                windowResizeDelay: 120,
+                windowResizeDelay: 180,
                 events: [],
 
                 eventDidMount: function(info) {
@@ -1222,16 +1223,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             calendar.render();
-
-            window.addEventListener('resize', () => {
-                if (calendar) {
-                    const nextHeight = getResponsiveCalendarHeight();
-                    if (calendar.getOption('height') !== nextHeight) {
-                        calendar.setOption('height', nextHeight);
-                    }
-                    calendar.updateSize();
-                }
-            });
 
             // Load initial data
             getPopulation(initial);

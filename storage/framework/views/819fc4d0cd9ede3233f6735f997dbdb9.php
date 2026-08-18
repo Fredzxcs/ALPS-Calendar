@@ -1,0 +1,114 @@
+<nav class="navbar navbar-expand-lg shadow-sm py-1 alps-navbar">
+    <div class="container-fluid px-3">
+        <!-- Brand Logo and Name -->
+        <a class="navbar-brand d-flex align-items-center"  href="#">
+            <span class="alps-navbar-logo-badge me-3">
+                <img src="<?php echo e(asset('img/ALPs_Logo.png')); ?>" alt="ALPS Logo">
+            </span>
+            <span class="fw-boldest fs-1">Advanced Learning Programs</span>
+        </a>
+        <!-- Toggler for Mobile -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <!-- Navigation Buttons -->
+        <div class="collapse navbar-collapse justify-content-end hover-scale fs-3" id="navbarNav">
+            <ul class="navbar-nav ">
+                <!-- ACCESS Button -->
+
+                <?php if(Auth::check() && Auth::user()->usertype === "admin"): ?>
+                        <li class="nav-item me-5">
+                            <a class="nav-link fw-medium text-primary-hover fw-bolder"
+                            href="<?php echo e(route('manage_access')); ?>">
+                                ACCESS
+                            </a>
+                        </li>
+                <?php endif; ?>
+
+
+                <!-- CALENDAR Button -->
+                <li class="nav-item me-5">
+                    <a class="nav-link fw-medium text-primary-hover fw-bolder"
+                    href="/calendar">
+                        CALENDAR
+                    </a>
+                </li>
+
+                <?php if(Auth::check() && in_array(Auth::user()->usertype, ['admin', 'coordinator'])): ?>
+                <!-- CONFIGURATION Dropdown -->
+                <li class="nav-item dropdown me-5">
+                    <a class="nav-link fw-medium text-primary-hover fw-bolder dropdown-toggle alps-clickable"
+                        id="configurationDropdown"
+                        data-kt-menu-trigger="click"
+                        data-kt-menu-placement="bottom-start">
+                        CONFIGURATION
+                    </a>
+
+                    <!--begin::Links-->
+                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-200px py-4"
+                        data-kt-menu="true">
+
+                        <!--begin::Link item-->
+                        <div class="menu-item px-3">
+                            <a href="<?php echo e(route('config_courses')); ?>" class="menu-link px-3">
+                                ALPs Courses
+                            </a>
+                        </div>
+                        <!--end::Link item-->
+
+                        <!--begin::Link item-->
+                        <div class="menu-item px-3">
+                            <a href="<?php echo e(route('config_companies')); ?>" class="menu-link px-3" id="event_view">
+                                List of Companies
+                            </a>
+                        </div>
+                        <!--end::Link item-->
+
+                        <!--begin::Link item-->
+                        <div class="menu-item px-3">
+                            <a href="<?php echo e(route('config_accounts')); ?>" class="menu-link px-3" id="event_view">
+                                Hosting Accounts
+                            </a>
+                        </div>
+                        <!--end::Link item-->
+                    </div>
+                    <!--end::Links-->
+                </li>
+            <?php endif; ?>
+
+
+                <!-- SETTINGS -->
+                <li class="nav-item dropdown me-5">
+                    <a class="nav-link text-primary-hover fw-bold alps-clickable"
+                        id="navbarDropdown"
+                        data-kt-menu-trigger="click"
+                        data-kt-menu-placement="bottom-start">
+                        <i class="fas fa-cog fs-1"></i>
+                    </a>
+                    <!--begin::Links-->
+                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-bold fs-5 w-150px py-4"
+                        data-kt-menu="true">
+                        <div class="menu-item px-3">
+
+                            <form method="POST" action="<?php echo e(route('logout')); ?>">
+                                <?php echo csrf_field(); ?>
+                                <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
+                                        this.closest('form').submit();" class="menu-link px-3 text-danger" id="event_view">
+                                    Log Out
+                                </a>
+
+                            </form>
+
+                        </div>
+                        <!--end::Link item-->
+                    </div>
+                    <!--end::Links-->
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<?php $__env->startPush('scripts'); ?>
+<script src="<?php echo e(asset('js/navbar.js')); ?>"></script>
+<?php $__env->stopPush(); ?>
+<?php /**PATH C:\Users\jftsa\Documents\GitHub\ALPS-Calendar\resources\views/global/navbar.blade.php ENDPATH**/ ?>
