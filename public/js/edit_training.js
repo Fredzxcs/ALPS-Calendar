@@ -387,8 +387,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 success: function (response) {
                     callback(response.available);
                 },
-                    error: function (xhr) {
-                        handleAjaxError(xhr);
+                error: function () {
+                    Swal.fire('Error!', 'Could not check facilitator availability.', 'error');
                     callback(false);
                 }
             });
@@ -439,8 +439,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             Swal.fire('Error!', 'Failed to create company.', 'error');
                         }
                     },
-                    error: function (xhr) {
-                        handleAjaxError(xhr);
+                    error: function () {
+                        Swal.fire('Error!', 'An unexpected error occurred.', 'error');
                     }
                 });
             } else {
@@ -613,7 +613,26 @@ document.addEventListener('DOMContentLoaded', function () {
                         console.log('AJAX error - Status:', xhr?.status);
                         console.log('AJAX error - Response:', xhr?.responseJSON || xhr?.responseText);
                         Swal.close();
-                        handleAjaxError(xhr);
+
+                        if (xhr && xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                            const errors = xhr.responseJSON.errors;
+                            const html = Object.keys(errors).map(k => `<strong>${k}:</strong> ${errors[k].join(', ')}`).join('<br/>');
+                            Swal.fire({
+                                title: 'Validation error',
+                                html: html,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                            return;
+                        }
+
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'There was an error updating the training. See console/network for details.',
+                            footer: xhr && xhr.responseText ? xhr.responseText : 'No response body',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
                     }
                 });
             });

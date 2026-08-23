@@ -23,88 +23,6 @@ use Illuminate\Support\Facades\Auth;
 
 class TrainingController extends Controller
 {
-    private function trainingValidationRules(): array
-    {
-        return [
-            'course_id' => ['required', 'integer', 'exists:course,id'],
-            'mode' => ['required', 'string', 'max:255'],
-            'facilitator_id' => ['nullable', 'integer', 'exists:users,id'],
-            'account_manager_id' => ['nullable', 'integer', 'exists:users,id'],
-            'company_id' => ['nullable', 'integer', 'exists:company,id'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'assistant' => ['nullable', 'string'],
-            'account_id' => ['nullable', 'integer', 'exists:credentials,id'],
-            'from_date' => ['required', 'date'],
-            'to_date' => ['required', 'date'],
-            'from_time' => ['required'],
-            'platform' => ['nullable'],
-            'conference_link' => ['nullable', 'string'],
-            'need_transportation' => ['nullable'],
-            'outbound_pickup_date' => ['nullable', 'date'],
-            'outbound_pickup_time' => ['nullable'],
-            'outbound_contact_number' => ['nullable', 'string', 'max:255'],
-            'outbound_pickup_location' => ['nullable', 'string', 'max:255'],
-            'outbound_dropoff_location' => ['nullable', 'string', 'max:255'],
-            'outbound_trips_json' => ['nullable'],
-            'return_trip_needed' => ['nullable'],
-            'return_pickup_date' => ['nullable', 'date'],
-            'return_pickup_time' => ['nullable'],
-            'return_contact_number' => ['nullable', 'string', 'max:255'],
-            'return_pickup_location' => ['nullable', 'string', 'max:255'],
-            'return_dropoff_location' => ['nullable', 'string', 'max:255'],
-            'return_trips_json' => ['nullable'],
-            'notify_coordinator' => ['nullable'],
-            'coordinator_to_notify_list' => ['required_if:notify_coordinator,1', 'nullable', 'string'],
-            'to_time' => ['required'],
-        ];
-    }
-
-    private function trainingValidationMessages(): array
-    {
-        return [
-            'course_id.required' => 'Please choose a course before saving the training.',
-            'course_id.integer' => 'The course selection is not valid.',
-            'course_id.exists' => 'The selected course could not be found. Please choose a different course.',
-            'mode.required' => 'Please choose the training mode before continuing.',
-            'mode.string' => 'The training mode should be written as text.',
-            'mode.max' => 'The training mode is too long. Please keep it to 255 characters or fewer.',
-            'facilitator_id.integer' => 'The facilitator selection is not valid.',
-            'facilitator_id.exists' => 'The facilitator you picked could not be found. Please choose a valid facilitator.',
-            'account_manager_id.integer' => 'The account manager selection is not valid.',
-            'account_manager_id.exists' => 'It looks like you forgot to choose an Account Manager. Please select one before saving.',
-            'company_id.integer' => 'The company selection is not valid.',
-            'company_id.exists' => 'The selected company could not be found. Please choose a valid company.',
-            'location.string' => 'The location should be written as text.',
-            'location.max' => 'The location is too long. Please keep it to 255 characters or fewer.',
-            'assistant.string' => 'The assistant field should be a comma-separated list of user IDs.',
-            'account_id.integer' => 'The account selection is not valid.',
-            'account_id.exists' => 'The selected account could not be found. Please choose a valid account.',
-            'from_date.required' => 'Please choose the training start date.',
-            'from_date.date' => 'The start date must be a valid date.',
-            'to_date.required' => 'Please choose the training end date.',
-            'to_date.date' => 'The end date must be a valid date.',
-            'from_time.required' => 'Please choose a start time for the training.',
-            'conference_link.string' => 'The conference link should be written as text.',
-            'outbound_pickup_date.date' => 'The outbound pickup date must be a valid date.',
-            'outbound_contact_number.string' => 'The outbound contact number should be written as text.',
-            'outbound_contact_number.max' => 'The outbound contact number is too long. Please keep it to 255 characters or fewer.',
-            'outbound_pickup_location.string' => 'The outbound pickup location should be written as text.',
-            'outbound_pickup_location.max' => 'The outbound pickup location is too long. Please keep it to 255 characters or fewer.',
-            'outbound_dropoff_location.string' => 'The outbound drop-off location should be written as text.',
-            'outbound_dropoff_location.max' => 'The outbound drop-off location is too long. Please keep it to 255 characters or fewer.',
-            'return_pickup_date.date' => 'The return pickup date must be a valid date.',
-            'return_contact_number.string' => 'The return contact number should be written as text.',
-            'return_contact_number.max' => 'The return contact number is too long. Please keep it to 255 characters or fewer.',
-            'return_pickup_location.string' => 'The return pickup location should be written as text.',
-            'return_pickup_location.max' => 'The return pickup location is too long. Please keep it to 255 characters or fewer.',
-            'return_dropoff_location.string' => 'The return drop-off location should be written as text.',
-            'return_dropoff_location.max' => 'The return drop-off location is too long. Please keep it to 255 characters or fewer.',
-            'coordinator_to_notify_list.required_if' => 'You turned on coordinator notifications, but no coordinator was selected. Please choose at least one person to notify.',
-            'coordinator_to_notify_list.string' => 'The coordinator list should be written as text.',
-            'to_time.required' => 'Please choose an end time for the training.',
-        ];
-    }
-
     private function shouldSendMailTo(?string $email): bool
     {
         if (empty($email)) {
@@ -265,28 +183,76 @@ class TrainingController extends Controller
             $request->merge(['account_manager_id' => null]);
         }
 
-        $validator = Validator::make($request->all(), $this->trainingValidationRules(), $this->trainingValidationMessages());
+        // Validate the incoming request data
+        $validator = Validator::make($request->all(), [
+            'course_id' => ['required', 'integer', 'exists:course,id'],
+            'mode' => ['required', 'string', 'max:255'],
+            'facilitator_id' => ['nullable', 'integer', 'exists:users,id'], // Facilitator ID can be null
+            'account_manager_id' => ['nullable', 'integer', 'exists:users,id'], // Account Manager ID can be null
+            'company_id' => ['nullable', 'integer', 'exists:company,id'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'assistant' => ['nullable', 'string'],
+            'account_id' => ['nullable', 'integer', 'exists:credentials,id'],
+            'from_date' => ['required', 'date'],
+            'to_date' => ['required', 'date'],
+            'from_time' => ['required'],
+            'platform' => ['nullable'],
+            'conference_link' => ['nullable', 'url'],
+            'need_transportation' => ['nullable'],
+            'outbound_pickup_date' => ['nullable', 'date'],
+            'outbound_pickup_time' => ['nullable'],
+            'outbound_contact_number' => ['nullable', 'string', 'max:255'],
+            'outbound_pickup_location' => ['nullable', 'string', 'max:255'],
+            'outbound_dropoff_location' => ['nullable', 'string', 'max:255'],
+            'outbound_trips_json' => ['nullable'],
+            'return_trip_needed' => ['nullable'],
+            'return_pickup_date' => ['nullable', 'date'],
+            'return_pickup_time' => ['nullable'],
+            'return_contact_number' => ['nullable', 'string', 'max:255'],
+            'return_pickup_location' => ['nullable', 'string', 'max:255'],
+            'return_dropoff_location' => ['nullable', 'string', 'max:255'],
+            'return_trips_json' => ['nullable'],
+            'notify_coordinator' => ['nullable'],
+            'coordinator_to_notify_list' => ['required_if:notify_coordinator,1', 'nullable', 'string'],
+            'to_time' => ['required'],
+        ]);
 
         // Check if validation fails
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Please review the training details and try again.',
+                'message' => 'Validation failed',
                 'errors' => $validator->errors(),
             ], 422);
         }
 
+        // Additional explicit existence checks to avoid DB FK exceptions
         $missing = [];
+        if (!Course::find($request->course_id)) {
+            $missing['course_id'] = ['Selected course does not exist in the database.'];
+        }
+        if ($request->filled('company_id') && !Company::find($request->company_id)) {
+            $missing['company_id'] = ['Selected company does not exist in the database.'];
+        }
+        if ($request->filled('facilitator_id') && !User::find($request->facilitator_id)) {
+            $missing['facilitator_id'] = ['Selected facilitator does not exist in the database.'];
+        }
+        if ($request->filled('account_manager_id') && !User::find($request->account_manager_id)) {
+            $missing['account_manager_id'] = ['Selected account manager does not exist in the database.'];
+        }
+        if ($request->filled('account_id') && !Account::find($request->account_id)) {
+            $missing['account_id'] = ['Selected account/account credentials do not exist.'];
+        }
         $coordinatorIds = $this->extractCoordinatorIds($request->input('coordinator_to_notify_list', $request->input('coordinator_to_notify', '')));
         foreach ($coordinatorIds as $coordinatorId) {
             if (is_numeric($coordinatorId) && !User::find((int) $coordinatorId)) {
-                $missing['coordinator_to_notify_list'] = ['One of the selected coordinators could not be found. Please choose the coordinator again.'];
+                $missing['coordinator_to_notify_list'] = ['Selected coordinator does not exist in the database.'];
                 break;
             }
         }
 
         if (!empty($missing)) {
             return response()->json([
-                'message' => 'Please review the coordinator list and try again.',
+                'message' => 'Validation failed',
                 'errors' => $missing,
             ], 422);
         }
@@ -624,11 +590,42 @@ class TrainingController extends Controller
         }
 
         // Validate request - include driver/transportation and notifier fields
-        $validator = Validator::make($request->all(), $this->trainingValidationRules(), $this->trainingValidationMessages());
+        $validator = Validator::make($request->all(), [
+            'course_id' => ['required', 'integer'],
+            'mode' => ['required', 'string', 'max:255'],
+            'facilitator_id' => ['nullable', 'integer'],
+            'account_manager_id' => ['nullable', 'integer'],
+            'company_id' => ['nullable', 'integer'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'assistant' => ['nullable', 'string'],
+            'account_id' => ['nullable', 'integer'],
+            'from_date' => ['required', 'date'],
+            'to_date' => ['required', 'date'],
+            'from_time' => ['required'],
+            'platform' => ['nullable'],
+            'conference_link' => ['nullable', 'url'],
+            'to_time' => ['required'],
+            'need_transportation' => ['nullable'],
+            'outbound_pickup_date' => ['nullable', 'date'],
+            'outbound_pickup_time' => ['nullable'],
+            'outbound_contact_number' => ['nullable','string','max:255'],
+            'outbound_pickup_location' => ['nullable','string','max:255'],
+            'outbound_dropoff_location' => ['nullable','string','max:255'],
+            'outbound_trips_json' => ['nullable'],
+            'return_trip_needed' => ['nullable'],
+            'return_pickup_date' => ['nullable', 'date'],
+            'return_pickup_time' => ['nullable'],
+            'return_contact_number' => ['nullable','string','max:255'],
+            'return_pickup_location' => ['nullable','string','max:255'],
+            'return_dropoff_location' => ['nullable','string','max:255'],
+            'return_trips_json' => ['nullable'],
+            'notify_coordinator' => ['nullable'],
+            'coordinator_to_notify_list' => ['required_if:notify_coordinator,1', 'nullable', 'string'],
+        ]);
 
         if ($validator->fails()) {
             return response()->json([
-                'message' => 'Please review the training details and try again.',
+                'message' => 'Validation failed',
                 'errors' => $validator->errors(),
             ], 422);
         }

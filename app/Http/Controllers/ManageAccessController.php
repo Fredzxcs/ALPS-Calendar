@@ -66,35 +66,19 @@ class ManageAccessController extends Controller
     
             \Log::info('User data:', $request->all()); // Log request data for debugging
     
+            // Validate the request
             $validator = Validator::make($request->all(), [
-                'usertype' => ['required', 'string', 'max:15'],
-                'fullname' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
-                'contact_number' => ['required', 'numeric', 'digits_between:11,15'],
-                'id_picture' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            ], [
-                'usertype.required' => 'Please choose a user role before saving.',
-                'usertype.string' => 'The user role should be written as text.',
-                'usertype.max' => 'The user role is too long. Please keep it to 15 characters or fewer.',
-                'fullname.required' => 'Please enter the user\'s full name before updating.',
-                'fullname.string' => 'The full name should be written as text.',
-                'fullname.max' => 'The full name is too long. Please keep it to 255 characters or fewer.',
-                'email.required' => 'Please enter an email address for the user.',
-                'email.email' => 'Please enter a valid email address such as name@example.com.',
-                'email.max' => 'The email address is too long. Please keep it to 255 characters or fewer.',
-                'email.unique' => 'That email address is already in use. Please choose another one.',
-                'contact_number.required' => 'Please enter a contact number for the user.',
-                'contact_number.numeric' => 'The contact number should contain only numbers.',
-                'contact_number.digits_between' => 'The contact number should be between 11 and 15 digits long.',
-                'id_picture.image' => 'Please upload a valid image file for the user photo.',
-                'id_picture.mimes' => 'The photo must be a JPEG, PNG, JPG, or GIF image.',
-                'id_picture.max' => 'The photo is too large. Please upload an image smaller than 2 MB.',
+                'usertype' => 'required|string|max:15',
+                'fullname' => 'required|string|max:255',
+                'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+                'contact_number' => 'required|numeric|digits_between:11,15',
+                'id_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
     
             if ($validator->fails()) {
                 \Log::error('Validation failed:', $validator->errors()->toArray());
                 return response()->json([
-                    'message' => 'Please review the user details and try again.',
+                    'message' => 'Validation failed',
                     'errors' => $validator->errors(),
                 ], 422);
             }
@@ -152,21 +136,14 @@ class ManageAccessController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($id)],
-                'color' => ['nullable', 'string'],
-                'password' => ['nullable', 'min:8'],
-            ], [
-                'username.required' => 'Please choose a username before saving these credentials.',
-                'username.string' => 'The username should be written as text.',
-                'username.max' => 'The username is too long. Please keep it to 255 characters or fewer.',
-                'username.unique' => 'That username is already taken. Please pick a different one.',
-                'color.string' => 'The color should be written as text.',
-                'password.min' => 'The password must be at least 8 characters long.',
+                'color' => 'nullable|string',
+                'password' => ['nullable', 'min:8'], // Password is optional but must be confirmed
             ]);
     
             if ($validator->fails()) {
                 \Log::error('Validation failed:', $validator->errors()->toArray());
                 return response()->json([
-                    'message' => 'Please review the credential details and try again.',
+                    'message' => 'Validation failed',
                     'errors' => $validator->errors(),
                 ], 422);
             }
