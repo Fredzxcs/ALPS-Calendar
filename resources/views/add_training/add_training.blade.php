@@ -196,7 +196,7 @@
                         </div>
 
                         <!-- Date and Time -->
-                        <div class="training-form-row triple">
+                        <div class="training-form-row triple training-date-time-row">
                             <div class="training-form-group">
                                 <label for="date-range">Date Range <span class="required"></span></label>
                                 <input type="text" id="date-range" class="training-input" placeholder="Select Date" readonly>
@@ -212,7 +212,7 @@
                         </div>
 
                         <!-- People -->
-                        <div class="training-form-row triple">
+                        <div class="training-form-row triple training-people-row">
                             <div class="training-form-group">
                                 <label for="facilitator">Facilitator <span class="required"></span></label>
                                 <select id="facilitator" name="facilitator_id" class="training-select">

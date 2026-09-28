@@ -2219,7 +2219,265 @@ body.alps-login-page .alps-login-shell {
 .table tbody tr:nth-child(odd) {
     background: transparent !important;
 }
-OGO CONTAINER */
+
+/* Stable tablet/mobile rendering. Animated fixed blur layers and nested
+   backdrop filters trigger repaint flashes on mobile GPUs, especially while
+   FullCalendar is measuring or the browser chrome changes height. */
+@media (max-width: 1024px), (hover: none) and (pointer: coarse) {
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+        background-attachment: scroll;
+        background-size: cover;
+        background-position: center top;
+        animation: none !important;
+    }
+
+    body::before,
+    body::after,
+    .alps-login-shell::before,
+    .alps-login-shell::after,
+    .alps-login-stage::before {
+        display: none !important;
+        animation: none !important;
+        filter: none !important;
+        will-change: auto !important;
+    }
+
+    .navbar.alps-navbar,
+    .alps-card,
+    .alps-card-glass-body,
+    .alps-login-card,
+    .modal-content,
+    .menu-sub-dropdown,
+    .dropdown-menu {
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+
+    .navbar.alps-navbar,
+    .alps-card,
+    .alps-card-glass-body,
+    .alps-login-card {
+        background: rgba(255, 255, 255, 0.94) !important;
+    }
+
+    header {
+        padding: 0;
+    }
+
+    .navbar.alps-navbar {
+        width: calc(100% - 1rem);
+        margin: 0.5rem;
+        border-radius: 1.25rem;
+    }
+
+    .navbar.alps-navbar > .container-fluid {
+        min-width: 0;
+        padding: 0.45rem 0.65rem;
+        flex-wrap: wrap;
+    }
+
+    .alps-navbar .navbar-brand {
+        min-width: 0;
+        max-width: calc(100% - 3.5rem);
+        margin-right: 0.5rem;
+    }
+
+    .alps-navbar-logo-badge {
+        width: 3.75rem;
+        height: 3.75rem;
+        margin-right: 0.65rem !important;
+    }
+
+    .alps-navbar-logo-badge img {
+        width: 2.85rem;
+    }
+
+    .alps-navbar-brand-text {
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: clamp(1rem, 3vw, 1.45rem) !important;
+    }
+
+    .alps-navbar .navbar-collapse {
+        width: 100%;
+        padding: 0.5rem 0.25rem 0.25rem;
+    }
+
+    main > .container-fluid {
+        width: 100%;
+        max-width: 100%;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    .alps-calendar-shell,
+    .alps-calendar-shell > .alps-card,
+    .alps-calendar-inner-card,
+    .alps-calendar-root,
+    #calendar,
+    #calendar .fc {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box;
+    }
+
+    .alps-calendar-shell > .alps-card {
+        padding: 1rem !important;
+    }
+
+    .alps-calendar-actions {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+
+    #calendar .fc-scrollgrid,
+    #calendar .fc-scrollgrid-section,
+    #calendar .fc-scrollgrid-section > td,
+    #calendar .fc-daygrid-body,
+    #calendar .fc-daygrid-body table {
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+
+    #calendar .fc-header-toolbar,
+    #calendar .fc-footer-toolbar {
+        gap: 0.65rem;
+    }
+
+    #calendar .fc-toolbar-title {
+        line-height: 1.2;
+        text-align: center;
+    }
+
+    #calendar .fc-button {
+        min-height: 2.75rem;
+        touch-action: manipulation;
+    }
+
+    #calendar .fc-daygrid-day-frame {
+        padding: 0.2rem;
+    }
+
+    #calendar .fc-daygrid-day-number,
+    #calendar .fc-col-header-cell-cushion {
+        font-size: clamp(0.68rem, 2vw, 0.9rem);
+    }
+
+    #calendar .fc-event.alps-pop-event,
+    #calendar .fc-daygrid-event.alps-pop-event,
+    #calendar .fc-timegrid-event.alps-pop-event {
+        transform: none !important;
+        transition: none !important;
+    }
+
+    body.alps-login-page {
+        overflow-y: auto;
+        min-height: 100svh;
+    }
+
+    body.alps-login-page .alps-login-shell {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        height: auto;
+        min-height: 100svh;
+        overflow: hidden;
+    }
+
+    .alps-login-stage {
+        min-height: 100svh !important;
+        height: auto !important;
+        padding: 6rem 1rem 2rem;
+    }
+
+    .alps-login-stage > .position-relative {
+        width: min(100%, 42rem);
+    }
+
+    .alps-login-card {
+        width: 100%;
+        padding-left: clamp(1.25rem, 5vw, 3.5rem) !important;
+        padding-right: clamp(1.25rem, 5vw, 3.5rem) !important;
+    }
+
+    .alps-login-deco {
+        position: absolute;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .alps-navbar-brand-text {
+        max-width: 12rem;
+    }
+
+    main > .container-fluid {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .alps-calendar-shell {
+        margin-top: 0.75rem !important;
+        padding: 0 !important;
+    }
+
+    .alps-calendar-shell > .alps-card {
+        padding: 0.75rem !important;
+        border-radius: 1rem !important;
+    }
+
+    .alps-calendar-root {
+        padding: 0.4rem !important;
+        overflow-x: hidden;
+    }
+
+    #calendar .fc-toolbar-title {
+        font-size: 1rem;
+    }
+
+    #calendar .fc-header-toolbar,
+    #calendar .fc-footer-toolbar {
+        margin-bottom: 0.75rem;
+    }
+
+    #calendar .fc-footer-toolbar {
+        flex-wrap: wrap;
+    }
+
+    #calendar .fc-footer-toolbar .fc-toolbar-chunk:last-child .fc-button-group {
+        max-width: 100%;
+    }
+
+    #calendar .fc-daygrid-day {
+        min-height: 4.75rem;
+        height: 5.5rem;
+    }
+
+    .alps-login-logo-badge {
+        width: 104px;
+        height: 104px;
+        top: -48px;
+        padding: 10px;
+    }
+
+    .alps-login-card h1 {
+        font-size: clamp(1.65rem, 8vw, 2.25rem) !important;
+    }
+
+    .alps-login-card .btn {
+        width: 100% !important;
+        min-height: 3rem;
+    }
+}
+/* LOGO CONTAINER */
 .alps-login-logo-badge img {
     width: 140px;
     background: rgba(241, 243, 245, 0.75);
@@ -2750,4 +3008,64 @@ OGO CONTAINER */
 
 .alps-action-text {
     white-space: nowrap;
+}
+
+/* Keep these last so the legacy duplicated theme section above cannot undo
+   the touch-device sizing rules. */
+@media (max-width: 1024px), (hover: none) and (pointer: coarse) {
+    .alps-login-logo-badge img {
+        width: 100% !important;
+        height: 100% !important;
+        background: transparent !important;
+    }
+
+    #calendar .fc-scrollgrid,
+    #calendar .fc-daygrid-body,
+    #calendar .fc-daygrid-body table {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    #calendar .fc-header-toolbar {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    #calendar .fc-header-toolbar .fc-toolbar-chunk {
+        min-width: 0;
+    }
+
+    #calendar .fc-header-toolbar .fc-toolbar-chunk:nth-child(2) {
+        flex: 1;
+        padding: 0 0.35rem;
+    }
+
+    #calendar .fc-footer-toolbar {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+    }
+
+    #calendar .fc-daygrid-day {
+        min-height: 4.75rem !important;
+        height: 5.5rem !important;
+    }
+
+    .alps-action-menu {
+        position: fixed !important;
+        left: 0.75rem !important;
+        right: 0.75rem !important;
+        top: auto !important;
+        bottom: 0.75rem !important;
+        min-width: 0 !important;
+        width: auto !important;
+        transform: none !important;
+    }
 }

@@ -4,7 +4,7 @@
     <div class="alps-calendar-shell d-flex flex-wrap justify-content-center gap-4 mt-20">
         <!-- Right Side: Calendar -->
         <div class="shadow-sm alps-card">
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex justify-content-between align-items-center alps-calendar-actions">
 
                 <!-- Filter Button -->
                 <div class="dropdown alps-calendar-filter-dropdown">

@@ -1079,13 +1079,55 @@ document.addEventListener('DOMContentLoaded', function () {
                 return 760;
             };
 
+            const getResponsiveToolbar = () => {
+                const width = window.innerWidth;
+
+                if (width <= 575) {
+                    return {
+                        headerToolbar: {
+                            left: 'prev',
+                            center: 'title',
+                            right: 'next',
+                        },
+                        footerToolbar: {
+                            left: 'today',
+                            center: '',
+                            right: 'dayGridMonth,timeGridDay',
+                        },
+                    };
+                }
+
+                if (width <= 991) {
+                    return {
+                        headerToolbar: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: '',
+                        },
+                        footerToolbar: {
+                            left: '',
+                            center: 'dayGridMonth,timeGridWeek,timeGridDay',
+                            right: '',
+                        },
+                    };
+                }
+
+                return {
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                    },
+                    footerToolbar: false,
+                };
+            };
+
+            const responsiveToolbar = getResponsiveToolbar();
+
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay',
-                },
+                headerToolbar: responsiveToolbar.headerToolbar,
+                footerToolbar: responsiveToolbar.footerToolbar,
                 dayMaxEvents: 5,
                 height: 'auto',
                 contentHeight: getResponsiveContentHeight(),

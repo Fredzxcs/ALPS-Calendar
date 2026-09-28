@@ -194,7 +194,7 @@ class TrainingController extends Controller
             'assistant' => ['nullable', 'string'],
             'account_id' => ['nullable', 'integer', 'exists:credentials,id'],
             'from_date' => ['required', 'date'],
-            'to_date' => ['required', 'date'],
+            'to_date' => ['required', 'date', 'after_or_equal:from_date'],
             'from_time' => ['required'],
             'platform' => ['nullable'],
             'conference_link' => ['nullable', 'url'],
@@ -600,7 +600,7 @@ class TrainingController extends Controller
             'assistant' => ['nullable', 'string'],
             'account_id' => ['nullable', 'integer'],
             'from_date' => ['required', 'date'],
-            'to_date' => ['required', 'date'],
+            'to_date' => ['required', 'date', 'after_or_equal:from_date'],
             'from_time' => ['required'],
             'platform' => ['nullable'],
             'conference_link' => ['nullable', 'url'],
@@ -1071,5 +1071,4 @@ class TrainingController extends Controller
     }
 
 }
-
 

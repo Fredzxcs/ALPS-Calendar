@@ -583,7 +583,37 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
+    .flatpickr-calendar {
+        max-width: calc(100vw - 1.5rem);
+    }
+
+    .form.mx-auto.w-75.px-5 {
+        width: 100% !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    .training-form-row,
+    .training-form-row.triple,
+    .training-form-row.quad {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .training-date-time-row .training-form-group:first-child,
+    .training-people-row .training-form-group:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .training-form-group,
+    .training-input,
+    .training-select {
+        min-width: 0;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 640px) {
     .training-page-wrapper {
         min-height: 100dvh;
         align-items: flex-start;
@@ -616,6 +646,11 @@
 
     .training-form-row.quad {
         grid-template-columns: 1fr;
+    }
+
+    .training-date-time-row .training-form-group:first-child,
+    .training-people-row .training-form-group:last-child {
+        grid-column: auto;
     }
 
     .training-step-indicators {
@@ -661,12 +696,6 @@
 
     .stepper-wrapper {
         justify-content: flex-start;
-    }
-
-    .form.mx-auto.w-75.px-5 {
-        width: 100% !important;
-        padding-left: 1rem !important;
-        padding-right: 1rem !important;
     }
 
     .d-flex.flex-stack.mt-5 {

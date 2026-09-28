@@ -5,7 +5,7 @@
             <span class="alps-navbar-logo-badge me-3">
                 <img src="{{ asset('img/ALPs_Logo.png') }}" alt="ALPS Logo">
             </span>
-            <span class="fw-boldest fs-1">Advanced Learning Programs</span>
+            <span class="fw-boldest fs-1 alps-navbar-brand-text">Advanced Learning Programs</span>
         </a>
         <!-- Toggler for Mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
